@@ -35,6 +35,8 @@ import org.apache.ws.scout.registry.infomodel.UserImpl;
 import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
 import org.apache.ws.scout.registry.infomodel.SlotImpl;
 import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
+import org.apache.ws.scout.registry.infomodel.AssociationImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
 
 import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
@@ -50,6 +52,12 @@ import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.RegistryEntry;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.User;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.AuditableEvent;
+import javax.xml.registry.infomodel.PersonName;
+import javax.xml.registry.infomodel.ServiceBinding;
+import java.util.ArrayList;
 
 /**
  * @version $Revision$ $Date$
@@ -58,12 +66,9 @@ public class LifeCycleManagerTest extends TestCase {
     private LifeCycleManager manager;
 
     public void testCreateObjectAssociation() throws JAXRException {
-        try {
-            manager.createObject(LifeCycleManager.ASSOCIATION);
-            fail();
-        } catch (UnsupportedCapabilityException e) {
-            // OK
-        }
+        Association assoc = (Association) manager.createObject(LifeCycleManager.ASSOCIATION);
+        assertEquals(AssociationImpl.class, assoc.getClass());
+        assertSame(manager, assoc.getLifeCycleManager());
     }
 
     public void testCreateObjectAuditableEvent() throws JAXRException {
@@ -137,7 +142,9 @@ public class LifeCycleManagerTest extends TestCase {
     }
 
     public void testCreateObjectPersonName() throws JAXRException {
-        assertEquals(PersonNameImpl.class, manager.createObject(LifeCycleManager.PERSON_NAME).getClass());
+
+        PersonName pn = (PersonName) manager.createObject(LifeCycleManager.PERSON_NAME);
+        assertEquals(PersonNameImpl.class, pn.getClass());
     }
 
     public void testCreateObjectPostalAddress() throws JAXRException {
@@ -145,9 +152,12 @@ public class LifeCycleManagerTest extends TestCase {
     }
 
     public void testCreateObjectRegistryEntry() throws JAXRException {
-        RegistryEntry registryEntry = (RegistryEntry) manager.createObject(LifeCycleManager.REGISTRY_ENTRY);
-        assertEquals(RegistryEntryImpl.class, registryEntry.getClass());
-        assertSame(manager, registryEntry.getLifeCycleManager());
+        try {
+            manager.createObject(LifeCycleManager.REGISTRY_ENTRY);
+            fail();
+        } catch (UnsupportedCapabilityException e) {
+            // OK
+        }
     }
 
     public void testCreateObjectRegistryPackage() throws JAXRException {
@@ -157,6 +167,21 @@ public class LifeCycleManagerTest extends TestCase {
         } catch (UnsupportedCapabilityException e) {
             // OK
         }
+
+        try {
+            manager.createRegistryPackage(new InternationalStringImpl("Foo"));
+            fail();
+        } catch (UnsupportedCapabilityException e) {
+            // OK
+        }
+
+        try {
+            manager.createRegistryPackage("Foo");
+            fail();
+        } catch (UnsupportedCapabilityException e) {
+            // OK
+        }
+
     }
 
     public void testCreateObjectService() throws JAXRException {
@@ -166,12 +191,9 @@ public class LifeCycleManagerTest extends TestCase {
     }
 
     public void testCreateObjectServiceBinding() throws JAXRException {
-        try {
-            manager.createObject(LifeCycleManager.SERVICE_BINDING);
-            fail();
-        } catch (UnsupportedCapabilityException e) {
-            // OK
-        }
+        ServiceBinding service = (ServiceBinding) manager.createObject(LifeCycleManager.SERVICE_BINDING);
+        assertEquals(ServiceBindingImpl.class, service.getClass());
+        assertSame(manager, service.getLifeCycleManager());
     }
 
     public void testCreateObjectSlot() throws JAXRException {
@@ -197,6 +219,24 @@ public class LifeCycleManagerTest extends TestCase {
             manager.createObject("Foo");
             fail();
         } catch (InvalidRequestException e) {
+            // OK
+        }
+    }
+
+    public void testDeprecateObjects() throws JAXRException {
+        try {
+            manager.deprecateObjects(new ArrayList());
+            fail();
+        } catch (UnsupportedCapabilityException e) {
+            // OK
+        }
+    }
+
+    public void testUnDeprecateObjects() throws JAXRException {
+        try {
+            manager.unDeprecateObjects(new ArrayList());
+            fail();
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
