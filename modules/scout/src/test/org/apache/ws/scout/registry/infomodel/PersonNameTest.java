@@ -67,6 +67,13 @@ public class PersonNameTest extends TestCase {
         }
     }
 
+    public void testLevel0Methods() throws JAXRException {
+
+        name.setFullName("foo");
+
+        assertEquals("foo", name.getFullName());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         name = new PersonNameImpl();
