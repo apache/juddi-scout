@@ -17,12 +17,14 @@
 package org.apache.ws.scout.registry;
 
 import org.apache.juddi.proxy.RegistryProxy;
+import org.apache.juddi.proxy.Transport;
 
 import javax.xml.registry.Connection;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
 import java.net.URL;
 import java.util.Set;
+import java.util.Properties;
 
 /**
  * Apache Scout Implementation of a JAXR Connection.
@@ -39,11 +41,24 @@ public class ConnectionImpl implements Connection {
     private final int maxRows;
 
     public ConnectionImpl(URL queryManagerURL, URL lifeCycleManagerURL, String postalScheme, int maxRows) {
-        registry = new RegistryProxy(null);
+        Properties prop = new Properties();
+        /**
+         * If you want to override any of the properties
+         * juddi RegistryProxy uses, set the System property
+         * accordingly.
+         */
+        String transport = System.getProperty("juddi.proxy.transportClass");
+        if( transport != null) prop.setProperty("juddi.proxy.transportClass",transport);
+        /**
+         * Even if the properties passed contains no values,
+         * juddi takes default values
+         */
+        registry = new RegistryProxy(prop);
         registry.setInquiryURL(queryManagerURL);
         registry.setPublishURL(lifeCycleManagerURL);
         this.postalScheme = postalScheme;
         this.maxRows = maxRows;
+
     }
 
     public RegistryService getRegistryService() throws JAXRException {

@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Implements JAXR BulResponse Interface.
+ * Implements JAXR BulkResponse Interface.
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author Anil Saldhana  <mailto:anil@apache.org>
  */
 public class BulkResponseImpl implements BulkResponse {
     public static int STATUS_FAILURE = 1;
