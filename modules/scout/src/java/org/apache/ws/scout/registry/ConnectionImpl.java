@@ -25,6 +25,7 @@ import javax.xml.registry.RegistryService;
 import java.net.URL;
 import java.util.Set;
 import java.util.Properties;
+import java.io.Serializable;
 
 /**
  * Apache Scout Implementation of a JAXR Connection.
@@ -32,7 +33,7 @@ import java.util.Properties;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ConnectionImpl implements Connection {
+public class ConnectionImpl implements Connection, Serializable {
     private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;

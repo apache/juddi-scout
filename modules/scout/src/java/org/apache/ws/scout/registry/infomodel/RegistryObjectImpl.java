@@ -156,25 +156,35 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
 
     public void addExternalIdentifier(ExternalIdentifier externalIdentifier) {
         externalIds.add(externalIdentifier);
+        ((ExternalIdentifierImpl)externalIdentifier).setRegistryObject(this);
     }
 
     public void addExternalIdentifiers(Collection collection) {
         for (Iterator i = collection.iterator(); i.hasNext();) {
             ExternalIdentifier externalId = (ExternalIdentifier) i.next();
             externalIds.add(externalId);
+            ((ExternalIdentifierImpl)externalId).setRegistryObject(this);
         }
     }
 
     public void removeExternalIdentifier(ExternalIdentifier externalIdentifier) {
         externalIds.remove(externalIdentifier);
+        ((ExternalIdentifierImpl)externalIdentifier).setRegistryObject(null);
     }
 
     public void removeExternalIdentifiers(Collection collection) {
+        //Lets clear out the reference to this in the ext id
+        Iterator iter = collection.iterator();
+        while(iter != null && iter.hasNext())
+        {
+           ExternalIdentifier externalId = (ExternalIdentifier) iter.next();
+           ((ExternalIdentifierImpl)externalId).setRegistryObject(null);
+        }
         externalIds.removeAll(collection);
     }
 
     public Collection getExternalIdentifiers() {
-        return externalIds;
+        return Collections.unmodifiableSet(externalIds) ;
     }
 
     public void setExternalIdentifiers(Collection collection) {
@@ -188,20 +198,29 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
 
     public void addExternalLink(ExternalLink externalLink) {
         externalLinks.add(externalLink);
+        ((ExternalLinkImpl)externalLink).addLinkedObject(this);
     }
 
     public void addExternalLinks(Collection collection) {
         for (Iterator i = collection.iterator(); i.hasNext();) {
             ExternalLink externalLink = (ExternalLink) i.next();
             externalLinks.add(externalLink);
+            ((ExternalLinkImpl)externalLink).addLinkedObject(this);
         }
     }
 
     public void removeExternalLink(ExternalLink externalLink) {
+        ((ExternalLinkImpl)externalLink).removeLinkedObject(this);
         externalLinks.remove(externalLink);
     }
 
     public void removeExternalLinks(Collection collection) {
+        Iterator iter = collection.iterator();
+        while(iter != null && iter.hasNext())
+        {
+           ExternalLink externalLink = (ExternalLink) iter.next();
+           ((ExternalLinkImpl)externalLink).removeLinkedObject(this);
+        }
         externalLinks.removeAll(collection);
     }
 

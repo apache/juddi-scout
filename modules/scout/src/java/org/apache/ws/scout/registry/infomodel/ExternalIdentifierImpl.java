@@ -74,4 +74,10 @@ public class ExternalIdentifierImpl extends RegistryObjectImpl
         value = str;
     }
 
+    //Specific API
+    public void setRegistryObject(RegistryObject obj)
+    {
+        parent = obj;
+    }
+
 }

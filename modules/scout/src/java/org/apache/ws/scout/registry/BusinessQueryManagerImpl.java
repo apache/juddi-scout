@@ -22,11 +22,16 @@ import org.apache.juddi.datatype.request.FindQualifiers;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.BusinessList;
 import org.apache.juddi.datatype.response.BusinessDetail;
+import org.apache.juddi.datatype.response.TModelList;
+import org.apache.juddi.datatype.response.TModelInfo;
+import org.apache.juddi.datatype.response.TModelInfos;
 import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.error.RegistryException;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
+import org.apache.ws.scout.util.EnumerationHelper;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessQueryManager;
@@ -35,6 +40,7 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
@@ -85,7 +91,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                                    juddiFindQualifiers,
                                                    registryService.getMaxRows());
             Vector v = result.getBusinessInfos().getBusinessInfoVector();
-            Collection orgs = null;
+            Collection orgs = new ArrayList();
             int len = 0;
             if (v != null)
             {
@@ -95,7 +101,9 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             for (int i = 0; i < len; i++)
             {
                 BusinessInfo info = (BusinessInfo) v.elementAt(i);
-                orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(info));
+                //Now get the details on the individual biz
+                BusinessDetail detail = registry.getBusinessDetail(info.getBusinessKey());
+                orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
             }
             return new BulkResponseImpl(orgs);
         } catch (RegistryException e)
@@ -124,27 +132,62 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                                                String namePatterns) throws JAXRException
     {
         ClassificationScheme scheme = null;
-        //TODO:What to do with findQualifiers?
+
         if (namePatterns.equalsIgnoreCase("uddi-org:types"))
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setName(new InternationalStringImpl("uddi-org:types"));
             scheme.setKey(new KeyImpl(TModel.TYPES_TMODEL_KEY));
         } else if (namePatterns.equalsIgnoreCase("dnb-com:D-U-N-S"))
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setName(new InternationalStringImpl("dnb-com:D-U-N-S"));
             scheme.setKey(new KeyImpl(TModel.D_U_N_S_TMODEL_KEY));
         } else if (namePatterns.equalsIgnoreCase("uddi-org:iso-ch:3166:1999"))
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setName(new InternationalStringImpl("uddi-org:iso-ch:3166:1999"));
             scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
         } else if (namePatterns.equalsIgnoreCase("unspsc-org:unspsc"))
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setName(new InternationalStringImpl("unspsc-org:unspsc"));
             scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
         } else if (namePatterns.equalsIgnoreCase("ntis-gov:naics"))
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setName(new InternationalStringImpl("ntis-gov:naics"));
             scheme.setKey(new KeyImpl(TModel.NAICS_TMODEL_KEY));
+        }else
+        {
+            //Lets ask the uddi registry if it has the TModels
+            IRegistry registry = registryService.getRegistry();
+            FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
+            Vector nameVector = new Vector();
+            nameVector.add(namePatterns);
+            try
+            {
+                //We are looking for one exact match, so getting upto 3 records is fine
+                TModelList list = registry.findTModel(namePatterns,null,null,juddiFindQualifiers,3);
+                TModelInfos infos = null;
+                Vector tmvect = null;
+                if( list != null )   infos  = list.getTModelInfos();
+                if(infos != null ) tmvect =  infos.getTModelInfoVector() ;
+                if(tmvect != null )
+                {
+                    if(  tmvect.size() > 1)
+                     throw new InvalidRequestException("Multiple matches found");
+                    
+                    TModelInfo info = (TModelInfo)tmvect.elementAt(0);
+                    scheme.setName( new InternationalStringImpl(info.getName().getValue()));
+                    scheme.setKey(new KeyImpl(info.getTModelKey()));
+                }
+
+            } catch (RegistryException e)
+            {
+                e.printStackTrace();
+                throw new JAXRException(e.getLocalizedMessage());
+            }
         }
         return scheme;
     }
@@ -159,7 +202,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
     public Concept findConceptByPath(String path) throws JAXRException
     {
-        return null;
+        //We will store the enumerations datastructure in the util package
+        /**
+         * I am not clear about how this association type enumerations
+         * are to be implemented.
+         */
+        return EnumerationHelper.getConceptByPath(path);
     }
 
     public BulkResponse findConcepts(Collection findQualifiers,

@@ -35,6 +35,7 @@ import javax.xml.registry.infomodel.*;
 import javax.xml.registry.infomodel.RegistryObject;
 import java.util.*;
 import java.net.PasswordAuthentication;
+import java.io.Serializable;
 
 /**
  * Implements JAXR BusinessLifeCycleManager Interface.
@@ -43,7 +44,7 @@ import java.net.PasswordAuthentication;
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
-        implements BusinessLifeCycleManager
+        implements BusinessLifeCycleManager, Serializable
 {
 
     public BusinessLifeCycleManagerImpl(RegistryService registry)
@@ -104,7 +105,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                         ScoutJaxrUddiHelper.getTModelFromJAXRClassificationScheme((ClassificationScheme) iter.next());
                 entityvect.add(en);
             }
-            System.out.println("Method:save_business: ENlength=" + entityvect.size());
+            System.out.println("Method:save_classificationscheme: ENlength=" + entityvect.size());
             // Save business
             TModelDetail td = (TModelDetail) executeOperation(entityvect, "SAVE_TMODEL");
 

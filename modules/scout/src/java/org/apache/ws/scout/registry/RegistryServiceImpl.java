@@ -87,6 +87,8 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     public BulkResponse getBulkResponse(String s) throws JAXRException, InvalidRequestException {
+        if(s == "" || s==null)
+            throw new InvalidRequestException();
         return null;
     }
 

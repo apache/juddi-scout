@@ -77,7 +77,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
     }
 
     public Collection getUsers() throws JAXRException {
-        return Collections.unmodifiableCollection(users);
+        return users;
     }
 
     public void removeUser(User user) throws JAXRException {
@@ -107,7 +107,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
                 }
             }
         }
-        return Collections.unmodifiableSet(filteredNumbers);
+        return filteredNumbers;
     }
 
     public void setTelephoneNumbers(Collection collection) throws JAXRException {
@@ -133,7 +133,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
     }
 
     public Collection getServices() throws JAXRException {
-        return Collections.unmodifiableSet(services);
+        return services;
     }
 
     public void removeService(Service service) throws JAXRException {
