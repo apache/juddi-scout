@@ -72,7 +72,9 @@ import java.util.Locale;
 import java.util.Vector;
 
 /**
- * @version $Revision$ $Date$
+ * Implements JAXR LifeCycleManager Interface
+ * For futher details, look into the JAXR API Javadoc.
+ * @author Anil Saldhana  <anil@apache.org>
  */
 public class LifeCycleManagerImpl implements LifeCycleManager {
     private final RegistryService registry;

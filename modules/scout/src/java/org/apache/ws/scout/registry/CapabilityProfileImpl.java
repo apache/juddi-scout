@@ -20,9 +20,11 @@ import javax.xml.registry.CapabilityProfile;
 import javax.xml.registry.JAXRException;
 
 /**
- * @version $Revision$ $Date$
+ * Implements CapabilityProfile of JAXR API
+ * @author Jeremy Boynes <jboynes@apache.org>
+ * @author Anil Saldhana  <anil@apache.org>
  */
-class CapabilityProfileImpl implements CapabilityProfile {
+public class CapabilityProfileImpl implements CapabilityProfile {
     public int getCapabilityLevel() throws JAXRException {
         return 0;
     }

@@ -34,6 +34,7 @@ import java.util.Properties;
  * with a managed environment such as an application server.
  *
  * @author Anil Saldhana  <anil@apache.org>
+ * @author Jeremy Boynes  <jboynes@apache.org>
  */
 public class ConnectionFactoryImpl extends ConnectionFactory implements Serializable {
     private static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
