@@ -39,7 +39,8 @@ import java.util.Set;
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class RegistryObjectImpl extends ExtensibleObjectImpl implements RegistryObject
 {
@@ -141,9 +142,20 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         classifications = newClassifications;
     }
 
+    /**
+     *  Adds specified Association to use this object as source.
+     *  Silently replaces the sourceObject in Association with
+     *  reference to this object.
+     *
+     * @param association
+     * @throws JAXRException
+     */
     public void addAssociation(Association association)
+        throws JAXRException
     {
         associations.add(association);
+
+        association.setSourceObject(this);
     }
 
     public void addAssociations(Collection collection) throws JAXRException
@@ -151,7 +163,8 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         for (Iterator i = collection.iterator(); i.hasNext();)
         {
             Association association = (Association) i.next();
-            associations.add(association);
+
+            addAssociation(association);
         }
     }
 
