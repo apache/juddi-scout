@@ -17,30 +17,31 @@
 package org.apache.ws.scout.util;
 
 import org.apache.juddi.datatype.Description;
+import org.apache.juddi.datatype.DiscoveryURL;
+import org.apache.juddi.datatype.DiscoveryURLs;
+import org.apache.juddi.datatype.IdentifierBag;
+import org.apache.juddi.datatype.KeyedReference;
 import org.apache.juddi.datatype.Name;
+import org.apache.juddi.datatype.binding.AccessPoint;
+import org.apache.juddi.datatype.binding.BindingTemplate;
+import org.apache.juddi.datatype.binding.TModelInstanceDetails;
+import org.apache.juddi.datatype.binding.TModelInstanceInfo;
 import org.apache.juddi.datatype.business.BusinessEntity;
 import org.apache.juddi.datatype.business.Contact;
 import org.apache.juddi.datatype.business.Contacts;
 import org.apache.juddi.datatype.response.BusinessDetail;
+import org.apache.juddi.datatype.response.ServiceInfo;
 import org.apache.juddi.datatype.response.TModelDetail;
 import org.apache.juddi.datatype.response.TModelInfo;
-import org.apache.juddi.datatype.response.ServiceInfo;
 import org.apache.juddi.datatype.service.BusinessService;
 import org.apache.juddi.datatype.service.BusinessServices;
 import org.apache.juddi.datatype.tmodel.TModel;
-import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
-import org.apache.ws.scout.registry.infomodel.UserImpl;
-import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
-import org.apache.ws.scout.registry.infomodel.ServiceImpl;
-import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.*;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.User;
-import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.*;
+import java.util.Collection;
 import java.util.Vector;
 
 /**
@@ -51,202 +52,317 @@ import java.util.Vector;
  */
 public class ScoutUddiJaxrHelper
 {
-    public static Organization getOrganization(BusinessEntity entity,
-                                                   LifeCycleManager lcm)
-        throws JAXRException
-    {
-        Vector namevect = entity.getNameVector();
-        Name n = (Name)namevect.elementAt(0);
-        String name = n.getValue() ;
-        Vector descvect = entity.getDescriptionVector();
-        Description desc = (Description)descvect.elementAt(0);
+   public static Association getAssociation(Collection orgs,
+                                            LifeCycleManager lcm)
+           throws JAXRException
+   {
+      Association asso = new AssociationImpl(lcm);
+      Object[] arr = orgs.toArray();
+      asso.setSourceObject((RegistryObject)arr[0]);
+      asso.setTargetObject((RegistryObject)arr[1]);
+      return asso;
+   }
 
-        Organization org = new OrganizationImpl(lcm);
-        org.setName(getIString(name,lcm));
-        org.setDescription(getIString((String)desc.getValue(),lcm));
-        org.setKey(lcm.createKey(entity.getBusinessKey()));
+   public static Organization getOrganization(BusinessEntity entity,
+                                              LifeCycleManager lcm)
+           throws JAXRException
+   {
+      Vector namevect = entity.getNameVector();
+      Name n = (Name)namevect.elementAt(0);
+      String name = n.getValue();
+      Vector descvect = entity.getDescriptionVector();
+      Description desc = (Description)descvect.elementAt(0);
 
-        //Set Services also
-        BusinessServices services = entity.getBusinessServices();
-        Vector svect = services.getBusinessServiceVector();
-        for(int i=0; svect != null && i< svect.size();i++)
-        {
-            BusinessService s = (BusinessService)svect.elementAt(i);
-            org.addService(getService(s,lcm));
-        }
+      Organization org = new OrganizationImpl(lcm);
+      org.setName(getIString(name, lcm));
+      org.setDescription(getIString((String)desc.getValue(), lcm));
+      org.setKey(lcm.createKey(entity.getBusinessKey()));
 
-        /*
-         *  Users
-         *
-         *  we need to take the first contact and designate as the
-         *  'primary contact'.  Currently, the OrganizationImpl
-         *  class does that automatically as a safety in case
-         *  user forgets to set - lets be explicit here as to not
-         *  depend on that behavior
-         */
+      //Set Services also
+      BusinessServices services = entity.getBusinessServices();
+      Vector svect = services.getBusinessServiceVector();
+      for (int i = 0; svect != null && i < svect.size(); i++)
+      {
+         BusinessService s = (BusinessService)svect.elementAt(i);
+         org.addService(getService(s, lcm));
+      }
 
-        Contacts contacts = entity.getContacts();
-        Vector cvect = contacts.getContactVector();
+      /*
+       *  Users
+       *
+       *  we need to take the first contact and designate as the
+       *  'primary contact'.  Currently, the OrganizationImpl
+       *  class does that automatically as a safety in case
+       *  user forgets to set - lets be explicit here as to not
+       *  depend on that behavior
+       */
 
-        for(int i=0; cvect != null && i< cvect.size();i++)
-        {
-            Contact contact = (Contact)cvect.elementAt(i);
-            User user = new UserImpl(null);
-            String pname = contact.getPersonName().getValue();
-            user.setPersonName(new PersonNameImpl(pname));
+      Contacts contacts = entity.getContacts();
+      Vector cvect = contacts.getContactVector();
 
-            if (i == 0) {
-                org.setPrimaryContact(user);
-            }
-            else {
-                org.addUser(user);
-            }
-        }
-        return org;
-    }
+      for (int i = 0; cvect != null && i < cvect.size(); i++)
+      {
+         Contact contact = (Contact)cvect.elementAt(i);
+         User user = new UserImpl(null);
+         String pname = contact.getPersonName().getValue();
+         user.setPersonName(new PersonNameImpl(pname));
+
+         if (i == 0)
+         {
+            org.setPrimaryContact(user);
+         }
+         else
+         {
+            org.addUser(user);
+         }
+      }
+
+      //External Links
+      DiscoveryURLs durls = entity.getDiscoveryURLs();
+      if (durls != null)
+      {
+         Vector dvect = durls.getDiscoveryURLVector();
+         for (int j = 0; j < dvect.size(); j++)
+         {
+            DiscoveryURL durl = (DiscoveryURL)dvect.elementAt(j);
+            ExternalLink link = new ExternalLinkImpl(lcm);
+            link.setExternalURI(durl.getValue());
+            org.addExternalLink(link);
+         }
+      }
 
 
-    public static Organization getOrganization(BusinessDetail bizdetail,
-                                               LifeCycleManager lcm)
-            throws JAXRException
-    {
-        Vector bz = bizdetail.getBusinessEntityVector();
+      //External Identifiers
+      IdentifierBag ibag = entity.getIdentifierBag();
+      if (ibag != null)
+      {
+         Vector keyrvect = ibag.getKeyedReferenceVector();
+         for (int i = 0; i < keyrvect.size(); i++)
+         {
+            KeyedReference keyr = (KeyedReference)keyrvect.elementAt(i);
+            ExternalIdentifier eid = new ExternalIdentifierImpl(lcm);
+            String kkey = keyr.getTModelKey();
+            if (kkey != null) eid.setKey(new KeyImpl(kkey));
+            eid.setValue(keyr.getKeyValue());
+            eid.setName(new InternationalStringImpl(keyr.getKeyName()));
+            org.addExternalIdentifier(eid);
+         }
+      }
+      return org;
+   }
 
-        BusinessEntity entity = (BusinessEntity) bz.elementAt(0);
-        Vector namevect = entity.getNameVector();
-        Name n = (Name)namevect.elementAt(0);
-        String name = n.getValue() ;
-        Vector descvect = entity.getDescriptionVector();
-        Description desc = (Description)descvect.elementAt(0);
 
-        Organization org = new OrganizationImpl(lcm);
-        org.setName(getIString(name,lcm));
-        org.setDescription(getIString((String)desc.getValue(),lcm));
-        org.setKey(lcm.createKey(entity.getBusinessKey()));
+   public static Organization getOrganization(BusinessDetail bizdetail,
+                                              LifeCycleManager lcm)
+           throws JAXRException
+   {
+      Vector bz = bizdetail.getBusinessEntityVector();
 
-        //Set Services also
-        BusinessServices services = entity.getBusinessServices();
-        Vector svect = services.getBusinessServiceVector();
-        for(int i=0; svect != null && i< svect.size();i++)
-        {
-            BusinessService s = (BusinessService)svect.elementAt(i);
-            org.addService(getService(s,lcm));
-        }
+      BusinessEntity entity = (BusinessEntity)bz.elementAt(0);
+      Vector namevect = entity.getNameVector();
+      Name n = (Name)namevect.elementAt(0);
+      String name = n.getValue();
+      Vector descvect = entity.getDescriptionVector();
+      Description desc = (Description)descvect.elementAt(0);
 
-        /*
-         *  Users
-         *
-         *  we need to take the first contact and designate as the
-         *  'primary contact'.  Currently, the OrganizationImpl
-         *  class does that automatically as a safety in case
-         *  user forgets to set - lets be explicit here as to not
-         *  depend on that behavior
-         */
-        Contacts contacts = entity.getContacts();
-        Vector cvect = contacts.getContactVector();
-        for(int i=0; cvect != null && i< cvect.size();i++)
-        {
-            Contact contact = (Contact)cvect.elementAt(i);
-            User user = new UserImpl(null);
-            String pname = contact.getPersonName().getValue();
-            user.setType( contact.getUseType());
-            user.setPersonName(new PersonNameImpl(pname));
+      Organization org = new OrganizationImpl(lcm);
+      org.setName(getIString(name, lcm));
+      org.setDescription(getIString((String)desc.getValue(), lcm));
+      org.setKey(lcm.createKey(entity.getBusinessKey()));
 
-            if (i == 0) {
-                org.setPrimaryContact(user);
-            }
-            else {
-                org.addUser(user);
-            }
-        }
-        return org;
-    }
+      //Set Services also
+      BusinessServices services = entity.getBusinessServices();
+      Vector svect = services.getBusinessServiceVector();
+      for (int i = 0; svect != null && i < svect.size(); i++)
+      {
+         BusinessService s = (BusinessService)svect.elementAt(i);
+         org.addService(getService(s, lcm));
+      }
 
-    public static InternationalString getIString(String str, LifeCycleManager blm)
-            throws JAXRException
-    {
-        return blm.createInternationalString(str);
-    }
+      /*
+       *  Users
+       *
+       *  we need to take the first contact and designate as the
+       *  'primary contact'.  Currently, the OrganizationImpl
+       *  class does that automatically as a safety in case
+       *  user forgets to set - lets be explicit here as to not
+       *  depend on that behavior
+       */
+      Contacts contacts = entity.getContacts();
+      Vector cvect = contacts.getContactVector();
+      for (int i = 0; cvect != null && i < cvect.size(); i++)
+      {
+         Contact contact = (Contact)cvect.elementAt(i);
+         User user = new UserImpl(null);
+         String pname = contact.getPersonName().getValue();
+         user.setType(contact.getUseType());
+         user.setPersonName(new PersonNameImpl(pname));
 
-    public static Service getService(BusinessService bs,LifeCycleManager lcm )
-            throws JAXRException
-    {
-        Service serve = new ServiceImpl(lcm);
+         if (i == 0)
+         {
+            org.setPrimaryContact(user);
+         }
+         else
+         {
+            org.addUser(user);
+         }
+      }
 
-        String keystr = bs.getServiceKey();
+      //External Links
+      DiscoveryURLs durls = entity.getDiscoveryURLs();
+      if (durls != null)
+      {
+         Vector dvect = durls.getDiscoveryURLVector();
+         for (int j = 0; j < dvect.size(); j++)
+         {
+            DiscoveryURL durl = (DiscoveryURL)dvect.elementAt(j);
+            ExternalLink link = new ExternalLinkImpl(lcm);
+            link.setExternalURI(durl.getValue());
+            org.addExternalLink(link);
+         }
+      }
 
-        if(keystr != null ) {
-            serve.setKey(lcm.createKey(keystr));
-        }
+      //External Identifiers
+      IdentifierBag ibag = entity.getIdentifierBag();
+      if (ibag != null)
+      {
+         Vector keyrvect = ibag.getKeyedReferenceVector();
+         for (int i = 0; i < keyrvect.size(); i++)
+         {
+            KeyedReference keyr = (KeyedReference)keyrvect.elementAt(i);
+            ExternalIdentifier eid = new ExternalIdentifierImpl(lcm);
+            String kkey = keyr.getTModelKey();
+            if (kkey != null) eid.setKey(new KeyImpl(kkey));
+            eid.setValue(keyr.getKeyValue());
+            eid.setName(new InternationalStringImpl(keyr.getKeyName()));
+            org.addExternalIdentifier(eid);
+         }
+      }
+      return org;
+   }
 
-        Vector namevect = bs.getNameVector();
-        
-        Name n = (Name)namevect.elementAt(0);
-        String name = n.getValue() ;
-        serve.setName(lcm.createInternationalString(name));
-        Vector descvect = bs.getDescriptionVector();
-        Description desc = (Description)descvect.elementAt(0);
-        serve.setDescription(lcm.createInternationalString(desc.getValue()));
-        return serve;
-    }
+   public static InternationalString getIString(String str, LifeCycleManager blm)
+           throws JAXRException
+   {
+      return blm.createInternationalString(str);
+   }
 
-    public static Service getService(ServiceInfo si, LifeCycleManager lcm)
-        throws JAXRException
-    {
-        Service service = new ServiceImpl(lcm);
+   public static Service getService(BusinessService bs, LifeCycleManager lcm)
+           throws JAXRException
+   {
+      Service serve = new ServiceImpl(lcm);
 
-        String keystr = si.getServiceKey();
+      String keystr = bs.getServiceKey();
 
-        if (keystr != null) {
-            service.setKey(lcm.createKey(keystr));
-        }
+      if (keystr != null)
+      {
+         serve.setKey(lcm.createKey(keystr));
+      }
 
-        Vector namevect = si.getNameVector();
-        Name n = (Name)namevect.elementAt(0);
-        String name = n.getValue() ;
-        service.setName(lcm.createInternationalString(name));
+      Vector namevect = bs.getNameVector();
 
-        return service;
-    }
+      Name n = (Name)namevect.elementAt(0);
+      String name = n.getValue();
+      serve.setName(lcm.createInternationalString(name));
+      Vector descvect = bs.getDescriptionVector();
+      Description desc = (Description)descvect.elementAt(0);
+      serve.setDescription(lcm.createInternationalString(desc.getValue()));
+      return serve;
+   }
 
-    public static Concept getConcept(TModelDetail tm, LifeCycleManager lcm)
-    throws JAXRException
-    {
-        Concept concept = new ConceptImpl(lcm);
-        Vector tc = tm.getTModelVector();
-        TModel tmodel = (TModel)tc.elementAt(0);
-        concept.setKey(lcm.createKey(tmodel.getTModelKey()));
-        concept.setName(lcm.createInternationalString( tmodel.getName() ) );
+   public static Service getService(ServiceInfo si, LifeCycleManager lcm)
+           throws JAXRException
+   {
+      Service service = new ServiceImpl(lcm);
 
-        Vector descvect = tmodel.getDescriptionVector();
-        Description desc = (Description)descvect.elementAt(0);
-        concept.setDescription(lcm.createInternationalString(desc.getValue()));
+      String keystr = si.getServiceKey();
 
-        return concept;
-    }
+      if (keystr != null)
+      {
+         service.setKey(lcm.createKey(keystr));
+      }
 
-    public static Concept getConcept(TModel tmodel, LifeCycleManager lcm)
-    throws JAXRException
-    {
-        Concept concept = new ConceptImpl(lcm);
-        concept.setKey(lcm.createKey(tmodel.getTModelKey()));
-        concept.setName(lcm.createInternationalString( tmodel.getName() ) );
+      Vector namevect = si.getNameVector();
+      Name n = (Name)namevect.elementAt(0);
+      String name = n.getValue();
+      service.setName(lcm.createInternationalString(name));
 
-        Vector descvect = tmodel.getDescriptionVector();
-        Description desc = (Description)descvect.elementAt(0);
-        concept.setDescription(lcm.createInternationalString(desc.getValue()));
+      return service;
+   }
 
-        return concept;
-    }
+   public static ServiceBinding getServiceBinding(BindingTemplate bs, LifeCycleManager lcm)
+           throws JAXRException
+   {
+      ServiceBinding serve = new ServiceBindingImpl(lcm);
 
-    public static Concept getConcept(TModelInfo tm, LifeCycleManager lcm)
-    throws JAXRException
-    {
-        Concept concept = new ConceptImpl(lcm);
-        concept.setKey(lcm.createKey(tm.getTModelKey()));
-        concept.setName(lcm.createInternationalString( tm.getName().getValue() ) );
 
-        return concept;
-    }
+      TModelInstanceDetails details = bs.getTModelInstanceDetails();
+      Vector tiv = details.getTModelInstanceInfoVector();
+      for (int i = 0; tiv != null && i < tiv.size(); i++)
+      {
+         TModelInstanceInfo info = (TModelInstanceInfo)tiv.elementAt(i);
+      }
+      String keystr = bs.getServiceKey();
+      if (keystr != null)
+      {
+         Service svc = new ServiceImpl(lcm);
+         svc.setKey(lcm.createKey(keystr));
+         ((ServiceBindingImpl)serve).setService(svc);
+      }
+      //TODO:Add more stuff
+      //Access URI
+      AccessPoint access = bs.getAccessPoint();
+      if (access != null) serve.setAccessURI(access.getURL());
+
+      //Description
+      Vector dv = bs.getDescriptionVector();
+      if (dv != null)
+      {
+         Description des = (Description)dv.elementAt(0);
+         serve.setDescription(new InternationalStringImpl(des.getValue()));
+      }
+
+      return serve;
+   }
+
+   public static Concept getConcept(TModelDetail tm, LifeCycleManager lcm)
+           throws JAXRException
+   {
+      Concept concept = new ConceptImpl(lcm);
+      Vector tc = tm.getTModelVector();
+      TModel tmodel = (TModel)tc.elementAt(0);
+      concept.setKey(lcm.createKey(tmodel.getTModelKey()));
+      concept.setName(lcm.createInternationalString(tmodel.getName()));
+
+      Vector descvect = tmodel.getDescriptionVector();
+      Description desc = (Description)descvect.elementAt(0);
+      concept.setDescription(lcm.createInternationalString(desc.getValue()));
+
+      return concept;
+   }
+
+   public static Concept getConcept(TModel tmodel, LifeCycleManager lcm)
+           throws JAXRException
+   {
+      Concept concept = new ConceptImpl(lcm);
+      concept.setKey(lcm.createKey(tmodel.getTModelKey()));
+      concept.setName(lcm.createInternationalString(tmodel.getName()));
+
+      Vector descvect = tmodel.getDescriptionVector();
+      Description desc = (Description)descvect.elementAt(0);
+      concept.setDescription(lcm.createInternationalString(desc.getValue()));
+
+      return concept;
+   }
+
+   public static Concept getConcept(TModelInfo tm, LifeCycleManager lcm)
+           throws JAXRException
+   {
+      Concept concept = new ConceptImpl(lcm);
+      concept.setKey(lcm.createKey(tm.getTModelKey()));
+      concept.setName(lcm.createInternationalString(tm.getName().getValue()));
+
+      return concept;
+   }
 
 }

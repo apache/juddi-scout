@@ -16,14 +16,9 @@
  */
 package org.apache.ws.scout.util;
 
-import org.apache.juddi.datatype.Address;
-import org.apache.juddi.datatype.AddressLine;
-import org.apache.juddi.datatype.Description;
-import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.DiscoveryURL;
+import org.apache.juddi.datatype.*;
 import org.apache.juddi.datatype.PersonName;
-import org.apache.juddi.datatype.Phone;
-import org.apache.juddi.datatype.Email;
+import org.apache.juddi.datatype.assertion.PublisherAssertion;
 import org.apache.juddi.datatype.business.BusinessEntity;
 import org.apache.juddi.datatype.business.Contacts;
 import org.apache.juddi.datatype.business.Contact;
@@ -33,26 +28,18 @@ import org.apache.juddi.datatype.service.BusinessServices;
 import org.apache.juddi.datatype.binding.BindingTemplate;
 import org.apache.juddi.datatype.binding.AccessPoint;
 import org.apache.juddi.datatype.binding.HostingRedirector;
+import org.apache.juddi.datatype.binding.TModelInstanceDetails;
+import org.apache.juddi.datatype.binding.TModelInstanceInfo;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 
-import javax.xml.registry.infomodel.PostalAddress;
-import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.*;
 import javax.xml.registry.infomodel.RegistryObject;
-import javax.xml.registry.infomodel.Key;
-import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.Slot;
-import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.User;
-import javax.xml.registry.infomodel.ExternalLink;
-import javax.xml.registry.infomodel.TelephoneNumber;
-import javax.xml.registry.infomodel.EmailAddress;
 import javax.xml.registry.JAXRException;
 import java.util.Vector;
 import java.util.Locale;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 /**
  * Helper class that does Jaxr->UDDI Mapping
@@ -140,14 +127,85 @@ public class ScoutJaxrUddiHelper
             }
             //TODO:Need to look further at the mapping b/w BindingTemplate and Jaxr ServiceBinding
 
+           //Get Service information
+           Service svc = serve.getService();
+           if( svc != null)
+           {
+              bt.setServiceKey(svc.getKey().getId());
+           }
 
             bt.addDescription(new Description(((RegistryObject) serve).getDescription().getValue()));
+
+           //SpecificationLink
+           Collection slcol = serve.getSpecificationLinks();
+           TModelInstanceDetails tid = new TModelInstanceDetails();
+           if(slcol != null && slcol.isEmpty() != false)
+           {
+              Iterator iter = slcol.iterator();
+              while(iter.hasNext())
+              {
+                 SpecificationLink slink = (SpecificationLink)iter.next();
+
+                 TModelInstanceInfo tinfo = new TModelInstanceInfo();
+                 tinfo.setTModelKey(slink.getSpecificationObject().getKey().getId());
+                 tid.addTModelInstanceInfo(tinfo); 
+              }
+              bt.setTModelInstanceDetails(tid);
+           }
             System.out.println("BindingTemplate=" + bt.toString());
         } catch (Exception ud)
         {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return bt;
+    }
+
+    public static PublisherAssertion getPubAssertionFromJAXRAssociation(Association assc)
+            throws JAXRException
+    {
+        PublisherAssertion pa = new PublisherAssertion();
+        try
+        {
+            pa.setFromKey(assc.getSourceObject().getKey().getId());
+            pa.setToKey(assc.getTargetObject().getKey().getId());
+            Concept c = assc.getAssociationType();
+            String v = c.getValue();
+            KeyedReference kr = new KeyedReference();
+            Key key = c.getKey();
+            if(key != null ) kr.setTModelKey(c.getKey().getId());
+            kr.setKeyName("Concept");
+            kr.setKeyValue(v);
+            pa.setKeyedReference(kr);
+        } catch (Exception ud)
+        {
+            throw new JAXRException("Apache JAXR Impl:", ud);
+        }
+        return pa;
+    }
+
+    public static PublisherAssertion getPubAssertionFromJAXRAssociationKey(String key)
+            throws JAXRException
+    {
+        PublisherAssertion pa = new PublisherAssertion();
+        try
+        {
+            StringTokenizer token = new  StringTokenizer(key,":");
+            if(token.hasMoreTokens())
+            {
+               pa.setFromKey(getToken(token.nextToken()));
+               pa.setToKey(getToken(token.nextToken()));
+               KeyedReference kr = new KeyedReference();
+               kr.setTModelKey(getToken(token.nextToken()));
+               kr.setKeyName(getToken(token.nextToken()));
+               kr.setKeyValue(getToken(token.nextToken()));
+               pa.setKeyedReference(kr);
+            }
+
+        } catch (Exception ud)
+        {
+            throw new JAXRException("Apache JAXR Impl:", ud);
+        }
+        return pa;
     }
 
     public static BusinessService getBusinessServiceFromJAXRService(Service serve)
@@ -341,9 +399,23 @@ public class ScoutJaxrUddiHelper
             while(exiter.hasNext())
             {
                ExternalLink link = (ExternalLink)exiter.next();
-               /**Note: jUDDI add its own discoverURL as the businessEntity**/
+               /**Note: jUDDI adds its own discoverURL as the businessEntity**/
                biz.addDiscoveryURL(new DiscoveryURL("businessEntityExt",link.getExternalURI()));
             }
+           //External Identifiers
+           Collection exid = org.getExternalIdentifiers();
+           Iterator exiditer = exid.iterator();
+           while(exiditer.hasNext())
+           {
+              ExternalIdentifier ei = (ExternalIdentifier)exiditer.next();
+
+              KeyedReference keyr = new KeyedReference();
+              Key ekey = ei.getKey();
+              if(ekey != null ) keyr.setTModelKey(ekey.getId());
+              keyr.setKeyValue(ei.getValue());
+              keyr.setKeyName(ei.getName().getValue());
+              biz.addIdentifier(keyr);
+           }
         } catch (Exception ud)
         {
             throw new JAXRException("Apache JAXR Impl:", ud);
@@ -416,5 +488,12 @@ public class ScoutJaxrUddiHelper
         }
         return ct;
     }
+
+   private static String getToken(String tokenstr)
+   {
+      //Token can have the value NULL which need to be converted into null
+      if(tokenstr.equals("NULL")) tokenstr="";
+      return tokenstr;
+   }
 
 }
