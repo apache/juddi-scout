@@ -18,17 +18,15 @@ package org.apache.ws.scout.registry;
 
 import org.apache.juddi.IRegistry;
 import org.apache.juddi.datatype.Name;
+import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.datatype.request.FindQualifiers;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.BusinessList;
 import org.apache.juddi.error.RegistryException;
+import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
 
-import javax.xml.registry.BulkResponse;
-import javax.xml.registry.BusinessQueryManager;
-import javax.xml.registry.FindQualifier;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.RegistryService;
-import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.*;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
@@ -89,8 +87,15 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager {
         return null;
     }
 
-    public ClassificationScheme findClassificationSchemeByName(Collection findQualifiers, String namePatters) throws JAXRException {
-        return null;
+    public ClassificationScheme findClassificationSchemeByName(Collection findQualifiers, String namePatterns) throws JAXRException {
+        ClassificationScheme scheme = null;
+        //TODO:What to do with findQualifiers?
+        if(namePatterns.equalsIgnoreCase("uddi-org:types"))
+        {
+            scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setKey(new KeyImpl(TModel.TYPES_TMODEL_KEY));
+        }
+        return scheme;
     }
 
     public BulkResponse findClassificationSchemes(Collection findQualifiers, Collection namePatterns, Collection classifications, Collection externalLinks) throws JAXRException {
@@ -122,7 +127,13 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager {
     }
 
     public RegistryObject getRegistryObject(String id, String objectType) throws JAXRException {
-        return null;
+        RegistryObject regobj = null;
+        if(LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
+        {
+            regobj = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            regobj.setKey(new KeyImpl(id));
+        }
+        return regobj;
     }
 
     public BulkResponse getRegistryObjects() throws JAXRException {

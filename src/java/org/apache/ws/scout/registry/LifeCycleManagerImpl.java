@@ -295,7 +295,9 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Organization createOrganization(InternationalString name) throws JAXRException
     {
-        return (Organization) this.createObject(LifeCycleManager.ORGANIZATION);
+        Organization org =  (Organization) this.createObject(LifeCycleManager.ORGANIZATION);
+        org.setName(name);
+        return org;
     }
 
     public Organization createOrganization(String name) throws JAXRException
@@ -307,7 +309,9 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public PersonName createPersonName(String fullName) throws JAXRException
     {
-        return (PersonName) this.createObject(LifeCycleManager.PERSON_NAME);
+        PersonName pn =  (PersonName) this.createObject(LifeCycleManager.PERSON_NAME);
+        pn.setFullName(fullName);
+        return pn;
     }
 
     public PostalAddress createPostalAddress(String streetNumber,
@@ -337,7 +341,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Service createService(String name) throws JAXRException
     {
-        return createService(this.createInternationalString(name));
+        return  createService(this.createInternationalString(name));
     }
 
     public ServiceBinding createServiceBinding() throws JAXRException
@@ -346,8 +350,13 @@ public class LifeCycleManagerImpl implements LifeCycleManager
     }
 
     public Slot createSlot(String name, String value, String slotType) throws JAXRException
-    {
-        return (Slot) this.createObject(LifeCycleManager.SLOT);
+    {   Collection col = new ArrayList();
+        col.add(value);
+        Slot slot = (Slot) this.createObject(LifeCycleManager.SLOT);
+        slot.setName(name);
+        slot.setValues(col);
+        slot.setSlotType(slotType);
+        return slot;
     }
 
     public Slot createSlot(String name, Collection values, String slotType) throws JAXRException
