@@ -33,6 +33,7 @@ import java.net.PasswordAuthentication;
 public class JaxrPublishOrgTest extends TestCase
 {
     private Connection connection = null;
+    //Tested on a local jboss instance
     private String userid = "jboss";
     private String passwd = "jboss";
     private BusinessLifeCycleManager blm = null;

@@ -65,9 +65,49 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return null;
     }
 
-    public BulkResponse deleteOrganizations(Collection organizationKeys) throws JAXRException
+    public BulkResponse deleteOrganizations(Collection orgkeys) throws JAXRException
     {
-        return null;
+        //Now we need to convert the collection into a vector for juddi
+        BulkResponseImpl bulk = new BulkResponseImpl();
+        Vector keyvect = new Vector();
+
+        Collection coll = new ArrayList();
+        Collection exceptions = new ArrayList();
+
+        try
+        {
+            Iterator iter = orgkeys.iterator();
+            while (iter.hasNext())
+            {
+                Key key = (Key)iter.next();
+                keyvect.add(key.getId());
+            }
+            System.out.println("Method:del_business: ENlength=" + keyvect.size());
+            // Save business
+            DispositionReport bd = (DispositionReport) executeOperation(keyvect, "DELETE_ORG");
+
+            keyvect = bd.getResultVector();
+            System.out.println("After deleting Business. Obtained vector size:" + keyvect.size());
+            for (int i = 0; keyvect != null && i < keyvect.size(); i++)
+            {
+                Result result = (Result) keyvect.elementAt(i);
+                int errno = result.getErrno();
+                if(errno == 0) coll.addAll(orgkeys);
+                else
+                {
+                    ErrInfo errinfo = result.getErrInfo();
+                    DeleteException de = new DeleteException(errinfo.getErrCode()+":"+errinfo.getErrMsg());
+                    exceptions.add(de);
+                }
+            }
+
+            bulk.setCollection(coll);
+            bulk.setExceptions(exceptions);
+        } catch (Exception tran)
+        {
+            throw new JAXRException("Apache JAXR Impl:", tran);
+        }
+        return bulk;
     }
 
     public BulkResponse deleteServiceBindings(Collection bindingKeys) throws JAXRException
@@ -303,6 +343,9 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         } else if (op.equalsIgnoreCase("SAVE_TMODEL"))
         {
             regobj = ireg.saveTModel(token.getAuthInfo(), datavect);
+        } else if (op.equalsIgnoreCase("DELETE_ORG"))
+        {
+            regobj = ireg.deleteBusiness(token.getAuthInfo(), datavect);
         } else
             throw new JAXRException("Unsupported operation:" + op);
 
