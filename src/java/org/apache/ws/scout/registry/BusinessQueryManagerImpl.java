@@ -18,6 +18,7 @@ package org.apache.ws.scout.registry;
 
 import org.apache.juddi.IRegistry;
 import org.apache.juddi.datatype.Name;
+import org.apache.juddi.datatype.service.BusinessService;
 import org.apache.juddi.datatype.business.BusinessEntity;
 import org.apache.juddi.datatype.request.FindQualifiers;
 import org.apache.juddi.datatype.response.BusinessDetail;
@@ -30,12 +31,14 @@ import org.apache.juddi.datatype.response.TModelList;
 import org.apache.juddi.datatype.response.ServiceList;
 import org.apache.juddi.datatype.response.ServiceInfos;
 import org.apache.juddi.datatype.response.ServiceInfo;
+import org.apache.juddi.datatype.response.ServiceDetail;
 import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.error.RegistryException;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.util.EnumerationHelper;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
@@ -52,6 +55,8 @@ import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.Organization;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -533,6 +538,41 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             catch (RegistryException e) {
                 e.printStackTrace();
                 throw new JAXRException(e.getLocalizedMessage());
+            }
+        }
+        else if (LifeCycleManager.SERVICE.equalsIgnoreCase(objectType)) {
+
+            try {
+
+                ServiceDetail sd = registry.getServiceDetail(id);
+
+                if (sd != null) {
+
+                    Vector v = sd.getBusinessServiceVector();
+
+                    if (v.size() != 0) {
+                        BusinessService bs = (BusinessService) v.elementAt(0);
+
+                        Service service  = ScoutUddiJaxrHelper.getService(bs, lcm);
+
+                        /*
+                         * now get the Organization if we can
+                         */
+
+                        String busKey = bs.getBusinessKey();
+
+                        if (busKey != null) {
+                            Organization o = (Organization) getRegistryObject(busKey,
+                                    LifeCycleManager.ORGANIZATION);
+                            service.setProvidingOrganization(o);
+                        }
+
+                        return service;
+                    }
+                }
+            }
+            catch (RegistryException e) {
+                e.printStackTrace();
             }
         }
 
