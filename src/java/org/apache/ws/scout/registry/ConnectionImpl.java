@@ -30,7 +30,7 @@ import java.util.Set;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-class ConnectionImpl implements Connection {
+public class ConnectionImpl implements Connection {
     private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;
@@ -38,7 +38,7 @@ class ConnectionImpl implements Connection {
     private final String postalScheme;
     private final int maxRows;
 
-    ConnectionImpl(URL queryManagerURL, URL lifeCycleManagerURL, String postalScheme, int maxRows) {
+    public ConnectionImpl(URL queryManagerURL, URL lifeCycleManagerURL, String postalScheme, int maxRows) {
         registry = new RegistryProxy(null);
         registry.setInquiryURL(queryManagerURL);
         registry.setPublishURL(lifeCycleManagerURL);

@@ -25,7 +25,9 @@ import javax.xml.registry.infomodel.Association;
 import java.util.Collection;
 
 /**
- * @version $Revision$ $Date$
+ * Implements JAXR BusinessLifeCycleManager Interface.
+ * For futher details, look into the JAXR API Javadoc.
+ * @author Anil Saldhana  <anil@apache.org>
  */
 public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl implements BusinessLifeCycleManager {
     public BusinessLifeCycleManagerImpl(RegistryService registry) {

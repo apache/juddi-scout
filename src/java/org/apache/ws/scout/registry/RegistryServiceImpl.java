@@ -33,9 +33,12 @@ import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.ClassificationScheme;
 
 /**
- * @version $Revision$ $Date$
+ * Scout implementation of javax.xml.registry.RegistryService
+ * For futher details, look into the JAXR API Javadoc.
+ * @author Anil Saldhana  <anil@apache.org>
+ * @author Jeremy Boynes <jboynes@apache.org>
  */
-class RegistryServiceImpl implements RegistryService {
+public class RegistryServiceImpl implements RegistryService {
     private final RegistryProxy registry;
     private final BusinessQueryManagerImpl queryManager;
     private final BusinessLifeCycleManagerImpl lifeCycleManager;

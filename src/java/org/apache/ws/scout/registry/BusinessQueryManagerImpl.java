@@ -41,9 +41,12 @@ import java.util.Map;
 import java.util.Vector;
 
 /**
- * @version $Revision$ $Date$
+ * Implements the JAXR BusinessQueryManager Interface
+ * For futher details, look into the JAXR API Javadoc.
+ * @author Anil Saldhana  <anil@apache.org>
+ * @author Jeremy Boynes  <jboynes@apache.org>
  */
-class BusinessQueryManagerImpl implements BusinessQueryManager {
+public class BusinessQueryManagerImpl implements BusinessQueryManager {
     private final RegistryServiceImpl registryService;
 
     public BusinessQueryManagerImpl(RegistryServiceImpl registry) {
