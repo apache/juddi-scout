@@ -40,7 +40,6 @@ public class InternationalStringTest extends TestCase {
         Collection localizedStrings = is.getLocalizedStrings();
         assertEquals(1, localizedStrings.size());
         assertTrue(localizedStrings.contains(usString));
-
         is.addLocalizedString(ukString);
         localizedStrings = is.getLocalizedStrings();
         assertEquals(2, localizedStrings.size());
@@ -60,12 +59,10 @@ public class InternationalStringTest extends TestCase {
         Collection localizedStrings = is.getLocalizedStrings();
         assertEquals(1, localizedStrings.size());
         assertTrue(localizedStrings.contains(usString));
-
         ArrayList strings = new ArrayList(2);
         strings.add(ukString);
         strings.add(caString);
         is.addLocalizedStrings(strings);
-
         localizedStrings = is.getLocalizedStrings();
         assertEquals(3, localizedStrings.size());
         assertTrue(localizedStrings.contains(usString));
@@ -117,7 +114,6 @@ public class InternationalStringTest extends TestCase {
         is.addLocalizedString(ukString);
         is.addLocalizedString(caString);
         assertEquals(3, is.getLocalizedStrings().size());
-
         is.removeLocalizedString(ukString);
         Collection localizedStrings = is.getLocalizedStrings();
         assertEquals(2, localizedStrings.size());
@@ -132,7 +128,6 @@ public class InternationalStringTest extends TestCase {
         is.addLocalizedString(ukString);
         is.addLocalizedString(caString);
         assertEquals(3, is.getLocalizedStrings().size());
-
         Collection localizedStrings = new ArrayList();
         localizedStrings.add(usString);
         localizedStrings.add(caString);

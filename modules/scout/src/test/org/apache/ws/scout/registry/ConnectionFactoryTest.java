@@ -124,7 +124,7 @@ public class ConnectionFactoryTest extends TestCase {
         Connection c = factory.createConnection();
         try {
             assertEquals(ConnectionImpl.class, c.getClass());
-        } finally{
+        } finally {
             c.close();
         }
     }
@@ -135,7 +135,7 @@ public class ConnectionFactoryTest extends TestCase {
         Connection c = factory.createConnection();
         try {
             assertEquals(ConnectionImpl.class, c.getClass());
-        } finally{
+        } finally {
             c.close();
         }
     }

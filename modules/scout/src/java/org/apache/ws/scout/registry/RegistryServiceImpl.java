@@ -46,10 +46,8 @@ class RegistryServiceImpl implements RegistryService {
     public RegistryServiceImpl(RegistryProxy registry, String postalScheme, int maxRows) {
         this.registry = registry;
         this.maxRows = maxRows;
-
         queryManager = new BusinessQueryManagerImpl(this);
         lifeCycleManager = new BusinessLifeCycleManagerImpl(this);
-
         if (postalScheme == null) {
             this.postalScheme = null;
         } else {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import org.apache.ws.scout.registry.ConnectionFactoryImpl;
 
 import javax.xml.registry.BulkResponse;
@@ -35,111 +36,104 @@ import java.util.Set;
 
 /**
  * Deletes an Organization in the UDDI Registry.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class DeleteOrganization {
-   private static Properties prop = new Properties();
+    private static Properties prop = new Properties();
 
     private static final String queryurl = "http://localhost:8080/juddi/inquiry";
-    private static final String publishurl="http://localhost:8080/juddi/publish";
+    private static final String publishurl = "http://localhost:8080/juddi/publish";
     private static BusinessLifeCycleManager blm = null;
     private static BusinessQueryManager bqm = null;
-    
+
     public static void main(String[] args) {
-     try{
-         
-          PasswordAuthentication passwdAuth = new PasswordAuthentication("jdoe", 
-          "juddi".toCharArray());
-          Set creds = new HashSet();
-          creds.add(passwdAuth);
-          
-          setProperties();    
-          Connection conn = getConnection();  
-          conn.setCredentials(creds);
-          
-          RegistryService rs = conn.getRegistryService();
-          bqm = rs.getBusinessQueryManager();
-          blm = rs.getBusinessLifeCycleManager();
-          
-          Collection keys = findOrganizations( "USA%");         
-          BulkResponse response = blm.deleteOrganizations(keys);
-          Collection exceptions = response.getExceptions();
-          if (exceptions == null) {
+        try {
+            PasswordAuthentication passwdAuth = new PasswordAuthentication("jdoe",
+                    "juddi".toCharArray());
+            Set creds = new HashSet();
+            creds.add(passwdAuth);
+            setProperties();
+            Connection conn = getConnection();
+            conn.setCredentials(creds);
+            RegistryService rs = conn.getRegistryService();
+            bqm = rs.getBusinessQueryManager();
+            blm = rs.getBusinessLifeCycleManager();
+            Collection keys = findOrganizations("USA%");
+            BulkResponse response = blm.deleteOrganizations(keys);
+            Collection exceptions = response.getExceptions();
+            if (exceptions == null) {
                 System.out.println("Organization deleted");
                 Collection retKeys = response.getCollection();
                 Iterator keyIter = retKeys.iterator();
                 javax.xml.registry.infomodel.Key orgKey = null;
                 while (keyIter.hasNext()) {
-                    orgKey = 
+                    orgKey =
                             (javax.xml.registry.infomodel.Key) keyIter.next();
                     String id = orgKey.getId();
                     System.out.println("Organization key was " + id);
                 }
-        }
-     }catch (JAXRException e) {
-                e.printStackTrace();
-            }catch( Exception es){
-                es.printStackTrace();
-            }catch( Throwable t){
-                t.printStackTrace();
-                System.out.println("Message from throwable="+t.getMessage());
             }
-}
-    
-    private static void setProperties(){
-        prop.setProperty("javax.xml.registry.queryManagerURL",queryurl);
+        } catch (JAXRException e) {
+            e.printStackTrace();
+        } catch (Exception es) {
+            es.printStackTrace();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            System.out.println("Message from throwable=" + t.getMessage());
+        }
+    }
+
+    private static void setProperties() {
+        prop.setProperty("javax.xml.registry.queryManagerURL", queryurl);
         prop.setProperty("javax.xml.registry.lifeCycleManagerURL", publishurl);
         prop.setProperty("javax.xml.registry.factoryClass",
-              "org.apache.juddi.jaxr.registry.ConnectionFactoryImpl");
+                "org.apache.juddi.jaxr.registry.ConnectionFactoryImpl");
     }
-    private static Connection getConnection() throws JAXRException{
+
+    private static Connection getConnection() throws JAXRException {
         ConnectionFactory factory = ConnectionFactoryImpl.newInstance();
         factory.setProperties(prop);
         Connection conn = factory.createConnection();
-        if( conn == null ) System.out.println( "No Connection" );
-        return conn;    
+        if (conn == null) System.out.println("No Connection");
+        return conn;
     }
-    
+
     //Get a Collection of Keys for Organizations that match specific string
-    private static Collection findOrganizations( String match)
-    throws JAXRException{
+    private static Collection findOrganizations(String match)
+            throws JAXRException {
         Collection keys = new ArrayList();
-        try{
-        
+        try {
             ArrayList names = new ArrayList();
             names.add(match);
-
             Collection fQualifiers = new ArrayList();
             fQualifiers.add(FindQualifier.SORT_BY_NAME_DESC);
-
             BulkResponse br = bqm.findOrganizations(fQualifiers,
                     names, null, null, null, null);
-        
             if (br.getStatus() == JAXRResponse.STATUS_SUCCESS) {
                 System.out.println("Successfully queried the  registry");
                 System.out.println("for organizations matching the " +
-                       "name pattern: \"" + match + "\"");
-            
-                    Collection orgs = br.getCollection();
-                    System.out.println("Results found: " + orgs.size() + "\n");
-                    Iterator iter = orgs.iterator();
-                    while (iter.hasNext()) {
-                        Organization org = (Organization) iter.next();
-                        keys.add( org.getKey() );                         
-                    }
-                } else {
-                    System.err.println("One or more JAXRExceptions " +
-                        "occurred during the query operation:");
-                    Collection exceptions = br.getExceptions();
-                    Iterator iter = exceptions.iterator();
-                    while (iter.hasNext()) {
-                        Exception e = (Exception) iter.next();
-                        System.err.println(e.toString());
-                    }
+                        "name pattern: \"" + match + "\"");
+                Collection orgs = br.getCollection();
+                System.out.println("Results found: " + orgs.size() + "\n");
+                Iterator iter = orgs.iterator();
+                while (iter.hasNext()) {
+                    Organization org = (Organization) iter.next();
+                    keys.add(org.getKey());
                 }
-        }catch(Exception e ) {
-         e.printStackTrace();
+            } else {
+                System.err.println("One or more JAXRExceptions " +
+                        "occurred during the query operation:");
+                Collection exceptions = br.getExceptions();
+                Iterator iter = exceptions.iterator();
+                while (iter.hasNext()) {
+                    Exception e = (Exception) iter.next();
+                    System.err.println(e.toString());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }//end catch
-       return keys;
+        return keys;
     }
 }//end class

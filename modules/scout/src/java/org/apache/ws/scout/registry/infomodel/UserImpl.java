@@ -28,74 +28,77 @@ import java.util.Collection;
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class UserImpl extends RegistryObjectImpl implements User{
+public class UserImpl extends RegistryObjectImpl implements User {
     private PersonName personName = new PersonNameImpl();
-    
+
     private Collection postalAddresses = new ArrayList();
-    private Collection emailAddresses= new ArrayList();
-    private Collection telnumbers= new ArrayList();
+    private Collection emailAddresses = new ArrayList();
+    private Collection telnumbers = new ArrayList();
     private URL url;
     private String type = "";
-    
-    /** Creates a new instance of UserImpl */
+
+    /**
+     * Creates a new instance of UserImpl
+     */
     public UserImpl(LifeCycleManager lifeCycleManager) {
         super(lifeCycleManager);
     }
-    
-    public  Organization getOrganization() throws JAXRException {
+
+    public Organization getOrganization() throws JAXRException {
         return null;
     }
-    
-    public  PersonName getPersonName() throws JAXRException {
+
+    public PersonName getPersonName() throws JAXRException {
         return personName;
     }
-    
+
     public Collection getPostalAddresses() throws JAXRException {
         return postalAddresses;
-    }     
-    
-    public Collection getTelephoneNumbers(String str) 
-    throws JAXRException {
+    }
+
+    public Collection getTelephoneNumbers(String str)
+            throws JAXRException {
         return telnumbers;
     }
-    
+
     public String getType() throws JAXRException {
         return type;
     }
-    
+
     public URL getUrl() throws JAXRException {
         return url;
     }
-       
-    public void setEmailAddresses(Collection collection) 
-    throws JAXRException {
+
+    public void setEmailAddresses(Collection collection)
+            throws JAXRException {
         emailAddresses = collection;
-    }   
-    
-    public void setPersonName( PersonName pname) throws JAXRException {
+    }
+
+    public void setPersonName(PersonName pname) throws JAXRException {
         personName = pname;
     }
-    
-    public void setPostalAddresses(Collection collection) 
-    throws JAXRException {
-        postalAddresses  =  collection;
+
+    public void setPostalAddresses(Collection collection)
+            throws JAXRException {
+        postalAddresses = collection;
     }
-    
-    public void setTelephoneNumbers(Collection collection) 
-    throws JAXRException {
+
+    public void setTelephoneNumbers(Collection collection)
+            throws JAXRException {
         telnumbers = collection;
     }
-    
+
     public void setType(String str) throws JAXRException {
         type = str;
     }
-    
-    public void setUrl( URL uRL) throws JAXRException {
+
+    public void setUrl(URL uRL) throws JAXRException {
         this.url = uRL;
-    }    
-    
+    }
+
     public Collection getEmailAddresses() throws JAXRException {
         return emailAddresses;
     }

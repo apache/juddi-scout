@@ -22,27 +22,27 @@ import java.util.Properties;
 
 /**
  * Tests connection to UDDI registry
- * @author  Anil Saldhana  <anil@apache.org>
+ *
+ * @author Anil Saldhana  <anil@apache.org>
  */
 public class TestConnection {
-   private static Properties prop = new Properties();
+    private static Properties prop = new Properties();
 
-   private static final String queryurl = "http://localhost:8080/juddi/inquiry";
+    private static final String queryurl = "http://localhost:8080/juddi/inquiry";
 
-   public static void main(String[] args) {
-     try{
-      prop.setProperty("javax.xml.registry.queryManagerURL",queryurl);
-      prop.setProperty("javax.xml.registry.lifeCycleManagerURL", queryurl);
-      prop.setProperty("javax.xml.registry.factoryClass",
-              "org.apache.juddi.jaxr.registry.ConnectionFactoryImpl");
+    public static void main(String[] args) {
+        try {
+            prop.setProperty("javax.xml.registry.queryManagerURL", queryurl);
+            prop.setProperty("javax.xml.registry.lifeCycleManagerURL", queryurl);
+            prop.setProperty("javax.xml.registry.factoryClass",
+                    "org.apache.juddi.jaxr.registry.ConnectionFactoryImpl");
+            ConnectionFactory factory = ConnectionFactoryImpl.newInstance();
+            factory.setProperties(prop);
+            Connection conn = factory.createConnection();
+            if (conn == null) System.out.println("No Connection");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }//end catch
+    }//end main
 
-      ConnectionFactory factory = ConnectionFactoryImpl.newInstance();
-      factory.setProperties(prop);
-      Connection conn = factory.createConnection();
-      if( conn == null ) System.out.println( "No Connection" );
-     }catch(Exception e ) {
-         e.printStackTrace();
-     }//end catch
-   }//end main
-      
 }//end class

@@ -109,12 +109,9 @@ public class InternationalStringImpl implements InternationalString {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof MapKey)) return false;
-
             final MapKey mapKey = (MapKey) o;
-
             if (!charsetName.equals(mapKey.charsetName)) return false;
             if (!locale.equals(mapKey.locale)) return false;
-
             return true;
         }
 

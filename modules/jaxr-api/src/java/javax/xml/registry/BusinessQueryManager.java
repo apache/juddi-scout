@@ -51,5 +51,4 @@ public interface BusinessQueryManager extends QueryManager {
 
     BulkResponse findServices(Key orgKey, Collection findQualifiers, Collection namePattersn, Collection classifications, Collection specificationa) throws JAXRException;
 
-
 }

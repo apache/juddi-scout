@@ -23,13 +23,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/** 
+/**
  * Implements JAXR Interface.
- * For futher details, look into the JAXR API Javadoc. 
+ * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class ExtensibleObjectImpl implements ExtensibleObject {
-	private Map slots = new HashMap();
+    private Map slots = new HashMap();
 
     public void addSlot(Slot slot) throws JAXRException {
         slots.put(slot.getName(), slot);

@@ -37,8 +37,9 @@ public class LocalizedStringImpl implements LocalizedString {
 
     /**
      * Constuctor for a LocalizedString.
-     * @param locale the locale; must not be null
-     * @param value the value; may be null
+     *
+     * @param locale      the locale; must not be null
+     * @param value       the value; may be null
      * @param charsetName the charset; must not be null
      */
     public LocalizedStringImpl(Locale locale, String value, String charsetName) {
@@ -87,19 +88,17 @@ public class LocalizedStringImpl implements LocalizedString {
      * There is a spec ambiguity here as it does not define how equals is determined for LocalizedString
      * but they are intended to be used in Collections.
      * We define it as locale, charsetName and value being equal.
+     *
      * @param o the other object
      * @return true if they are equal
      */
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof LocalizedStringImpl)) return false;
-
         final LocalizedStringImpl localizedString = (LocalizedStringImpl) o;
-
         if (!charsetName.equals(localizedString.charsetName)) return false;
         if (!locale.equals(localizedString.locale)) return false;
         if (value != null ? !value.equals(localizedString.value) : localizedString.value != null) return false;
-
         return true;
     }
 

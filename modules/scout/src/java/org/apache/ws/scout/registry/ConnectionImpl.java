@@ -24,7 +24,6 @@ import javax.xml.registry.RegistryService;
 import java.net.URL;
 import java.util.Set;
 
-
 /**
  * Apache Scout Implementation of a JAXR Connection.
  * For futher details, look into the JAXR API Javadoc.
