@@ -2,7 +2,7 @@
 <module version="4" relativePaths="true" type="JAVA_MODULE">
   <component name="ModuleRootManager" />
   <component name="NewModuleRootManager">
-    <output url="file://$MODULE_DIR$/target-classes" />
+    <output url="file://$MODULE_DIR$/target/classes" />
     <exclude-output />
     <exclude-exploded />
     <content url="file://$MODULE_DIR$">
@@ -10,6 +10,24 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../.maven/repository/sun-javamail/jars/activation-.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../.maven/repository/axis/jars/axis-1.2-RC1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

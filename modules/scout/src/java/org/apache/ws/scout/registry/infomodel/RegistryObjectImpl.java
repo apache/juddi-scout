@@ -57,6 +57,10 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
     public RegistryObjectImpl(LifeCycleManager lifeCycleManager) {
         this.lifeCycleManager = lifeCycleManager;
     }
+    public RegistryObjectImpl(LifeCycleManager lifeCycleManager,InternationalString n) {
+        this.lifeCycleManager = lifeCycleManager;
+        name = n;
+    }
 
     public Key getKey() {
         return key;

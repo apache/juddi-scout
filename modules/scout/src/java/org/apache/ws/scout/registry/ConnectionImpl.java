@@ -47,7 +47,9 @@ public class ConnectionImpl implements Connection {
     }
 
     public RegistryService getRegistryService() throws JAXRException {
-        return new RegistryServiceImpl(registry, postalScheme, maxRows);
+        RegistryServiceImpl reg = new RegistryServiceImpl(registry, postalScheme, maxRows);
+        reg.setConnection(this);
+        return reg;
     }
 
     public void close() {

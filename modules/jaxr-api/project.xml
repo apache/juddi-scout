@@ -24,10 +24,16 @@
     <name>JAXR API Classes</name>
 
     <dependencies>
-        <dependency>
+<!--        <dependency>
             <groupId>geronimo-spec</groupId>
             <artifactId>geronimo-spec-activation</artifactId>
             <version>1.0.2-SNAPSHOT</version>
         </dependency>
+-->
+        <dependency>
+            <groupId>sun-javamail</groupId>
+            <artifactId>activation</artifactId>
+        </dependency>
     </dependencies>
+
 </project>

@@ -44,6 +44,10 @@ public class PostalAddressImpl extends ExtensibleObjectImpl implements PostalAdd
         this.postalScheme = postalScheme;
     }
 
+    public PostalAddressImpl()
+    {
+    }
+
     public String getCity() {
         return city;
     }
