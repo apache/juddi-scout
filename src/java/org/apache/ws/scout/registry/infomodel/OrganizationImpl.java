@@ -185,6 +185,13 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
     public void addService(Service service) throws JAXRException
     {
         services.add(service);
+
+        /*
+         * we need to tell the service who it's organization is so
+         * we can set the UDDI Business Key...
+         */
+
+        service.setProvidingOrganization(this);
     }
 
     public void addServices(Collection collection) throws JAXRException
