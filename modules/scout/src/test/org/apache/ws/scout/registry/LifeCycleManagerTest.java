@@ -28,7 +28,6 @@ import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.LocalizedStringImpl;
 import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
 import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
-import org.apache.ws.scout.registry.infomodel.RegistryEntryImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
@@ -49,18 +48,15 @@ import javax.xml.registry.infomodel.EmailAddress;
 import javax.xml.registry.infomodel.ExternalIdentifier;
 import javax.xml.registry.infomodel.ExternalLink;
 import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.RegistryEntry;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.User;
-import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Association;
-import javax.xml.registry.infomodel.AuditableEvent;
 import javax.xml.registry.infomodel.PersonName;
 import javax.xml.registry.infomodel.ServiceBinding;
 import java.util.ArrayList;
 
 /**
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$ $Author$
  */
 public class LifeCycleManagerTest extends TestCase {
     private LifeCycleManager manager;
