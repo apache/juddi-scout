@@ -17,10 +17,10 @@
 package org.apache.ws.scout.registry;
 
 import org.apache.juddi.IRegistry;
+import org.apache.juddi.datatype.Name;
 import org.apache.juddi.datatype.request.FindQualifiers;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.BusinessList;
-import org.apache.juddi.datatype.Name;
 import org.apache.juddi.error.RegistryException;
 
 import javax.xml.registry.BulkResponse;
@@ -60,7 +60,6 @@ class BusinessQueryManagerImpl implements BusinessQueryManager {
             FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
             Vector nameVector = mapNamePatterns(namePatterns);
             BusinessList result = registry.findBusiness(nameVector, null, null, null, null, juddiFindQualifiers, registryService.getMaxRows());
-
             Vector v = result.getBusinessInfos().getBusinessInfoVector();
             Collection orgs = new ArrayList(v.size());
             for (int i = 0; i < v.size(); i++) {
@@ -134,6 +133,7 @@ class BusinessQueryManagerImpl implements BusinessQueryManager {
     }
 
     private static final Map findQualifierMapping;
+
     static {
         findQualifierMapping = new HashMap();
         findQualifierMapping.put(FindQualifier.AND_ALL_KEYS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.AND_ALL_KEYS));
@@ -146,7 +146,7 @@ class BusinessQueryManagerImpl implements BusinessQueryManager {
         findQualifierMapping.put(FindQualifier.SORT_BY_DATE_ASC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_DATE_ASC));
         findQualifierMapping.put(FindQualifier.SORT_BY_DATE_DESC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_DATE_DESC));
         findQualifierMapping.put(FindQualifier.SORT_BY_NAME_ASC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_ASC));
-        findQualifierMapping.put(FindQualifier.SORT_BY_NAME_DESC,new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_DESC));
+        findQualifierMapping.put(FindQualifier.SORT_BY_NAME_DESC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_DESC));
 //        findQualifierMapping.put(FindQualifier.SOUNDEX, null);
     }
 
@@ -154,7 +154,6 @@ class BusinessQueryManagerImpl implements BusinessQueryManager {
         if (jaxrQualifiers == null) {
             return null;
         }
-
         FindQualifiers result = new FindQualifiers(jaxrQualifiers.size());
         for (Iterator i = jaxrQualifiers.iterator(); i.hasNext();) {
             String jaxrQualifier = (String) i.next();

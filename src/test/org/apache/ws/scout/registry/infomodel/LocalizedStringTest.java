@@ -31,11 +31,9 @@ public class LocalizedStringTest extends TestCase {
         LocalizedString ls2 = new LocalizedStringImpl(Locale.US, "Equal", "UTF-8");
         assertTrue(ls1.equals(ls2));
         assertTrue(ls2.equals(ls1));
-
         ls2 = new LocalizedStringImpl(Locale.US, "NotEqual", "UTF-8");
         assertFalse(ls1.equals(ls2));
         assertFalse(ls2.equals(ls1));
-
         ls2 = new LocalizedStringImpl(Locale.US, "Equal", "US-ASCII");
         assertFalse(ls1.equals(ls2));
         assertFalse(ls2.equals(ls1));
@@ -46,11 +44,9 @@ public class LocalizedStringTest extends TestCase {
         LocalizedString ls2 = new LocalizedStringImpl(Locale.US, null, "UTF-8");
         assertTrue(ls1.equals(ls2));
         assertTrue(ls2.equals(ls1));
-
         ls2 = new LocalizedStringImpl(Locale.US, "NotEqual", "UTF-8");
         assertFalse(ls1.equals(ls2));
         assertFalse(ls2.equals(ls1));
-
         ls2 = new LocalizedStringImpl(Locale.US, null, "US-ASCII");
         assertFalse(ls1.equals(ls2));
         assertFalse(ls2.equals(ls1));
@@ -59,10 +55,8 @@ public class LocalizedStringTest extends TestCase {
     public void testSetCharsetName() throws JAXRException {
         LocalizedString ls1 = new LocalizedStringImpl(Locale.US, "USA", "UTF-8");
         assertEquals("UTF-8", ls1.getCharsetName());
-
         ls1.setCharsetName("US-ASCII");
         assertEquals("US-ASCII", ls1.getCharsetName());
-
         try {
             ls1.setCharsetName(null);
             fail("expected IllegalArgumentException for null charsetName");
@@ -74,10 +68,8 @@ public class LocalizedStringTest extends TestCase {
     public void testSetLocale() throws JAXRException {
         LocalizedString ls1 = new LocalizedStringImpl(Locale.US, "USA", "UTF-8");
         assertEquals(Locale.US, ls1.getLocale());
-
         ls1.setLocale(Locale.CANADA);
         assertEquals(Locale.CANADA, ls1.getLocale());
-
         try {
             ls1.setLocale(null);
             fail("expected IllegalArgumentException for null locale");
@@ -89,10 +81,8 @@ public class LocalizedStringTest extends TestCase {
     public void testSetValue() throws JAXRException {
         LocalizedString ls1 = new LocalizedStringImpl(Locale.US, "USA", "UTF-8");
         assertEquals("USA", ls1.getValue());
-
         ls1.setValue("Foo");
         assertEquals("Foo", ls1.getValue());
-
         ls1.setValue(null);
         assertNull(ls1.getValue());
     }

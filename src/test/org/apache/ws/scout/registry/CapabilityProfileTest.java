@@ -24,7 +24,7 @@ import javax.xml.registry.JAXRException;
 /**
  * @version $Revision$ $Date$
  */
-public class CapabilityProfileTest extends TestCase{
+public class CapabilityProfileTest extends TestCase {
     private CapabilityProfile profile;
 
     public void testLevel() throws JAXRException {

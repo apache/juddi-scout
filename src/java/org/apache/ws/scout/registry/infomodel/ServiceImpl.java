@@ -15,7 +15,7 @@
  */
 
 package org.apache.ws.scout.registry.infomodel;
- 
+
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.Organization;
@@ -27,50 +27,53 @@ import java.util.Collection;
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ServiceImpl extends RegistryEntryImpl implements Service{
-    
+public class ServiceImpl extends RegistryEntryImpl implements Service {
+
     private Organization org = null;
     private Collection serviceBindings = new ArrayList();
-    
-    /** Creates a new instance of ServiceImpl */
+
+    /**
+     * Creates a new instance of ServiceImpl
+     */
     public ServiceImpl(LifeCycleManager lifeCycleManager) {
         super(lifeCycleManager);
     }
-    
-    public void addServiceBinding(  ServiceBinding serviceBinding) 
-    throws JAXRException {
-        serviceBindings.add( serviceBinding );
+
+    public void addServiceBinding(ServiceBinding serviceBinding)
+            throws JAXRException {
+        serviceBindings.add(serviceBinding);
     }
-    
-    public void addServiceBindings( Collection collection) 
-    throws JAXRException {
-        serviceBindings.addAll( collection);
+
+    public void addServiceBindings(Collection collection)
+            throws JAXRException {
+        serviceBindings.addAll(collection);
     }
-    
-    public   Organization getProvidingOrganization() 
-    throws JAXRException {
-        if (org == null ) return super.getSubmittingOrganization();
+
+    public Organization getProvidingOrganization()
+            throws JAXRException {
+        if (org == null) return super.getSubmittingOrganization();
         return org;
-    }    
-   
-    public  Collection getServiceBindings() throws JAXRException {
+    }
+
+    public Collection getServiceBindings() throws JAXRException {
         return serviceBindings;
     }
-    
-    public void removeServiceBinding(  ServiceBinding serviceBinding) 
-    throws JAXRException {
-        serviceBindings.remove( serviceBinding );
+
+    public void removeServiceBinding(ServiceBinding serviceBinding)
+            throws JAXRException {
+        serviceBindings.remove(serviceBinding);
     }
-    
-    public void removeServiceBindings( Collection collection) 
-    throws JAXRException {
-        serviceBindings.removeAll( collection );
-    }    
-    
-    public void setProvidingOrganization(  Organization organization) 
-    throws JAXRException {
+
+    public void removeServiceBindings(Collection collection)
+            throws JAXRException {
+        serviceBindings.removeAll(collection);
+    }
+
+    public void setProvidingOrganization(Organization organization)
+            throws JAXRException {
         this.org = organization;
-    }     
+    }
 }

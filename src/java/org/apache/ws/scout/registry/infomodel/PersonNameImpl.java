@@ -15,65 +15,69 @@
  */
 
 package org.apache.ws.scout.registry.infomodel;
+
 import javax.xml.registry.JAXRException;
- 
+
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class PersonNameImpl 
-implements javax.xml.registry.infomodel.PersonName {
-    
+public class PersonNameImpl
+        implements javax.xml.registry.infomodel.PersonName {
+
     private String firstname = "";
     private String fullname = "";
     private String lastname = "";
     private String middlename = "";
-    
-    /** Creates a new instance of PersonNameImpl */
+
+    /**
+     * Creates a new instance of PersonNameImpl
+     */
     public PersonNameImpl() {
     }
-    
-    public PersonNameImpl( String fn,String mn, String ln){
+
+    public PersonNameImpl(String fn, String mn, String ln) {
         this.firstname = fn;
         this.middlename = mn;
         this.lastname = ln;
     }
-    
-    public PersonNameImpl( String fullname){
+
+    public PersonNameImpl(String fullname) {
         this.fullname = fullname;
     }
-    
+
     public String getFirstName() throws JAXRException {
         return this.firstname;
     }
-    
+
     public String getFullName() throws JAXRException {
         return this.fullname;
     }
-    
+
     public String getLastName() throws JAXRException {
         return this.lastname;
     }
-    
+
     public String getMiddleName() throws JAXRException {
         return this.middlename;
     }
-    
+
     public void setFirstName(String str) throws JAXRException {
-       this.firstname = str;
+        this.firstname = str;
     }
-    
+
     public void setFullName(String str) throws JAXRException {
-       this.fullname = str;
+        this.fullname = str;
     }
-    
+
     public void setLastName(String str) throws JAXRException {
         this.lastname = str;
     }
-    
+
     public void setMiddleName(String str) throws JAXRException {
         this.middlename = str;
     }
-    
+
 }

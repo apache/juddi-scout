@@ -20,45 +20,47 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.RegistryObject;
- 
 
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class ExternalIdentifierImpl extends RegistryObjectImpl
-implements javax.xml.registry.infomodel.ExternalIdentifier {
-    
+        implements javax.xml.registry.infomodel.ExternalIdentifier {
+
     private ClassificationScheme identity = new ClassificationSchemeImpl(null);
-    private String value = new String();    
+    private String value = new String();
     private RegistryObject parent;
-    
-    /** Creates a new instance of ExternalIdentifierImpl */
+
+    /**
+     * Creates a new instance of ExternalIdentifierImpl
+     */
     public ExternalIdentifierImpl(LifeCycleManager lifeCycleManager) {
         super(lifeCycleManager);
     }
-     
-    public ClassificationScheme getIdentificationScheme() 
-    throws JAXRException {
+
+    public ClassificationScheme getIdentificationScheme()
+            throws JAXRException {
         return identity;
-    }    
-     
+    }
+
     public RegistryObject getRegistryObject() throws JAXRException {
         return parent;
     }
-    
+
     public String getValue() throws JAXRException {
         return value;
     }
-     
-    public void setIdentificationScheme(ClassificationScheme cs) 
-    throws JAXRException {
+
+    public void setIdentificationScheme(ClassificationScheme cs)
+            throws JAXRException {
         identity = cs;
-    } 
-    
+    }
+
     public void setValue(String str) throws JAXRException {
         value = str;
-    } 
-    
+    }
+
 }

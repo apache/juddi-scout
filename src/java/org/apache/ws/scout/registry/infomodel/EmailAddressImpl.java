@@ -52,12 +52,9 @@ public class EmailAddressImpl implements EmailAddress {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof EmailAddressImpl)) return false;
-
         final EmailAddressImpl emailAddress = (EmailAddressImpl) o;
-
         if (email != null ? !email.equals(emailAddress.email) : emailAddress.email != null) return false;
         if (type != null ? !type.equals(emailAddress.type) : emailAddress.type != null) return false;
-
         return true;
     }
 

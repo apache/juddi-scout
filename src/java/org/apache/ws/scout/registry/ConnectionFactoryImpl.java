@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Properties;
 
-
 /**
  * Our implmentation of javax.xml.registry.ConnectionFactory.
  * Also exposes the properties as JavaBean properties to ease use
@@ -85,6 +84,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
      * Returns a value copy of the properties that will be used to create
      * a Connections. Operations on this Properties objects will not affect
      * this ConnectionFactory; use setProperties(Properties) to save changes.
+     *
      * @return a Properties object containing the properies that will be used to create Connection
      */
     public Properties getProperties() {
@@ -112,6 +112,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
 
     /**
      * Update the properties used by this ConnectionFactory to obtain a connection.
+     *
      * @param properties the new properties for this ConnectionFactory
      */
     public void setProperties(Properties properties) {
@@ -120,7 +121,6 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         semanticEquivalences = properties.getProperty(SEMANTICEQUIVALENCES_PROPERTY);
         authenticationMethod = properties.getProperty(AUTHENTICATIONMETHOD_PROPERTY);
         postalAddressScheme = properties.getProperty(POSTALADDRESSSCHEME_PROPERTY);
-
         String val = properties.getProperty(MAXROWS_PROPERTY);
         maxRows = (val == null) ? null : Integer.valueOf(val);
     }

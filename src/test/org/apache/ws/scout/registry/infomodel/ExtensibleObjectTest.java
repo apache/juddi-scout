@@ -44,7 +44,6 @@ public class ExtensibleObjectTest extends TestCase {
         Set slots = new HashSet();
         slots.add(slot);
         slots.add(slot2);
-
         eo.addSlots(slots);
         assertEquals(slots, new HashSet(eo.getSlots()));
     }

@@ -15,72 +15,73 @@
  */
 
 package org.apache.ws.scout.registry.infomodel;
+
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.RegistryObject;
- 
 
 /**
  * Implements JAXR Classification Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class ClassificationImpl extends RegistryObjectImpl
-implements javax.xml.registry.infomodel.Classification {
-     
+        implements javax.xml.registry.infomodel.Classification {
+
     private ClassificationScheme scheme = new ClassificationSchemeImpl(null);
     private Concept concept = new ConceptImpl(null);
-    private boolean external =false;
+    private boolean external = false;
     private String value;
-    
-    private RegistryObject  classfiedobj = null;
-    
-    /** Creates a new instance of ClassificationImpl */
+
+    private RegistryObject classfiedobj = null;
+
+    /**
+     * Creates a new instance of ClassificationImpl
+     */
     public ClassificationImpl(LifeCycleManager lifeCycleManager) {
         super(lifeCycleManager);
     }
 
-
     public ClassificationScheme getClassificationScheme()
-    throws JAXRException {
+            throws JAXRException {
         return scheme;
     }
-     
+
     public RegistryObject getClassifiedObject() throws JAXRException {
         return classfiedobj;
     }
-    
+
     public Concept getConcept() throws JAXRException {
-         return concept;
+        return concept;
     }
-    
-     
+
     public String getValue() throws JAXRException {
         return value;
     }
-    
+
     public boolean isExternal() throws JAXRException {
         return external;
-    }    
-    
-    public void setClassificationScheme(ClassificationScheme cscheme) 
-    throws JAXRException {
+    }
+
+    public void setClassificationScheme(ClassificationScheme cscheme)
+            throws JAXRException {
         scheme = cscheme;
-    }     
-    
-    public void setClassifiedObject(RegistryObject registryObject) 
-    throws JAXRException {
+    }
+
+    public void setClassifiedObject(RegistryObject registryObject)
+            throws JAXRException {
         classfiedobj = registryObject;
     }
-    
+
     public void setConcept(Concept cpt) throws JAXRException {
         concept = cpt;
     }
-    
+
     public void setValue(String str) throws JAXRException {
         value = str;
-    }    
-     
+    }
+
 }

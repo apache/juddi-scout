@@ -146,7 +146,6 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         associations.remove(association);
     }
 
-
     public void removeAssociations(Collection collection) {
         associations.removeAll(collection);
     }

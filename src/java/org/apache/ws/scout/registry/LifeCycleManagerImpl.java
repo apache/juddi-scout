@@ -16,10 +16,10 @@
  */
 package org.apache.ws.scout.registry;
 
+import org.apache.juddi.datatype.Description;
+import org.apache.juddi.datatype.Name;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.ServiceInfo;
-import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.Description;
 import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
@@ -323,16 +323,15 @@ public class LifeCycleManagerImpl implements LifeCycleManager {
         Vector names = info.getNameVector();
         Vector descriptions = info.getDescriptionVector();
         Vector serviceInfos = info.getServiceInfos().getServiceInfoVector();
-
         OrganizationImpl org = new OrganizationImpl(this);
         org.setKey(createKey(key));
         if (names != null && !names.isEmpty()) {
             org.setName(createInternationalString(((Name) names.get(0)).getValue()));
         }
-        if (descriptions!= null && !descriptions.isEmpty()) {
+        if (descriptions != null && !descriptions.isEmpty()) {
             org.setDescription(createInternationalString(((Description) descriptions.get(0)).getValue()));
         }
-        if (serviceInfos!= null && !serviceInfos.isEmpty()) {
+        if (serviceInfos != null && !serviceInfos.isEmpty()) {
             List services = new ArrayList(serviceInfos.size());
             for (int i = 0; i < serviceInfos.size(); i++) {
                 ServiceInfo serviceInfo = (ServiceInfo) serviceInfos.elementAt(i);
@@ -346,7 +345,6 @@ public class LifeCycleManagerImpl implements LifeCycleManager {
     Service createService(ServiceInfo info) throws JAXRException {
         String key = info.getServiceKey();
         Vector names = info.getNameVector();
-
         ServiceImpl service = new ServiceImpl(this);
         service.setKey(createKey(key));
         if (!names.isEmpty()) {

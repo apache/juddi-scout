@@ -58,7 +58,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject(LifeCycleManager.ASSOCIATION);
             fail();
-        } catch(UnsupportedCapabilityException e) {
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
@@ -67,7 +67,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject(LifeCycleManager.AUDITABLE_EVENT);
             fail();
-        } catch(UnsupportedCapabilityException e) {
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
@@ -110,7 +110,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject(LifeCycleManager.EXTRINSIC_OBJECT);
             fail();
-        } catch(UnsupportedCapabilityException e) {
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
@@ -137,7 +137,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject(LifeCycleManager.PERSON_NAME);
             fail();
-        } catch(UnsupportedCapabilityException e) {
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
@@ -156,7 +156,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject(LifeCycleManager.REGISTRY_PACKAGE);
             fail();
-        } catch(UnsupportedCapabilityException e) {
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
@@ -171,7 +171,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject(LifeCycleManager.SERVICE_BINDING);
             fail();
-        } catch(UnsupportedCapabilityException e) {
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
@@ -180,7 +180,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject(LifeCycleManager.SLOT);
             fail();
-        } catch(UnsupportedCapabilityException e) {
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
@@ -189,7 +189,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject(LifeCycleManager.SPECIFICATION_LINK);
             fail();
-        } catch(UnsupportedCapabilityException e) {
+        } catch (UnsupportedCapabilityException e) {
             // OK
         }
     }
@@ -208,7 +208,7 @@ public class LifeCycleManagerTest extends TestCase {
         try {
             manager.createObject("Foo");
             fail();
-        } catch(InvalidRequestException e) {
+        } catch (InvalidRequestException e) {
             // OK
         }
     }

@@ -23,72 +23,74 @@ import javax.xml.registry.infomodel.Concept;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ClassificationSchemeImpl 
-extends RegistryEntryImpl
-implements ClassificationScheme{         
-       
-        private Collection childConcepts = new ArrayList();   
-     
-	    private int valueType = 1;
-	    
-	    private boolean external = false; 
-	    
-	    private Collection descendants = new ArrayList();
-    
-    /** Creates a new instance of ClassificationSchemeImpl */
+public class ClassificationSchemeImpl
+        extends RegistryEntryImpl
+        implements ClassificationScheme {
+
+    private Collection childConcepts = new ArrayList();
+
+    private int valueType = 1;
+
+    private boolean external = false;
+
+    private Collection descendants = new ArrayList();
+
+    /**
+     * Creates a new instance of ClassificationSchemeImpl
+     */
     public ClassificationSchemeImpl(LifeCycleManager lifeCycleManager) {
         super(lifeCycleManager);
     }
-     
-    public void addChildConcept(Concept concept) 
-    throws JAXRException {
-        childConcepts.add( concept );
+
+    public void addChildConcept(Concept concept)
+            throws JAXRException {
+        childConcepts.add(concept);
     }
-    
-    public void addChildConcepts(Collection collection) 
-    throws JAXRException {
-        childConcepts.addAll( collection);
-    } 
-    
-    public int getChildConceptCount() 
-    throws JAXRException {
+
+    public void addChildConcepts(Collection collection)
+            throws JAXRException {
+        childConcepts.addAll(collection);
+    }
+
+    public int getChildConceptCount()
+            throws JAXRException {
         return childConcepts.size();
     }
-    
+
     public Collection getChildrenConcepts() throws JAXRException {
         return childConcepts;
     }
-    
+
     public Collection getDescendantConcepts() throws JAXRException {
         return this.descendants;
-    }  
-    
+    }
+
     public int getValueType() throws JAXRException {
         return this.valueType;
     }
-    
+
     public boolean isExternal() throws JAXRException {
         return this.external;
-    }    
-    
-    public void removeChildConcept(Concept concept) 
-    throws JAXRException {
-        this.childConcepts.remove( concept);
     }
-    
-    public void removeChildConcepts(Collection collection) 
-    throws JAXRException {
-        this.childConcepts.removeAll( collection);
-    }     
-    
+
+    public void removeChildConcept(Concept concept)
+            throws JAXRException {
+        this.childConcepts.remove(concept);
+    }
+
+    public void removeChildConcepts(Collection collection)
+            throws JAXRException {
+        this.childConcepts.removeAll(collection);
+    }
+
     public void setValueType(int param) throws JAXRException {
-        this.valueType =  param;
-    }    
-     
+        this.valueType = param;
+    }
+
 }

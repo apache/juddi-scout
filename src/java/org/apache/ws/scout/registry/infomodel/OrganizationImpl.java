@@ -94,7 +94,6 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         users.removeAll(collection);
     }
 
-
     public Collection getTelephoneNumbers(String phoneType) throws JAXRException {
         Set filteredNumbers;
         if (phoneType == null) {
@@ -136,7 +135,6 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
     public Collection getServices() throws JAXRException {
         return Collections.unmodifiableSet(services);
     }
-
 
     public void removeService(Service service) throws JAXRException {
         services.remove(service);

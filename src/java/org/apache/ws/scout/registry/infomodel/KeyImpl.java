@@ -45,11 +45,8 @@ public class KeyImpl implements Key {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof KeyImpl)) return false;
-
         final KeyImpl key = (KeyImpl) o;
-
         if (id != null ? !id.equals(key.id) : key.id != null) return false;
-
         return true;
     }
 

@@ -15,80 +15,87 @@
  */
 
 package org.apache.ws.scout.registry;
+
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.JAXRException;
 import java.util.ArrayList;
 import java.util.Collection;
- 
+
 /**
  * Implements JAXR BulResponse Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class BulkResponseImpl implements BulkResponse {
-    public static int 	STATUS_FAILURE=1;           
-    public static int 	STATUS_SUCCESS = 0;           
-    public static int 	STATUS_UNAVAILABLE=2;           
-    public static int 	STATUS_WARNING=3;
-    
+    public static int STATUS_FAILURE = 1;
+    public static int STATUS_SUCCESS = 0;
+    public static int STATUS_UNAVAILABLE = 2;
+    public static int STATUS_WARNING = 3;
+
     private int status = STATUS_SUCCESS;
-    private boolean partialResponse  = false;
-           
+    private boolean partialResponse = false;
+
     private Collection exceptions = new ArrayList();
     private Collection collection = new ArrayList();
-    
-    /** Creates a new instance of BulkResponseImpl */
+
+    /**
+     * Creates a new instance of BulkResponseImpl
+     */
     public BulkResponseImpl() {
     }
 
     BulkResponseImpl(Collection collection) {
         this.collection = collection;
     }
-    
-    /** Get Collection of RegistryObjects **/
+
+    /**
+     * Get Collection of RegistryObjects *
+     */
     public Collection getCollection() throws JAXRException {
         return collection;
     }
-    
+
     public Collection getExceptions() throws JAXRException {
         return null;
     }
-    
+
     public String getRequestId() throws JAXRException {
         return null;
     }
-    
+
     public int getStatus() throws JAXRException {
         return status;
     }
-    
+
     public boolean isAvailable() throws JAXRException {
         return false;
     }
-    
+
     public boolean isPartialResponse() throws JAXRException {
-        if( exceptions.size() > 0 ) this.partialResponse = true;        
+        if (exceptions.size() > 0) this.partialResponse = true;
         return this.partialResponse;
     }
-    
-    public void  setPartialResponse(boolean b ) throws JAXRException {
+
+    public void setPartialResponse(boolean b) throws JAXRException {
         this.partialResponse = b;
     }
-    
-    public void setCollection( Collection coll) throws JAXRException {
+
+    public void setCollection(Collection coll) throws JAXRException {
         this.collection = coll;
     }
-    
-    public void setStatus( int status) throws JAXRException {
-        this.status =  status;
+
+    public void setStatus(int status) throws JAXRException {
+        this.status = status;
     }
-    
+
     /**
      * Setter for property exceptions.
+     *
      * @param exceptions New value of property exceptions.
      */
-    public void setExceptions( Collection exceptions) {
+    public void setExceptions(Collection exceptions) {
         this.exceptions = exceptions;
     }
-    
+
 }
