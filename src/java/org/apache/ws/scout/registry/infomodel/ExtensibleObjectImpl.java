@@ -29,32 +29,40 @@ import java.util.Map;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ExtensibleObjectImpl implements ExtensibleObject {
+public class ExtensibleObjectImpl implements ExtensibleObject
+{
     private Map slots = new HashMap();
 
-    public void addSlot(Slot slot) throws JAXRException {
+    public void addSlot(Slot slot) throws JAXRException
+    {
         slots.put(slot.getName(), slot);
     }
 
-    public void addSlots(Collection slots) throws JAXRException {
-        for (Iterator i = slots.iterator(); i.hasNext();) {
+    public void addSlots(Collection slots) throws JAXRException
+    {
+        for (Iterator i = slots.iterator(); i.hasNext();)
+        {
             addSlot((Slot) i.next());
         }
     }
 
-    public Slot getSlot(String slotName) {
+    public Slot getSlot(String slotName)
+    {
         return (Slot) slots.get(slotName);
     }
 
-    public Collection getSlots() {
+    public Collection getSlots()
+    {
         return slots.values();
     }
 
-    public void removeSlot(String slotName) {
+    public void removeSlot(String slotName)
+    {
         slots.remove(slotName);
     }
 
-    public void removeSlots(Collection soltNames) {
+    public void removeSlots(Collection soltNames)
+    {
         slots.keySet().removeAll(soltNames);
     }
 }

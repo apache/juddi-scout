@@ -17,15 +17,14 @@
 package org.apache.ws.scout.registry;
 
 import org.apache.juddi.proxy.RegistryProxy;
-import org.apache.juddi.proxy.Transport;
 
 import javax.xml.registry.Connection;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
-import java.net.URL;
-import java.util.Set;
-import java.util.Properties;
 import java.io.Serializable;
+import java.net.URL;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Apache Scout Implementation of a JAXR Connection.
@@ -33,7 +32,8 @@ import java.io.Serializable;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ConnectionImpl implements Connection, Serializable {
+public class ConnectionImpl implements Connection, Serializable
+{
     private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;
@@ -41,7 +41,8 @@ public class ConnectionImpl implements Connection, Serializable {
     private final String postalScheme;
     private final int maxRows;
 
-    public ConnectionImpl(URL queryManagerURL, URL lifeCycleManagerURL, String postalScheme, int maxRows) {
+    public ConnectionImpl(URL queryManagerURL, URL lifeCycleManagerURL, String postalScheme, int maxRows)
+    {
         Properties prop = new Properties();
         /**
          * If you want to override any of the properties
@@ -49,7 +50,7 @@ public class ConnectionImpl implements Connection, Serializable {
          * accordingly.
          */
         String transport = System.getProperty("juddi.proxy.transportClass");
-        if( transport != null) prop.setProperty("juddi.proxy.transportClass",transport);
+        if (transport != null) prop.setProperty("juddi.proxy.transportClass", transport);
         /**
          * Even if the properties passed contains no values,
          * juddi takes default values
@@ -62,33 +63,40 @@ public class ConnectionImpl implements Connection, Serializable {
 
     }
 
-    public RegistryService getRegistryService() throws JAXRException {
+    public RegistryService getRegistryService() throws JAXRException
+    {
         RegistryServiceImpl reg = new RegistryServiceImpl(registry, postalScheme, maxRows);
         reg.setConnection(this);
         return reg;
     }
 
-    public void close() {
+    public void close()
+    {
         closed = true;
     }
 
-    public boolean isClosed() {
+    public boolean isClosed()
+    {
         return closed;
     }
 
-    public Set getCredentials() {
+    public Set getCredentials()
+    {
         return credentials;
     }
 
-    public void setCredentials(Set credentials) {
+    public void setCredentials(Set credentials)
+    {
         this.credentials = credentials;
     }
 
-    public boolean isSynchronous() {
+    public boolean isSynchronous()
+    {
         return synchronous;
     }
 
-    public void setSynchronous(boolean synchronous) {
+    public void setSynchronous(boolean synchronous)
+    {
         this.synchronous = synchronous;
     }
 }

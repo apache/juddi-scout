@@ -26,7 +26,8 @@ import javax.xml.registry.infomodel.PostalAddress;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class PostalAddressImpl extends ExtensibleObjectImpl implements PostalAddress {
+public class PostalAddressImpl extends ExtensibleObjectImpl implements PostalAddress
+{
     private static final String EMPTY_STRING = "";
     private String street = EMPTY_STRING;
     private String streetNumber = EMPTY_STRING;
@@ -40,7 +41,8 @@ public class PostalAddressImpl extends ExtensibleObjectImpl implements PostalAdd
     /**
      * Creates a new instance of PostalAddressImpl
      */
-    public PostalAddressImpl(ClassificationScheme postalScheme) {
+    public PostalAddressImpl(ClassificationScheme postalScheme)
+    {
         this.postalScheme = postalScheme;
     }
 
@@ -48,67 +50,83 @@ public class PostalAddressImpl extends ExtensibleObjectImpl implements PostalAdd
     {
     }
 
-    public String getCity() {
+    public String getCity()
+    {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(String city)
+    {
         this.city = city;
     }
 
-    public String getCountry() {
+    public String getCountry()
+    {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(String country)
+    {
         this.country = country;
     }
 
-    public String getPostalCode() {
+    public String getPostalCode()
+    {
         return postalCode;
     }
 
-    public void setPostalCode(String postalCode) {
+    public void setPostalCode(String postalCode)
+    {
         this.postalCode = postalCode;
     }
 
-    public ClassificationScheme getPostalScheme() {
+    public ClassificationScheme getPostalScheme()
+    {
         return postalScheme;
     }
 
-    public void setPostalScheme(ClassificationScheme postalScheme) {
+    public void setPostalScheme(ClassificationScheme postalScheme)
+    {
         this.postalScheme = postalScheme;
     }
 
-    public String getStateOrProvince() {
+    public String getStateOrProvince()
+    {
         return stateOrProvince;
     }
 
-    public void setStateOrProvince(String stateOrProvince) {
+    public void setStateOrProvince(String stateOrProvince)
+    {
         this.stateOrProvince = stateOrProvince;
     }
 
-    public String getStreet() {
+    public String getStreet()
+    {
         return street;
     }
 
-    public void setStreet(String street) {
+    public void setStreet(String street)
+    {
         this.street = street;
     }
 
-    public String getStreetNumber() {
+    public String getStreetNumber()
+    {
         return streetNumber;
     }
 
-    public void setStreetNumber(String streetNumber) {
+    public void setStreetNumber(String streetNumber)
+    {
         this.streetNumber = streetNumber;
     }
 
-    public String getType() {
+    public String getType()
+    {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(String type)
+    {
         this.type = type;
     }
 }

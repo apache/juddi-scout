@@ -25,49 +25,60 @@ import javax.xml.registry.UnsupportedCapabilityException;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class PersonNameImpl implements javax.xml.registry.infomodel.PersonName {
+public class PersonNameImpl implements javax.xml.registry.infomodel.PersonName
+{
 
     private String fullname = "";
 
     /**
      * Creates a new instance of PersonNameImpl
      */
-    public PersonNameImpl() {
+    public PersonNameImpl()
+    {
     }
 
-    public PersonNameImpl(String fullname) {
+    public PersonNameImpl(String fullname)
+    {
         this.fullname = fullname;
     }
 
-    public String getFullName() throws JAXRException {
+    public String getFullName() throws JAXRException
+    {
         return this.fullname;
     }
 
-    public void setFullName(String str) throws JAXRException {
+    public void setFullName(String str) throws JAXRException
+    {
         this.fullname = str;
     }
 
-    public String getFirstName() throws JAXRException {
+    public String getFirstName() throws JAXRException
+    {
         throw new UnsupportedCapabilityException();
     }
 
-    public String getLastName() throws JAXRException {
+    public String getLastName() throws JAXRException
+    {
         throw new UnsupportedCapabilityException();
     }
 
-    public String getMiddleName() throws JAXRException {
+    public String getMiddleName() throws JAXRException
+    {
         throw new UnsupportedCapabilityException();
     }
 
-    public void setFirstName(String str) throws JAXRException {
+    public void setFirstName(String str) throws JAXRException
+    {
         throw new UnsupportedCapabilityException();
     }
 
-    public void setLastName(String str) throws JAXRException {
+    public void setLastName(String str) throws JAXRException
+    {
         throw new UnsupportedCapabilityException();
     }
 
-    public void setMiddleName(String str) throws JAXRException {
+    public void setMiddleName(String str) throws JAXRException
+    {
         throw new UnsupportedCapabilityException();
     }
 }

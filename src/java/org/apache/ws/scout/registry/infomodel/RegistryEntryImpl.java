@@ -27,7 +27,8 @@ import java.util.Date;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class RegistryEntryImpl extends RegistryObjectImpl implements RegistryEntry {
+public class RegistryEntryImpl extends RegistryObjectImpl implements RegistryEntry
+{
     private Date expiry = null;
     private int major = 1;
     private int minor = 0;
@@ -39,51 +40,63 @@ public class RegistryEntryImpl extends RegistryObjectImpl implements RegistryEnt
     /**
      * Creates a new instance of RegistryEntryImpl
      */
-    public RegistryEntryImpl(LifeCycleManager lifeCycleManager) {
+    public RegistryEntryImpl(LifeCycleManager lifeCycleManager)
+    {
         super(lifeCycleManager);
     }
 
-    public Date getExpiration() throws JAXRException {
+    public Date getExpiration() throws JAXRException
+    {
         return expiry;
     }
 
-    public int getMajorVersion() throws JAXRException {
+    public int getMajorVersion() throws JAXRException
+    {
         return major;
     }
 
-    public int getMinorVersion() throws JAXRException {
+    public int getMinorVersion() throws JAXRException
+    {
         return minor;
     }
 
-    public int getStability() throws JAXRException {
+    public int getStability() throws JAXRException
+    {
         return stability;
     }
 
-    public int getStatus() throws JAXRException {
+    public int getStatus() throws JAXRException
+    {
         return status;
     }
 
-    public String getUserVersion() throws JAXRException {
+    public String getUserVersion() throws JAXRException
+    {
         return userversion;
     }
 
-    public void setExpiration(Date date) throws JAXRException {
+    public void setExpiration(Date date) throws JAXRException
+    {
         expiry = date;
     }
 
-    public void setMajorVersion(int param) throws JAXRException {
+    public void setMajorVersion(int param) throws JAXRException
+    {
         major = param;
     }
 
-    public void setMinorVersion(int param) throws JAXRException {
+    public void setMinorVersion(int param) throws JAXRException
+    {
         minor = param;
     }
 
-    public void setStability(int param) throws JAXRException {
+    public void setStability(int param) throws JAXRException
+    {
         stability = param;
     }
 
-    public void setUserVersion(String str) throws JAXRException {
+    public void setUserVersion(String str) throws JAXRException
+    {
         userversion = str;
     }
 

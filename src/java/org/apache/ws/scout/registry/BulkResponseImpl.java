@@ -27,7 +27,8 @@ import java.util.Collection;
  *
  * @author Anil Saldhana  <mailto:anil@apache.org>
  */
-public class BulkResponseImpl implements BulkResponse {
+public class BulkResponseImpl implements BulkResponse
+{
     public static int STATUS_FAILURE = 1;
     public static int STATUS_SUCCESS = 0;
     public static int STATUS_UNAVAILABLE = 2;
@@ -42,50 +43,61 @@ public class BulkResponseImpl implements BulkResponse {
     /**
      * Creates a new instance of BulkResponseImpl
      */
-    public BulkResponseImpl() {
+    public BulkResponseImpl()
+    {
     }
 
-    BulkResponseImpl(Collection collection) {
+    BulkResponseImpl(Collection collection)
+    {
         this.collection = collection;
     }
 
     /**
      * Get Collection of RegistryObjects *
      */
-    public Collection getCollection() throws JAXRException {
+    public Collection getCollection() throws JAXRException
+    {
         return collection;
     }
 
-    public Collection getExceptions() throws JAXRException {
+    public Collection getExceptions() throws JAXRException
+    {
         return null;
     }
 
-    public String getRequestId() throws JAXRException {
+    public String getRequestId() throws JAXRException
+    {
         return null;
     }
 
-    public int getStatus() throws JAXRException {
+    public int getStatus() throws JAXRException
+    {
         return status;
     }
 
-    public boolean isAvailable() throws JAXRException {
+    public boolean isAvailable() throws JAXRException
+    {
         return false;
     }
 
-    public boolean isPartialResponse() throws JAXRException {
+    public boolean isPartialResponse() throws JAXRException
+    {
         if (exceptions.size() > 0) this.partialResponse = true;
         return this.partialResponse;
     }
 
-    public void setPartialResponse(boolean b) throws JAXRException {
+    public void setPartialResponse(boolean b) throws JAXRException
+    {
         this.partialResponse = b;
     }
 
-    public void setCollection(Collection coll) throws JAXRException {
+    public void setCollection(Collection coll) throws JAXRException
+    {
         this.collection = coll;
     }
 
-    public void setStatus(int status) throws JAXRException {
+    public void setStatus(int status) throws JAXRException
+    {
         this.status = status;
     }
 
@@ -94,7 +106,8 @@ public class BulkResponseImpl implements BulkResponse {
      *
      * @param exceptions New value of property exceptions.
      */
-    public void setExceptions(Collection exceptions) {
+    public void setExceptions(Collection exceptions)
+    {
         this.exceptions = exceptions;
     }
 

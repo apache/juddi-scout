@@ -18,6 +18,7 @@ package org.apache.ws.scout.registry.infomodel;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.PersonName;
 import javax.xml.registry.infomodel.User;
@@ -31,75 +32,98 @@ import java.util.Collection;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class UserImpl extends RegistryObjectImpl implements User {
-    private PersonName personName = new PersonNameImpl();
+public class UserImpl extends RegistryObjectImpl implements User
+{
+    private PersonName personName = null;
 
     private Collection postalAddresses = new ArrayList();
     private Collection emailAddresses = new ArrayList();
     private Collection telnumbers = new ArrayList();
-    private URL url;
+
     private String type = "";
+
+    private Organization org = null;
 
     /**
      * Creates a new instance of UserImpl
      */
-    public UserImpl(LifeCycleManager lifeCycleManager) {
+    public UserImpl(LifeCycleManager lifeCycleManager)
+    {
         super(lifeCycleManager);
     }
 
-    public Organization getOrganization() throws JAXRException {
-        return null;
+    public Organization getOrganization() throws JAXRException
+    {
+        return org;
     }
 
-    public PersonName getPersonName() throws JAXRException {
+    public PersonName getPersonName() throws JAXRException
+    {
         return personName;
     }
 
-    public Collection getPostalAddresses() throws JAXRException {
+    public Collection getPostalAddresses() throws JAXRException
+    {
         return postalAddresses;
     }
 
     public Collection getTelephoneNumbers(String str)
-            throws JAXRException {
+            throws JAXRException
+    {
         return telnumbers;
     }
 
-    public String getType() throws JAXRException {
+    public String getType() throws JAXRException
+    {
         return type;
     }
 
-    public URL getUrl() throws JAXRException {
-        return url;
+    public URL getUrl() throws JAXRException
+    {
+        throw new UnsupportedCapabilityException();
     }
 
     public void setEmailAddresses(Collection collection)
-            throws JAXRException {
+            throws JAXRException
+    {
         emailAddresses = collection;
     }
 
-    public void setPersonName(PersonName pname) throws JAXRException {
+    public void setPersonName(PersonName pname) throws JAXRException
+    {
         personName = pname;
     }
 
     public void setPostalAddresses(Collection collection)
-            throws JAXRException {
+            throws JAXRException
+    {
         postalAddresses = collection;
     }
 
     public void setTelephoneNumbers(Collection collection)
-            throws JAXRException {
+            throws JAXRException
+    {
         telnumbers = collection;
     }
 
-    public void setType(String str) throws JAXRException {
+    public void setType(String str) throws JAXRException
+    {
         type = str;
     }
 
-    public void setUrl(URL uRL) throws JAXRException {
-        this.url = uRL;
+    public void setUrl(URL uRL) throws JAXRException
+    {
+        throw new UnsupportedCapabilityException();
     }
 
-    public Collection getEmailAddresses() throws JAXRException {
+    public Collection getEmailAddresses() throws JAXRException
+    {
         return emailAddresses;
+    }
+
+    //Specific API
+    public void setOrganization(Organization o)
+    {
+        org = o;
     }
 }

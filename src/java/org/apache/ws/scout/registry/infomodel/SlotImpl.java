@@ -16,83 +16,86 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
- import javax.xml.registry.infomodel.Slot;
- import javax.xml.registry.JAXRException;
- import java.util.Collection;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.Slot;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
- /**
-  * Implements Jaxr API
-  *
-  * @author <mailto:anil@apache.org>Anil Saldhana
-  * @since Nov 20, 2004
-  */
- public class SlotImpl implements Slot
- {
-     private String slotType;
-     private String name;
-     private Collection values;
+/**
+ * Implements Jaxr API
+ *
+ * @author <mailto:anil@apache.org>Anil Saldhana
+ * @since Nov 20, 2004
+ */
+public class SlotImpl implements Slot
+{
+    private String slotType;
+    private String name;
+    private Collection values;
 
-     public SlotImpl()
-     {
-         values = Collections.EMPTY_SET;
-     }
+    public SlotImpl()
+    {
+        values = Collections.EMPTY_SET;
+    }
 
-     public String getName() throws JAXRException
-     {
-       return name;
-     }
+    public String getName() throws JAXRException
+    {
+        return name;
+    }
 
-     public String getSlotType() throws JAXRException
-     {
+    public String getSlotType() throws JAXRException
+    {
         return slotType;
-     }
+    }
 
-     public Collection getValues() throws JAXRException
-     {
-         return values;
-     }
+    public Collection getValues() throws JAXRException
+    {
+        return values;
+    }
 
-     public void setName(String s) throws JAXRException
-     {
-         name = s;
-     }
+    public void setName(String s) throws JAXRException
+    {
+        name = s;
+    }
 
-     public void setSlotType(String s) throws JAXRException
-     {
-         slotType = s;
-     }
+    public void setSlotType(String s) throws JAXRException
+    {
+        slotType = s;
+    }
 
-     public void setValues(Collection collection) throws JAXRException
-     {
-         if (collection == null) {
-             throw new IllegalArgumentException("values cannot be null");
-         }
-         // "the value of a Slot is locally unique within a slot instance"
-         // to enforce this, convert the supplied Collection to a Set
-         values = new HashSet(collection);
-     }
+    public void setValues(Collection collection) throws JAXRException
+    {
+        if (collection == null)
+        {
+            throw new IllegalArgumentException("values cannot be null");
+        }
+        // "the value of a Slot is locally unique within a slot instance"
+        // to enforce this, convert the supplied Collection to a Set
+        values = new HashSet(collection);
+    }
 
-     /**
-      * Slots can be used in Collections but the spec does not define equals()
-      * We define two slots with the same name as being equal as the spec says
-      * name is unique within the scope of the RegistryObject.
-      */
-     public boolean equals(Object o) {
-         if (this == o) return true;
-         if (!(o instanceof SlotImpl)) return false;
+    /**
+     * Slots can be used in Collections but the spec does not define equals()
+     * We define two slots with the same name as being equal as the spec says
+     * name is unique within the scope of the RegistryObject.
+     */
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof SlotImpl)) return false;
 
-         final SlotImpl slot = (SlotImpl) o;
+        final SlotImpl slot = (SlotImpl) o;
 
-         if (name != null ? !name.equals(slot.name) : slot.name != null) return false;
+        if (name != null ? !name.equals(slot.name) : slot.name != null) return false;
 
-         return true;
-     }
+        return true;
+    }
 
-     public int hashCode() {
-         return (name != null ? name.hashCode() : 0);
-     }
- }
+    public int hashCode()
+    {
+        return (name != null ? name.hashCode() : 0);
+    }
+}
 
 

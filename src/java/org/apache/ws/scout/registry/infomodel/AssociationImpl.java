@@ -16,12 +16,12 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import javax.xml.registry.infomodel.Association;
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.RegistryObject;
-import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.RegistryObject;
 
 /**
  * Implements JAXR Association Interface.
@@ -86,16 +86,16 @@ public class AssociationImpl extends RegistryObjectImpl implements Association
 
     public void setAssociationType(Concept concept) throws JAXRException
     {
-         type = concept;
+        type = concept;
     }
 
     public void setSourceObject(RegistryObject ro) throws JAXRException
     {
-         source = ro;
+        source = ro;
     }
 
     public void setTargetObject(RegistryObject ro) throws JAXRException
     {
-         target = ro;
+        target = ro;
     }
 }

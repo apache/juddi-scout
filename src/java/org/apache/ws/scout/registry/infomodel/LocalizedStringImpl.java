@@ -25,12 +25,14 @@ import java.util.Locale;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class LocalizedStringImpl implements LocalizedString {
+public class LocalizedStringImpl implements LocalizedString
+{
     private String charsetName;
     private Locale locale;
     private String value;
 
-    public LocalizedStringImpl() {
+    public LocalizedStringImpl()
+    {
         this.locale = Locale.getDefault();
         this.charsetName = LocalizedString.DEFAULT_CHARSET_NAME;
     }
@@ -42,11 +44,14 @@ public class LocalizedStringImpl implements LocalizedString {
      * @param value       the value; may be null
      * @param charsetName the charset; must not be null
      */
-    public LocalizedStringImpl(Locale locale, String value, String charsetName) {
-        if (locale == null) {
+    public LocalizedStringImpl(Locale locale, String value, String charsetName)
+    {
+        if (locale == null)
+        {
             throw new IllegalArgumentException("locale cannot be null");
         }
-        if (charsetName == null) {
+        if (charsetName == null)
+        {
             throw new IllegalArgumentException("charsetName cannot be null");
         }
         this.locale = locale;
@@ -54,33 +59,41 @@ public class LocalizedStringImpl implements LocalizedString {
         this.charsetName = charsetName;
     }
 
-    public String getCharsetName() {
+    public String getCharsetName()
+    {
         return charsetName;
     }
 
-    public Locale getLocale() {
+    public Locale getLocale()
+    {
         return locale;
     }
 
-    public String getValue() {
+    public String getValue()
+    {
         return value;
     }
 
-    public void setCharsetName(String charsetName) {
-        if (charsetName == null) {
+    public void setCharsetName(String charsetName)
+    {
+        if (charsetName == null)
+        {
             throw new IllegalArgumentException("charsetName cannot be null");
         }
         this.charsetName = charsetName;
     }
 
-    public void setLocale(Locale locale) {
-        if (locale == null) {
+    public void setLocale(Locale locale)
+    {
+        if (locale == null)
+        {
             throw new IllegalArgumentException("locale cannot be null");
         }
         this.locale = locale;
     }
 
-    public void setValue(String value) {
+    public void setValue(String value)
+    {
         this.value = value;
     }
 
@@ -92,7 +105,8 @@ public class LocalizedStringImpl implements LocalizedString {
      * @param o the other object
      * @return true if they are equal
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (!(o instanceof LocalizedStringImpl)) return false;
         final LocalizedStringImpl localizedString = (LocalizedStringImpl) o;
@@ -102,7 +116,8 @@ public class LocalizedStringImpl implements LocalizedString {
         return true;
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         int result;
         result = charsetName.hashCode();
         result = 29 * result + locale.hashCode();
@@ -110,7 +125,8 @@ public class LocalizedStringImpl implements LocalizedString {
         return result;
     }
 
-    public String toString() {
+    public String toString()
+    {
         return value;
     }
 }

@@ -18,11 +18,13 @@ package org.apache.ws.scout.registry.infomodel;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.UnexpectedObjectException;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Implements JAXR Interface.
@@ -30,7 +32,8 @@ import java.util.Collection;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ServiceImpl extends RegistryEntryImpl implements Service {
+public class ServiceImpl extends RegistryEntryImpl implements Service
+{
 
     private Organization org = null;
     private Collection serviceBindings = new ArrayList();
@@ -38,42 +41,60 @@ public class ServiceImpl extends RegistryEntryImpl implements Service {
     /**
      * Creates a new instance of ServiceImpl
      */
-    public ServiceImpl(LifeCycleManager lifeCycleManager) {
+    public ServiceImpl(LifeCycleManager lifeCycleManager)
+    {
         super(lifeCycleManager);
     }
 
-    public void addServiceBinding(ServiceBinding serviceBinding)
-            throws JAXRException {
-        serviceBindings.add(serviceBinding);
+    public void addServiceBinding(ServiceBinding sb)
+            throws JAXRException
+    {
+        serviceBindings.add(sb);
+        ((ServiceBindingImpl)sb).setService(this);
     }
 
-    public void addServiceBindings(Collection collection)
-            throws JAXRException {
-        serviceBindings.addAll(collection);
+    public void addServiceBindings(Collection col)
+            throws JAXRException
+    {
+       try{
+        Iterator iter = col.iterator();
+        while(iter.hasNext())
+        {
+            addServiceBinding((ServiceBinding)iter.next());
+        }
+       }catch(ClassCastException ce)
+       {
+           throw new UnexpectedObjectException(ce.getLocalizedMessage());
+       }
     }
 
     public Organization getProvidingOrganization()
-            throws JAXRException {
+            throws JAXRException
+    {
         if (org == null) return super.getSubmittingOrganization();
         return org;
     }
 
-    public Collection getServiceBindings() throws JAXRException {
+    public Collection getServiceBindings() throws JAXRException
+    {
         return serviceBindings;
     }
 
     public void removeServiceBinding(ServiceBinding serviceBinding)
-            throws JAXRException {
+            throws JAXRException
+    {
         serviceBindings.remove(serviceBinding);
     }
 
     public void removeServiceBindings(Collection collection)
-            throws JAXRException {
+            throws JAXRException
+    {
         serviceBindings.removeAll(collection);
     }
 
     public void setProvidingOrganization(Organization organization)
-            throws JAXRException {
+            throws JAXRException
+    {
         this.org = organization;
     }
 }

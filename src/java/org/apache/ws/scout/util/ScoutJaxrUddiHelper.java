@@ -301,6 +301,7 @@ public class ScoutJaxrUddiHelper
         try
         {
             ct.setPersonName(new PersonName(user.getPersonName().getFullName()));
+            ct.setUseType(user.getType());
             //Postal Address
             Collection postc = user.getPostalAddresses();
             Iterator iterator = postc.iterator();

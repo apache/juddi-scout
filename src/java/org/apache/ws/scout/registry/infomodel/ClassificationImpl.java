@@ -29,7 +29,8 @@ import javax.xml.registry.infomodel.RegistryObject;
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class ClassificationImpl extends RegistryObjectImpl
-        implements javax.xml.registry.infomodel.Classification {
+        implements javax.xml.registry.infomodel.Classification
+{
 
     private ClassificationScheme scheme = new ClassificationSchemeImpl(null);
     private Concept concept = new ConceptImpl(null);
@@ -41,46 +42,56 @@ public class ClassificationImpl extends RegistryObjectImpl
     /**
      * Creates a new instance of ClassificationImpl
      */
-    public ClassificationImpl(LifeCycleManager lifeCycleManager) {
+    public ClassificationImpl(LifeCycleManager lifeCycleManager)
+    {
         super(lifeCycleManager);
     }
 
     public ClassificationScheme getClassificationScheme()
-            throws JAXRException {
+            throws JAXRException
+    {
         return scheme;
     }
 
-    public RegistryObject getClassifiedObject() throws JAXRException {
+    public RegistryObject getClassifiedObject() throws JAXRException
+    {
         return classfiedobj;
     }
 
-    public Concept getConcept() throws JAXRException {
+    public Concept getConcept() throws JAXRException
+    {
         return concept;
     }
 
-    public String getValue() throws JAXRException {
+    public String getValue() throws JAXRException
+    {
         return value;
     }
 
-    public boolean isExternal() throws JAXRException {
+    public boolean isExternal() throws JAXRException
+    {
         return external;
     }
 
     public void setClassificationScheme(ClassificationScheme cscheme)
-            throws JAXRException {
+            throws JAXRException
+    {
         scheme = cscheme;
     }
 
     public void setClassifiedObject(RegistryObject registryObject)
-            throws JAXRException {
+            throws JAXRException
+    {
         classfiedobj = registryObject;
     }
 
-    public void setConcept(Concept cpt) throws JAXRException {
+    public void setConcept(Concept cpt) throws JAXRException
+    {
         concept = cpt;
     }
 
-    public void setValue(String str) throws JAXRException {
+    public void setValue(String str) throws JAXRException
+    {
         value = str;
     }
 

@@ -18,29 +18,31 @@ package org.apache.ws.scout.registry;
 
 import org.apache.juddi.IRegistry;
 import org.apache.juddi.datatype.Name;
+import org.apache.juddi.datatype.business.BusinessEntity;
 import org.apache.juddi.datatype.request.FindQualifiers;
+import org.apache.juddi.datatype.response.BusinessDetail;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.BusinessList;
-import org.apache.juddi.datatype.response.BusinessDetail;
-import org.apache.juddi.datatype.response.TModelList;
+import org.apache.juddi.datatype.response.TModelDetail;
 import org.apache.juddi.datatype.response.TModelInfo;
 import org.apache.juddi.datatype.response.TModelInfos;
+import org.apache.juddi.datatype.response.TModelList;
 import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.error.RegistryException;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
-import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
-import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.util.EnumerationHelper;
+import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.FindQualifier;
+import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
-import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
@@ -87,9 +89,9 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
             Vector nameVector = mapNamePatterns(namePatterns);
             BusinessList result = registry.findBusiness(nameVector,
-                                                   null, null, null, null,
-                                                   juddiFindQualifiers,
-                                                   registryService.getMaxRows());
+                    null, null, null, null,
+                    juddiFindQualifiers,
+                    registryService.getMaxRows());
             Vector v = result.getBusinessInfos().getBusinessInfoVector();
             Collection orgs = new ArrayList();
             int len = 0;
@@ -158,8 +160,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl("ntis-gov:naics"));
             scheme.setKey(new KeyImpl(TModel.NAICS_TMODEL_KEY));
-        }else
-        {
+        } else
+        {   //TODO:Before going to the registry, check if it a predefined Enumeration
+
+
             //Lets ask the uddi registry if it has the TModels
             IRegistry registry = registryService.getRegistry();
             FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
@@ -168,18 +172,18 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try
             {
                 //We are looking for one exact match, so getting upto 3 records is fine
-                TModelList list = registry.findTModel(namePatterns,null,null,juddiFindQualifiers,3);
+                TModelList list = registry.findTModel(namePatterns, null, null, juddiFindQualifiers, 3);
                 TModelInfos infos = null;
                 Vector tmvect = null;
-                if( list != null )   infos  = list.getTModelInfos();
-                if(infos != null ) tmvect =  infos.getTModelInfoVector() ;
-                if(tmvect != null )
+                if (list != null) infos = list.getTModelInfos();
+                if (infos != null) tmvect = infos.getTModelInfoVector();
+                if (tmvect != null)
                 {
-                    if(  tmvect.size() > 1)
-                     throw new InvalidRequestException("Multiple matches found");
-                    
-                    TModelInfo info = (TModelInfo)tmvect.elementAt(0);
-                    scheme.setName( new InternationalStringImpl(info.getName().getValue()));
+                    if (tmvect.size() > 1)
+                        throw new InvalidRequestException("Multiple matches found");
+
+                    TModelInfo info = (TModelInfo) tmvect.elementAt(0);
+                    scheme.setName(new InternationalStringImpl(info.getName().getValue()));
                     scheme.setKey(new KeyImpl(info.getTModelKey()));
                 }
 
@@ -216,7 +220,37 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                      Collection externalIdentifiers,
                                      Collection externalLinks) throws JAXRException
     {
-        return null;
+        Collection col = new ArrayList();
+
+        //Lets ask the uddi registry if it has the TModels
+        IRegistry registry = registryService.getRegistry();
+        FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
+        Iterator iter = null;
+        if (namePatterns != null) iter = namePatterns.iterator();
+        while (iter.hasNext())
+        {
+            String namestr = (String) iter.next();
+            try
+            {
+                TModelList list = registry.findTModel(namestr, null, null, juddiFindQualifiers, 10);
+                TModelInfos infos = null;
+                Vector tmvect = null;
+                if (list != null) infos = list.getTModelInfos();
+                if (infos != null) tmvect = infos.getTModelInfoVector();
+                for (int i = 0; tmvect != null && i < tmvect.size(); i++)
+                {
+                    TModelInfo info = (TModelInfo) tmvect.elementAt(i);
+                    col.add(ScoutUddiJaxrHelper.getConcept(info, this.registryService.getBusinessLifeCycleManager()));
+                }
+
+            } catch (RegistryException e)
+            {
+                e.printStackTrace();
+                throw new JAXRException(e.getLocalizedMessage());
+            }
+        }
+
+        return new BulkResponseImpl(col);
     }
 
     public BulkResponse findRegistryPackages(Collection findQualifiers,
@@ -254,18 +288,41 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         RegistryObject regobj = null;
         if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
         {
-            regobj = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
-            regobj.setKey(new KeyImpl(id));
-        }if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType))
+            try
+            {
+                TModelDetail tmodeldetail = registry.getTModelDetail(id);
+                regobj = (RegistryObject) ScoutUddiJaxrHelper.getConcept(tmodeldetail, registryService.getBusinessLifeCycleManager());
+
+            } catch (RegistryException e)
+            {
+                e.printStackTrace();
+                throw new JAXRException(e.getLocalizedMessage());
+            }
+        }
+        if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType))
         {
             //Get the Organization from the uddi registry
             try
             {
                 BusinessDetail orgdetail = registry.getBusinessDetail(id);
-                regobj = (RegistryObject)ScoutUddiJaxrHelper.getOrganization(orgdetail,registryService.getBusinessLifeCycleManager());
+                regobj = (RegistryObject) ScoutUddiJaxrHelper.getOrganization(orgdetail, registryService.getBusinessLifeCycleManager());
             } catch (RegistryException e)
             {
                 e.printStackTrace();
+                throw new JAXRException(e.getLocalizedMessage());
+            }
+        }
+        if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType))
+        {
+            try
+            {
+                TModelDetail tmodeldetail = registry.getTModelDetail(id);
+                regobj = (RegistryObject) ScoutUddiJaxrHelper.getConcept(tmodeldetail, registryService.getBusinessLifeCycleManager());
+
+            } catch (RegistryException e)
+            {
+                e.printStackTrace();
+                throw new JAXRException(e.getLocalizedMessage());
             }
         }
         return regobj;
@@ -281,9 +338,74 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         return null;
     }
 
-    public BulkResponse getRegistryObjects(Collection objectKeys, String objectTypes) throws JAXRException
+    public BulkResponse getRegistryObjects(Collection objectKeys, String objectType) throws JAXRException
     {
-        return null;
+        IRegistry registry = registryService.getRegistry();
+        //Convert into a vector of strings
+        Vector keys = new Vector();
+        Iterator iter = objectKeys.iterator();
+        while(iter.hasNext())
+        {
+            Key key = (Key)iter.next();
+            keys.add(key.getId());
+        }
+        Collection col = new ArrayList();
+        LifeCycleManager lcm = registryService.getLifeCycleManagerImpl();
+
+        RegistryObject regobj = null;
+        if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
+        {
+            try
+            {
+                TModelDetail tmodeldetail = registry.getTModelDetail(keys);
+                Vector tmvect = tmodeldetail.getTModelVector();
+                for (int i = 0; tmvect != null && i < tmvect.size(); i++)
+                {
+                    col.add(ScoutUddiJaxrHelper.getConcept((TModel) tmvect.elementAt(i), lcm));
+                }
+
+            } catch (RegistryException e)
+            {
+                e.printStackTrace();
+                throw new JAXRException(e.getLocalizedMessage());
+            }
+        }
+        if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType))
+        {
+            //Get the Organization from the uddi registry
+            try
+            {
+                BusinessDetail orgdetail = registry.getBusinessDetail(keys);
+                Vector bizvect = orgdetail.getBusinessEntityVector();
+                for (int i = 0; bizvect != null && i < bizvect.size(); i++)
+                {
+                    col.add(ScoutUddiJaxrHelper.getOrganization((BusinessEntity) bizvect.elementAt(i), lcm));
+                }
+            } catch (RegistryException e)
+            {
+                e.printStackTrace();
+                throw new JAXRException(e.getLocalizedMessage());
+            }
+        }
+        if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType))
+        {
+            try
+            {
+                TModelDetail tmodeldetail = registry.getTModelDetail(keys);
+                Vector tmvect = tmodeldetail.getTModelVector();
+                for (int i = 0; tmvect != null && i < tmvect.size(); i++)
+                {
+                    col.add(ScoutUddiJaxrHelper.getConcept((TModel) tmvect.elementAt(i), lcm));
+                }
+
+            } catch (RegistryException e)
+            {
+                e.printStackTrace();
+                throw new JAXRException(e.getLocalizedMessage());
+            }
+        }
+        return new BulkResponseImpl(col);
+
     }
 
     public BulkResponse getRegistryObjects(String objectTypes) throws JAXRException

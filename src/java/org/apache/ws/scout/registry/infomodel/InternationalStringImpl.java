@@ -31,13 +31,15 @@ import java.util.Map;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class InternationalStringImpl implements InternationalString {
+public class InternationalStringImpl implements InternationalString
+{
     /**
      * Maintains an Hashmap of locale to string value
      */
     private final Map map = new HashMap();
 
-    public InternationalStringImpl() {
+    public InternationalStringImpl()
+    {
     }
 
     public InternationalStringImpl(String str)
@@ -47,73 +49,90 @@ public class InternationalStringImpl implements InternationalString {
 
     }
 
-    public InternationalStringImpl(Locale locale, String str, String charsetName) {
+    public InternationalStringImpl(Locale locale, String str, String charsetName)
+    {
         MapKey mapKey = new MapKey(locale, charsetName);
         map.put(mapKey, new LocalizedStringImpl(locale, str, charsetName));
     }
 
-    public void addLocalizedString(LocalizedString localizedString) throws JAXRException {
+    public void addLocalizedString(LocalizedString localizedString) throws JAXRException
+    {
         MapKey mapKey = new MapKey(localizedString);
         map.put(mapKey, localizedString);
     }
 
-    public void addLocalizedStrings(Collection collection) throws JAXRException {
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+    public void addLocalizedStrings(Collection collection) throws JAXRException
+    {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             LocalizedString localizedString = (LocalizedString) i.next();
             map.put(new MapKey(localizedString), localizedString);
         }
     }
 
-    public Collection getLocalizedStrings() throws JAXRException {
+    public Collection getLocalizedStrings() throws JAXRException
+    {
         return Collections.unmodifiableCollection(map.values());
     }
 
-    public String getValue() throws JAXRException {
+    public String getValue() throws JAXRException
+    {
         return getValue(Locale.getDefault());
     }
 
-    public void setValue(String str) throws JAXRException {
+    public void setValue(String str) throws JAXRException
+    {
         setValue(Locale.getDefault(), str);
     }
 
-    public String getValue(Locale locale) throws JAXRException {
+    public String getValue(Locale locale) throws JAXRException
+    {
         LocalizedString localizedString = (LocalizedString) map.get(new MapKey(locale, LocalizedString.DEFAULT_CHARSET_NAME));
         return localizedString != null ? localizedString.getValue() : null;
     }
 
-    public void setValue(Locale locale, String value) throws JAXRException {
+    public void setValue(Locale locale, String value) throws JAXRException
+    {
         map.put(new MapKey(locale, LocalizedString.DEFAULT_CHARSET_NAME), new LocalizedStringImpl(locale, value, LocalizedString.DEFAULT_CHARSET_NAME));
     }
 
-    public void removeLocalizedString(LocalizedString localizedString) throws JAXRException {
+    public void removeLocalizedString(LocalizedString localizedString) throws JAXRException
+    {
         map.remove(new MapKey(localizedString));
     }
 
-    public void removeLocalizedStrings(Collection collection) throws JAXRException {
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+    public void removeLocalizedStrings(Collection collection) throws JAXRException
+    {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             removeLocalizedString((LocalizedString) i.next());
         }
     }
 
-    public LocalizedString getLocalizedString(Locale locale, String charset) throws JAXRException {
+    public LocalizedString getLocalizedString(Locale locale, String charset) throws JAXRException
+    {
         return (LocalizedString) map.get(new MapKey(locale, charset));
     }
 
-    private static class MapKey {
+    private static class MapKey
+    {
         private final Locale locale;
         private final String charsetName;
 
-        public MapKey(Locale locale, String charsetName) {
+        public MapKey(Locale locale, String charsetName)
+        {
             this.locale = locale;
             this.charsetName = charsetName;
         }
 
-        public MapKey(LocalizedString localizedString) throws JAXRException {
+        public MapKey(LocalizedString localizedString) throws JAXRException
+        {
             this.locale = localizedString.getLocale();
             this.charsetName = localizedString.getCharsetName();
         }
 
-        public boolean equals(Object o) {
+        public boolean equals(Object o)
+        {
             if (this == o) return true;
             if (!(o instanceof MapKey)) return false;
             final MapKey mapKey = (MapKey) o;
@@ -122,14 +141,16 @@ public class InternationalStringImpl implements InternationalString {
             return true;
         }
 
-        public int hashCode() {
+        public int hashCode()
+        {
             int result;
             result = locale.hashCode();
             result = 29 * result + charsetName.hashCode();
             return result;
         }
 
-        public String toString() {
+        public String toString()
+        {
             StringBuffer buf = new StringBuffer(32);
             buf.append('[').append(locale).append(',').append(charsetName).append(']');
             return buf.toString();

@@ -16,12 +16,12 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import javax.xml.registry.infomodel.SpecificationLink;
-import javax.xml.registry.infomodel.ServiceBinding;
-import javax.xml.registry.infomodel.RegistryObject;
-import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.SpecificationLink;
 import java.util.Collection;
 
 /**
@@ -31,7 +31,7 @@ import java.util.Collection;
  * @since Nov 20, 2004
  */
 public class SpecificationLinkImpl extends RegistryObjectImpl
-implements SpecificationLink
+        implements SpecificationLink
 {
     private Collection usageParams;
     private InternationalString descr;
@@ -45,22 +45,22 @@ implements SpecificationLink
 
     public ServiceBinding getServiceBinding() throws JAXRException
     {
-         return binding;
+        return binding;
     }
 
     public RegistryObject getSpecificationObject() throws JAXRException
     {
-         return specObj;
+        return specObj;
     }
 
     public InternationalString getUsageDescription() throws JAXRException
     {
-         return descr;
+        return descr;
     }
 
     public Collection getUsageParameters() throws JAXRException
     {
-         return usageParams;
+        return usageParams;
     }
 
     public void setSpecificationObject(RegistryObject registryObject) throws JAXRException
@@ -76,5 +76,11 @@ implements SpecificationLink
     public void setUsageParameters(Collection collection) throws JAXRException
     {
         usageParams = collection;
+    }
+
+    //Specific API
+    public void setServiceBinding(ServiceBinding s)
+    {
+        binding = s;
     }
 }
