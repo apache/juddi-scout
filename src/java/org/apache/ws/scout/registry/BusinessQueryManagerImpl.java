@@ -146,33 +146,45 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         return null;
     }
 
+    /**
+     *  TODO - need to support the qualifiers
+     *
+     * @param findQualifiers
+     * @param namePatterns
+     * @return
+     * @throws JAXRException
+     */
     public ClassificationScheme findClassificationSchemeByName(Collection findQualifiers,
                                                                String namePatterns) throws JAXRException
     {
         ClassificationScheme scheme = null;
 
-        if (namePatterns.equalsIgnoreCase("uddi-org:types"))
-        {
+        if (namePatterns.indexOf("uddi-org:types") != -1) {
+
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl("uddi-org:types"));
             scheme.setKey(new KeyImpl(TModel.TYPES_TMODEL_KEY));
-        } else if (namePatterns.equalsIgnoreCase("dnb-com:D-U-N-S"))
-        {
+        }
+        else if (namePatterns.indexOf("dnb-com:D-U-N-S") != -1) {
+
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl("dnb-com:D-U-N-S"));
             scheme.setKey(new KeyImpl(TModel.D_U_N_S_TMODEL_KEY));
-        } else if (namePatterns.equalsIgnoreCase("uddi-org:iso-ch:3166:1999"))
+        }
+        else if (namePatterns.indexOf("uddi-org:iso-ch:3166:1999") != -1)
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
-            scheme.setName(new InternationalStringImpl("uddi-org:iso-ch:3166:1999"));
+            scheme.setName(new InternationalStringImpl("uddi-org:iso-ch:3166-1999"));
             scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
-        } else if (namePatterns.equalsIgnoreCase("unspsc-org:unspsc"))
-        {
+        }
+        else if (namePatterns.indexOf("unspsc-org:unspsc") != -1) {
+
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl("unspsc-org:unspsc"));
             scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
-        } else if (namePatterns.equalsIgnoreCase("ntis-gov:naics"))
-        {
+        }
+        else if (namePatterns.indexOf("ntis-gov:naics") != -1) {
+
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl("ntis-gov:naics"));
             scheme.setKey(new KeyImpl(TModel.NAICS_TMODEL_KEY));
