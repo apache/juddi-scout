@@ -292,8 +292,10 @@ public class ScoutJaxrUddiHelper
             /*
              * first do primary, and then filter that out in the loop
              */
-            Contact ct = getContactFromJAXRUser(primaryContact);
-            cvect.add(ct);
+            if (primaryContact != null) {
+                Contact ct = getContactFromJAXRUser(primaryContact);
+                cvect.add(ct);
+            }
 
             Iterator it = users.iterator();
             while (it.hasNext())
@@ -301,7 +303,7 @@ public class ScoutJaxrUddiHelper
                 User u = (User) it.next();
 
                 if (u != primaryContact) {
-                    ct = getContactFromJAXRUser(u);
+                    Contact ct = getContactFromJAXRUser(u);
                     cvect.add(ct);
                 }
             }
@@ -328,12 +330,20 @@ public class ScoutJaxrUddiHelper
     }
 
     /**
+     *  TODO - should we really return new Contact() rather than null on
+     *     null input?
+     *
      * Convert JAXR User Object to UDDI  Contact
      */
     public static Contact getContactFromJAXRUser(User user)
             throws JAXRException
     {
         Contact ct = new Contact();
+
+        if (user == null) {
+            return ct;
+        }
+
         Vector addvect = new Vector();
         Vector phonevect = new Vector();
         Vector emailvect = new Vector();
