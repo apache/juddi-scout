@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Revision: 1.3 $ $Date: 2004/08/31 06:21:52 $ -->
+
+<project default="jar"
+    xmlns:j="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:deploy="deploy"
+    xmlns:ant="jelly:ant">
+
+    <!--
+    <preGoal name="java:compile">
+        <ant:path id="classpath.libraries">
+            <ant:fileset dir="./lib">
+                <ant:include name="**/*.jar"/>
+            </ant:fileset>
+            <ant:pathelement path="${maven.build.dest}"/>
+            <ant:pathelement path="target/classes"/>
+        </ant:path>
+        <maven:addPath id="maven.dependency.classpath" refid="classpath.libraries"/>
+    </preGoal>
+    -->
+
+    <preGoal name="test:compile">
+        <path id="scout.samples.set"
+              location="${basedir}/src/samples"/>
+        <maven:addPath id="maven.test.compile.src.set"
+                       refid="scout.samples.set"/>
+    </preGoal>
+</project>
