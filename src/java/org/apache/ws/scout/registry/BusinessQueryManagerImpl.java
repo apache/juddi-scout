@@ -64,8 +64,14 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager {
             Vector nameVector = mapNamePatterns(namePatterns);
             BusinessList result = registry.findBusiness(nameVector, null, null, null, null, juddiFindQualifiers, registryService.getMaxRows());
             Vector v = result.getBusinessInfos().getBusinessInfoVector();
-            Collection orgs = new ArrayList(v.size());
-            for (int i = 0; i < v.size(); i++) {
+            Collection orgs = null;
+            int len = 0;
+            if( v!= null )
+            {
+                len = v.size();
+                orgs = new ArrayList(len);
+            }
+            for (int i = 0; i < len; i++) {
                 BusinessInfo info = (BusinessInfo) v.elementAt(i);
                 orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(info));
             }

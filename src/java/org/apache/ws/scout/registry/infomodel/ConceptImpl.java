@@ -96,4 +96,24 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept {
     public void setValue(String str) {
         value = str;
     }
+
+    public void setParent(RegistryObject parent)
+    {
+        this.parent = parent;
+    }
+
+    public void setParentconcept(Concept parentconcept)
+    {
+        this.parentconcept = parentconcept;
+    }
+
+    public void setScheme(ClassificationSchemeImpl scheme)
+    {
+        this.scheme = scheme;
+    }
+
+    public void setChildconcepts(Collection childconcepts)
+    {
+        this.childconcepts = childconcepts;
+    }
 }

@@ -20,6 +20,7 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.InternationalString;
 
 /**
  * Implements JAXR Interface.
@@ -39,6 +40,16 @@ public class ExternalIdentifierImpl extends RegistryObjectImpl
      */
     public ExternalIdentifierImpl(LifeCycleManager lifeCycleManager) {
         super(lifeCycleManager);
+    }
+
+    public ExternalIdentifierImpl(LifeCycleManager lifeCycleManager,
+                                  ClassificationScheme identity,
+                                  InternationalString name,
+                                  String value )
+    {
+        super(lifeCycleManager,name);
+        this.identity = identity;
+        this.value = value;
     }
 
     public ClassificationScheme getIdentificationScheme()

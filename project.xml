@@ -31,7 +31,7 @@
         </dependency>
 
         <!-- external JARs -->
-        <dependency>
+<!--        <dependency>
             <groupId>geronimo-spec</groupId>
             <artifactId>geronimo-spec-activation</artifactId>
             <version>1.0.2-SNAPSHOT</version>
@@ -40,6 +40,11 @@
             <groupId>geronimo-spec</groupId>
             <artifactId>geronimo-spec-activation</artifactId>
             <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>sun-javamail</groupId>
+            <artifactId>activation</artifactId>
         </dependency>
         <dependency>
             <groupId>juddi</groupId>

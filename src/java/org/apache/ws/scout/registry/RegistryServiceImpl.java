@@ -46,6 +46,9 @@ public class RegistryServiceImpl implements RegistryService {
     private final ClassificationSchemeImpl postalScheme;
     private final int maxRows;
 
+
+    private  ConnectionImpl connection;
+
     public RegistryServiceImpl(RegistryProxy registry, String postalScheme, int maxRows) {
         this.registry = registry;
         this.maxRows = maxRows;
@@ -96,6 +99,17 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     public String makeRegistrySpecificRequest(String s) throws JAXRException {
-        return null;
+        throw new UnsupportedCapabilityException();
     }
+
+    public ConnectionImpl getConnection()
+    {
+            return connection;
+    }
+
+    public void setConnection(ConnectionImpl connection)
+    {
+            this.connection = connection;
+    }
+
 }

@@ -33,6 +33,17 @@ public class EmailAddressImpl implements EmailAddress {
     public EmailAddressImpl() {
     }
 
+    public EmailAddressImpl(String email)
+    {
+        this.email = email;
+    }
+
+    public EmailAddressImpl(String email, String type)
+    {
+        this.email = email;
+        this.type = type;
+    }
+
     public String getAddress() throws JAXRException {
         return email;
     }
