@@ -32,6 +32,7 @@ import org.apache.juddi.error.RegistryException;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.util.EnumerationHelper;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
@@ -160,40 +161,153 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl("ntis-gov:naics"));
             scheme.setKey(new KeyImpl(TModel.NAICS_TMODEL_KEY));
-        } else
+        }
+        else
         {   //TODO:Before going to the registry, check if it a predefined Enumeration
 
+            /*
+             * predefined Enumerations
+             */
 
-            //Lets ask the uddi registry if it has the TModels
-            IRegistry registry = registryService.getRegistry();
-            FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
-            Vector nameVector = new Vector();
-            nameVector.add(namePatterns);
-            try
-            {
-                //We are looking for one exact match, so getting upto 3 records is fine
-                TModelList list = registry.findTModel(namePatterns, null, null, juddiFindQualifiers, 3);
-                TModelInfos infos = null;
-                Vector tmvect = null;
-                if (list != null) infos = list.getTModelInfos();
-                if (infos != null) tmvect = infos.getTModelInfoVector();
-                if (tmvect != null)
+            if ("AssociationType".equals(namePatterns)) {
+                scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+
+                scheme.setName(new InternationalStringImpl(namePatterns));
+
+                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+
+                addChildConcept((ClassificationSchemeImpl)scheme, "RelatedTo");
+                addChildConcept((ClassificationSchemeImpl)scheme, "HasChild");
+                addChildConcept((ClassificationSchemeImpl)scheme, "HasMember");
+                addChildConcept((ClassificationSchemeImpl)scheme, "HasParent");
+                addChildConcept((ClassificationSchemeImpl)scheme, "ExternallyLinks");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Contains");
+                addChildConcept((ClassificationSchemeImpl)scheme, "EquivalentTo");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Extends");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Implements");
+                addChildConcept((ClassificationSchemeImpl)scheme, "InstanceOf");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Supersedes");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Uses");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Replaces");
+                addChildConcept((ClassificationSchemeImpl)scheme, "ResponsibleFor");
+                addChildConcept((ClassificationSchemeImpl)scheme, "SubmitterOf");
+            }
+            else if ("ObjectType".equals(namePatterns)) {
+                scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+
+                scheme.setName(new InternationalStringImpl(namePatterns));
+
+                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+
+                addChildConcept((ClassificationSchemeImpl)scheme, "CPP");
+                addChildConcept((ClassificationSchemeImpl)scheme, "CPA");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Process");
+                addChildConcept((ClassificationSchemeImpl)scheme, "WSDL");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Association");
+                addChildConcept((ClassificationSchemeImpl)scheme, "AuditableEvent");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Classification");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Concept");
+                addChildConcept((ClassificationSchemeImpl)scheme, "ExternalIdentifier");
+                addChildConcept((ClassificationSchemeImpl)scheme, "ExternalLink");
+                addChildConcept((ClassificationSchemeImpl)scheme, "ExtrinsicObject");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Organization");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Package");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Service");
+                addChildConcept((ClassificationSchemeImpl)scheme, "ServiceBinding");
+                addChildConcept((ClassificationSchemeImpl)scheme, "User");
+            }
+            else if ("PhoneType".equals(namePatterns)) {
+                scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+
+                scheme.setName(new InternationalStringImpl(namePatterns));
+
+                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+
+                addChildConcept((ClassificationSchemeImpl)scheme, "OfficePhone");
+                addChildConcept((ClassificationSchemeImpl)scheme, "HomePhone");
+                addChildConcept((ClassificationSchemeImpl)scheme, "MobilePhone");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Beeper");
+                addChildConcept((ClassificationSchemeImpl)scheme, "FAX");
+            }
+            else if ("URLType".equals(namePatterns)) {
+                scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+
+                scheme.setName(new InternationalStringImpl(namePatterns));
+
+                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+
+                addChildConcept((ClassificationSchemeImpl)scheme, "HTTP");
+                addChildConcept((ClassificationSchemeImpl)scheme, "HTTPS");
+                addChildConcept((ClassificationSchemeImpl)scheme, "SMTP");
+                addChildConcept((ClassificationSchemeImpl)scheme, "PHONE");
+                addChildConcept((ClassificationSchemeImpl)scheme, "FAX");
+                addChildConcept((ClassificationSchemeImpl)scheme, "OTHER");
+            }
+            else if ("PostalAddressAttributes".equals(namePatterns)) {
+                scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+
+                scheme.setName(new InternationalStringImpl(namePatterns));
+
+                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+
+                addChildConcept((ClassificationSchemeImpl)scheme, "StreetNumber");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Street");
+                addChildConcept((ClassificationSchemeImpl)scheme, "City");
+                addChildConcept((ClassificationSchemeImpl)scheme, "State");
+                addChildConcept((ClassificationSchemeImpl)scheme, "PostalCode");
+                addChildConcept((ClassificationSchemeImpl)scheme, "Country");
+            }
+            else {
+
+                //Lets ask the uddi registry if it has the TModels
+                IRegistry registry = registryService.getRegistry();
+                FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
+                Vector nameVector = new Vector();
+                nameVector.add(namePatterns);
+                try
                 {
-                    if (tmvect.size() > 1)
-                        throw new InvalidRequestException("Multiple matches found");
+                    //We are looking for one exact match, so getting upto 3 records is fine
+                    TModelList list = registry.findTModel(namePatterns, null, null, juddiFindQualifiers, 3);
+                    TModelInfos infos = null;
+                    Vector tmvect = null;
+                    if (list != null) infos = list.getTModelInfos();
+                    if (infos != null) tmvect = infos.getTModelInfoVector();
+                    if (tmvect != null)
+                    {
+                        if (tmvect.size() > 1)
+                            throw new InvalidRequestException("Multiple matches found");
 
-                    TModelInfo info = (TModelInfo) tmvect.elementAt(0);
-                    scheme.setName(new InternationalStringImpl(info.getName().getValue()));
-                    scheme.setKey(new KeyImpl(info.getTModelKey()));
+                        TModelInfo info = (TModelInfo) tmvect.elementAt(0);
+                        scheme.setName(new InternationalStringImpl(info.getName().getValue()));
+                        scheme.setKey(new KeyImpl(info.getTModelKey()));
+                    }
+
+                } catch (RegistryException e)
+                {
+                    e.printStackTrace();
+                    throw new JAXRException(e.getLocalizedMessage());
                 }
-
-            } catch (RegistryException e)
-            {
-                e.printStackTrace();
-                throw new JAXRException(e.getLocalizedMessage());
             }
         }
         return scheme;
+    }
+
+    /**
+     * Creates a new Concept, associates w/ parent scheme, and then
+     * adds as decendent.
+     * @param scheme
+     * @param name
+     * @throws JAXRException
+     */
+    private void addChildConcept(ClassificationSchemeImpl scheme, String name)
+        throws JAXRException {
+        Concept c = new ConceptImpl(registryService.getLifeCycleManagerImpl());
+
+        c.setName(new InternationalStringImpl(name));
+        c.setValue(name);
+        ((ConceptImpl)c).setScheme((ClassificationSchemeImpl)scheme);
+
+        scheme.addChildConcept(c);
     }
 
     public BulkResponse findClassificationSchemes(Collection findQualifiers,
