@@ -17,32 +17,27 @@
 package org.apache.ws.scout.registry;
 
 import org.apache.juddi.IRegistry;
+import org.apache.juddi.datatype.KeyedReference;
 import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.service.BusinessService;
+import org.apache.juddi.datatype.assertion.PublisherAssertion;
+import org.apache.juddi.datatype.binding.BindingTemplate;
 import org.apache.juddi.datatype.business.BusinessEntity;
 import org.apache.juddi.datatype.request.FindQualifiers;
-import org.apache.juddi.datatype.response.BusinessDetail;
-import org.apache.juddi.datatype.response.BusinessInfo;
-import org.apache.juddi.datatype.response.BusinessList;
-import org.apache.juddi.datatype.response.TModelDetail;
-import org.apache.juddi.datatype.response.TModelInfo;
-import org.apache.juddi.datatype.response.TModelInfos;
-import org.apache.juddi.datatype.response.TModelList;
-import org.apache.juddi.datatype.response.ServiceList;
-import org.apache.juddi.datatype.response.ServiceInfos;
-import org.apache.juddi.datatype.response.ServiceInfo;
-import org.apache.juddi.datatype.response.ServiceDetail;
+import org.apache.juddi.datatype.response.*;
+import org.apache.juddi.datatype.service.BusinessService;
 import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.error.RegistryException;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
-import org.apache.ws.scout.registry.infomodel.ConceptImpl;
-import org.apache.ws.scout.registry.infomodel.ServiceImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
+import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.util.EnumerationHelper;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
 import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.FindQualifier;
 import javax.xml.registry.InvalidRequestException;
@@ -50,20 +45,23 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
-import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.ServiceBinding;
+import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * Implements the JAXR BusinessQueryManager Interface
@@ -145,7 +143,49 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                          String targetObjectId,
                                          Collection associationTypes) throws JAXRException
     {
-        return null;
+        //TODO: Currently we just return all the Association objects owned by the caller
+        IRegistry registry = registryService.getRegistry();
+        try
+        {
+            FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
+
+            ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
+            AuthToken auth = this.getAuthToken(con,registry);
+            PublisherAssertions result =
+                    registry.getPublisherAssertions(auth.getAuthInfo());
+            Vector v = result.getPublisherAssertionVector();
+
+            Collection col = null;
+            int len = 0;
+            if (v != null)
+            {
+                len = v.size();
+                col = new ArrayList(len);
+            }
+            for (int i = 0; i < len; i++)
+            {
+                PublisherAssertion pas = (PublisherAssertion) v.elementAt(i);
+                String sourceKey = pas.getFromKey();
+                String targetKey = pas.getToKey();
+                Collection orgcol = new ArrayList();
+                orgcol.add(new KeyImpl(sourceKey));
+                orgcol.add(new KeyImpl(targetKey));
+                BulkResponse bl = getRegistryObjects(orgcol, LifeCycleManager.ORGANIZATION);
+                Association asso = ScoutUddiJaxrHelper.getAssociation(bl.getCollection(),
+                                             registryService.getBusinessLifeCycleManager());
+                KeyedReference keyr = pas.getKeyedReference();
+                Concept c = new ConceptImpl(getRegistryService().getBusinessLifeCycleManager());
+                c.setName(new InternationalStringImpl(keyr.getKeyName()));
+                c.setKey( new KeyImpl(keyr.getTModelKey()) );
+                c.setValue(keyr.getKeyValue());
+                asso.setAssociationType(c);
+                col.add(asso);
+            }
+            return new BulkResponseImpl(col);
+        } catch (RegistryException e)
+        {
+            throw new JAXRException(e);
+        }
     }
 
     public BulkResponse findCallerAssociations(Collection findQualifiers,
@@ -153,7 +193,72 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                                Boolean confirmedByOtherParty,
                                                Collection associationTypes) throws JAXRException
     {
-        return null;
+        //TODO: Currently we just return all the Association objects owned by the caller
+        IRegistry registry = registryService.getRegistry();
+        try
+        {
+            FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
+
+            ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
+            AuthToken auth = this.getAuthToken(con,registry);
+           
+            AssertionStatusReport report = null;
+            String confirm = "";
+            boolean caller = confirmedByCaller.booleanValue();
+            boolean other = confirmedByOtherParty.booleanValue();
+
+            if(caller  && other   )
+                        confirm = CompletionStatus.COMPLETE;
+            else
+              if(!caller  && other  )
+                        confirm = CompletionStatus.FROMKEY_INCOMPLETE;
+           else
+                 if(caller  && !other   )
+                        confirm = CompletionStatus.TOKEY_INCOMPLETE;
+
+            report = registry.getAssertionStatusReport(auth.getAuthInfo(),confirm);
+            Vector v = report.getAssertionStatusItemVector();
+            Collection col = new ArrayList();
+            int len = 0;
+            if (v != null)
+            {
+                len = v.size();
+                col = new ArrayList(len);
+            }
+            for (int i = 0; i < len; i++)
+            {
+                AssertionStatusItem asi = (AssertionStatusItem) v.elementAt(i);
+                String sourceKey = asi.getFromKey();
+                String targetKey = asi.getToKey();
+                Collection orgcol = new ArrayList();
+                orgcol.add(new KeyImpl(sourceKey));
+                orgcol.add(new KeyImpl(targetKey));
+                BulkResponse bl = getRegistryObjects(orgcol, LifeCycleManager.ORGANIZATION);
+                Association asso = ScoutUddiJaxrHelper.getAssociation(bl.getCollection(),
+                                             registryService.getBusinessLifeCycleManager());
+                //Set Confirmation
+                ((AssociationImpl)asso).setConfirmedBySourceOwner(caller);
+                ((AssociationImpl)asso).setConfirmedByTargetOwner(other);
+
+                if(confirm != CompletionStatus.COMPLETE)
+                     ((AssociationImpl)asso).setConfirmed(false);
+
+                Concept c = new ConceptImpl(getRegistryService().getBusinessLifeCycleManager());
+                KeyedReference keyr = asi.getKeyedReference();
+                c.setKey(new KeyImpl(keyr.getTModelKey()));
+                c.setName(new InternationalStringImpl(keyr.getKeyName()));
+                c.setValue(keyr.getKeyValue());
+                asso.setKey(new KeyImpl(keyr.getTModelKey())); //TODO:Validate this
+                asso.setAssociationType(c);
+                col.add(asso);
+            }
+
+
+            return new BulkResponseImpl(col);
+        } catch (RegistryException e)
+        {
+            throw new JAXRException(e);
+        }
     }
 
     /**
@@ -181,7 +286,25 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             scheme.setName(new InternationalStringImpl(namePatterns));
             scheme.setKey(new KeyImpl(TModel.D_U_N_S_TMODEL_KEY));
         }
+        else if (namePatterns.indexOf("uddi-org:iso-ch:3166:1999") != -1)
+        {
+            scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setName(new InternationalStringImpl(namePatterns));
+            scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
+        }
         else if (namePatterns.indexOf("uddi-org:iso-ch:3166-1999") != -1)
+        {
+            scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setName(new InternationalStringImpl(namePatterns));
+            scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
+        }
+        else if (namePatterns.indexOf("iso-ch:3166:1999") != -1)
+        {
+            scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setName(new InternationalStringImpl(namePatterns));
+            scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
+        }
+        else if (namePatterns.indexOf("iso-ch:3166-1999") != -1)
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
@@ -352,7 +475,19 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                                   Collection classifications,
                                                   Collection externalLinks) throws JAXRException
     {
-        return null;
+        //TODO: Handle this better
+        Collection col = new ArrayList();
+        Iterator iter = namePatterns.iterator();
+        String name = "";
+        while(iter.hasNext())
+        {
+          name = (String)iter.next();
+          break;
+        }
+
+        col.add(this.findClassificationSchemeByName(findQualifiers,name));
+        return new BulkResponseImpl(col);
+
     }
 
     public Concept findConceptByPath(String path) throws JAXRException
@@ -417,7 +552,43 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                             Collection classifications,
                                             Collection specifications) throws JAXRException
     {
-        return null;
+        BulkResponseImpl blkRes = new BulkResponseImpl();
+
+        IRegistry iRegistry = registryService.getRegistry();
+        FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
+
+        try
+        {
+ 
+            BindingDetail l = iRegistry.findBinding(serviceKey.getId(),null,null,juddiFindQualifiers,registryService.getMaxRows());
+
+            /*
+             * now convert  from jUDDI ServiceInfo objects to JAXR Services
+             */
+            if (l != null) {
+
+                Vector bindvect= l.getBindingTemplateVector();
+                Collection col = new ArrayList();
+
+                for (int i=0; bindvect != null && i < bindvect.size(); i++) {
+                    BindingTemplate si = (BindingTemplate) bindvect.elementAt(i);
+                    ServiceBinding sb =  ScoutUddiJaxrHelper.getServiceBinding(si,
+                            registryService.getBusinessLifeCycleManager());
+                    col.add(sb);
+                   //Fill the Service object by making a call to registry
+                   Service s = (Service)getRegistryObject(serviceKey.getId(), LifeCycleManager.SERVICE);
+                   ((ServiceBindingImpl)sb).setService(s);
+                }
+
+                blkRes.setCollection(col);
+            }
+        }
+        catch (RegistryException e) {
+            e.printStackTrace();
+            throw new JAXRException(e.getLocalizedMessage());
+        }
+
+        return blkRes;
     }
 
 
@@ -552,6 +723,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
             try {
 
+               
                 ServiceDetail sd = registry.getServiceDetail(id);
 
                 if (sd != null) {
@@ -814,5 +986,33 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             result.add(new Name(pattern));
         }
         return result;
+    }
+
+   /**
+     * Get the Auth Token from the registry
+     *
+     * @param connection
+     * @param ireg
+     * @return auth token
+     * @throws JAXRException
+     */
+    private AuthToken getAuthToken(ConnectionImpl connection, IRegistry ireg)
+            throws JAXRException {
+        Set creds = connection.getCredentials();
+        Iterator it = creds.iterator();
+        String username = "", pwd = "";
+        while (it.hasNext()) {
+            PasswordAuthentication pass = (PasswordAuthentication) it.next();
+            username = pass.getUserName();
+            pwd = new String(pass.getPassword());
+        }
+        AuthToken token = null;
+        try {
+            token = ireg.getAuthToken(username, pwd);
+        }
+        catch (Exception e) {
+            throw new JAXRException(e);
+        }
+        return token;
     }
 }
