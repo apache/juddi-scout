@@ -16,117 +16,95 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
-import javax.xml.registry.JAXRException;
 import javax.xml.registry.infomodel.ClassificationScheme;
-
-import java.util.Collection;
+import javax.xml.registry.infomodel.PostalAddress;
 
 /**
  * Implements PostalAddress Interface
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class PostalAddressImpl extends ExtensibleObjectImpl
-implements javax.xml.registry.infomodel.PostalAddress {
-    
-     private String city = new String();
-     private String country = new String(); 
-     private String postalCode = new String(); 
-     private ClassificationScheme postalScheme = new ClassificationSchemeImpl(); 
-     private String stateOrProvince = new String(); 
-     private String street = new String(); 
-     private String streetNumber = new String();
-     private String type = new String(); 
-    
-    
-    /** Creates a new instance of PostalAddressImpl */
-    public PostalAddressImpl() {
-    }     
-    
-    public String getCity() 
-    throws JAXRException {
+public class PostalAddressImpl extends ExtensibleObjectImpl implements PostalAddress {
+    private static final String EMPTY_STRING = "";
+    private String street = EMPTY_STRING;
+    private String streetNumber = EMPTY_STRING;
+    private String city = EMPTY_STRING;
+    private String stateOrProvince = EMPTY_STRING;
+    private String postalCode = EMPTY_STRING;
+    private String country = EMPTY_STRING;
+    private String type = EMPTY_STRING;
+    private ClassificationScheme postalScheme;
+
+    /**
+     * Creates a new instance of PostalAddressImpl
+     */
+    public PostalAddressImpl(ClassificationScheme postalScheme) {
+        this.postalScheme = postalScheme;
+    }
+
+    public String getCity() {
         return city;
     }
-    
-    public String getCountry() 
-    throws JAXRException {
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
         return country;
     }
-    
-    public String getPostalCode() 
-    throws JAXRException {
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getPostalCode() {
         return postalCode;
     }
-    
-    public ClassificationScheme getPostalScheme() 
-    throws JAXRException {
-        return postalScheme;
-    } 
-    
-    public Collection getSlots() 
-    throws JAXRException {
-        return null;
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
-    
-    public String getStateOrProvince() 
-    throws JAXRException {
+
+    public ClassificationScheme getPostalScheme() {
+        return postalScheme;
+    }
+
+    public void setPostalScheme(ClassificationScheme postalScheme) {
+        this.postalScheme = postalScheme;
+    }
+
+    public String getStateOrProvince() {
         return stateOrProvince;
     }
-    
-    public String getStreet() 
-    throws JAXRException {
+
+    public void setStateOrProvince(String stateOrProvince) {
+        this.stateOrProvince = stateOrProvince;
+    }
+
+    public String getStreet() {
         return street;
     }
-    
-    public String getStreetNumber() 
-    throws JAXRException {
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getStreetNumber() {
         return streetNumber;
     }
-    
-    public String getType() 
-    throws JAXRException {
-           return type;  
-    }     
-    
-    public void setCity(String str) 
-    throws JAXRException {
-        city = str;
+
+    public void setStreetNumber(String streetNumber) {
+        this.streetNumber = streetNumber;
     }
-    
-    public void setCountry(String str) 
-    throws JAXRException {
-        country = str;
+
+    public String getType() {
+        return type;
     }
-    
-    public void setPostalCode(String str) 
-    throws JAXRException {
-        postalCode = str;
+
+    public void setType(String type) {
+        this.type = type;
     }
-    
-    public void setPostalScheme( ClassificationScheme cscheme) 
-    throws JAXRException {
-        postalScheme = cscheme;
-    }
-    
-    public void setStateOrProvince(String str) 
-    throws JAXRException {
-        stateOrProvince = str;
-    }
-    
-    public void setStreet(String str) 
-    throws JAXRException {
-        street  =str;
-    }
-    
-    public void setStreetNumber(String str) 
-    throws JAXRException {
-        streetNumber =str;
-    }
-    
-    public void setType(String str) 
-    throws JAXRException {
-        type = str;
-    }
-    
 }

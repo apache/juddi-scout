@@ -15,103 +15,85 @@
  */
 
 package org.apache.ws.scout.registry.infomodel;
+
 import java.util.ArrayList;
 import java.util.Collection;
-
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.*;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.RegistryObject;
 
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ConceptImpl 
-extends RegistryObjectImpl
-implements javax.xml.registry.infomodel.Concept {
-    private String value = new  String(); 
-    
-    private RegistryObject parent = new RegistryObjectImpl();
+public class ConceptImpl extends RegistryObjectImpl implements Concept {
+    private String value = new String();
+
+    private RegistryObject parent = new RegistryObjectImpl(null);
     private Concept parentconcept = null;
-     
-    private ClassificationSchemeImpl scheme = new ClassificationSchemeImpl();
+
+    private ClassificationSchemeImpl scheme = new ClassificationSchemeImpl(null);
     private Collection childconcepts = new ArrayList();
 
-    private String path;
-    
-    /** Creates a new instance of ConceptImpl */
-    public ConceptImpl() {
-    } 
-    public void addChildConcept(Concept concept) 
-    throws JAXRException {
-        this.childconcepts.add( concept);
+    /**
+     * Creates a new instance of ConceptImpl
+     */
+    public ConceptImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
     }
-    
-    public void addChildConcepts(Collection collection) 
-    throws JAXRException {
-        this.childconcepts.addAll( collection );
+
+    public void addChildConcept(Concept concept) {
+        this.childconcepts.add(concept);
     }
-    
-    public int getChildConceptCount() 
-    throws JAXRException {
+
+    public void addChildConcepts(Collection collection) {
+        this.childconcepts.addAll(collection);
+    }
+
+    public int getChildConceptCount() {
         return this.childconcepts.size();
     }
-    
-    public Collection getChildrenConcepts() 
-    throws JAXRException {
+
+    public Collection getChildrenConcepts() {
         return this.childconcepts;
     }
-    
-    public ClassificationScheme getClassificationScheme() 
-    throws JAXRException {
+
+    public ClassificationScheme getClassificationScheme() {
         return scheme;
     }
-    
-     
-    public Collection getDescendantConcepts() 
-    throws JAXRException {
+
+    public Collection getDescendantConcepts() {
         return null;
     }
-    
-    public RegistryObject getParent() 
-    throws JAXRException {
+
+    public RegistryObject getParent() {
         return parent;
     }
-    
-    public Concept getParentConcept() 
-    throws JAXRException {
+
+    public Concept getParentConcept() {
         return parentconcept;
     }
-    
-    public String getPath() throws JAXRException {
-        return path;
+
+    public String getPath() {
+        return null;
     }
-    
+
     public String getValue() throws JAXRException {
         return value;
     }
-    
-    public void removeChildConcept(Concept concept) 
-    throws JAXRException {
+
+    public void removeChildConcept(Concept concept) {
     }
-    
-    public void removeChildConcepts(Collection collection) 
-    throws JAXRException {
-        this.childconcepts.removeAll( collection );
-    }    
-     
-    
-    public void setValue(String str) 
-    throws JAXRException {
+
+    public void removeChildConcepts(Collection collection) {
+        this.childconcepts.removeAll(collection);
+    }
+
+    public void setValue(String str) {
         value = str;
-    }
-    
-     
-    public void setParent( RegistryObject reg){
-        parent = reg;
-    }
-    
-    public void setParentConcept( Concept c){
-        parentconcept = c;
     }
 }

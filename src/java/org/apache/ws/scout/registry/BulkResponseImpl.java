@@ -41,6 +41,10 @@ public class BulkResponseImpl implements BulkResponse {
     /** Creates a new instance of BulkResponseImpl */
     public BulkResponseImpl() {
     }
+
+    BulkResponseImpl(Collection collection) {
+        this.collection = collection;
+    }
     
     /** Get Collection of RegistryObjects **/
     public Collection getCollection() throws JAXRException {

@@ -1,348 +1,355 @@
-/*
- * Copyright 2001-2004 The Apache Software Foundation.
+/**
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright 2004 The Apache Software Foundation
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
-
 package org.apache.ws.scout.registry;
 
-import javax.xml.registry.infomodel.*;
-import javax.xml.registry.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Vector;
+import javax.activation.DataHandler;
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.InvalidRequestException;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.Classification;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.EmailAddress;
+import javax.xml.registry.infomodel.ExternalIdentifier;
+import javax.xml.registry.infomodel.ExternalLink;
+import javax.xml.registry.infomodel.ExtrinsicObject;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.LocalizedString;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.PersonName;
+import javax.xml.registry.infomodel.PostalAddress;
+import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.RegistryPackage;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.Slot;
+import javax.xml.registry.infomodel.SpecificationLink;
+import javax.xml.registry.infomodel.TelephoneNumber;
+import javax.xml.registry.infomodel.User;
 
-import java.util.*;
-import javax.activation.DataHandler ;
-
-import org.apache.ws.scout.registry.infomodel.*;
+import org.apache.juddi.datatype.response.BusinessInfo;
+import org.apache.juddi.datatype.response.ServiceInfo;
+import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
+import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.registry.infomodel.LocalizedStringImpl;
+import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceImpl;
+import org.apache.ws.scout.registry.infomodel.EmailAddressImpl;
+import org.apache.ws.scout.registry.infomodel.ExternalIdentifierImpl;
+import org.apache.ws.scout.registry.infomodel.ExternalLinkImpl;
+import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
+import org.apache.ws.scout.registry.infomodel.RegistryEntryImpl;
+import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
+import org.apache.ws.scout.registry.infomodel.UserImpl;
 
 /**
- * Implements JAXR LifeCycleManager Interface
- * For futher details, look into the JAXR API Javadoc.
- * @author Anil Saldhana  <anil@apache.org>
+ * @version $Revision$ $Date$
  */
-public class LifeCycleManagerImpl 
-implements javax.xml.registry.LifeCycleManager{
-    //protected RegistryService regservice = null;
+public class LifeCycleManagerImpl implements LifeCycleManager {
+    private final RegistryService registry;
 
-    /** Creates a new instance of LifeCycleManagerImpl */
-    public LifeCycleManagerImpl() {
+    public LifeCycleManagerImpl(RegistryService registry) {
+        this.registry = registry;
     }
-    
-    public Association createAssociation(RegistryObject registryObject, 
-        Concept concept) 
-    throws JAXRException {
+
+    public RegistryService getRegistryService() {
+        return registry;
+    }
+
+    public Object createObject(String interfaceName) throws JAXRException {
+        // we don't use reflection so that we can work in environments where
+        // we may not have permission to do so
+        if (LifeCycleManager.ASSOCIATION.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else if (LifeCycleManager.AUDITABLE_EVENT.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else if (LifeCycleManager.CLASSIFICATION.equals(interfaceName)) {
+            return new ClassificationImpl(this);
+        } else if (LifeCycleManager.CLASSIFICATION_SCHEME.equals(interfaceName)) {
+            return new ClassificationSchemeImpl(this);
+        } else if (LifeCycleManager.CONCEPT.equals(interfaceName)) {
+            return new ConceptImpl(this);
+        } else if (LifeCycleManager.EMAIL_ADDRESS.equals(interfaceName)) {
+            return new EmailAddressImpl();
+        } else if (LifeCycleManager.EXTERNAL_IDENTIFIER.equals(interfaceName)) {
+            return new ExternalIdentifierImpl(this);
+        } else if (LifeCycleManager.EXTERNAL_LINK.equals(interfaceName)) {
+            return new ExternalLinkImpl(this);
+        } else if (LifeCycleManager.EXTRINSIC_OBJECT.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else if (LifeCycleManager.INTERNATIONAL_STRING.equals(interfaceName)) {
+            return new InternationalStringImpl();
+        } else if (LifeCycleManager.KEY.equals(interfaceName)) {
+            return new KeyImpl();
+        } else if (LifeCycleManager.LOCALIZED_STRING.equals(interfaceName)) {
+            return new LocalizedStringImpl();
+        } else if (LifeCycleManager.ORGANIZATION.equals(interfaceName)) {
+            return new OrganizationImpl(this);
+        } else if (LifeCycleManager.PERSON_NAME.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else if (LifeCycleManager.POSTAL_ADDRESS.equals(interfaceName)) {
+            return new PostalAddressImpl(registry.getDefaultPostalScheme());
+        } else if (LifeCycleManager.REGISTRY_ENTRY.equals(interfaceName)) {
+            return new RegistryEntryImpl(this);
+        } else if (LifeCycleManager.REGISTRY_PACKAGE.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else if (LifeCycleManager.SERVICE.equals(interfaceName)) {
+            return new ServiceImpl(this);
+        } else if (LifeCycleManager.SERVICE_BINDING.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else if (LifeCycleManager.SLOT.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else if (LifeCycleManager.SPECIFICATION_LINK.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else if (LifeCycleManager.TELEPHONE_NUMBER.equals(interfaceName)) {
+            return new TelephoneNumberImpl();
+        } else if (LifeCycleManager.USER.equals(interfaceName)) {
+            return new UserImpl(this);
+        } else if (LifeCycleManager.VERSIONABLE.equals(interfaceName)) {
+            throw new UnsupportedCapabilityException();
+        } else {
+            throw new InvalidRequestException("Unknown interface: " + interfaceName);
+        }
+    }
+
+    public Association createAssociation(RegistryObject targetObject, Concept associationType) throws JAXRException {
         return null;
     }
-    
-    public   Classification createClassification(  Concept concept) 
-    throws  JAXRException,  InvalidRequestException {
-        ClassificationImpl  cl   = new  ClassificationImpl(); 
-        cl.setConcept( concept); 
-        return cl;
-    }
-    
-    public  Classification createClassification(  
-                           ClassificationScheme cscheme, 
-                           String name, String value) throws  JAXRException {
-        InternationalStringImpl iname = new InternationalStringImpl(name);
-        ClassificationImpl  cl   = new  ClassificationImpl(iname,value); 
-        cl.setClassificationScheme( cscheme );
-        return cl;         
-    }
-    
-    public   Classification createClassification(  
-                           ClassificationScheme scheme,
-                           InternationalString name,
-                           String value) throws  JAXRException {
-        ClassificationImpl  cl   = new  ClassificationImpl(name,value); 
-        cl.setClassificationScheme( scheme );
-        return cl;
-    }
-    
-    public ClassificationScheme createClassificationScheme(
-      String name, String desc) throws  JAXRException,  InvalidRequestException {
-        ClassificationSchemeImpl cls  = new  ClassificationSchemeImpl(); 
-        cls.setName( new InternationalStringImpl(name));
-        cls.setDescription( new InternationalStringImpl(desc));
-        return cls;
-    }  
-    
-     
-    public  ClassificationScheme createClassificationScheme(Concept concept) 
-    throws  JAXRException,  InvalidRequestException {
-       return concept.getClassificationScheme();
-    }
-    
-    public ClassificationScheme createClassificationScheme(  
-     InternationalString name,  
-     InternationalString desc) 
-     throws  JAXRException,  InvalidRequestException {
-        ClassificationSchemeImpl cls  = new  ClassificationSchemeImpl(); 
-        cls.setName(  name );
-        cls.setDescription(  desc );
-        return cls;
-    }
-    
-    public Concept createConcept(  RegistryObject parent,  
-                   InternationalString name, String value) 
-    throws  JAXRException {
-        ConceptImpl c = new ConceptImpl();
-        c.setParent( parent );
-        c.setName( name);
-        c.setValue( value);
-        return c;
-    }
-    
-    public Concept createConcept( RegistryObject parent, 
-                    String name, String value) throws  JAXRException {
-           ConceptImpl c = new ConceptImpl();
-           c.setParent( parent );
-           c.setName( new InternationalStringImpl(name));
-           c.setValue( value);
-           return c;
-    }
-    
-   public EmailAddress createEmailAddress(String type) 
-    throws  JAXRException {
-        EmailAddressImpl email = new EmailAddressImpl();
-        email.setAddress( "" );
-        email.setType( type );
-        return email;
-    }
-    
-    public EmailAddress createEmailAddress(String str, String type) 
-    throws  JAXRException {
-        EmailAddressImpl email = new EmailAddressImpl();
-        email.setAddress( str );
-        email.setType( type );
-        return email;
-    }
-    
-   /**
-     *    Creates an ExternalIdentifier instance using the specified parameters, where the name is an InternationalString.
-          Parameters:        identificationScheme - the ClassificationScheme used
-                name - the name of the external identifier (an InternationalString)
-                value - the value of the external identifier
-          Returns:        the ExternalIdentifier instance created
-     */
-    public ExternalIdentifier createExternalIdentifier(  
-        ClassificationScheme cs,   
-        InternationalString name, String str) throws  JAXRException {
-           ExternalIdentifierImpl ext = new ExternalIdentifierImpl();
-           ext.setIdentificationScheme(cs);
-           ext.setName( name );
-           ext.setValue(str );
-           ext.setLifeCycleManager( this );
-           return ext;
-    }
-    
-    public ExternalIdentifier createExternalIdentifier(  
-           ClassificationScheme cs, 
-           String name, String value) throws  JAXRException {
-                ExternalIdentifierImpl ext = new ExternalIdentifierImpl();
-                ext.setIdentificationScheme(cs);
-                ext.setName( new InternationalStringImpl(name) );
-                ext.setValue(value );
-                ext.setLifeCycleManager( this );
-                return ext;
-    }
-    
-    
-    public ExternalLink createExternalLink(String uri, String desc) 
-    throws JAXRException {
-         return this.createExternalLink(uri,
-            new InternationalStringImpl( desc ));
-    }
-    
-    public ExternalLink createExternalLink(String uri, InternationalString desc) 
-    throws JAXRException {
-        ExternalLinkImpl ext = new ExternalLinkImpl();
-        ext.setExternalURI( uri );
-        ext.setDescription(desc ); 
-        ext.setLifeCycleManager( this );
-        return ext;
-    }
-    
-    public   ExtrinsicObject createExtrinsicObject( DataHandler dataHandler) 
-    throws  JAXRException {
+
+    public Classification createClassification(Concept concept) throws JAXRException, InvalidRequestException {
         return null;
     }
-    
-    public   InternationalString createInternationalString() 
-    throws  JAXRException {
+
+    public Classification createClassification(ClassificationScheme scheme, InternationalString name, String value) throws JAXRException {
+        return null;
+    }
+
+    public Classification createClassification(ClassificationScheme scheme, String name, String value) throws JAXRException {
+        return null;
+    }
+
+    public ClassificationScheme createClassificationScheme(Concept concept) throws JAXRException, InvalidRequestException {
+        return null;
+    }
+
+    public ClassificationScheme createClassificationScheme(InternationalString name, InternationalString description) throws JAXRException, InvalidRequestException {
+        return null;
+    }
+
+    public ClassificationScheme createClassificationScheme(String name, String description) throws JAXRException, InvalidRequestException {
+        return null;
+    }
+
+    public Concept createConcept(RegistryObject parent, InternationalString name, String value) throws JAXRException {
+        return null;
+    }
+
+    public Concept createConcept(RegistryObject parent, String name, String value) throws JAXRException {
+        return null;
+    }
+
+    public EmailAddress createEmailAddress(String address) throws JAXRException {
+        return null;
+    }
+
+    public EmailAddress createEmailAddress(String address, String type) throws JAXRException {
+        return null;
+    }
+
+    public ExternalIdentifier createExternalIdentifier(ClassificationScheme identificationScheme, InternationalString name, String value) throws JAXRException {
+        return null;
+    }
+
+    public ExternalIdentifier createExternalIdentifier(ClassificationScheme identificationScheme, String name, String value) throws JAXRException {
+        return null;
+    }
+
+    public ExternalLink createExternalLink(String externalURI, InternationalString description) throws JAXRException {
+        return null;
+    }
+
+    public ExternalLink createExternalLink(String externalURI, String description) throws JAXRException {
+        return null;
+    }
+
+    public InternationalString createInternationalString() throws JAXRException {
         return new InternationalStringImpl();
     }
-    
-    public   InternationalString createInternationalString(String str) 
-    throws  JAXRException {
-        return new InternationalStringImpl(str);
+
+    public InternationalString createInternationalString(String value) throws JAXRException {
+        return new InternationalStringImpl(Locale.getDefault(), value, LocalizedString.DEFAULT_CHARSET_NAME);
     }
-    
-    public   InternationalString createInternationalString( Locale locale, 
-                                  String str) throws  JAXRException {                                      
-      return new InternationalStringImpl(locale,str);
+
+    public InternationalString createInternationalString(Locale locale, String value) throws JAXRException {
+        return new InternationalStringImpl(locale, value, LocalizedString.DEFAULT_CHARSET_NAME);
     }
-    
-    public Key createKey(String str) throws  JAXRException {
-        return new KeyImpl(str);
+
+    public Key createKey(String id) {
+        return new KeyImpl(id);
     }
-       
-    public   LocalizedString createLocalizedString( Locale locale, 
-                           String str) throws  JAXRException {
-          return new LocalizedStringImpl(locale, str);
+
+    public LocalizedString createLocalizedString(Locale locale, String value) throws JAXRException {
+        return new LocalizedStringImpl(locale, value, LocalizedString.DEFAULT_CHARSET_NAME);
     }
-    
-    public   LocalizedString createLocalizedString( Locale locale, 
-                           String str, String charset) throws  JAXRException {
-         String charstr = "";
-         try{
-             charstr = new String(str.getBytes(), charset);
-         }catch( java.io.UnsupportedEncodingException io){
-             //Assume that we will use the default charset
-             charstr = str;
-         }
-         return new LocalizedStringImpl(locale, charstr);
+
+    public LocalizedString createLocalizedString(Locale locale, String value, String charsetName) throws JAXRException {
+        return new LocalizedStringImpl(locale, value, charsetName);
     }
-    
-    
-    public Object createObject(String str) throws  JAXRException,  
-              InvalidRequestException,  UnsupportedCapabilityException {
-                  return null;
-    }
-    
-    public   Organization createOrganization(String str) 
-    throws  JAXRException {
-        return this.createOrganization(new InternationalStringImpl( str) );        
-    }
-    
-    public   Organization createOrganization( 
-             InternationalString istr) throws  JAXRException {
-                 OrganizationImpl org = new OrganizationImpl();
-                 org.setName( istr);
-                 org.setLifeCycleManager( this); 
-                 return org;
-    }
-    
-    
-    public   PersonName createPersonName(String fullname) throws  JAXRException {
-        PersonNameImpl pn = new PersonNameImpl(fullname);
-        return pn;
-    }
-    
-    public   PersonName createPersonName( String firstName,
-                                    String middleName, String lastName) 
-               throws  JAXRException {
-        PersonNameImpl pn = new PersonNameImpl( firstName,middleName,lastName);
-        return pn;
-    }
-    
-    public   PostalAddress createPostalAddress( String streetNumber,
-                                        String street,
-                                          String city,
-                                         String stateOrProvince,
-                                       String country,
-                                         String postalCode,
-                                       String type) 
-    throws  JAXRException {  
-         PostalAddressImpl post = new PostalAddressImpl();
-         post.setStreetNumber(streetNumber);
-         post.setStreet(street);
-         post.setCity( city);
-         post.setStateOrProvince(stateOrProvince);
-         post.setCountry( country);
-         post.setPostalCode(postalCode);
-         post.setType( type );
-         return post;
-    }
-    
-    public   RegistryPackage createRegistryPackage(String str) 
-    throws  JAXRException {
+
+    public Organization createOrganization(InternationalString name) throws JAXRException {
         return null;
     }
-    
-    public   RegistryPackage createRegistryPackage(  
-                            InternationalString internationalString) 
-    throws  JAXRException {
+
+    public Organization createOrganization(String name) throws JAXRException {
         return null;
     }
-    
-    public   Service createService(String str) throws  JAXRException {
-        ServiceImpl serve = new ServiceImpl();
-        serve.setName( new InternationalStringImpl(str ));
-        return serve;         
-    }
-    
-    public   Service createService(  InternationalString istr) 
-    throws  JAXRException {
-        ServiceImpl serve = new ServiceImpl();
-        serve.setName( istr );
-        return serve;
-    }
-    
-    public   ServiceBinding createServiceBinding() throws  JAXRException {
+
+    public PersonName createPersonName(String fullName) throws JAXRException {
         return null;
     }
-    
-    public Slot createSlot(String str,  Collection collection, String str2) 
-    throws JAXRException {
+
+    public PostalAddress createPostalAddress(String streetNumber, String street, String city, String stateOrProvince, String country, String postalCode, String type) throws JAXRException {
         return null;
     }
-    
-    public Slot createSlot(String str, String str1, String str2) 
-    throws JAXRException {
+
+    public Service createService(InternationalString name) throws JAXRException {
         return null;
     }
-    
+
+    public Service createService(String name) throws JAXRException {
+        return null;
+    }
+
+    public ServiceBinding createServiceBinding() throws JAXRException {
+        return null;
+    }
+
+    public Slot createSlot(String name, String value, String slotType) throws JAXRException {
+        return null;
+    }
+
+    public Slot createSlot(String name, Collection values, String slotType) throws JAXRException {
+        return null;
+    }
+
     public SpecificationLink createSpecificationLink() throws JAXRException {
         return null;
     }
-    
-     public   TelephoneNumber createTelephoneNumber() throws  JAXRException {
-        TelephoneNumberImpl tel = new TelephoneNumberImpl();
-        return tel;
-    }
-    
-    public   User createUser() throws  JAXRException {
-        return new UserImpl();
-    }
-    
-    public  BulkResponse deleteObjects( Collection collection) 
-    throws JAXRException {
+
+    public TelephoneNumber createTelephoneNumber() throws JAXRException {
         return null;
     }
-    
-    public  BulkResponse deleteObjects( Collection collection, String str) 
-    throws JAXRException {
+
+    public User createUser() throws JAXRException {
         return null;
     }
-    
-    public  BulkResponse deprecateObjects( Collection collection) 
-    throws JAXRException {
-      return null;
-    }
-    
-    public  RegistryService getRegistryService() 
-    throws JAXRException {
+
+    public BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException {
         return null;
     }
-    
-    public  BulkResponse saveObjects( Collection collection) 
-    throws JAXRException {
+
+    public BulkResponse saveObjects(Collection objects) throws JAXRException {
         return null;
     }
-    
-    public  BulkResponse unDeprecateObjects( Collection collection) 
-    throws JAXRException {
-        return null;
+
+    /*************************************************************************
+     * Level 1 Features
+     ************************************************************************/
+
+    /**
+     * @param repositoryItem
+     * @return
+     * @throws JAXRException
+     */
+    public ExtrinsicObject createExtrinsicObject(DataHandler repositoryItem) throws JAXRException {
+        throw new UnsupportedCapabilityException();
     }
-    
+
+    public PersonName createPersonName(String firstName, String middleName, String lastName) throws JAXRException {
+        throw new UnsupportedCapabilityException();
+    }
+
+    public RegistryPackage createRegistryPackage(InternationalString name) throws JAXRException {
+        throw new UnsupportedCapabilityException();
+    }
+
+    public RegistryPackage createRegistryPackage(String name) throws JAXRException {
+        throw new UnsupportedCapabilityException();
+    }
+
+    public BulkResponse deprecateObjects(Collection keys) throws JAXRException {
+        throw new UnsupportedCapabilityException();
+    }
+
+    public BulkResponse unDeprecateObjects(Collection keys) throws JAXRException {
+        throw new UnsupportedCapabilityException();
+    }
+
+    public BulkResponse deleteObjects(Collection keys) throws JAXRException {
+        throw new UnsupportedCapabilityException();
+    }
+
+    Organization createOrganization(BusinessInfo info) throws JAXRException {
+        String key = info.getBusinessKey();
+        Vector names = info.getNameVector();
+        Vector descriptions = info.getDescriptionVector();
+        Vector serviceInfos = info.getServiceInfos().getServiceInfoVector();
+
+        OrganizationImpl org = new OrganizationImpl(this);
+        org.setKey(createKey(key));
+        if (!names.isEmpty()) {
+            org.setName(createInternationalString((String) names.get(0)));
+        }
+        if (!descriptions.isEmpty()) {
+            org.setDescription(createInternationalString((String) descriptions.get(0)));
+        }
+        if (!serviceInfos.isEmpty()) {
+            List services = new ArrayList(serviceInfos.size());
+            for (int i = 0; i < serviceInfos.size(); i++) {
+                ServiceInfo serviceInfo = (ServiceInfo) serviceInfos.elementAt(i);
+                services.add(createService(serviceInfo));
+            }
+            org.addServices(services);
+        }
+        return org;
+    }
+
+    Service createService(ServiceInfo info) throws JAXRException {
+        String key = info.getServiceKey();
+        Vector names = info.getNameVector();
+
+        ServiceImpl service = new ServiceImpl(this);
+        service.setKey(createKey(key));
+        if (!names.isEmpty()) {
+            service.setName(createInternationalString((String) names.get(0)));
+        }
+        return service;
+    }
 }

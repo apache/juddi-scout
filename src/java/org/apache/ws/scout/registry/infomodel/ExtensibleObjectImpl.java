@@ -15,10 +15,10 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
-
+import java.util.Map;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.infomodel.ExtensibleObject;
 import javax.xml.registry.infomodel.Slot;
@@ -29,64 +29,31 @@ import javax.xml.registry.infomodel.Slot;
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class ExtensibleObjectImpl implements ExtensibleObject {
-	
-	private Collection slots = new ArrayList();
+	private Map slots = new HashMap();
 
-	/* (non-Javadoc)
-	 * @see javax.xml.registry.infomodel.ExtensibleObject#removeSlot(java.lang.String)
-	 */
-	public void removeSlot(String arg0) throws JAXRException {
-//	  Check for a Slot with the specified String 
-	  Iterator iter = slots.iterator();
-	        while( iter.hasNext()){
-	            Slot slot = (Slot)iter.next();
-	            if( slot.getName().equals(arg0)) 
-	                slots.remove(slot);
-	        } 
-		
-	}
+    public void addSlot(Slot slot) throws JAXRException {
+        slots.put(slot.getName(), slot);
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.xml.registry.infomodel.ExtensibleObject#getSlots()
-	 */
-	public Collection getSlots() throws JAXRException {
-		 return slots;
-	}
+    public void addSlots(Collection slots) throws JAXRException {
+        for (Iterator i = slots.iterator(); i.hasNext();) {
+            addSlot((Slot) i.next());
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.xml.registry.infomodel.ExtensibleObject#addSlots(java.util.Collection)
-	 */
-	public void addSlots(Collection arg0) throws JAXRException {
-		slots.addAll( arg0);		
-	}
+    public Slot getSlot(String slotName) {
+        return (Slot) slots.get(slotName);
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.xml.registry.infomodel.ExtensibleObject#removeSlots(java.util.Collection)
-	 */
-	public void removeSlots(Collection arg0) throws JAXRException {
-		slots.removeAll( arg0);
-		
-	}
+    public Collection getSlots() {
+        return slots.values();
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.xml.registry.infomodel.ExtensibleObject#addSlot(javax.xml.registry.infomodel.Slot)
-	 */
-	public void addSlot(Slot arg0) throws JAXRException {
-		slots.add( arg0);
-		
-	}
+    public void removeSlot(String slotName) {
+        slots.remove(slotName);
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.xml.registry.infomodel.ExtensibleObject#getSlot(java.lang.String)
-	 */
-	public Slot getSlot(String arg0) throws JAXRException {
-		// Check for a Slot with the specified String 
-	    Iterator iter = slots.iterator();
-	        while( iter.hasNext()){
-	            Slot slot = (Slot)iter.next();
-	            if( slot.getName().equals(arg0)) return slot;
-	        }
-		return null;
-	}
-
+    public void removeSlots(Collection soltNames) {
+        slots.keySet().removeAll(soltNames);
+    }
 }

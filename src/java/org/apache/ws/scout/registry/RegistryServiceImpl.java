@@ -1,93 +1,100 @@
-/*
- * Copyright 2001-2004 The Apache Software Foundation.
+/**
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright 2004 The Apache Software Foundation
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
-
 package org.apache.ws.scout.registry;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.CapabilityProfile;
-import javax.xml.registry.Connection;
 import javax.xml.registry.DeclarativeQueryManager;
-import javax.xml.registry.RegistryService;
 import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
+import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.ClassificationScheme;
 
+import org.apache.juddi.proxy.RegistryProxy;
+import org.apache.juddi.IRegistry;
+import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
+
 /**
- * Scout implementation of javax.xml.registry.RegistryService
- ** For futher details, look into the JAXR API Javadoc.
- * @author Anil Saldhana  <anil@apache.org>
+ * @version $Revision$ $Date$
  */
-public class RegistryServiceImpl implements RegistryService {
-    
-    private BusinessLifeCycleManagerImpl blcm = null;
-    private BusinessQueryManagerImpl  bqm = null;
-    
-    private ConnectionImpl conn = null;
-    
-    /** Creates a new instance of RegistryServiceImpl */
-    public RegistryServiceImpl() {
-       // blcm.setRegistryService( this );
-        //bqm.setRegistryService( this);
+class RegistryServiceImpl implements RegistryService {
+    private final RegistryProxy registry;
+    private final BusinessQueryManagerImpl queryManager;
+    private final BusinessLifeCycleManagerImpl lifeCycleManager;
+
+    private final ClassificationSchemeImpl postalScheme;
+    private final int maxRows;
+
+    public RegistryServiceImpl(RegistryProxy registry, String postalScheme, int maxRows) {
+        this.registry = registry;
+        this.maxRows = maxRows;
+
+        queryManager = new BusinessQueryManagerImpl(this);
+        lifeCycleManager = new BusinessLifeCycleManagerImpl(this);
+
+        if (postalScheme == null) {
+            this.postalScheme = null;
+        } else {
+            this.postalScheme = new ClassificationSchemeImpl(lifeCycleManager);
+            this.postalScheme.setKey(new KeyImpl(postalScheme));
+        }
     }
-    
-    public BulkResponse getBulkResponse(String str) 
-    throws InvalidRequestException, JAXRException {
-         return null;
+
+    IRegistry getRegistry() {
+        return registry;
     }
-    
-    public  BusinessLifeCycleManager getBusinessLifeCycleManager() 
-    throws  JAXRException {
-        if( blcm == null) blcm = new BusinessLifeCycleManagerImpl();
-        if( conn != null ) blcm.setConnection(conn);
-        return blcm;
+
+    BusinessLifeCycleManagerImpl getLifeCycleManagerImpl() {
+        return lifeCycleManager;
     }
-    
-    public  BusinessQueryManager getBusinessQueryManager() 
-    throws  JAXRException {
-        if( bqm == null) bqm = new BusinessQueryManagerImpl();
-        if( conn != null ) bqm.setConnection(conn);
-        return bqm;
+
+    int getMaxRows() {
+        return maxRows;
     }
-    
-    public  CapabilityProfile getCapabilityProfile() throws  JAXRException {
-         return null;
+
+    public CapabilityProfile getCapabilityProfile() {
+        return new CapabilityProfileImpl();
     }
-    
-    public  DeclarativeQueryManager getDeclarativeQueryManager() 
-    throws  JAXRException,  UnsupportedCapabilityException {
-         return null;
+
+    public BusinessQueryManager getBusinessQueryManager() throws JAXRException {
+        return queryManager;
     }
-    
-    public  ClassificationScheme getDefaultPostalScheme() 
-    throws  JAXRException {
-         return null;
+
+    public BusinessLifeCycleManager getBusinessLifeCycleManager() throws JAXRException {
+        return lifeCycleManager;
     }
-    
-    public String makeRegistrySpecificRequest(String str) throws  JAXRException {
-         return null;
+
+    public BulkResponse getBulkResponse(String s) throws JAXRException, InvalidRequestException {
+        return null;
     }
-    
-    /** Package Protected **/
-      Connection getConnection() { return conn; }
-    
-      void setConnection( ConnectionImpl con ){
-        conn = con;
+
+    public DeclarativeQueryManager getDeclarativeQueryManager() throws JAXRException, UnsupportedCapabilityException {
+        throw new UnsupportedCapabilityException();
     }
-    
+
+    public ClassificationScheme getDefaultPostalScheme() throws JAXRException {
+        return postalScheme;
+    }
+
+    public String makeRegistrySpecificRequest(String s) throws JAXRException {
+        return null;
+    }
 }

@@ -17,6 +17,7 @@
 package org.apache.ws.scout.registry.infomodel;
 
 import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.RegistryObject;
  
@@ -29,13 +30,14 @@ import javax.xml.registry.infomodel.RegistryObject;
 public class ExternalIdentifierImpl extends RegistryObjectImpl
 implements javax.xml.registry.infomodel.ExternalIdentifier {
     
-    private ClassificationScheme identity = new ClassificationSchemeImpl();
+    private ClassificationScheme identity = new ClassificationSchemeImpl(null);
     private String value = new String();    
     private RegistryObject parent;
     
     /** Creates a new instance of ExternalIdentifierImpl */
-    public ExternalIdentifierImpl() {
-    }    
+    public ExternalIdentifierImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
+    }
      
     public ClassificationScheme getIdentificationScheme() 
     throws JAXRException {

@@ -33,7 +33,8 @@ implements javax.xml.registry.infomodel.ExternalLink{
     private Collection links = new ArrayList();
     
     /** Creates a new instance of ExternalLinkImpl */
-    public ExternalLinkImpl() {
+    public ExternalLinkImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
     }
     
     public String getExternalURI() throws JAXRException {

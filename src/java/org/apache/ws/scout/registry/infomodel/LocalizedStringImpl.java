@@ -17,65 +17,101 @@
 package org.apache.ws.scout.registry.infomodel;
 
 import java.util.Locale;
-
-import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.LocalizedString;
 
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class LocalizedStringImpl 
-implements javax.xml.registry.infomodel.LocalizedString {
-          
-      public static final String DEFAULT_CHARSET_NAME = "US-ASCII";
-          
-      private String charset = DEFAULT_CHARSET_NAME;
-    
-      private Locale locale = null;
-      private String value = "";
-          
-    /** Creates a new instance of LocalizedStringImpl */
+public class LocalizedStringImpl implements LocalizedString {
+    private String charsetName;
+    private Locale locale;
+    private String value;
+
     public LocalizedStringImpl() {
+        this.locale = Locale.getDefault();
+        this.charsetName = LocalizedString.DEFAULT_CHARSET_NAME;
     }
-    public LocalizedStringImpl(String str ) throws JAXRException{
-        setLocale( Locale.getDefault());
-        setValue( str);
+
+    /**
+     * Constuctor for a LocalizedString.
+     * @param locale the locale; must not be null
+     * @param value the value; may be null
+     * @param charsetName the charset; must not be null
+     */
+    public LocalizedStringImpl(Locale locale, String value, String charsetName) {
+        if (locale == null) {
+            throw new IllegalArgumentException("locale cannot be null");
+        }
+        if (charsetName == null) {
+            throw new IllegalArgumentException("charsetName cannot be null");
+        }
+        this.locale = locale;
+        this.value = value;
+        this.charsetName = charsetName;
     }
-    public LocalizedStringImpl(Locale locale, String str ) 
-    throws JAXRException{
-        setLocale( locale);
-        setValue( str);
+
+    public String getCharsetName() {
+        return charsetName;
     }
-    
-    public String getCharsetName() 
-    throws JAXRException {
-        return charset;
-    }
-    
-    public Locale getLocale() 
-    throws JAXRException {
+
+    public Locale getLocale() {
         return locale;
     }
-    
-    public String getValue() 
-    throws JAXRException {
+
+    public String getValue() {
         return value;
     }
-    
-    public void setCharsetName(String str) 
-    throws JAXRException {
-        this.charset = str;
+
+    public void setCharsetName(String charsetName) {
+        if (charsetName == null) {
+            throw new IllegalArgumentException("charsetName cannot be null");
+        }
+        this.charsetName = charsetName;
     }
-    
-    public void setLocale(java.util.Locale locale) 
-    throws JAXRException {
+
+    public void setLocale(Locale locale) {
+        if (locale == null) {
+            throw new IllegalArgumentException("locale cannot be null");
+        }
         this.locale = locale;
     }
-    
-    public void setValue(String str) 
-    throws JAXRException {
-        this.value = str;
+
+    public void setValue(String value) {
+        this.value = value;
     }
-    
+
+    /**
+     * There is a spec ambiguity here as it does not define how equals is determined for LocalizedString
+     * but they are intended to be used in Collections.
+     * We define it as locale, charsetName and value being equal.
+     * @param o the other object
+     * @return true if they are equal
+     */
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LocalizedStringImpl)) return false;
+
+        final LocalizedStringImpl localizedString = (LocalizedStringImpl) o;
+
+        if (!charsetName.equals(localizedString.charsetName)) return false;
+        if (!locale.equals(localizedString.locale)) return false;
+        if (value != null ? !value.equals(localizedString.value) : localizedString.value != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = charsetName.hashCode();
+        result = 29 * result + locale.hashCode();
+        result = 29 * result + (value != null ? value.hashCode() : 0);
+        return result;
+    }
+
+    public String toString() {
+        return value;
+    }
 }

@@ -40,8 +40,9 @@ implements ClassificationScheme{
 	    private Collection descendants = new ArrayList();
     
     /** Creates a new instance of ClassificationSchemeImpl */
-    public ClassificationSchemeImpl() {
-    }    
+    public ClassificationSchemeImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
+    }
      
     public void addChildConcept(Concept concept) 
     throws JAXRException {

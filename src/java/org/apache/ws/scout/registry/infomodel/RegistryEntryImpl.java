@@ -15,69 +15,76 @@
  */
 
 package org.apache.ws.scout.registry.infomodel;
+
+import java.util.Date;
 import javax.xml.registry.JAXRException;
-import java.util.*;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.infomodel.RegistryEntry;
+
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class RegistryEntryImpl extends RegistryObjectImpl
-implements javax.xml.registry.infomodel.RegistryEntry {
+public class RegistryEntryImpl extends RegistryObjectImpl implements RegistryEntry {
     private Date expiry = null;
     private int major = 1;
     private int minor = 0;
     private int stability = 1;
     private int status = 1;
-    
+
     private String userversion = new String();
-    
-    /** Creates a new instance of RegistryEntryImpl */
-    public RegistryEntryImpl() {
+
+    /**
+     * Creates a new instance of RegistryEntryImpl
+     */
+    public RegistryEntryImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
     }
-    
+
     public Date getExpiration() throws JAXRException {
         return expiry;
     }
-    
+
     public int getMajorVersion() throws JAXRException {
         return major;
     }
-    
+
     public int getMinorVersion() throws JAXRException {
         return minor;
     }
-    
+
     public int getStability() throws JAXRException {
         return stability;
     }
-    
+
     public int getStatus() throws JAXRException {
         return status;
     }
-    
+
     public String getUserVersion() throws JAXRException {
         return userversion;
     }
-    
-    public void setExpiration( Date date) throws JAXRException {
+
+    public void setExpiration(Date date) throws JAXRException {
         expiry = date;
     }
-    
+
     public void setMajorVersion(int param) throws JAXRException {
         major = param;
     }
-    
+
     public void setMinorVersion(int param) throws JAXRException {
-        minor =param;
+        minor = param;
     }
-    
+
     public void setStability(int param) throws JAXRException {
         stability = param;
     }
-    
+
     public void setUserVersion(String str) throws JAXRException {
         userversion = str;
     }
-    
+
 }

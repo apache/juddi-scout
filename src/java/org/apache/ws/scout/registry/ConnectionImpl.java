@@ -16,96 +16,62 @@
 
 package org.apache.ws.scout.registry;
 
-import javax.xml.registry.RegistryService;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.Connection;
-
-import java.util.Iterator;
-import java.util.Properties;
+import java.net.URL;
 import java.util.Set;
-import java.util.HashSet;
-import java.net.PasswordAuthentication;
+import javax.xml.registry.Connection;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.RegistryService;
 
-import org.apache.ws.scout.uddi.JAXRUDDIManager;
+import org.apache.juddi.proxy.RegistryProxy;
+
 
 /**
  * Apache Scout Implementation of a JAXR Connection.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ConnectionImpl implements Connection {
-    
-    private RegistryServiceImpl regservice = null;      
-    private String username = "";
-    private String passwd = "";
-    
-    private Set creds = new HashSet();
-     
-    private Properties conprops = null;
-    private JAXRUDDIManager jaxruddi = null;
-    
-    /** Creates a new instance of Connection */
-    public ConnectionImpl() {
+class ConnectionImpl implements Connection {
+    private boolean closed = false;
+    private boolean synchronous = true;
+    private Set credentials;
+    private final RegistryProxy registry;
+    private final String postalScheme;
+    private final int maxRows;
+
+    ConnectionImpl(URL queryManagerURL, URL lifeCycleManagerURL, String postalScheme, int maxRows) {
+        registry = new RegistryProxy(null);
+        registry.setInquiryURL(queryManagerURL);
+        registry.setPublishURL(lifeCycleManagerURL);
+        this.postalScheme = postalScheme;
+        this.maxRows = maxRows;
     }
-    
-    public void close() throws JAXRException {
+
+    public RegistryService getRegistryService() throws JAXRException {
+        return new RegistryServiceImpl(registry, postalScheme, maxRows);
     }
-    
-    public Set getCredentials() throws JAXRException {
-         return creds;
+
+    public void close() {
+        closed = true;
     }
-    
-    public RegistryService getRegistryService() throws  JAXRException {
-        if( regservice == null ) regservice = new RegistryServiceImpl();
-        regservice.setConnection( this );
-         return regservice;
+
+    public boolean isClosed() {
+        return closed;
     }
-    
-    public boolean isClosed() throws  JAXRException {
-        return false;
+
+    public Set getCredentials() {
+        return credentials;
     }
-    
-    public boolean isSynchronous() throws JAXRException {
-        return true;
+
+    public void setCredentials(Set credentials) {
+        this.credentials = credentials;
     }
-    
-    public void setCredentials( Set set) throws  JAXRException {
-        creds = set;
-        boolean isEmpty = false;
-        if( set != null ) isEmpty = set.isEmpty();
-        if( isEmpty ) return;
-        Iterator iter = set.iterator();
-        PasswordAuthentication pw = null;
-        if( iter.hasNext()){
-           pw = (PasswordAuthentication)iter.next();
-           username =  pw.getUserName();
-           passwd = new String(pw.getPassword());
-        } 
-        
-        try{
-            String queryurl = null,publishurl=null;
-            
-            if(conprops != null ){
-                queryurl = conprops.getProperty( "javax.xml.registry.queryManagerURL");
-                publishurl = conprops.getProperty("javax.xml.registry.lifeCycleManagerURL");
-            }
-            //Create an instance of JAXRUDDIManager which internally authenticates
-            //the user credentials
-            jaxruddi = new JAXRUDDIManager(queryurl,publishurl,username,passwd);
-        }catch(Exception ud){
-            throw new JAXRException( "Apache JAXR Impl::",ud);
-        }
+
+    public boolean isSynchronous() {
+        return synchronous;
     }
-    
-    public void setSynchronous(boolean param) throws JAXRException {
+
+    public void setSynchronous(boolean synchronous) {
+        this.synchronous = synchronous;
     }
-    
-    void setProperties( Properties prop){
-        this.conprops = prop;
-    }
-    
-    Properties getProperties() { return this.conprops; }
-    
-    public String getUserName() { return this.username; }
-    public String getPassword() { return this.passwd; }
 }

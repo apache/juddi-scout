@@ -16,154 +16,183 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
-import  javax.xml.registry.*;
-import  javax.xml.registry.infomodel.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.InvalidRequestException;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.PostalAddress;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.User;
+import javax.xml.registry.infomodel.TelephoneNumber;
 
 /**
- * Organization Interface 
- ** Implements JAXR Interface.
- * For futher details, look into the JAXR API Javadoc.  
+ * Organization Interface
+ * * Implements JAXR Interface.
+ * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class OrganizationImpl extends RegistryObjectImpl
-implements Organization {
-    private OrganizationImpl parentorg = null;
-    private Collection childorgs = new ArrayList();
-    private Collection services = new ArrayList();
-    private Collection users = new ArrayList();
-    private Collection telephone = new ArrayList();
-    
-    private PostalAddress postaddr = null; 
-    private User user = new UserImpl();
-    
-    /** Creates a new instance of OrganizationImpl */
-    public OrganizationImpl() {
+public class OrganizationImpl extends RegistryObjectImpl implements Organization {
+    private User primaryContact;
+    private Set users = new HashSet();
+    private Set telephoneNumbers = new HashSet();
+    private Set services = new HashSet();
+
+    public OrganizationImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
     }
-    
-    public void addChildOrganization(  Organization organization) 
-    throws JAXRException {         
-       this.childorgs.add(organization);
+
+    public User getPrimaryContact() throws JAXRException {
+        if (primaryContact == null) {
+            throw new IllegalStateException("primaryContact is null and the spec says we cannot return a null value");
+        }
+        return primaryContact;
     }
-    
-    public void addChildOrganizations( Collection collection) 
-    throws JAXRException {         
-            this.childorgs.addAll(collection);        
-    } 
-    
-   
-    public void addService( Service service) 
-    throws JAXRException {
-        this.services.add(service );
+
+    public void setPrimaryContact(User user) throws JAXRException {
+        if (user == null) {
+            throw new IllegalArgumentException("primaryContact must not be null");
+        }
+        users.add(user);
+        primaryContact = user;
     }
-    
-    public void addServices(Collection collection) 
-    throws JAXRException {
-          this.services.addAll(collection);   
+
+    public void addUser(User user) throws JAXRException {
+        users.add(user);
     }
-    
-    
-    public void addUser( User user) throws JAXRException {
-        this.users.add(user );
+
+    public void addUsers(Collection collection) throws JAXRException {
+        // do this by hand to ensure all members are actually instances of User
+        for (Iterator iterator = collection.iterator(); iterator.hasNext();) {
+            User user = (User) iterator.next();
+            users.add(user);
+        }
     }
-    
-    public void addUsers(Collection collection) 
-    throws JAXRException {
-        this.users.addAll(collection);
-    }
-    
-    public int getChildOrganizationCount() throws JAXRException {
-        return this.childorgs.size();
-    }
-    
-    public Collection getChildOrganizations() throws JAXRException {
-        return childorgs;
-    }    
-    
-    
-    public Collection getDescendantOrganizations() throws JAXRException {
-        return null;
-    } 
-    
-    
-    public PostalAddress getPostalAddress() throws JAXRException {
-        return postaddr;
-    }
-    
-    public  User getPrimaryContact() throws JAXRException {
-        return user;
-    }
-    
-    
-    
-    public  Organization getRootOrganization() throws JAXRException {
-        return null;
-    }
-    
-    public Collection getServices() throws JAXRException {
-        return services;
-    }
-    
-   
-    
-    public Collection getTelephoneNumbers(String str) throws JAXRException {
-        return telephone;
-    }
-    
+
     public Collection getUsers() throws JAXRException {
-        return users;
+        return Collections.unmodifiableCollection(users);
     }
-    
-   
-    public void removeChildOrganization( Organization organization) 
-    throws JAXRException {
-        this.childorgs.remove( organization);
+
+    public void removeUser(User user) throws JAXRException {
+        if (primaryContact.equals(user)) {
+            throw new InvalidRequestException("Cannot remove primaryContact");
+        }
+        users.remove(user);
     }
-    
-    public void removeChildOrganizations(Collection collection) 
-    throws JAXRException {
-        this.childorgs.removeAll( collection);
-    } 
-    
-    public void removeService( Service service) throws JAXRException {
-        services.remove( service );
+
+    public void removeUsers(Collection collection) throws JAXRException {
+        if (collection.contains(primaryContact)) {
+            throw new InvalidRequestException("Cannot remove primaryContact");
+        }
+        users.removeAll(collection);
     }
-    
+
+
+    public Collection getTelephoneNumbers(String phoneType) throws JAXRException {
+        Set filteredNumbers;
+        if (phoneType == null) {
+            filteredNumbers = telephoneNumbers;
+        } else {
+            filteredNumbers = new HashSet(telephoneNumbers.size());
+            for (Iterator i = telephoneNumbers.iterator(); i.hasNext();) {
+                TelephoneNumber number = (TelephoneNumber) i.next();
+                if (phoneType.equals(number.getType())) {
+                    filteredNumbers.add(number);
+                }
+            }
+        }
+        return Collections.unmodifiableSet(filteredNumbers);
+    }
+
+    public void setTelephoneNumbers(Collection collection) throws JAXRException {
+        // do this by hand to ensure all members are actually instances of TelephoneNumber
+        Set numbers = new HashSet(collection.size());
+        for (Iterator i = collection.iterator(); i.hasNext();) {
+            TelephoneNumber number = (TelephoneNumber) i.next();
+            numbers.add(number);
+        }
+        this.telephoneNumbers = numbers;
+    }
+
+    public void addService(Service service) throws JAXRException {
+        services.add(service);
+    }
+
+    public void addServices(Collection collection) throws JAXRException {
+        // do this by hand to ensure all members are actually instances of Service
+        for (Iterator iterator = collection.iterator(); iterator.hasNext();) {
+            Service service = (Service) iterator.next();
+            services.add(service);
+        }
+    }
+
+    public Collection getServices() throws JAXRException {
+        return Collections.unmodifiableSet(services);
+    }
+
+
+    public void removeService(Service service) throws JAXRException {
+        services.remove(service);
+    }
+
     public void removeServices(Collection collection) throws JAXRException {
-        services.removeAll( collection );
+        services.removeAll(collection);
     }
-    
-    public void removeUser( User user) 
-    throws JAXRException {
-        users.remove( user );
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Level 1 features must throw exceptions
+    ///////////////////////////////////////////////////////////////////////////
+
+    public Organization getParentOrganization() throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
-    public void removeUsers(Collection collection) 
-    throws JAXRException {
-        users.removeAll( collection );
-    }  
-    
-    
-    public void setPostalAddress( PostalAddress postalAddress) 
-    throws JAXRException {
-        this.postaddr = postalAddress;
+
+    public Collection getDescendantOrganizations() throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
-    public void setPrimaryContact( User user) 
-    throws JAXRException {
-        this.user = user;
-        users.add( user );
+
+    public Organization getRootOrganization() throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
-    public void setTelephoneNumbers(Collection collection) 
-    throws JAXRException {
-        this.telephone = collection;
-    }    
-    
-    public Organization getParentOrganization() 
-    throws JAXRException {
-        return parentorg;
+
+    public void addChildOrganization(Organization organization) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
+
+    public void addChildOrganizations(Collection collection) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
+
+    public int getChildOrganizationCount() throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
+
+    public Collection getChildOrganizations() throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
+
+    public void removeChildOrganization(Organization organization) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
+
+    public void removeChildOrganizations(Collection collection) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
+
+    public PostalAddress getPostalAddress() throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
+
+    public void setPostalAddress(PostalAddress postalAddress) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
 }

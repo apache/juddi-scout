@@ -28,8 +28,7 @@ import java.util.Collection;
  * For futher details, look into the JAXR API Javadoc.
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class UserImpl extends RegistryObjectImpl 
-implements User{
+public class UserImpl extends RegistryObjectImpl implements User{
     private PersonName personName = new PersonNameImpl();
     
     private Collection postalAddresses = new ArrayList();
@@ -39,8 +38,9 @@ implements User{
     private String type = "";
     
     /** Creates a new instance of UserImpl */
-    public UserImpl() {
-    }   
+    public UserImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
+    }
     
     public  Organization getOrganization() throws JAXRException {
         return null;
@@ -97,5 +97,4 @@ implements User{
     public Collection getEmailAddresses() throws JAXRException {
         return emailAddresses;
     }
-    
 }

@@ -17,71 +17,90 @@
 package org.apache.ws.scout.registry.infomodel;
 
 import javax.xml.registry.JAXRException;
+import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.infomodel.TelephoneNumber;
 
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class TelephoneNumberImpl 
-implements javax.xml.registry.infomodel.TelephoneNumber{
-    
-    private String areacode = new String();
-    private String countrycode = new String();
-    private String extension = new String();
-    private String url =new String();
-    private String number = new String();
-    private String type = new String();    
-    
-    /** Creates a new instance of TelephoneNumberImpl */
+public class TelephoneNumberImpl implements TelephoneNumber {
+    private String number;
+    private String type;
+
     public TelephoneNumberImpl() {
     }
-    
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getAreaCode() throws JAXRException {
-        return this.areacode;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
+
+    public void setAreaCode(String areaCode) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
+
     public String getCountryCode() throws JAXRException {
-        return this.countrycode;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
+
+    public void setCountryCode(String countryCode) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
+    }
+
     public String getExtension() throws JAXRException {
-        return this.extension;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
-    public String getNumber() throws JAXRException {
-        return this.number;
+
+    public void setExtension(String extension) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
-    public String getType() throws JAXRException {
-        return this.type;
-    }
-    
+
     public String getUrl() throws JAXRException {
-        return this.url;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
-    public void setAreaCode(String str) throws JAXRException {
-        this.areacode = str;
+
+    public void setUrl(String url) throws JAXRException {
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
-    
-    public void setCountryCode(String str) throws JAXRException {
-        this.countrycode = str;
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TelephoneNumberImpl)) return false;
+
+        final TelephoneNumberImpl telephoneNumber = (TelephoneNumberImpl) o;
+
+        if (number != null ? !number.equals(telephoneNumber.number) : telephoneNumber.number != null) return false;
+        if (type != null ? !type.equals(telephoneNumber.type) : telephoneNumber.type != null) return false;
+
+        return true;
     }
-    
-    public void setExtension(String str) throws JAXRException {
-        this.extension = str;
+
+    public int hashCode() {
+        int result;
+        result = (number != null ? number.hashCode() : 0);
+        result = 29 * result + (type != null ? type.hashCode() : 0);
+        return result;
     }
-    
-    public void setNumber(String str) throws JAXRException {
-        this.number =  str;
-    }
-    
-    public void setType(String str) throws JAXRException {
-        this.type = str;
-    }
-    
-    public void setUrl(String str) throws JAXRException {
-        this.url = str;
+
+    public String toString() {
+        return number == null ? "null" : number;
     }
 }

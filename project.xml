@@ -43,7 +43,7 @@
 
   <inceptionYear>2004</inceptionYear>
   <package>org.apache.ws.scout</package>
-  <logo>http://maven.apache.org/images/maven.jpg</logo>
+  <logo>/images/scout.jpg</logo>
   <description>
     Apache Scout is an implementation of the JSR 93 (JAXR) 
   </description>

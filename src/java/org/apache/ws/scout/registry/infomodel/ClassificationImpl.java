@@ -27,25 +27,20 @@ import javax.xml.registry.infomodel.*;
 public class ClassificationImpl extends RegistryObjectImpl
 implements javax.xml.registry.infomodel.Classification {
      
-    private ClassificationScheme scheme = new ClassificationSchemeImpl();
-    private Concept concept = new ConceptImpl();
+    private ClassificationScheme scheme = new ClassificationSchemeImpl(null);
+    private Concept concept = new ConceptImpl(null);
     private boolean external =false;
     private String value;
     
     private RegistryObject  classfiedobj = null;
     
     /** Creates a new instance of ClassificationImpl */
-    public ClassificationImpl() {
+    public ClassificationImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
     }
-    
-    public ClassificationImpl( InternationalString n , 
-                    String v){  
-        this.name = n;
-        this.value = v;
-    }
-    
-     
-    public ClassificationScheme getClassificationScheme() 
+
+
+    public ClassificationScheme getClassificationScheme()
     throws JAXRException {
         return scheme;
     }
@@ -59,10 +54,6 @@ implements javax.xml.registry.infomodel.Classification {
     }
     
      
-    public Organization getSubmittingOrganization() throws JAXRException {
-        return null;
-    }
-    
     public String getValue() throws JAXRException {
         return value;
     }

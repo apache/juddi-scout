@@ -20,22 +20,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.Service;
 
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ServiceImpl extends RegistryEntryImpl
-implements   javax.xml.registry.infomodel.Service{
+public class ServiceImpl extends RegistryEntryImpl implements Service{
     
     private Organization org = null;
     private Collection serviceBindings = new ArrayList();
     
     /** Creates a new instance of ServiceImpl */
-    public ServiceImpl() {
+    public ServiceImpl(LifeCycleManager lifeCycleManager) {
+        super(lifeCycleManager);
     }
     
     public void addServiceBinding(  ServiceBinding serviceBinding) 

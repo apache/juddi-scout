@@ -16,31 +16,48 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
+import javax.xml.registry.infomodel.Key;
+
 /**
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class KeyImpl 
-implements javax.xml.registry.infomodel.Key{
-    private String id = "";
-    
-    /** Creates a new instance of KeyImpl */
+public class KeyImpl implements Key {
+    private String id;
+
     public KeyImpl() {
     }
-    
-    public KeyImpl( String str){
-        id = str;
+
+    public KeyImpl(String id) {
+        this.id = id;
     }
-    
-    public String getId() 
-    throws javax.xml.registry.JAXRException {
+
+    public String getId() {
         return id;
     }
-    
-    public void setId(String str) 
-    throws javax.xml.registry.JAXRException {
+
+    public void setId(String str) {
         this.id = str;
     }
-    
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof KeyImpl)) return false;
+
+        final KeyImpl key = (KeyImpl) o;
+
+        if (id != null ? !id.equals(key.id) : key.id != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        return (id != null ? id.hashCode() : 0);
+    }
+
+    public String toString() {
+        return id;
+    }
 }
