@@ -23,6 +23,7 @@ import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.RegistryObject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Implements JAXR Interface.
@@ -30,70 +31,109 @@ import java.util.Collection;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class ConceptImpl extends RegistryObjectImpl implements Concept {
+public class ConceptImpl extends RegistryObjectImpl implements Concept
+{
     private String value = new String();
 
-    private RegistryObject parent = new RegistryObjectImpl(null);
+    private RegistryObject parent = null;
     private Concept parentconcept = null;
 
-    private ClassificationSchemeImpl scheme = new ClassificationSchemeImpl(null);
+    private ClassificationScheme scheme = null;
     private Collection childconcepts = new ArrayList();
 
     /**
      * Creates a new instance of ConceptImpl
      */
-    public ConceptImpl(LifeCycleManager lifeCycleManager) {
+    public ConceptImpl(LifeCycleManager lifeCycleManager)
+    {
         super(lifeCycleManager);
     }
 
-    public void addChildConcept(Concept concept) {
+    public void addChildConcept(Concept concept)
+    {
         this.childconcepts.add(concept);
+        ((ConceptImpl)concept).setParentconcept(this);
     }
 
-    public void addChildConcepts(Collection collection) {
-        this.childconcepts.addAll(collection);
+    public void addChildConcepts(Collection collection)
+    {
+        Iterator iter = collection.iterator();
+        while(iter.hasNext())
+        {
+            Concept c = (Concept)iter.next();
+            ((ConceptImpl)c).setParentconcept(this);
+            childconcepts.add(c);
+        }
+
     }
 
-    public int getChildConceptCount() {
+    public int getChildConceptCount()
+    {
         return this.childconcepts.size();
     }
 
-    public Collection getChildrenConcepts() {
+    public Collection getChildrenConcepts()
+    {
         return this.childconcepts;
     }
 
-    public ClassificationScheme getClassificationScheme() {
+    public ClassificationScheme getClassificationScheme()
+    {
         return scheme;
     }
 
-    public Collection getDescendantConcepts() {
-        return null;
+    public Collection getDescendantConcepts()
+    {
+        Collection coll = new ArrayList();
+        Iterator iter = childconcepts.iterator();
+        while(iter != null && iter.hasNext())
+        {
+            ConceptImpl c = (ConceptImpl)iter.next();
+            coll.add(c);
+            coll.addAll(c.getDescendantConcepts());
+        }
+        return coll;
     }
 
-    public RegistryObject getParent() {
+    public RegistryObject getParent()
+    {
         return parent;
     }
 
-    public Concept getParentConcept() {
+    public Concept getParentConcept()
+    {
         return parentconcept;
     }
 
-    public String getPath() {
+    public String getPath()
+    {
         return null;
     }
 
-    public String getValue() throws JAXRException {
+    public String getValue() throws JAXRException
+    {
         return value;
     }
 
-    public void removeChildConcept(Concept concept) {
+    public void removeChildConcept(Concept c)
+    {
+        ((ConceptImpl)c).setParentconcept(null);
+        childconcepts.remove(c);
     }
 
-    public void removeChildConcepts(Collection collection) {
-        this.childconcepts.removeAll(collection);
+    public void removeChildConcepts(Collection collection)
+    {
+        Iterator iter = collection.iterator();
+        while(iter.hasNext())
+        {
+            Concept c = (Concept)iter.next();
+            ((ConceptImpl)c).setParentconcept(null);
+            childconcepts.add(c);
+        }
     }
 
-    public void setValue(String str) {
+    public void setValue(String str)
+    {
         value = str;
     }
 
@@ -105,6 +145,7 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept {
     public void setParentconcept(Concept parentconcept)
     {
         this.parentconcept = parentconcept;
+        parent = null; //We deal with concept as parent
     }
 
     public void setScheme(ClassificationSchemeImpl scheme)
@@ -114,6 +155,20 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept {
 
     public void setChildconcepts(Collection childconcepts)
     {
-        this.childconcepts = childconcepts;
+        this.childconcepts.clear();
+        Iterator iter = childconcepts.iterator();
+        while(iter.hasNext())
+        {
+            Concept c = (Concept)iter.next();
+            ((ConceptImpl)c).setParentconcept(this);
+            childconcepts.add(c);
+        }
+    }
+
+    //Specific API
+    public void setClassificationScheme(ClassificationScheme sc)
+    {
+        scheme = sc;
+        parent = sc;
     }
 }

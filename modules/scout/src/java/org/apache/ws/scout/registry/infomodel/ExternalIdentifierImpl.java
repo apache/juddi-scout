@@ -19,8 +19,8 @@ package org.apache.ws.scout.registry.infomodel;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.RegistryObject;
 
 /**
  * Implements JAXR Interface.
@@ -29,7 +29,8 @@ import javax.xml.registry.infomodel.InternationalString;
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class ExternalIdentifierImpl extends RegistryObjectImpl
-        implements javax.xml.registry.infomodel.ExternalIdentifier {
+        implements javax.xml.registry.infomodel.ExternalIdentifier
+{
 
     private ClassificationScheme identity = new ClassificationSchemeImpl(null);
     private String value = new String();
@@ -38,39 +39,45 @@ public class ExternalIdentifierImpl extends RegistryObjectImpl
     /**
      * Creates a new instance of ExternalIdentifierImpl
      */
-    public ExternalIdentifierImpl(LifeCycleManager lifeCycleManager) {
+    public ExternalIdentifierImpl(LifeCycleManager lifeCycleManager)
+    {
         super(lifeCycleManager);
     }
 
     public ExternalIdentifierImpl(LifeCycleManager lifeCycleManager,
                                   ClassificationScheme identity,
                                   InternationalString name,
-                                  String value )
+                                  String value)
     {
-        super(lifeCycleManager,name);
+        super(lifeCycleManager, name);
         this.identity = identity;
         this.value = value;
     }
 
     public ClassificationScheme getIdentificationScheme()
-            throws JAXRException {
+            throws JAXRException
+    {
         return identity;
     }
 
-    public RegistryObject getRegistryObject() throws JAXRException {
+    public RegistryObject getRegistryObject() throws JAXRException
+    {
         return parent;
     }
 
-    public String getValue() throws JAXRException {
+    public String getValue() throws JAXRException
+    {
         return value;
     }
 
     public void setIdentificationScheme(ClassificationScheme cs)
-            throws JAXRException {
+            throws JAXRException
+    {
         identity = cs;
     }
 
-    public void setValue(String str) throws JAXRException {
+    public void setValue(String str) throws JAXRException
+    {
         value = str;
     }
 

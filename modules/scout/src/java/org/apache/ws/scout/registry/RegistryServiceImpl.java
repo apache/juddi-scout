@@ -35,10 +35,12 @@ import javax.xml.registry.infomodel.ClassificationScheme;
 /**
  * Scout implementation of javax.xml.registry.RegistryService
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  * @author Jeremy Boynes <jboynes@apache.org>
  */
-public class RegistryServiceImpl implements RegistryService {
+public class RegistryServiceImpl implements RegistryService
+{
     private final RegistryProxy registry;
     private final BusinessQueryManagerImpl queryManager;
     private final BusinessLifeCycleManagerImpl lifeCycleManager;
@@ -47,71 +49,84 @@ public class RegistryServiceImpl implements RegistryService {
     private final int maxRows;
 
 
-    private  ConnectionImpl connection;
+    private ConnectionImpl connection;
 
-    public RegistryServiceImpl(RegistryProxy registry, String postalScheme, int maxRows) {
+    public RegistryServiceImpl(RegistryProxy registry, String postalScheme, int maxRows)
+    {
         this.registry = registry;
         this.maxRows = maxRows;
         queryManager = new BusinessQueryManagerImpl(this);
         lifeCycleManager = new BusinessLifeCycleManagerImpl(this);
-        if (postalScheme == null) {
+        if (postalScheme == null)
+        {
             this.postalScheme = null;
-        } else {
+        } else
+        {
             this.postalScheme = new ClassificationSchemeImpl(lifeCycleManager);
             this.postalScheme.setKey(new KeyImpl(postalScheme));
         }
     }
 
-    IRegistry getRegistry() {
+    IRegistry getRegistry()
+    {
         return registry;
     }
 
-    BusinessLifeCycleManagerImpl getLifeCycleManagerImpl() {
+    BusinessLifeCycleManagerImpl getLifeCycleManagerImpl()
+    {
         return lifeCycleManager;
     }
 
-    int getMaxRows() {
+    int getMaxRows()
+    {
         return maxRows;
     }
 
-    public CapabilityProfile getCapabilityProfile() {
+    public CapabilityProfile getCapabilityProfile()
+    {
         return new CapabilityProfileImpl();
     }
 
-    public BusinessQueryManager getBusinessQueryManager() throws JAXRException {
+    public BusinessQueryManager getBusinessQueryManager() throws JAXRException
+    {
         return queryManager;
     }
 
-    public BusinessLifeCycleManager getBusinessLifeCycleManager() throws JAXRException {
+    public BusinessLifeCycleManager getBusinessLifeCycleManager() throws JAXRException
+    {
         return lifeCycleManager;
     }
 
-    public BulkResponse getBulkResponse(String s) throws JAXRException, InvalidRequestException {
-        if(s == "" || s==null)
+    public BulkResponse getBulkResponse(String s) throws JAXRException, InvalidRequestException
+    {
+        if (s == "" || s == null)
             throw new InvalidRequestException();
         return null;
     }
 
-    public DeclarativeQueryManager getDeclarativeQueryManager() throws JAXRException, UnsupportedCapabilityException {
+    public DeclarativeQueryManager getDeclarativeQueryManager() throws JAXRException, UnsupportedCapabilityException
+    {
         throw new UnsupportedCapabilityException();
     }
 
-    public ClassificationScheme getDefaultPostalScheme() throws JAXRException {
+    public ClassificationScheme getDefaultPostalScheme() throws JAXRException
+    {
         return postalScheme;
     }
 
-    public String makeRegistrySpecificRequest(String s) throws JAXRException {
+    public String makeRegistrySpecificRequest(String s) throws JAXRException
+    {
         throw new UnsupportedCapabilityException();
     }
 
     public ConnectionImpl getConnection()
     {
-            return connection;
+        return connection;
     }
 
     public void setConnection(ConnectionImpl connection)
     {
-            this.connection = connection;
+        this.connection = connection;
     }
 
 }

@@ -18,11 +18,9 @@ package org.apache.ws.scout.registry;
 
 import org.apache.juddi.datatype.Description;
 import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.service.BusinessServices;
-import org.apache.juddi.datatype.business.BusinessEntity;
+import org.apache.juddi.datatype.response.BusinessDetail;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.ServiceInfo;
-import org.apache.juddi.datatype.response.BusinessDetail;
 import org.apache.ws.scout.registry.infomodel.*;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
@@ -33,33 +31,13 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
-import javax.xml.registry.infomodel.Association;
-import javax.xml.registry.infomodel.Classification;
-import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.EmailAddress;
-import javax.xml.registry.infomodel.ExternalIdentifier;
-import javax.xml.registry.infomodel.ExternalLink;
-import javax.xml.registry.infomodel.ExtrinsicObject;
-import javax.xml.registry.infomodel.InternationalString;
-import javax.xml.registry.infomodel.Key;
-import javax.xml.registry.infomodel.LocalizedString;
-import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.PersonName;
-import javax.xml.registry.infomodel.PostalAddress;
-import javax.xml.registry.infomodel.RegistryObject;
-import javax.xml.registry.infomodel.RegistryPackage;
-import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.ServiceBinding;
-import javax.xml.registry.infomodel.Slot;
-import javax.xml.registry.infomodel.SpecificationLink;
-import javax.xml.registry.infomodel.TelephoneNumber;
-import javax.xml.registry.infomodel.User;
+import javax.xml.registry.infomodel.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.Iterator;
 
 /**
  * Implements JAXR LifeCycleManager Interface
@@ -73,7 +51,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public LifeCycleManagerImpl(RegistryService registry)
     {
-        this.registry = (RegistryServiceImpl)registry;
+        this.registry = (RegistryServiceImpl) registry;
     }
 
     public RegistryService getRegistryService()
@@ -132,7 +110,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
             return new PostalAddressImpl(registry.getDefaultPostalScheme());
         } else if (LifeCycleManager.REGISTRY_ENTRY.equals(interfaceName))
         {
-            return new RegistryEntryImpl(this);
+            throw new UnsupportedCapabilityException();
         } else if (LifeCycleManager.REGISTRY_PACKAGE.equals(interfaceName))
         {
             throw new UnsupportedCapabilityException();
@@ -141,7 +119,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
             return new ServiceImpl(this);
         } else if (LifeCycleManager.SERVICE_BINDING.equals(interfaceName))
         {
-            throw new UnsupportedCapabilityException();
+            return new ServiceBindingImpl(this);
         } else if (LifeCycleManager.SLOT.equals(interfaceName))
         {
             return new SlotImpl();
@@ -165,7 +143,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Association createAssociation(RegistryObject targetObject, Concept associationType) throws JAXRException
     {
-        Association assoc =  (Association) this.createObject(LifeCycleManager.ASSOCIATION);
+        Association assoc = (Association) this.createObject(LifeCycleManager.ASSOCIATION);
         assoc.setTargetObject(targetObject);
         assoc.setAssociationType(associationType);
         return assoc;
@@ -173,9 +151,9 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Classification createClassification(Concept concept) throws JAXRException, InvalidRequestException
     {
-        if(concept.getClassificationScheme() == null )
+        if (concept.getClassificationScheme() == null)
             throw new InvalidRequestException("Concept is not under classification scheme");
-        Classification classify =  (Classification) this.createObject(LifeCycleManager.CLASSIFICATION);
+        Classification classify = (Classification) this.createObject(LifeCycleManager.CLASSIFICATION);
         classify.setConcept(concept);
         return classify;
     }
@@ -193,7 +171,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Classification createClassification(ClassificationScheme scheme,
                                                String name, String value)
-    throws JAXRException
+            throws JAXRException
     {
         return createClassification(scheme, this.createInternationalString(name), value);
     }
@@ -201,8 +179,8 @@ public class LifeCycleManagerImpl implements LifeCycleManager
     public ClassificationScheme createClassificationScheme(Concept concept) throws JAXRException, InvalidRequestException
     {
         //Check if the passed concept has a classificationscheme or has a parent concept
-        if(concept.getParentConcept() != null || concept.getClassificationScheme() != null )
-           throw new InvalidRequestException("Concept has classificationscheme or has a parent");
+        if (concept.getParentConcept() != null || concept.getClassificationScheme() != null)
+            throw new InvalidRequestException("Concept has classificationscheme or has a parent");
 
 
         ClassificationScheme cs = new ClassificationSchemeImpl(this);
@@ -212,7 +190,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public ClassificationScheme createClassificationScheme(InternationalString name,
                                                            InternationalString des)
-    throws JAXRException, InvalidRequestException
+            throws JAXRException, InvalidRequestException
     {
         ClassificationScheme cs = new ClassificationSchemeImpl(this);
         cs.setName(name);
@@ -220,17 +198,18 @@ public class LifeCycleManagerImpl implements LifeCycleManager
         return cs;
     }
 
-    public ClassificationScheme createClassificationScheme(String name, String desc )
-    throws JAXRException, InvalidRequestException
+    public ClassificationScheme createClassificationScheme(String name, String desc)
+            throws JAXRException, InvalidRequestException
     {
         return createClassificationScheme(this.createInternationalString(name),
                 this.createInternationalString(desc));
     }
 
     public Concept createConcept(RegistryObject parent, InternationalString name, String value)
-    throws JAXRException
+            throws JAXRException
     {
         ConceptImpl concept = new ConceptImpl(this);
+        concept.setClassificationScheme((ClassificationScheme)parent);
         concept.setParent(parent);
         concept.setName(name);
         concept.setValue(value);
@@ -239,7 +218,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Concept createConcept(RegistryObject parent, String name, String value) throws JAXRException
     {
-        return createConcept(parent,this.createInternationalString(name),value);
+        return createConcept(parent, this.createInternationalString(name), value);
     }
 
     public EmailAddress createEmailAddress(String address) throws JAXRException
@@ -249,33 +228,33 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public EmailAddress createEmailAddress(String address, String type) throws JAXRException
     {
-        return new EmailAddressImpl(address,type);
+        return new EmailAddressImpl(address, type);
     }
 
     public ExternalIdentifier createExternalIdentifier(ClassificationScheme ids,
                                                        InternationalString name,
                                                        String value) throws JAXRException
     {
-        return new ExternalIdentifierImpl(this,ids,name,value);
+        return new ExternalIdentifierImpl(this, ids, name, value);
     }
 
     public ExternalIdentifier createExternalIdentifier(ClassificationScheme ids,
                                                        String name, String value) throws JAXRException
     {
-        return createExternalIdentifier(ids,this.createInternationalString(name),value);
+        return createExternalIdentifier(ids, this.createInternationalString(name), value);
     }
 
-    public ExternalLink createExternalLink(String externalURI, InternationalString description) throws JAXRException
-    {
-        return null;
-    }
-
-    public ExternalLink createExternalLink(String uri, String desc ) throws JAXRException
+    public ExternalLink createExternalLink(String uri, InternationalString desc) throws JAXRException
     {
         ExternalLink ext = new ExternalLinkImpl(this);
         ext.setExternalURI(uri);
-        ext.setDescription(this.createInternationalString(desc));
+        ext.setDescription(desc);
         return ext;
+    }
+
+    public ExternalLink createExternalLink(String uri, String desc) throws JAXRException
+    {
+        return createExternalLink(uri, createInternationalString(desc));
     }
 
     public InternationalString createInternationalString() throws JAXRException
@@ -310,7 +289,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Organization createOrganization(InternationalString name) throws JAXRException
     {
-        Organization org =  (Organization) this.createObject(LifeCycleManager.ORGANIZATION);
+        Organization org = (Organization) this.createObject(LifeCycleManager.ORGANIZATION);
         org.setName(name);
         return org;
     }
@@ -324,7 +303,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public PersonName createPersonName(String fullName) throws JAXRException
     {
-        PersonName pn =  (PersonName) this.createObject(LifeCycleManager.PERSON_NAME);
+        PersonName pn = (PersonName) this.createObject(LifeCycleManager.PERSON_NAME);
         pn.setFullName(fullName);
         return pn;
     }
@@ -356,7 +335,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Service createService(String name) throws JAXRException
     {
-        return  createService(this.createInternationalString(name));
+        return createService(this.createInternationalString(name));
     }
 
     public ServiceBinding createServiceBinding() throws JAXRException
@@ -365,7 +344,8 @@ public class LifeCycleManagerImpl implements LifeCycleManager
     }
 
     public Slot createSlot(String name, String value, String slotType) throws JAXRException
-    {   Collection col = new ArrayList();
+    {
+        Collection col = new ArrayList();
         col.add(value);
         Slot slot = (Slot) this.createObject(LifeCycleManager.SLOT);
         slot.setName(name);
@@ -400,12 +380,16 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException
     {
-        return null;
+        BulkResponse bulk = new BulkResponseImpl();
+
+        return bulk;
     }
 
-    public BulkResponse saveObjects(Collection objects) throws JAXRException
+    public BulkResponse saveObjects(Collection col ) throws JAXRException
     {
-        return null;
+        BulkResponse bulk = new BulkResponseImpl();
+
+        return bulk;
     }
 
     /*************************************************************************
@@ -484,7 +468,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     Organization createOrganization(BusinessDetail detail) throws JAXRException
     {
-        return ScoutUddiJaxrHelper.getOrganization(detail,this);
+        return ScoutUddiJaxrHelper.getOrganization(detail, this);
     }
 
     Service createService(ServiceInfo info) throws JAXRException

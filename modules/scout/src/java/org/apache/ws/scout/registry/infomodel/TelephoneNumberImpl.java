@@ -26,62 +26,77 @@ import javax.xml.registry.infomodel.TelephoneNumber;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class TelephoneNumberImpl implements TelephoneNumber {
+public class TelephoneNumberImpl implements TelephoneNumber
+{
     private String number;
     private String type;
 
-    public TelephoneNumberImpl() {
+    public TelephoneNumberImpl()
+    {
     }
 
-    public String getNumber() {
+    public String getNumber()
+    {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(String number)
+    {
         this.number = number;
     }
 
-    public String getType() {
+    public String getType()
+    {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(String type)
+    {
         this.type = type;
     }
 
-    public String getAreaCode() throws JAXRException {
+    public String getAreaCode() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public void setAreaCode(String areaCode) throws JAXRException {
+    public void setAreaCode(String areaCode) throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public String getCountryCode() throws JAXRException {
+    public String getCountryCode() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public void setCountryCode(String countryCode) throws JAXRException {
+    public void setCountryCode(String countryCode) throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public String getExtension() throws JAXRException {
+    public String getExtension() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public void setExtension(String extension) throws JAXRException {
+    public void setExtension(String extension) throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public String getUrl() throws JAXRException {
+    public String getUrl() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public void setUrl(String url) throws JAXRException {
+    public void setUrl(String url) throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (!(o instanceof TelephoneNumberImpl)) return false;
         final TelephoneNumberImpl telephoneNumber = (TelephoneNumberImpl) o;
@@ -90,14 +105,16 @@ public class TelephoneNumberImpl implements TelephoneNumber {
         return true;
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         int result;
         result = (number != null ? number.hashCode() : 0);
         result = 29 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 
-    public String toString() {
+    public String toString()
+    {
         return number == null ? "null" : number;
     }
 }

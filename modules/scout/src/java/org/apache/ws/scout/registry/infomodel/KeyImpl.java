@@ -24,25 +24,31 @@ import javax.xml.registry.infomodel.Key;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class KeyImpl implements Key {
+public class KeyImpl implements Key
+{
     private String id;
 
-    public KeyImpl() {
+    public KeyImpl()
+    {
     }
 
-    public KeyImpl(String id) {
+    public KeyImpl(String id)
+    {
         this.id = id;
     }
 
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    public void setId(String str) {
+    public void setId(String str)
+    {
         this.id = str;
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (!(o instanceof KeyImpl)) return false;
         final KeyImpl key = (KeyImpl) o;
@@ -50,11 +56,13 @@ public class KeyImpl implements Key {
         return true;
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return (id != null ? id.hashCode() : 0);
     }
 
-    public String toString() {
+    public String toString()
+    {
         return id;
     }
 }

@@ -36,7 +36,8 @@ import java.util.Properties;
  * @author Anil Saldhana  <anil@apache.org>
  * @author Jeremy Boynes  <jboynes@apache.org>
  */
-public class ConnectionFactoryImpl extends ConnectionFactory implements Serializable {
+public class ConnectionFactoryImpl extends ConnectionFactory implements Serializable
+{
     private static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
     private static final String LIFECYCLEMANAGER_PROPERTY = "javax.xml.registry.lifeCycleManagerURL";
     private static final String SEMANTICEQUIVALENCES_PROPERTY = "javax.xml.registry.semanticEquivalences";
@@ -55,29 +56,37 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
      * Public no-arg constructor so that this ConnectionFactory can be
      * instantiated by the JAXR ConnectionFactory;
      */
-    public ConnectionFactoryImpl() {
+    public ConnectionFactoryImpl()
+    {
     }
 
-    public Connection createConnection() throws JAXRException {
-        if (queryManagerURL == null) {
+    public Connection createConnection() throws JAXRException
+    {
+        if (queryManagerURL == null)
+        {
             throw new InvalidRequestException("queryManager is not set");
         }
         URL queryManager;
         URL lifeCycleManager;
-        try {
+        try
+        {
             queryManager = new URL(queryManagerURL);
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException e)
+        {
             throw new InvalidRequestException("Invalid queryManagerURL: " + queryManagerURL, e);
         }
-        try {
+        try
+        {
             lifeCycleManager = lifeCycleManagerURL == null ? queryManager : new URL(lifeCycleManagerURL);
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException e)
+        {
             throw new InvalidRequestException("Invalid lifeCycleManagerURL: " + lifeCycleManagerURL, e);
         }
         return new ConnectionImpl(queryManager, lifeCycleManager, null, maxRows == null ? -1 : maxRows.intValue());
     }
 
-    public FederatedConnection createFederatedConnection(Collection collection) throws JAXRException {
+    public FederatedConnection createFederatedConnection(Collection collection) throws JAXRException
+    {
         throw new UnsupportedCapabilityException("FederatedConnections are not supported in this release");
     }
 
@@ -88,24 +97,31 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
      *
      * @return a Properties object containing the properies that will be used to create Connection
      */
-    public Properties getProperties() {
+    public Properties getProperties()
+    {
         Properties props = new Properties();
-        if (queryManagerURL != null) {
+        if (queryManagerURL != null)
+        {
             props.put(QUERYMANAGER_PROPERTY, queryManagerURL);
         }
-        if (lifeCycleManagerURL != null) {
+        if (lifeCycleManagerURL != null)
+        {
             props.put(LIFECYCLEMANAGER_PROPERTY, lifeCycleManagerURL);
         }
-        if (semanticEquivalences != null) {
+        if (semanticEquivalences != null)
+        {
             props.put(SEMANTICEQUIVALENCES_PROPERTY, semanticEquivalences);
         }
-        if (postalAddressScheme != null) {
+        if (postalAddressScheme != null)
+        {
             props.put(POSTALADDRESSSCHEME_PROPERTY, postalAddressScheme);
         }
-        if (authenticationMethod != null) {
+        if (authenticationMethod != null)
+        {
             props.put(AUTHENTICATIONMETHOD_PROPERTY, authenticationMethod);
         }
-        if (maxRows != null) {
+        if (maxRows != null)
+        {
             props.put(MAXROWS_PROPERTY, maxRows.toString());
         }
         return props;
@@ -116,7 +132,8 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
      *
      * @param properties the new properties for this ConnectionFactory
      */
-    public void setProperties(Properties properties) {
+    public void setProperties(Properties properties)
+    {
         queryManagerURL = properties.getProperty(QUERYMANAGER_PROPERTY);
         lifeCycleManagerURL = properties.getProperty(LIFECYCLEMANAGER_PROPERTY);
         semanticEquivalences = properties.getProperty(SEMANTICEQUIVALENCES_PROPERTY);
@@ -126,55 +143,68 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         maxRows = (val == null) ? null : Integer.valueOf(val);
     }
 
-    public static ConnectionFactory newInstance() {
+    public static ConnectionFactory newInstance()
+    {
         return new ConnectionFactoryImpl();
     }
 
-    public String getAuthenticationMethod() {
+    public String getAuthenticationMethod()
+    {
         return authenticationMethod;
     }
 
-    public void setAuthenticationMethod(String authenticationMethod) {
+    public void setAuthenticationMethod(String authenticationMethod)
+    {
         this.authenticationMethod = authenticationMethod;
     }
 
-    public String getLifeCycleManagerURL() {
+    public String getLifeCycleManagerURL()
+    {
         return lifeCycleManagerURL;
     }
 
-    public void setLifeCycleManagerURL(String lifeCycleManagerURL) {
+    public void setLifeCycleManagerURL(String lifeCycleManagerURL)
+    {
         this.lifeCycleManagerURL = lifeCycleManagerURL;
     }
 
-    public Integer getMaxRows() {
+    public Integer getMaxRows()
+    {
         return maxRows;
     }
 
-    public void setMaxRows(Integer maxRows) {
+    public void setMaxRows(Integer maxRows)
+    {
         this.maxRows = maxRows;
     }
 
-    public String getPostalAddressScheme() {
+    public String getPostalAddressScheme()
+    {
         return postalAddressScheme;
     }
 
-    public void setPostalAddressScheme(String postalAddressScheme) {
+    public void setPostalAddressScheme(String postalAddressScheme)
+    {
         this.postalAddressScheme = postalAddressScheme;
     }
 
-    public String getQueryManagerURL() {
+    public String getQueryManagerURL()
+    {
         return queryManagerURL;
     }
 
-    public void setQueryManagerURL(String queryManagerURL) {
+    public void setQueryManagerURL(String queryManagerURL)
+    {
         this.queryManagerURL = queryManagerURL;
     }
 
-    public String getSemanticEquivalences() {
+    public String getSemanticEquivalences()
+    {
         return semanticEquivalences;
     }
 
-    public void setSemanticEquivalences(String semanticEquivalences) {
+    public void setSemanticEquivalences(String semanticEquivalences)
+    {
         this.semanticEquivalences = semanticEquivalences;
     }
 }

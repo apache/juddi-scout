@@ -31,6 +31,8 @@ import org.apache.juddi.datatype.business.BusinessEntity;
 import org.apache.juddi.datatype.business.Contact;
 import org.apache.juddi.datatype.business.Contacts;
 import org.apache.juddi.datatype.response.BusinessDetail;
+import org.apache.juddi.datatype.response.TModelDetail;
+import org.apache.juddi.datatype.response.TModelInfo;
 import org.apache.juddi.datatype.service.BusinessService;
 import org.apache.juddi.datatype.service.BusinessServices;
 import org.apache.juddi.datatype.tmodel.TModel;
@@ -39,6 +41,7 @@ import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
 import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceImpl;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
@@ -68,6 +71,44 @@ import java.util.Vector;
  */
 public class ScoutUddiJaxrHelper
 {
+    public static Organization getOrganization(BusinessEntity entity,
+                                                   LifeCycleManager lcm)
+                throws JAXRException
+        {
+            Vector namevect = entity.getNameVector();
+            Name n = (Name)namevect.elementAt(0);
+            String name = n.getValue() ;
+            Vector descvect = entity.getDescriptionVector();
+            Description desc = (Description)descvect.elementAt(0);
+
+            Organization org = new OrganizationImpl(lcm);
+            org.setName(getIString(name,lcm));
+            org.setDescription(getIString((String)desc.getValue(),lcm));
+            org.setKey(lcm.createKey(entity.getBusinessKey()));
+
+            //Set Services also
+            BusinessServices services = entity.getBusinessServices();
+            Vector svect = services.getBusinessServiceVector();
+            for(int i=0; svect != null && i< svect.size();i++)
+            {
+                BusinessService s = (BusinessService)svect.elementAt(i);
+                org.addService(getService(s,lcm));
+            }
+            //Get Contacts or Users
+            Contacts contacts = entity.getContacts();
+            Vector cvect = contacts.getContactVector();
+            for(int i=0; cvect != null && i< cvect.size();i++)
+            {
+                Contact contact = (Contact)cvect.elementAt(i);
+                User user = new UserImpl(null);
+                String pname = contact.getPersonName().getValue();
+                user.setPersonName(new PersonNameImpl(pname));
+                org.addUser(user);
+            }
+            return org;
+        }
+
+
     public static Organization getOrganization(BusinessDetail bizdetail,
                                                LifeCycleManager lcm)
             throws JAXRException
@@ -101,6 +142,7 @@ public class ScoutUddiJaxrHelper
             Contact contact = (Contact)cvect.elementAt(i);
             User user = new UserImpl(null);
             String pname = contact.getPersonName().getValue();
+            user.setType( contact.getUseType());
             user.setPersonName(new PersonNameImpl(pname));
             org.addUser(user);
         }
@@ -127,6 +169,46 @@ public class ScoutUddiJaxrHelper
         Description desc = (Description)descvect.elementAt(0);
         serve.setDescription(lcm.createInternationalString(desc.getValue()));
         return serve;
+    }
+
+    public static Concept getConcept(TModelDetail tm, LifeCycleManager lcm)
+    throws JAXRException
+    {
+        Concept concept = new ConceptImpl(lcm);
+        Vector tc = tm.getTModelVector();
+        TModel tmodel = (TModel)tc.elementAt(0);
+        concept.setKey(lcm.createKey(tmodel.getTModelKey()));
+        concept.setName(lcm.createInternationalString( tmodel.getName() ) );
+
+        Vector descvect = tmodel.getDescriptionVector();
+        Description desc = (Description)descvect.elementAt(0);
+        concept.setDescription(lcm.createInternationalString(desc.getValue()));
+
+        return concept;
+    }
+
+    public static Concept getConcept(TModel tmodel, LifeCycleManager lcm)
+    throws JAXRException
+    {
+        Concept concept = new ConceptImpl(lcm);
+        concept.setKey(lcm.createKey(tmodel.getTModelKey()));
+        concept.setName(lcm.createInternationalString( tmodel.getName() ) );
+
+        Vector descvect = tmodel.getDescriptionVector();
+        Description desc = (Description)descvect.elementAt(0);
+        concept.setDescription(lcm.createInternationalString(desc.getValue()));
+
+        return concept;
+    }
+
+    public static Concept getConcept(TModelInfo tm, LifeCycleManager lcm)
+    throws JAXRException
+    {
+        Concept concept = new ConceptImpl(lcm);
+        concept.setKey(lcm.createKey(tm.getTModelKey()));
+        concept.setName(lcm.createInternationalString( tm.getName().getValue() ) );
+
+        return concept;
     }
 
 }

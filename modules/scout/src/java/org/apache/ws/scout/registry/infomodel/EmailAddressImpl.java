@@ -26,11 +26,13 @@ import javax.xml.registry.infomodel.EmailAddress;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class EmailAddressImpl implements EmailAddress {
+public class EmailAddressImpl implements EmailAddress
+{
     private String email;
     private String type;
 
-    public EmailAddressImpl() {
+    public EmailAddressImpl()
+    {
     }
 
     public EmailAddressImpl(String email)
@@ -44,23 +46,28 @@ public class EmailAddressImpl implements EmailAddress {
         this.type = type;
     }
 
-    public String getAddress() throws JAXRException {
+    public String getAddress() throws JAXRException
+    {
         return email;
     }
 
-    public String getType() throws JAXRException {
+    public String getType() throws JAXRException
+    {
         return type;
     }
 
-    public void setAddress(String str) throws JAXRException {
+    public void setAddress(String str) throws JAXRException
+    {
         this.email = str;
     }
 
-    public void setType(String str) throws JAXRException {
+    public void setType(String str) throws JAXRException
+    {
         this.type = str;
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (!(o instanceof EmailAddressImpl)) return false;
         final EmailAddressImpl emailAddress = (EmailAddressImpl) o;
@@ -69,14 +76,16 @@ public class EmailAddressImpl implements EmailAddress {
         return true;
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         int result;
         result = (email != null ? email.hashCode() : 0);
         result = 29 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 
-    public String toString() {
+    public String toString()
+    {
         return email == null ? "null" : email;
     }
 }

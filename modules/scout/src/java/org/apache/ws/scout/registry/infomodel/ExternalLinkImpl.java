@@ -29,7 +29,8 @@ import java.util.Collection;
  * @author Anil Saldhana  <anil@apache.org>
  */
 public class ExternalLinkImpl extends RegistryObjectImpl
-        implements javax.xml.registry.infomodel.ExternalLink {
+        implements javax.xml.registry.infomodel.ExternalLink
+{
     private String uri = new String();
     private boolean validateuri = false;
     private Collection linkedObj = new ArrayList();
@@ -37,27 +38,33 @@ public class ExternalLinkImpl extends RegistryObjectImpl
     /**
      * Creates a new instance of ExternalLinkImpl
      */
-    public ExternalLinkImpl(LifeCycleManager lifeCycleManager) {
+    public ExternalLinkImpl(LifeCycleManager lifeCycleManager)
+    {
         super(lifeCycleManager);
     }
 
-    public String getExternalURI() throws JAXRException {
+    public String getExternalURI() throws JAXRException
+    {
         return uri;
     }
 
-    public Collection getLinkedObjects() throws JAXRException {
+    public Collection getLinkedObjects() throws JAXRException
+    {
         return linkedObj;
     }
 
-    public boolean getValidateURI() throws JAXRException {
+    public boolean getValidateURI() throws JAXRException
+    {
         return validateuri;
     }
 
-    public void setExternalURI(String str) throws JAXRException {
+    public void setExternalURI(String str) throws JAXRException
+    {
         this.uri = str;
     }
 
-    public void setValidateURI(boolean param) throws JAXRException {
+    public void setValidateURI(boolean param) throws JAXRException
+    {
         this.validateuri = param;
     }
 

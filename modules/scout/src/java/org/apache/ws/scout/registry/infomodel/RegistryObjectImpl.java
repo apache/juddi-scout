@@ -41,7 +41,8 @@ import java.util.Set;
  *
  * @author Anil Saldhana  <anil@apache.org>
  */
-public class RegistryObjectImpl extends ExtensibleObjectImpl implements RegistryObject {
+public class RegistryObjectImpl extends ExtensibleObjectImpl implements RegistryObject
+{
     private final LifeCycleManager lifeCycleManager;
     private Key key;
     private InternationalString name = new InternationalStringImpl();
@@ -54,194 +55,238 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
 
     private OrganizationImpl submittingOrganization;
 
-    public RegistryObjectImpl(LifeCycleManager lifeCycleManager) {
+    public RegistryObjectImpl(LifeCycleManager lifeCycleManager)
+    {
         this.lifeCycleManager = lifeCycleManager;
     }
-    public RegistryObjectImpl(LifeCycleManager lifeCycleManager,InternationalString n) {
+
+    public RegistryObjectImpl(LifeCycleManager lifeCycleManager, InternationalString n)
+    {
         this.lifeCycleManager = lifeCycleManager;
         name = n;
     }
 
-    public Key getKey() {
+    public Key getKey()
+    {
         return key;
     }
 
-    public InternationalString getDescription() {
+    public InternationalString getDescription()
+    {
         return desc;
     }
 
-    public void setDescription(InternationalString description) {
+    public void setDescription(InternationalString description)
+    {
         this.desc = description;
     }
 
-    public InternationalString getName() {
+    public InternationalString getName()
+    {
         return name;
     }
 
-    public void setName(InternationalString name) {
+    public void setName(InternationalString name)
+    {
         this.name = name;
     }
 
-    public void setKey(Key k) {
+    public void setKey(Key k)
+    {
         key = k;
     }
 
-    public String toXML() throws JAXRException {
+    public String toXML() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("toXML is not supported");
     }
 
-    public void addClassification(Classification classification) {
+    public void addClassification(Classification classification)
+    {
         classifications.add(classification);
     }
 
-    public void addClassifications(Collection collection) {
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+    public void addClassifications(Collection collection)
+    {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             Classification classification = (Classification) i.next();
             classifications.add(classification);
         }
     }
 
-    public void removeClassification(Classification classification) {
+    public void removeClassification(Classification classification)
+    {
         classifications.remove(classification);
     }
 
-    public void removeClassifications(Collection collection) {
+    public void removeClassifications(Collection collection)
+    {
         classifications.removeAll(collection);
     }
 
-    public Collection getClassifications() {
+    public Collection getClassifications()
+    {
         return Collections.unmodifiableSet(classifications);
     }
 
-    public void setClassifications(Collection collection) {
+    public void setClassifications(Collection collection)
+    {
         Set newClassifications = new HashSet(collection.size());
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             Classification classification = (Classification) i.next();
             newClassifications.add(classification);
         }
         classifications = newClassifications;
     }
 
-    public void addAssociation(Association association) {
+    public void addAssociation(Association association)
+    {
         associations.add(association);
     }
 
-    public void addAssociations(Collection collection) throws JAXRException {
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+    public void addAssociations(Collection collection) throws JAXRException
+    {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             Association association = (Association) i.next();
             associations.add(association);
         }
     }
 
-    public Collection getAssociations() throws JAXRException {
+    public Collection getAssociations() throws JAXRException
+    {
         return Collections.unmodifiableSet(associations);
     }
 
-    public void setAssociations(Collection collection) {
+    public void setAssociations(Collection collection)
+    {
         Set newAssociations = new HashSet(collection.size());
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             Association association = (Association) i.next();
             newAssociations.add(association);
         }
         associations = newAssociations;
     }
 
-    public void removeAssociation(Association association) {
+    public void removeAssociation(Association association)
+    {
         associations.remove(association);
     }
 
-    public void removeAssociations(Collection collection) {
+    public void removeAssociations(Collection collection)
+    {
         associations.removeAll(collection);
     }
 
-    public void addExternalIdentifier(ExternalIdentifier externalIdentifier) {
+    public void addExternalIdentifier(ExternalIdentifier externalIdentifier)
+    {
         externalIds.add(externalIdentifier);
-        ((ExternalIdentifierImpl)externalIdentifier).setRegistryObject(this);
+        ((ExternalIdentifierImpl) externalIdentifier).setRegistryObject(this);
     }
 
-    public void addExternalIdentifiers(Collection collection) {
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+    public void addExternalIdentifiers(Collection collection)
+    {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             ExternalIdentifier externalId = (ExternalIdentifier) i.next();
             externalIds.add(externalId);
-            ((ExternalIdentifierImpl)externalId).setRegistryObject(this);
+            ((ExternalIdentifierImpl) externalId).setRegistryObject(this);
         }
     }
 
-    public void removeExternalIdentifier(ExternalIdentifier externalIdentifier) {
+    public void removeExternalIdentifier(ExternalIdentifier externalIdentifier)
+    {
         externalIds.remove(externalIdentifier);
-        ((ExternalIdentifierImpl)externalIdentifier).setRegistryObject(null);
+        ((ExternalIdentifierImpl) externalIdentifier).setRegistryObject(null);
     }
 
-    public void removeExternalIdentifiers(Collection collection) {
+    public void removeExternalIdentifiers(Collection collection)
+    {
         //Lets clear out the reference to this in the ext id
         Iterator iter = collection.iterator();
-        while(iter != null && iter.hasNext())
+        while (iter != null && iter.hasNext())
         {
-           ExternalIdentifier externalId = (ExternalIdentifier) iter.next();
-           ((ExternalIdentifierImpl)externalId).setRegistryObject(null);
+            ExternalIdentifier externalId = (ExternalIdentifier) iter.next();
+            ((ExternalIdentifierImpl) externalId).setRegistryObject(null);
         }
         externalIds.removeAll(collection);
     }
 
-    public Collection getExternalIdentifiers() {
-        return Collections.unmodifiableSet(externalIds) ;
+    public Collection getExternalIdentifiers()
+    {
+        return Collections.unmodifiableSet(externalIds);
     }
 
-    public void setExternalIdentifiers(Collection collection) {
+    public void setExternalIdentifiers(Collection collection)
+    {
         Set newExternalIds = new HashSet(collection.size());
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             ExternalIdentifier externalId = (ExternalIdentifier) i.next();
             newExternalIds.add(externalId);
         }
         externalIds = newExternalIds;
     }
 
-    public void addExternalLink(ExternalLink externalLink) {
+    public void addExternalLink(ExternalLink externalLink)
+    {
         externalLinks.add(externalLink);
-        ((ExternalLinkImpl)externalLink).addLinkedObject(this);
+        ((ExternalLinkImpl) externalLink).addLinkedObject(this);
     }
 
-    public void addExternalLinks(Collection collection) {
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+    public void addExternalLinks(Collection collection)
+    {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             ExternalLink externalLink = (ExternalLink) i.next();
             externalLinks.add(externalLink);
-            ((ExternalLinkImpl)externalLink).addLinkedObject(this);
+            ((ExternalLinkImpl) externalLink).addLinkedObject(this);
         }
     }
 
-    public void removeExternalLink(ExternalLink externalLink) {
-        ((ExternalLinkImpl)externalLink).removeLinkedObject(this);
+    public void removeExternalLink(ExternalLink externalLink)
+    {
+        ((ExternalLinkImpl) externalLink).removeLinkedObject(this);
         externalLinks.remove(externalLink);
     }
 
-    public void removeExternalLinks(Collection collection) {
+    public void removeExternalLinks(Collection collection)
+    {
         Iterator iter = collection.iterator();
-        while(iter != null && iter.hasNext())
+        while (iter != null && iter.hasNext())
         {
-           ExternalLink externalLink = (ExternalLink) iter.next();
-           ((ExternalLinkImpl)externalLink).removeLinkedObject(this);
+            ExternalLink externalLink = (ExternalLink) iter.next();
+            ((ExternalLinkImpl) externalLink).removeLinkedObject(this);
         }
         externalLinks.removeAll(collection);
     }
 
-    public Collection getExternalLinks() {
+    public Collection getExternalLinks()
+    {
         return Collections.unmodifiableSet(externalLinks);
     }
 
-    public void setExternalLinks(Collection collection) {
+    public void setExternalLinks(Collection collection)
+    {
         Set newExternalLinks = new HashSet(collection.size());
-        for (Iterator i = collection.iterator(); i.hasNext();) {
+        for (Iterator i = collection.iterator(); i.hasNext();)
+        {
             ExternalLink externalLink = (ExternalLink) i.next();
             newExternalLinks.add(externalLink);
         }
         externalLinks = newExternalLinks;
     }
 
-    public Organization getSubmittingOrganization() {
+    public Organization getSubmittingOrganization()
+    {
         return submittingOrganization;
     }
 
-    public LifeCycleManager getLifeCycleManager() {
+    public LifeCycleManager getLifeCycleManager()
+    {
         return lifeCycleManager;
     }
 
@@ -253,14 +298,16 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
      * @param obj the object to compare to
      * @return true if the other object is of the same class and has the same key value
      */
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj)
+    {
         if (obj == this) return true;
         if (obj == null || !this.getClass().equals(obj.getClass())) return false;
         final RegistryObjectImpl other = (RegistryObjectImpl) obj;
         return this.key != null && key.equals(other.key);
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return key == null ? 0 : key.hashCode();
     }
 
@@ -268,19 +315,23 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
     // Level 1 features must throw exceptions
     ///////////////////////////////////////////////////////////////////////////
 
-    public Collection getAuditTrail() throws JAXRException {
+    public Collection getAuditTrail() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public Collection getAssociatedObjects() throws JAXRException {
+    public Collection getAssociatedObjects() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public Concept getObjectType() throws JAXRException {
+    public Concept getObjectType() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public Collection getRegistryPackages() throws JAXRException {
+    public Collection getRegistryPackages() throws JAXRException
+    {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 }
