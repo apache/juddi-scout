@@ -110,6 +110,7 @@ public class ScoutUddiJaxrHelper
             throws JAXRException
     {
         Vector bz = bizdetail.getBusinessEntityVector();
+
         BusinessEntity entity = (BusinessEntity) bz.elementAt(0);
         Vector namevect = entity.getNameVector();
         Name n = (Name)namevect.elementAt(0);
@@ -170,7 +171,9 @@ public class ScoutUddiJaxrHelper
             throws JAXRException
     {
         Service serve = new ServiceImpl(lcm);
-        String keystr = bs.getBusinessKey();
+
+        String keystr = bs.getServiceKey();
+
         if(keystr != null ) serve.setKey(lcm.createKey(keystr));
         Vector namevect = bs.getNameVector();
         Name n = (Name)namevect.elementAt(0);
