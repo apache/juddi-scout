@@ -22,8 +22,8 @@
 //
 package javax.xml.registry;
 
-import java.util.Collection;
 import javax.xml.registry.infomodel.RegistryObject;
+import java.util.Collection;
 
 /**
  * @version $Revision$ $Date$

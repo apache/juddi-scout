@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.util.*;
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.*;
-
- 
-import java.net.PasswordAuthentication;
-
 import org.apache.ws.scout.registry.ConnectionFactoryImpl;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.BusinessQueryManager;
+import javax.xml.registry.Connection;
+import javax.xml.registry.ConnectionFactory;
+import javax.xml.registry.FindQualifier;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRResponse;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Organization;
+import java.net.PasswordAuthentication;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Deletes an Organization in the UDDI Registry.

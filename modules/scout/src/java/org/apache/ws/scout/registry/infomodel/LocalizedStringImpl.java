@@ -16,8 +16,8 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
-import java.util.Locale;
 import javax.xml.registry.infomodel.LocalizedString;
+import java.util.Locale;
 
 /**
  * Implements JAXR Interface.

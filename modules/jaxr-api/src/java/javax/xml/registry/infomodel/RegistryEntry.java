@@ -22,8 +22,8 @@
 //
 package javax.xml.registry.infomodel;
 
-import java.util.Date;
 import javax.xml.registry.JAXRException;
+import java.util.Date;
 
 /**
  * @version $Revision$ $Date$

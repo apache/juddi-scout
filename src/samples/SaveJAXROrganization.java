@@ -13,13 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.util.*;
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.*;
- 
-import java.net.PasswordAuthentication;
-
 import org.apache.ws.scout.registry.ConnectionFactoryImpl;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.Connection;
+import javax.xml.registry.ConnectionFactory;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRResponse;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Classification;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.EmailAddress;
+import javax.xml.registry.infomodel.ExternalIdentifier;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.PersonName;
+import javax.xml.registry.infomodel.PostalAddress;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.TelephoneNumber;
+import javax.xml.registry.infomodel.User;
+import java.net.PasswordAuthentication;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Saves an Organization in the UDDI Registry

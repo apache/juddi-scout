@@ -16,23 +16,20 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
+import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.UnsupportedCapabilityException;
-import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.PostalAddress;
 import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.User;
 import javax.xml.registry.infomodel.TelephoneNumber;
+import javax.xml.registry.infomodel.User;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Organization Interface

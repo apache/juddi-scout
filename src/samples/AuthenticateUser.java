@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import javax.xml.registry.*;
-
-import java.util.*;
-import java.net.PasswordAuthentication;
-
 import org.apache.ws.scout.registry.ConnectionFactoryImpl;
+
+import javax.xml.registry.Connection;
+import javax.xml.registry.ConnectionFactory;
+import java.net.PasswordAuthentication;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Tests authentication to the UDDI registry.

@@ -22,10 +22,10 @@
 //
 package javax.xml.registry;
 
-import java.util.Collection;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
+import java.util.Collection;
 
 /**
  * @version $Revision$ $Date$

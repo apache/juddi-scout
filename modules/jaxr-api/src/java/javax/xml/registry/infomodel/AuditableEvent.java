@@ -22,8 +22,8 @@
 //
 package javax.xml.registry.infomodel;
 
-import java.sql.Timestamp;
 import javax.xml.registry.JAXRException;
+import java.sql.Timestamp;
 
 /**
  * @version $Revision$ $Date$

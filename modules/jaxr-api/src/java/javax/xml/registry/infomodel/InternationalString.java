@@ -22,9 +22,9 @@
 //
 package javax.xml.registry.infomodel;
 
+import javax.xml.registry.JAXRException;
 import java.util.Collection;
 import java.util.Locale;
-import javax.xml.registry.JAXRException;
 
 /**
  * @version $Revision$ $Date$

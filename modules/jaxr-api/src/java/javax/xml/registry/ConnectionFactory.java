@@ -22,8 +22,8 @@
 //
 package javax.xml.registry;
 
-import java.util.Properties;
 import java.util.Collection;
+import java.util.Properties;
 
 /**
  * @version $Revision$ $Date$

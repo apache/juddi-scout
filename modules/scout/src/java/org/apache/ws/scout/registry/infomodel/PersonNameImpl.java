@@ -15,7 +15,7 @@
  */
 
 package org.apache.ws.scout.registry.infomodel;
-import  javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRException;
  
 /**
  * Implements JAXR Interface.

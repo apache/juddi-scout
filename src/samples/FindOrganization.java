@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.*;
- 
-import java.util.*; 
-
 import org.apache.ws.scout.registry.ConnectionFactoryImpl;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessQueryManager;
+import javax.xml.registry.Connection;
+import javax.xml.registry.ConnectionFactory;
+import javax.xml.registry.FindQualifier;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRResponse;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.Service;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
 
 /**
  * Locates an Organization in the UDDI Registry

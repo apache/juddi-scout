@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Properties;
+import org.apache.ws.scout.registry.ConnectionFactoryImpl;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessQueryManager;
@@ -27,12 +25,13 @@ import javax.xml.registry.FindQualifier;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.JAXRResponse;
 import javax.xml.registry.RegistryService;
-import javax.xml.registry.infomodel.Key; 
+import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Service;
-
-import org.apache.ws.scout.registry.ConnectionFactoryImpl;
-import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
 
 
 

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import javax.xml.registry.*; 
-import java.util.*;
-
 import org.apache.ws.scout.registry.ConnectionFactoryImpl;
+
+import javax.xml.registry.Connection;
+import javax.xml.registry.ConnectionFactory;
+import java.util.Properties;
 
 /**
  * Tests connection to UDDI registry

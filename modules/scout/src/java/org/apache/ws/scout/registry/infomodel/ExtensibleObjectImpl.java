@@ -15,13 +15,13 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.ExtensibleObject;
+import javax.xml.registry.infomodel.Slot;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.infomodel.ExtensibleObject;
-import javax.xml.registry.infomodel.Slot;
 
 /** 
  * Implements JAXR Interface.

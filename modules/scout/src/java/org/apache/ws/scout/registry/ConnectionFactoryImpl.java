@@ -16,17 +16,17 @@
 
 package org.apache.ws.scout.registry;
 
-import java.util.Collection;
-import java.util.Properties;
-import java.io.Serializable;
-import java.net.URL;
-import java.net.MalformedURLException;
 import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.FederatedConnection;
-import javax.xml.registry.JAXRException;
 import javax.xml.registry.InvalidRequestException;
+import javax.xml.registry.JAXRException;
 import javax.xml.registry.UnsupportedCapabilityException;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Properties;
 
 
 /**

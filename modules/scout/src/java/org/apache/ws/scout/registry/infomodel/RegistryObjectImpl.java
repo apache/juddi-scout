@@ -16,11 +16,6 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.UnsupportedCapabilityException;
@@ -33,6 +28,11 @@ import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.RegistryObject;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Implements  RegistryObject Interface

@@ -22,8 +22,6 @@
 //
 package javax.xml.registry;
 
-import java.util.Collection;
-import java.util.Locale;
 import javax.activation.DataHandler;
 import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.Classification;
@@ -47,6 +45,8 @@ import javax.xml.registry.infomodel.Slot;
 import javax.xml.registry.infomodel.SpecificationLink;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
+import java.util.Collection;
+import java.util.Locale;
 
 /**
  * @version $Revision$ $Date$
