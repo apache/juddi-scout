@@ -419,7 +419,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         for (int i = 0; svect != null && i < svect.size(); i++)
         {
             BusinessService entity = (BusinessService) svect.elementAt(i);
-            coll.add(new KeyImpl(entity.getBusinessKey()));
+            coll.add(new KeyImpl(entity.getServiceKey()));
         }
         bulk.setCollection(coll);
         bulk.setExceptions(exceptions);
