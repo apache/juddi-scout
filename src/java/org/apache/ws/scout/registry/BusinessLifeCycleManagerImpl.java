@@ -43,6 +43,7 @@ import javax.xml.registry.RegistryService;
 import javax.xml.registry.SaveException;
 import javax.xml.registry.UnexpectedObjectException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
@@ -67,142 +68,159 @@ import java.util.Vector;
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
-        implements BusinessLifeCycleManager, Serializable
-{
+        implements BusinessLifeCycleManager, Serializable {
 
-    public BusinessLifeCycleManagerImpl(RegistryService registry)
-    {
+    public BusinessLifeCycleManagerImpl(RegistryService registry) {
         super(registry);
     }
 
-    //Override from Base Class
-    public BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException
-    {
-        BulkResponse  bulk = null;
+    /**
+     * Deletes one or more previously submitted objects from the registry
+     * using the object keys and a specified objectType attribute.
+     *
+     * @param keys
+     * @param objectType
+     * @return
+     * @throws JAXRException
+     */
+    public BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException {
+        BulkResponse bulk = null;
 
-        if(objectType == LifeCycleManager.ASSOCIATION)
-        {
+        if (objectType == LifeCycleManager.ASSOCIATION) {
             bulk = this.deleteAssociations(keys);
-        } else
-        if(objectType == LifeCycleManager.CLASSIFICATION_SCHEME)
-        {
+        }
+        else if (objectType == LifeCycleManager.CLASSIFICATION_SCHEME) {
             bulk = this.deleteClassificationSchemes(keys);
-        } else
-        if(objectType == LifeCycleManager.CONCEPT)
-        {
+        }
+        else if (objectType == LifeCycleManager.CONCEPT) {
             bulk = this.deleteConcepts(keys);
-        } else
-        if(objectType == LifeCycleManager.ORGANIZATION)
-        {
-            bulk = this.deleteOrganizations(keys) ;
-        } else
-        if(objectType == LifeCycleManager.SERVICE)
-        {
+        }
+        else if (objectType == LifeCycleManager.ORGANIZATION) {
+            bulk = this.deleteOrganizations(keys);
+        }
+        else if (objectType == LifeCycleManager.SERVICE) {
             bulk = this.deleteServices(keys);
-        }else
-        if(objectType == LifeCycleManager.SERVICE_BINDING)
-        {
+        }
+        else if (objectType == LifeCycleManager.SERVICE_BINDING) {
             bulk = this.deleteServiceBindings(keys);
-        }else
-        throw new JAXRException( "Delete Operation for "+objectType + " not implemented by Scout");
-
-        return bulk;
-    }
-
-    public BulkResponse deleteAssociations(Collection associationKeys) throws JAXRException
-    {
-        return this.deleteOperation(associationKeys, "DELETE_ASSOCIATION");
-    }
-
-    public BulkResponse deleteClassificationSchemes(Collection schemeKeys) throws JAXRException
-    {
-        return this.deleteOperation(schemeKeys, "DELETE_CLASSIFICATIONSCHEME");
-    }
-
-    public BulkResponse deleteConcepts(Collection conceptKeys) throws JAXRException
-    {
-        return this.deleteOperation(conceptKeys, "DELETE_CONCEPT");
-    }
-
-    public BulkResponse deleteOrganizations(Collection orgkeys) throws JAXRException
-    {
-        return this.deleteOperation(orgkeys, "DELETE_ORG");
-    }
-
-    public BulkResponse deleteServiceBindings(Collection bindingKeys) throws JAXRException
-    {
-        return this.deleteOperation(bindingKeys, "DELETE_SERVICEBINDING");
-    }
-
-    public BulkResponse deleteServices(Collection serviceKeys) throws JAXRException
-    {
-        return this.deleteOperation(serviceKeys, "DELETE_SERVICE");
-    }
-
-    public BulkResponse saveObjects(Collection col ) throws JAXRException
-    {
-        BulkResponseImpl bulk = new BulkResponseImpl();
-
-        Iterator iter = col.iterator();
-        //TODO:Check if juddi can provide a facility to store a collection of heterogenous
-        //objects
-        Collection keys = new ArrayList();
-        Collection suc = new ArrayList();
-        Collection exc = new ArrayList();
-        bulk.setCollection(suc);
-        bulk.setExceptions(exc);
-
-        while(iter.hasNext())
-        {
-            keys.clear();
-            RegistryObject reg = (RegistryObject)iter.next();
-            keys.add(reg.getKey());
-            BulkResponse  br = null;
-
-            Collection c = new ArrayList();
-            c.add(reg);
-
-            if(reg instanceof javax.xml.registry.infomodel.Association)
-            {
-                br = saveAssociations(c, true);
-            } else
-            if(reg instanceof javax.xml.registry.infomodel.ClassificationScheme)
-            {
-                br = saveClassificationSchemes(c);
-            }
-            else
-            if(reg instanceof javax.xml.registry.infomodel.Concept)
-            {
-                br = saveConcepts(c);
-            }else
-            if(reg instanceof javax.xml.registry.infomodel.Organization)
-            {
-                br = saveOrganizations(c);
-            }else
-            if(reg instanceof javax.xml.registry.infomodel.Service)
-            {
-                br = saveServices(c);
-            }else
-            if(reg instanceof javax.xml.registry.infomodel.ServiceBinding)
-            {
-                br = saveServiceBindings(c);
-            }
-
-            if(br != null ) {
-                updateBulkResponse(bulk,br);
-            }
+        }
+        else {
+            throw new JAXRException("Delete Operation for " + objectType + " not implemented by Scout");
         }
 
         return bulk;
     }
 
-    public BulkResponse saveAssociations(Collection associationObjects, boolean replace) throws JAXRException
-    {    //TODO
+    public BulkResponse deleteAssociations(Collection associationKeys) throws JAXRException {
+        return this.deleteOperation(associationKeys, "DELETE_ASSOCIATION");
+    }
+
+    public BulkResponse deleteClassificationSchemes(Collection schemeKeys) throws JAXRException {
+        return this.deleteOperation(schemeKeys, "DELETE_CLASSIFICATIONSCHEME");
+    }
+
+    public BulkResponse deleteConcepts(Collection conceptKeys) throws JAXRException {
+        return this.deleteOperation(conceptKeys, "DELETE_CONCEPT");
+    }
+
+    public BulkResponse deleteOrganizations(Collection orgkeys) throws JAXRException {
+        return this.deleteOperation(orgkeys, "DELETE_ORG");
+    }
+
+    public BulkResponse deleteServiceBindings(Collection bindingKeys) throws JAXRException {
+        return this.deleteOperation(bindingKeys, "DELETE_SERVICEBINDING");
+    }
+
+    public BulkResponse deleteServices(Collection serviceKeys) throws JAXRException {
+        return this.deleteOperation(serviceKeys, "DELETE_SERVICE");
+    }
+
+    /**
+     * aves one or more Objects to the registry. An object may be a
+     * RegistryObject  subclass instance. If an object is not in the registry,
+     * it is created in the registry.  If it already exists in the registry
+     * and has been modified, then its  state is updated (replaced) in the
+     * registry
+     * <p/>
+     * TODO:Check if juddi can provide a facility to store a collection of heterogenous
+     * objects
+     * <p/>
+     * TODO - does this belong here?  it's really an overload of
+     * LifecycleManager.saveObjects, but all the help we need
+     * like saveOrganization() is up here...
+     *
+     * @param col
+     * @return a BulkResponse containing the Collection of keys for those objects
+     *         that were saved successfully and any SaveException that was encountered
+     *         in case of partial commit
+     * @throws JAXRException
+     */
+    public BulkResponse saveObjects(Collection col) throws JAXRException {
+
+        Iterator iter = col.iterator();
+
+        Collection suc = new ArrayList();
+        Collection exc = new ArrayList();
+
+        while (iter.hasNext()) {
+            RegistryObject reg = (RegistryObject) iter.next();
+
+            BulkResponse br = null;
+
+            Collection c = new ArrayList();
+            c.add(reg);
+
+            if (reg instanceof javax.xml.registry.infomodel.Association) {
+                br = saveAssociations(c, true);
+            }
+            else if (reg instanceof javax.xml.registry.infomodel.ClassificationScheme) {
+                br = saveClassificationSchemes(c);
+            }
+            else if (reg instanceof javax.xml.registry.infomodel.Concept) {
+                br = saveConcepts(c);
+            }
+            else if (reg instanceof javax.xml.registry.infomodel.Organization) {
+                br = saveOrganizations(c);
+            }
+            else if (reg instanceof javax.xml.registry.infomodel.Service) {
+                br = saveServices(c);
+            }
+            else if (reg instanceof javax.xml.registry.infomodel.ServiceBinding) {
+                br = saveServiceBindings(c);
+            }
+            else {
+                throw new JAXRException("Delete Operation for " + reg.getClass() 
+                        + " not implemented by Scout");
+            }
+
+            if (br.getCollection() != null) {
+                suc.addAll(br.getCollection());
+            }
+
+            if (br.getExceptions() != null) {
+                suc.addAll(br.getExceptions());
+            }
+        }
+
+        BulkResponseImpl bulk = new BulkResponseImpl();
+
+        /*
+         *  TODO - what is the right status?
+         */
+        bulk.setStatus(JAXRResponse.STATUS_SUCCESS);
+
+        bulk.setCollection(suc);
+        bulk.setExceptions(exc);
+
+        return bulk;
+    }
+
+
+    public BulkResponse saveAssociations(Collection associationObjects, boolean replace) throws JAXRException {    //TODO
         return null;
     }
 
-    public BulkResponse saveClassificationSchemes(Collection schemes) throws JAXRException
-    {
+    public BulkResponse saveClassificationSchemes(Collection schemes) throws JAXRException {
         //Now we need to convert the collection into a vector for juddi
         BulkResponseImpl bulk = new BulkResponseImpl();
         Vector entityvect = new Vector();
@@ -212,34 +230,30 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
 
         Iterator iter = schemes.iterator();
-        while (iter.hasNext())
-        {
-            try
-            {
+        while (iter.hasNext()) {
+            try {
                 TModel en =
                         ScoutJaxrUddiHelper.getTModelFromJAXRClassificationScheme((ClassificationScheme) iter.next());
                 entityvect.add(en);
-            } catch (ClassCastException ce)
-            {
+            }
+            catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
             }
         }
         System.out.println("Method:save_classificationscheme: ENlength=" + entityvect.size());
         // Save business
         TModelDetail td = null;
-        try
-        {
+        try {
             td = (TModelDetail) executeOperation(entityvect, "SAVE_TMODEL");
-        } catch (RegistryException e)
-        {
+        }
+        catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
         }
 
         entityvect = td.getTModelVector();
         System.out.println("After Saving TModel. Obtained vector size:" + entityvect.size());
-        for (int i = 0; entityvect != null && i < entityvect.size(); i++)
-        {
+        for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
             TModel tm = (TModel) entityvect.elementAt(i);
             coll.add(new KeyImpl(tm.getTModelKey()));
         }
@@ -250,8 +264,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return bulk;
     }
 
-    public BulkResponse saveConcepts(Collection concepts) throws JAXRException
-    {
+    public BulkResponse saveConcepts(Collection concepts) throws JAXRException {
         //Now we need to convert the collection into a vector for juddi
         BulkResponseImpl bulk = new BulkResponseImpl();
         Vector entityvect = new Vector();
@@ -261,34 +274,30 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
 
         Iterator iter = concepts.iterator();
-        while (iter.hasNext())
-        {
-            try
-            {
+        while (iter.hasNext()) {
+            try {
                 TModel en =
                         ScoutJaxrUddiHelper.getTModelFromJAXRConcept((Concept) iter.next());
                 entityvect.add(en);
-            } catch (ClassCastException ce)
-            {
+            }
+            catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
             }
         }
         System.out.println("Method:save_concept: ENlength=" + entityvect.size());
         // Save business
         TModelDetail td = null;
-        try
-        {
+        try {
             td = (TModelDetail) executeOperation(entityvect, "SAVE_TMODEL");
-        } catch (RegistryException e)
-        {
+        }
+        catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
         }
 
         entityvect = td.getTModelVector();
         System.out.println("After Saving TModel. Obtained vector size:" + entityvect.size());
-        for (int i = 0; entityvect != null && i < entityvect.size(); i++)
-        {
+        for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
             TModel tm = (TModel) entityvect.elementAt(i);
             coll.add(new KeyImpl(tm.getTModelKey()));
         }
@@ -299,8 +308,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return bulk;
     }
 
-    public BulkResponse saveOrganizations(Collection organizations) throws JAXRException
-    {
+    public BulkResponse saveOrganizations(Collection organizations) throws JAXRException {
         //Now we need to convert the collection into a vector for juddi
         BulkResponseImpl bulk = new BulkResponseImpl();
         Vector entityvect = new Vector();
@@ -310,34 +318,30 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
 
         Iterator iter = organizations.iterator();
-        while (iter.hasNext())
-        {
-            try
-            {
+        while (iter.hasNext()) {
+            try {
                 BusinessEntity en =
                         ScoutJaxrUddiHelper.getBusinessEntityFromJAXROrg((Organization) iter.next());
                 entityvect.add(en);
-            } catch (ClassCastException ce)
-            {
+            }
+            catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
             }
         }
         System.out.println("Method:save_business: ENlength=" + entityvect.size());
         // Save business
         BusinessDetail bd = null;
-        try
-        {
+        try {
             bd = (BusinessDetail) executeOperation(entityvect, "SAVE_ORG");
-        } catch (RegistryException e)
-        {
+        }
+        catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
         }
 
         entityvect = bd.getBusinessEntityVector();
         System.out.println("After Saving Business. Obtained vector size:" + entityvect.size());
-        for (int i = 0; entityvect != null && i < entityvect.size(); i++)
-        {
+        for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
             BusinessEntity entity = (BusinessEntity) entityvect.elementAt(i);
             coll.add(new KeyImpl(entity.getBusinessKey()));
         }
@@ -348,8 +352,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return bulk;
     }
 
-    public BulkResponse saveServiceBindings(Collection bindings) throws JAXRException
-    {
+    public BulkResponse saveServiceBindings(Collection bindings) throws JAXRException {
         BulkResponseImpl bulk = new BulkResponseImpl();
         Vector sbvect = new Vector();
 
@@ -357,31 +360,27 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         Collection exceptions = new ArrayList();
 
         Iterator iter = bindings.iterator();
-        while (iter.hasNext())
-        {
-            try
-            {
+        while (iter.hasNext()) {
+            try {
                 BindingTemplate bs = ScoutJaxrUddiHelper.getBindingTemplateFromJAXRSB((ServiceBinding) iter.next());
                 sbvect.add(bs);
-            } catch (ClassCastException ce)
-            {
+            }
+            catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
             }
         }
         // Save ServiceBinding
         BindingDetail bd = null;
-        try
-        {
+        try {
             bd = (BindingDetail) executeOperation(sbvect, "SAVE_SERVICE_BINDING");
-        } catch (RegistryException e)
-        {
+        }
+        catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
         }
 
         sbvect = bd.getBindingTemplateVector();
-        for (int i = 0; sbvect != null && i < sbvect.size(); i++)
-        {
+        for (int i = 0; sbvect != null && i < sbvect.size(); i++) {
             BindingTemplate bt = (BindingTemplate) sbvect.elementAt(i);
             coll.add(new KeyImpl(bt.getBindingKey()));
         }
@@ -391,8 +390,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return bulk;
     }
 
-    public BulkResponse saveServices(Collection services) throws JAXRException
-    {
+    public BulkResponse saveServices(Collection services) throws JAXRException {
         BulkResponseImpl bulk = new BulkResponseImpl();
         Vector svect = new Vector();
 
@@ -401,31 +399,27 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
 
         Iterator iter = services.iterator();
-        while (iter.hasNext())
-        {
-            try
-            {
+        while (iter.hasNext()) {
+            try {
                 BusinessService bs = ScoutJaxrUddiHelper.getBusinessServiceFromJAXRService((Service) iter.next());
                 svect.add(bs);
-            } catch (ClassCastException ce)
-            {
+            }
+            catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
             }
         }
         // Save Service
         ServiceDetail sd = null;
-        try
-        {
+        try {
             sd = (ServiceDetail) executeOperation(svect, "SAVE_SERVICE");
-        } catch (RegistryException e)
-        {
+        }
+        catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
         }
 
         svect = sd.getBusinessServiceVector();
-        for (int i = 0; svect != null && i < svect.size(); i++)
-        {
+        for (int i = 0; svect != null && i < svect.size(); i++) {
             BusinessService entity = (BusinessService) svect.elementAt(i);
             coll.add(new KeyImpl(entity.getServiceKey()));
         }
@@ -435,60 +429,60 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return bulk;
     }
 
-    public void confirmAssociation(Association assoc) throws JAXRException, InvalidRequestException
-    {
+    public void confirmAssociation(Association assoc) throws JAXRException, InvalidRequestException {
         //TODO
     }
 
-    public void unConfirmAssociation(Association assoc) throws JAXRException, InvalidRequestException
-    {  //TODO
+    public void unConfirmAssociation(Association assoc) throws JAXRException, InvalidRequestException {  //TODO
     }
 
     //Protected Methods
     protected org.apache.juddi.datatype.RegistryObject executeOperation(Vector datavect, String op)
-            throws org.apache.juddi.error.RegistryException, JAXRException
-    {
+            throws org.apache.juddi.error.RegistryException, JAXRException {
         org.apache.juddi.datatype.RegistryObject regobj = null;
 
         IRegistry ireg = null;
-        if (registry != null) ireg = registry.getRegistry();
+        if (registry != null) {
+            ireg = registry.getRegistry();
+        }
 
         ConnectionImpl connection = registry.getConnection();
         AuthToken token = getAuthToken(connection, ireg);
 
 
-        if (op.equalsIgnoreCase("SAVE_SERVICE"))
-        {
+        if (op.equalsIgnoreCase("SAVE_SERVICE")) {
             regobj = ireg.saveService(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("SAVE_SERVICE_BINDING"))
-        {
+        }
+        else if (op.equalsIgnoreCase("SAVE_SERVICE_BINDING")) {
             regobj = ireg.saveBinding(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("SAVE_ORG"))
-        {
+        }
+        else if (op.equalsIgnoreCase("SAVE_ORG")) {
             regobj = ireg.saveBusiness(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("SAVE_TMODEL"))
-        {
+        }
+        else if (op.equalsIgnoreCase("SAVE_TMODEL")) {
             regobj = ireg.saveTModel(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("DELETE_ORG"))
-        {
+        }
+        else if (op.equalsIgnoreCase("DELETE_ORG")) {
             regobj = ireg.deleteBusiness(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("DELETE_SERVICE"))
-        {
+        }
+        else if (op.equalsIgnoreCase("DELETE_SERVICE")) {
             regobj = ireg.deleteService(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("DELETE_SERVICEBINDING"))
-        {
+        }
+        else if (op.equalsIgnoreCase("DELETE_SERVICEBINDING")) {
             regobj = ireg.deleteBinding(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("DELETE_CONCEPT"))
-        {
+        }
+        else if (op.equalsIgnoreCase("DELETE_CONCEPT")) {
             regobj = ireg.deleteTModel(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("DELETE_ASSOCIATION"))
-        {
+        }
+        else if (op.equalsIgnoreCase("DELETE_ASSOCIATION")) {
             regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), datavect);
-        } else if (op.equalsIgnoreCase("DELETE_CLASSIFICATIONSCHEME"))
-        {
+        }
+        else if (op.equalsIgnoreCase("DELETE_CLASSIFICATIONSCHEME")) {
             regobj = ireg.deleteTModel(token.getAuthInfo(), datavect);
-        } else
+        }
+        else {
             throw new JAXRException("Unsupported operation:" + op);
+        }
 
         return regobj;
 
@@ -496,8 +490,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
 
     protected BulkResponse deleteOperation(Collection keys, String op)
-            throws JAXRException
-    {
+            throws JAXRException {
         //Now we need to convert the collection into a vector for juddi
         BulkResponseImpl bulk = new BulkResponseImpl();
         Vector keyvect = new Vector();
@@ -505,12 +498,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         Collection coll = new ArrayList();
         Collection exceptions = new ArrayList();
 
-        try
-        {
+        try {
             Iterator iter = keys.iterator();
 
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 Key key = (Key) iter.next();
                 keyvect.add(key.getId());
             }
@@ -520,14 +511,13 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
             keyvect = bd.getResultVector();
             System.out.println("After deleting Business. Obtained vector size:" + keyvect.size());
-            for (int i = 0; keyvect != null && i < keyvect.size(); i++)
-            {
+            for (int i = 0; keyvect != null && i < keyvect.size(); i++) {
                 Result result = (Result) keyvect.elementAt(i);
                 int errno = result.getErrno();
-                if (errno == 0)
+                if (errno == 0) {
                     coll.addAll(keys);
-                else
-                {
+                }
+                else {
                     ErrInfo errinfo = result.getErrInfo();
                     DeleteException de = new DeleteException(errinfo.getErrCode() + ":" + errinfo.getErrMsg());
                     bulk.setStatus(JAXRResponse.STATUS_FAILURE);
@@ -548,8 +538,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
             exceptions.add(de);
         }
-        catch (JAXRException tran)
-        {
+        catch (JAXRException tran) {
             exceptions.add(new JAXRException("Apache JAXR Impl:", tran));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
         }
@@ -570,77 +559,22 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
      * @throws JAXRException
      */
     private AuthToken getAuthToken(ConnectionImpl connection, IRegistry ireg)
-            throws JAXRException
-    {
+            throws JAXRException {
         Set creds = connection.getCredentials();
         Iterator it = creds.iterator();
         String username = "", pwd = "";
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             PasswordAuthentication pass = (PasswordAuthentication) it.next();
             username = pass.getUserName();
             pwd = new String(pass.getPassword());
         }
         AuthToken token = null;
-        try
-        {
+        try {
             token = ireg.getAuthToken(username, pwd);
-        } catch (Exception e)
-        {
+        }
+        catch (Exception e) {
             throw new JAXRException(e);
         }
         return token;
     }
-
-
-    /**
-     *   TODO - fix me!
-     * @param bulk
-     * @param br
-     * @throws JAXRException
-     */
-    private void updateBulkResponse(BulkResponseImpl bulk, BulkResponse  br)
-    throws JAXRException
-    {
-        if (bulk == null || br == null) {
-            return;
-        }
-
-        /**
-         * TODO - fix when we fix BulkResponse
-         */
-
-        Collection data = br.getCollection();
-
-        if (data != null) {
-
-            Collection c = bulk.getCollection();
-
-            if (c == null) {
-                c = new ArrayList();
-            }
-
-            bulk.setCollection(c);
-            c.addAll(data);
-        }
-
-        data = br.getExceptions();
-
-        if (data != null) {
-            Collection c = bulk.getExceptions();
-
-            if (c == null) {
-                c = new ArrayList();
-            }
-
-            c.addAll(data);
-
-            bulk.setExceptions(c);
-        }
-
-        if(bulk.getStatus() == JAXRResponse.STATUS_SUCCESS) {
-            bulk.setStatus(br.getStatus());
-        }
-    }
-
 }

@@ -41,6 +41,8 @@ import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.RegistryService;
 import javax.xml.registry.infomodel.Classification;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
@@ -54,9 +56,10 @@ import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.PersonName;
 import javax.xml.registry.infomodel.ServiceBinding;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * 
+ *
  * @version $Rev$ $Date$ $Author$
  */
 public class LifeCycleManagerTest extends TestCase {
@@ -238,8 +241,22 @@ public class LifeCycleManagerTest extends TestCase {
         }
     }
 
+    protected class ConcreteLifeCycleManager extends LifeCycleManagerImpl {
+
+        public ConcreteLifeCycleManager(RegistryService rs) {
+            super(rs);
+        }
+
+        public BulkResponse saveObjects(Collection objects) throws JAXRException {
+            return new BulkResponseImpl();
+        }
+
+        public BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException {
+            return new BulkResponseImpl();
+        }
+    }
     protected void setUp() throws Exception {
         super.setUp();
-        manager = new LifeCycleManagerImpl(new RegistryServiceImpl(null, null, -1));
+        manager = new ConcreteLifeCycleManager(new RegistryServiceImpl(null, null, -1));
     }
 }
