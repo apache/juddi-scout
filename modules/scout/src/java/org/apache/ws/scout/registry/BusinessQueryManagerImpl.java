@@ -78,6 +78,18 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         return registryService;
     }
 
+    /**
+     * Finds organizations in the registry that match the specified parameters
+     *
+     * @param findQualifiers
+     * @param namePatterns
+     * @param classifications
+     * @param specifications
+     * @param externalIdentifiers
+     * @param externalLinks
+     * @return
+     * @throws JAXRException
+     */
     public BulkResponse findOrganizations(Collection findQualifiers,
                                           Collection namePatterns,
                                           Collection classifications,
@@ -95,6 +107,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     juddiFindQualifiers,
                     registryService.getMaxRows());
             Vector v = result.getBusinessInfos().getBusinessInfoVector();
+
             Collection orgs = new ArrayList();
             int len = 0;
             if (v != null)
@@ -107,6 +120,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 BusinessInfo info = (BusinessInfo) v.elementAt(i);
                 //Now get the details on the individual biz
                 BusinessDetail detail = registry.getBusinessDetail(info.getBusinessKey());
+
                 orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
             }
             return new BulkResponseImpl(orgs);
