@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.ws.scout;
+package org.apache.ws.scout.registry.Publish;
 
 import junit.framework.TestCase;
 
@@ -24,13 +24,14 @@ import java.util.*;
 import java.net.PasswordAuthentication;
 
 /**
- * Test to check Jaxr Publish
+ * Tests Publishing Concept in the UDDI Registry.
  * Open source UDDI Browser  <http://www.uddibrowser.org>
  * can be used to check your results
+ *
  * @author <mailto:anil@apache.org>Anil Saldhana
- * @since Nov 20, 2004
+ * @since Dec 23, 2004
  */
-public class JaxrPublishOrgTest extends TestCase
+public class PublishConceptTest extends TestCase
 {
     private Connection connection = null;
     private String userid = "jboss";
@@ -73,22 +74,36 @@ public class JaxrPublishOrgTest extends TestCase
         }
     }
 
-    public void testPublish()
+    public void testPublishConcept()
     {
         login();
         try
         {
             RegistryService rs = connection.getRegistryService();
-
+            BusinessQueryManager bqm = rs.getBusinessQueryManager();
             blm = rs.getBusinessLifeCycleManager();
-            Collection orgs = new ArrayList();
-            Organization org = createOrganization();
 
-            orgs.add(org);
-            BulkResponse br = blm.saveOrganizations(orgs);
+            Concept concept = blm.createConcept(null, "Apache Scout Concept", "");
+            InternationalString is = getIString("This is the concept for Apache Scout Test");
+            concept.setDescription(is);
+
+
+            //Lets provide a link to juddi registry
+            ExternalLink wslink =
+                    blm.createExternalLink("http://localhost:8080/juddi",
+                            "juddi");
+            concept.addExternalLink(wslink);
+            Classification cl = createClassificationForUDDI(bqm);
+
+            concept.addClassification(cl);
+
+            Collection concepts = new ArrayList();
+            concepts.add(concept);
+
+            BulkResponse br = blm.saveConcepts(concepts);
             if (br.getStatus() == JAXRResponse.STATUS_SUCCESS)
             {
-                System.out.println("Organization Saved");
+                System.out.println("Concept Saved");
                 Collection coll = br.getCollection();
                 Iterator iter = coll.iterator();
                 while (iter.hasNext())
@@ -114,57 +129,14 @@ public class JaxrPublishOrgTest extends TestCase
         }
     }
 
-    /**
-     * Creates a Jaxr Organization with 1 or more services
-     * @return
-     * @throws JAXRException
-     */
-    private Organization createOrganization()
+    private Classification createClassificationForUDDI(BusinessQueryManager bqm)
             throws JAXRException
     {
-        Organization org = blm.createOrganization(getIString("USA"));
-        org.setDescription(getIString("Apache Software Foundation"));
-        Service service = blm.createService(getIString("Apache JAXR Service"));
-        service.setDescription(getIString("Services of UDDI Registry"));
-        User user = blm.createUser();
-        org.setPrimaryContact(user);
-        PersonName personName = blm.createPersonName("Anil S");
-        TelephoneNumber telephoneNumber = blm.createTelephoneNumber();
-        telephoneNumber.setNumber("410-666-7777");
-        telephoneNumber.setType(null);
-        PostalAddress address
-                = blm.createPostalAddress("1901",
-                        "Munsey Drive", "Forest Hill",
-                        "MD", "USA", "21050-2747", "");
-        Collection postalAddresses = new ArrayList();
-        postalAddresses.add(address);
-        Collection emailAddresses = new ArrayList();
-        EmailAddress emailAddress = blm.createEmailAddress("anil@apache.org");
-        emailAddresses.add(emailAddress);
+        //Scheme which maps onto uddi tmodel
+        ClassificationScheme udditmodel = bqm.findClassificationSchemeByName(null, "uddi-org:types");
 
-        Collection numbers = new ArrayList();
-        numbers.add(telephoneNumber);
-        user.setPersonName(personName);
-        user.setPostalAddresses(postalAddresses);
-        user.setEmailAddresses(emailAddresses);
-        user.setTelephoneNumbers(numbers);
-
-        ClassificationScheme cScheme = getClassificationScheme("ntis-gov:naics", "");
-        Key cKey = blm.createKey("uuid:C0B9FE13-324F-413D-5A5B-2004DB8E5CC2");
-        cScheme.setKey(cKey);
-        Classification classification = blm.createClassification(cScheme,
-                "Computer Systems Design and Related Services",
-                "5415");
-        org.addClassification(classification);
-        ClassificationScheme cScheme1 = getClassificationScheme("D-U-N-S", "");
-        Key cKey1 = blm.createKey("uuid:3367C81E-FF1F-4D5A-B202-3EB13AD02423");
-        cScheme1.setKey(cKey1);
-        ExternalIdentifier ei =
-                blm.createExternalIdentifier(cScheme1, "D-U-N-S number",
-                        "08-146-6849");
-        org.addExternalIdentifier(ei);
-        org.addService(service);
-        return org;
+        Classification cl = blm.createClassification(udditmodel, "wsdl", "wsdl");
+        return cl;
     }
 
     /**
@@ -190,14 +162,6 @@ public class JaxrPublishOrgTest extends TestCase
             throws JAXRException
     {
         return blm.createInternationalString(str);
-    }
-
-    private ClassificationScheme getClassificationScheme(String str1, String str2)
-            throws JAXRException
-    {
-        ClassificationScheme cs = blm.createClassificationScheme(getIString(str1),
-                getIString(str2));
-        return cs;
     }
 
 }
