@@ -24,6 +24,7 @@ import org.apache.juddi.datatype.business.Contacts;
 import org.apache.juddi.datatype.response.BusinessDetail;
 import org.apache.juddi.datatype.response.TModelDetail;
 import org.apache.juddi.datatype.response.TModelInfo;
+import org.apache.juddi.datatype.response.ServiceInfo;
 import org.apache.juddi.datatype.service.BusinessService;
 import org.apache.juddi.datatype.service.BusinessServices;
 import org.apache.juddi.datatype.tmodel.TModel;
@@ -183,6 +184,25 @@ public class ScoutUddiJaxrHelper
         Description desc = (Description)descvect.elementAt(0);
         serve.setDescription(lcm.createInternationalString(desc.getValue()));
         return serve;
+    }
+
+    public static Service getService(ServiceInfo si, LifeCycleManager lcm)
+        throws JAXRException
+    {
+        Service service = new ServiceImpl(lcm);
+
+        String keystr = si.getServiceKey();
+
+        if (keystr != null) {
+            service.setKey(lcm.createKey(keystr));
+        }
+
+        Vector namevect = si.getNameVector();
+        Name n = (Name)namevect.elementAt(0);
+        String name = n.getValue() ;
+        service.setName(lcm.createInternationalString(name));
+
+        return service;
     }
 
     public static Concept getConcept(TModelDetail tm, LifeCycleManager lcm)
