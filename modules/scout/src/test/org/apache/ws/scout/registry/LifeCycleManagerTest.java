@@ -56,6 +56,7 @@ import javax.xml.registry.infomodel.ServiceBinding;
 import java.util.ArrayList;
 
 /**
+ * 
  * @version $Rev$ $Date$ $Author$
  */
 public class LifeCycleManagerTest extends TestCase {
