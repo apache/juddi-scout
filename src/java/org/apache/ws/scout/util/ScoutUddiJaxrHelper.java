@@ -36,6 +36,9 @@ import org.apache.juddi.datatype.service.BusinessServices;
 import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
+import org.apache.ws.scout.registry.infomodel.UserImpl;
+import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
@@ -81,6 +84,26 @@ public class ScoutUddiJaxrHelper
         org.setName(getIString(name,lcm));
         org.setDescription(getIString((String)desc.getValue(),lcm));
         org.setKey(lcm.createKey(entity.getBusinessKey()));
+
+        //Set Services also
+        BusinessServices services = entity.getBusinessServices();
+        Vector svect = services.getBusinessServiceVector();
+        for(int i=0; svect != null && i< svect.size();i++)
+        {
+            BusinessService s = (BusinessService)svect.elementAt(i);
+            org.addService(getService(s,lcm));
+        }
+        //Get Contacts or Users
+        Contacts contacts = entity.getContacts();
+        Vector cvect = contacts.getContactVector();
+        for(int i=0; cvect != null && i< cvect.size();i++)
+        {
+            Contact contact = (Contact)cvect.elementAt(i);
+            User user = new UserImpl(null);
+            String pname = contact.getPersonName().getValue();
+            user.setPersonName(new PersonNameImpl(pname));
+            org.addUser(user);
+        }
         return org;
     }
 
@@ -88,6 +111,22 @@ public class ScoutUddiJaxrHelper
             throws JAXRException
     {
         return blm.createInternationalString(str);
+    }
+
+    public static Service getService(BusinessService bs,LifeCycleManager lcm )
+            throws JAXRException
+    {
+        Service serve = new ServiceImpl(lcm);
+        String keystr = bs.getBusinessKey();
+        if(keystr != null ) serve.setKey(lcm.createKey(keystr));
+        Vector namevect = bs.getNameVector();
+        Name n = (Name)namevect.elementAt(0);
+        String name = n.getValue() ;
+        serve.setName(lcm.createInternationalString(name));
+        Vector descvect = bs.getDescriptionVector();
+        Description desc = (Description)descvect.elementAt(0);
+        serve.setDescription(lcm.createInternationalString(desc.getValue()));
+        return serve;
     }
 
 }

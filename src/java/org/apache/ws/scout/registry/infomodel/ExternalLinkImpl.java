@@ -18,6 +18,7 @@ package org.apache.ws.scout.registry.infomodel;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.infomodel.RegistryObject;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -31,6 +32,7 @@ public class ExternalLinkImpl extends RegistryObjectImpl
         implements javax.xml.registry.infomodel.ExternalLink {
     private String uri = new String();
     private boolean validateuri = false;
+    private Collection linkedObj = new ArrayList();
 
     /**
      * Creates a new instance of ExternalLinkImpl
@@ -44,7 +46,7 @@ public class ExternalLinkImpl extends RegistryObjectImpl
     }
 
     public Collection getLinkedObjects() throws JAXRException {
-        throw new javax.xml.registry.InvalidRequestException("Not supported in UDDI");
+        return linkedObj;
     }
 
     public boolean getValidateURI() throws JAXRException {
@@ -57,6 +59,17 @@ public class ExternalLinkImpl extends RegistryObjectImpl
 
     public void setValidateURI(boolean param) throws JAXRException {
         this.validateuri = param;
+    }
+
+    //Specific API
+    public void addLinkedObject(RegistryObject obj)
+    {
+        linkedObj.add(obj);
+    }
+
+    public void removeLinkedObject(RegistryObject obj)
+    {
+        linkedObj.remove(obj);
     }
 
 }

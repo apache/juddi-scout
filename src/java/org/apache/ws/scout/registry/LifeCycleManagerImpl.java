@@ -18,9 +18,13 @@ package org.apache.ws.scout.registry;
 
 import org.apache.juddi.datatype.Description;
 import org.apache.juddi.datatype.Name;
+import org.apache.juddi.datatype.service.BusinessServices;
+import org.apache.juddi.datatype.business.BusinessEntity;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.ServiceInfo;
+import org.apache.juddi.datatype.response.BusinessDetail;
 import org.apache.ws.scout.registry.infomodel.*;
+import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
 import javax.activation.DataHandler;
 import javax.xml.registry.BulkResponse;
@@ -83,7 +87,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
         // we may not have permission to do so
         if (LifeCycleManager.ASSOCIATION.equals(interfaceName))
         {
-            throw new UnsupportedCapabilityException();
+            return new AssociationImpl(this);
         } else if (LifeCycleManager.AUDITABLE_EVENT.equals(interfaceName))
         {
             throw new UnsupportedCapabilityException();
@@ -161,12 +165,19 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public Association createAssociation(RegistryObject targetObject, Concept associationType) throws JAXRException
     {
-        return (Association) this.createObject(LifeCycleManager.ASSOCIATION);
+        Association assoc =  (Association) this.createObject(LifeCycleManager.ASSOCIATION);
+        assoc.setTargetObject(targetObject);
+        assoc.setAssociationType(associationType);
+        return assoc;
     }
 
     public Classification createClassification(Concept concept) throws JAXRException, InvalidRequestException
     {
-        return (Classification) this.createObject(LifeCycleManager.CLASSIFICATION);
+        if(concept.getClassificationScheme() == null )
+            throw new InvalidRequestException("Concept is not under classification scheme");
+        Classification classify =  (Classification) this.createObject(LifeCycleManager.CLASSIFICATION);
+        classify.setConcept(concept);
+        return classify;
     }
 
     public Classification createClassification(ClassificationScheme scheme,
@@ -189,6 +200,11 @@ public class LifeCycleManagerImpl implements LifeCycleManager
 
     public ClassificationScheme createClassificationScheme(Concept concept) throws JAXRException, InvalidRequestException
     {
+        //Check if the passed concept has a classificationscheme or has a parent concept
+        if(concept.getParentConcept() != null || concept.getClassificationScheme() != null )
+           throw new InvalidRequestException("Concept has classificationscheme or has a parent");
+
+
         ClassificationScheme cs = new ClassificationSchemeImpl(this);
         cs.addChildConcept(concept);
         return cs;
@@ -462,7 +478,13 @@ public class LifeCycleManagerImpl implements LifeCycleManager
             }
             org.addServices(services);
         }
+
         return org;
+    }
+
+    Organization createOrganization(BusinessDetail detail) throws JAXRException
+    {
+        return ScoutUddiJaxrHelper.getOrganization(detail,this);
     }
 
     Service createService(ServiceInfo info) throws JAXRException
