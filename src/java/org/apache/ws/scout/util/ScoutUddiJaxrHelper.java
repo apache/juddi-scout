@@ -175,8 +175,12 @@ public class ScoutUddiJaxrHelper
 
         String keystr = bs.getServiceKey();
 
-        if(keystr != null ) serve.setKey(lcm.createKey(keystr));
+        if(keystr != null ) {
+            serve.setKey(lcm.createKey(keystr));
+        }
+
         Vector namevect = bs.getNameVector();
+        
         Name n = (Name)namevect.elementAt(0);
         String name = n.getValue() ;
         serve.setName(lcm.createInternationalString(name));
