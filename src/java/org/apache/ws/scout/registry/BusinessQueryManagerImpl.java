@@ -59,9 +59,9 @@ import java.util.Vector;
  * Implements the JAXR BusinessQueryManager Interface
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <anil@apache.org>
- * @author Jeremy Boynes  <jboynes@apache.org>
- * @author Geir Magnusson Jr  <geirm@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:jboynes@apache.org">Jeremy Boynes</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class BusinessQueryManagerImpl implements BusinessQueryManager
 {
