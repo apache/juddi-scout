@@ -165,31 +165,31 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         if (namePatterns.indexOf("uddi-org:types") != -1) {
 
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
-            scheme.setName(new InternationalStringImpl("uddi-org:types"));
+            scheme.setName(new InternationalStringImpl(namePatterns));
             scheme.setKey(new KeyImpl(TModel.TYPES_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("dnb-com:D-U-N-S") != -1) {
 
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
-            scheme.setName(new InternationalStringImpl("dnb-com:D-U-N-S"));
+            scheme.setName(new InternationalStringImpl(namePatterns));
             scheme.setKey(new KeyImpl(TModel.D_U_N_S_TMODEL_KEY));
         }
-        else if (namePatterns.indexOf("uddi-org:iso-ch:3166:1999") != -1)
+        else if (namePatterns.indexOf("uddi-org:iso-ch:3166-1999") != -1)
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
-            scheme.setName(new InternationalStringImpl("uddi-org:iso-ch:3166-1999"));
+            scheme.setName(new InternationalStringImpl(namePatterns));
             scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("unspsc-org:unspsc") != -1) {
 
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
-            scheme.setName(new InternationalStringImpl("unspsc-org:unspsc"));
+            scheme.setName(new InternationalStringImpl(namePatterns));
             scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("ntis-gov:naics") != -1) {
 
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
-            scheme.setName(new InternationalStringImpl("ntis-gov:naics"));
+            scheme.setName(new InternationalStringImpl(namePatterns));
             scheme.setKey(new KeyImpl(TModel.NAICS_TMODEL_KEY));
         }
         else
@@ -438,25 +438,15 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
         IRegistry iRegistry = registryService.getRegistry();
         FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
+        Vector juddiNames = mapNamePatterns(namePatterns);
 
         try
         {
             /*
-             * first, convert to JUDDI names
-             */
-            Vector juddiNames = new Vector();
-
-            Iterator it = namePatterns.iterator();
-
-            while(it.hasNext()) {
-                juddiNames.add(new org.apache.juddi.datatype.Name((String) it.next()));
-            }
-
-            /*
-             * hit the registry.  I dont' know why we limit to 10
+             * hit the registry.
              */
             ServiceList l = iRegistry.findService(orgKey.getId(), juddiNames,
-                    null, null, juddiFindQualifiers, 10);
+                    null, null, juddiFindQualifiers, registryService.getMaxRows());
 
             /*
              * now convert  from jUDDI ServiceInfo objects to JAXR Services
