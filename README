@@ -4,12 +4,7 @@ Welcome to the Apache Scout Project!
 
 INTRODUCTION
 
-  In an attempt to jump-start this jUDDI sub-project I've 
-  created an 'extras' subdirectory and included all 
-  neccessary project files within it (Ant scripts, jar 
-  files, javadoc, etc). 
-  
-  While this effort can be considered a project in and of 
+  While this effort can be considered a project in and of
   itself it will have a dependency on the jUDDI Registry
   project.  This dependency is covered in the "RELATIONSHIP 
   WITH THE jUDDI PROJECT" section below.
@@ -32,16 +27,6 @@ PROJECT GOALS
   registries and type 1 providers support access to both UDDI 
   AND ebXML registries. The goal of this project is to 
   implement a type 0 provider.
-
-
-FIRST ORDER OF BUSINESS: A NAME
-
-  I've been referring to this sub-project as the jUDDI JAXR 
-  Provider and within the Ant script I've used the name 
-  juddi-jaxr. At some point we envision this project becoming 
-  an independent Apche Web Services Project so to make things 
-  easier for us later we should give the project a name of 
-  it's own now.
 
 
 RELATIONSHIP TO THE JUDDI REGISTRY PROJECT
@@ -73,27 +58,19 @@ RELATIONSHIP TO THE JUDDI REGISTRY PROJECT
 
 BUILDING THE JUDDI JAXR PROVIDER
 
-  At this time no java source has been checked in but I'm 
-  sure that will not be the case for long. Even in the 
-  absense of Java source all of the Ant script targets 
-  still function. Here's a summary of the most important 
-  targets:
+  Apache Scout is a maven project that is built using the
+  multiproject plugin. All dependencies are included or
+  are downloaded during the build. The quickest way to
+  start is, in the root directory, to type
 
-    compile    - Compiles source into build/classes * 
-    jar        - Builds build/juddi-jaxr.jar (empty right now)
-    checkstyle - Checks source and produces build/checkstyle.txt
-    test       - Compiles and runs the JUnit tests
-    binary     - Assembles only juddi-jaxr binary releases
-    source     - Assembles only juddi-jaxr source releases
-    dist       - Assembles all source and binary releases
-    all        - Invokes all of the above targets
-    clean      - Deletes the build directory
+  maven
 
-  * For licensing reasons some of the jar files required by the 
-    Ant script are not included with the project. Look at the 
-    lib/readme.txt for information about what libraries are 
-    needed and where to get them.
+  This will build all of the modules and install them in
+  your local maven repository.
 
+  To clean up a build, use
+
+  maven multiproject:clean
 
 SUPPORT
 

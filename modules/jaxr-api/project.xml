@@ -16,5 +16,18 @@
  * limitations under the License.
  */
  -->
-<project default="multiproject:install">
+<project>
+    <pomVersion>3</pomVersion>
+    <extend>../../etc/project.xml</extend>
+
+    <id>jaxr-api</id>
+    <name>JAXR API Classes</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-activation</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
