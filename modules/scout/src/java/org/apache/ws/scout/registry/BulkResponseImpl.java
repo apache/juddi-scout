@@ -55,9 +55,22 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
         return this.collection;
     }
 
+    /**
+     * The javadoc is unclear.  it says for getExceptions() :
+     *   "Get the Collection of RegistryException instances in case of partial
+     *     commit. Caller thread will block here if result is not yet available.
+     *     Return null if result is available and there is no RegistryException(s)."
+     * Yet the return javadoc says :
+     *   "Collection of RegistryException instances. The Collection may be empty but not null."
+     *
+     * So my interpretation is return null if result avail, and empty collection otherwise
+     *
+     * @return
+     * @throws JAXRException
+     */
     public Collection getExceptions() throws JAXRException
     {
-        return this.exceptions;
+        return (this.exceptions.size() == 0 ? null : exceptions);
     }
 
     public boolean isPartialResponse() throws JAXRException
