@@ -44,9 +44,9 @@ public class JaxrPublishOrgTest extends TestCase
         // To query, you need only the query URL
         Properties props = new Properties();
         props.setProperty("javax.xml.registry.queryManagerURL",
-                "http://localhost:8080/juddi/inquiry");
+                "http://localhost:7080/juddi/inquiry");
         props.setProperty("javax.xml.registry.lifeCycleManagerURL",
-                "http://localhost:8080/juddi/publish");
+                "http://localhost:7080/juddi/publish");
         props.setProperty("javax.xml.registry.factoryClass",
                 "org.apache.ws.scout.registry.ConnectionFactoryImpl");
 
