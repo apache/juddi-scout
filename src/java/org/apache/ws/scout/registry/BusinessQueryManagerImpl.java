@@ -466,7 +466,6 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         Collection col = new ArrayList();
         LifeCycleManager lcm = registryService.getLifeCycleManagerImpl();
 
-        RegistryObject regobj = null;
         if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
         {
             try
