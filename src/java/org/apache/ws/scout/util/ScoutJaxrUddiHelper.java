@@ -57,7 +57,8 @@ import java.util.Iterator;
 /**
  * Helper class that does Jaxr->UDDI Mapping
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class ScoutJaxrUddiHelper
 {
@@ -121,8 +122,6 @@ public class ScoutJaxrUddiHelper
         BindingTemplate bt = new BindingTemplate();
         try
         {
-            InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) serve).getName();
-            String name = iname.getValue();
             //Set Access URI
             String accessuri = serve.getAccessURI();
             if (accessuri != null)
@@ -230,9 +229,7 @@ public class ScoutJaxrUddiHelper
     {
         BusinessEntity biz = new BusinessEntity();
         BusinessServices bss = new BusinessServices();
-        Contacts cts = new Contacts();
         Vector bvect = new Vector();
-        Vector cvect = new Vector();
 
         try
         {
@@ -257,14 +254,36 @@ public class ScoutJaxrUddiHelper
                 bvect.add(bs);
             }
 
+            /*
+             * map users : JAXR has concept of 'primary contact', which is a
+             * special designation for one of the users, and D6.1 seems to say
+             * that the first UDDI user is the primary contact
+             */
+
+            Contacts cts = new Contacts();
+            Vector cvect = new Vector();
+
+            User primaryContact = org.getPrimaryContact();
             Collection users = org.getUsers();
+
+            // TODO - remove this
             System.out.println("?Org has users=" + users.isEmpty());
+
+            /*
+             * first do primary, and then filter that out in the loop
+             */
+            Contact ct = getContactFromJAXRUser(primaryContact);
+            cvect.add(ct);
+
             Iterator it = users.iterator();
             while (it.hasNext())
             {
-                Contact ct =
-                        getContactFromJAXRUser((User) it.next());
-                cvect.add(ct);
+                User u = (User) it.next();
+
+                if (u != primaryContact) {
+                    ct = getContactFromJAXRUser(u);
+                    cvect.add(ct);
+                }
             }
 
             bss.setBusinessServiceVector(bvect);
