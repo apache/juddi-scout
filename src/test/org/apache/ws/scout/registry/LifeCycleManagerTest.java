@@ -32,6 +32,9 @@ import org.apache.ws.scout.registry.infomodel.RegistryEntryImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
+import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
+import org.apache.ws.scout.registry.infomodel.SlotImpl;
+import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
 
 import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
@@ -134,12 +137,7 @@ public class LifeCycleManagerTest extends TestCase {
     }
 
     public void testCreateObjectPersonName() throws JAXRException {
-        try {
-            manager.createObject(LifeCycleManager.PERSON_NAME);
-            fail();
-        } catch (UnsupportedCapabilityException e) {
-            // OK
-        }
+        assertEquals(PersonNameImpl.class, manager.createObject(LifeCycleManager.PERSON_NAME).getClass());
     }
 
     public void testCreateObjectPostalAddress() throws JAXRException {
@@ -177,21 +175,11 @@ public class LifeCycleManagerTest extends TestCase {
     }
 
     public void testCreateObjectSlot() throws JAXRException {
-        try {
-            manager.createObject(LifeCycleManager.SLOT);
-            fail();
-        } catch (UnsupportedCapabilityException e) {
-            // OK
-        }
+        assertEquals(SlotImpl.class, manager.createObject(LifeCycleManager.SLOT).getClass());
     }
 
     public void testCreateObjectSpecificationLink() throws JAXRException {
-        try {
-            manager.createObject(LifeCycleManager.SPECIFICATION_LINK);
-            fail();
-        } catch (UnsupportedCapabilityException e) {
-            // OK
-        }
+        assertEquals(SpecificationLinkImpl.class, manager.createObject(LifeCycleManager.SPECIFICATION_LINK).getClass());
     }
 
     public void testCreateObjectTelephoneNumber() throws JAXRException {
