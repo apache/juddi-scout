@@ -16,17 +16,8 @@
  */
 package org.apache.ws.scout.util;
 
-import org.apache.juddi.datatype.Address;
-import org.apache.juddi.datatype.AddressLine;
 import org.apache.juddi.datatype.Description;
-import org.apache.juddi.datatype.DiscoveryURL;
-import org.apache.juddi.datatype.Email;
 import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.PersonName;
-import org.apache.juddi.datatype.Phone;
-import org.apache.juddi.datatype.binding.AccessPoint;
-import org.apache.juddi.datatype.binding.BindingTemplate;
-import org.apache.juddi.datatype.binding.HostingRedirector;
 import org.apache.juddi.datatype.business.BusinessEntity;
 import org.apache.juddi.datatype.business.Contact;
 import org.apache.juddi.datatype.business.Contacts;
@@ -36,7 +27,6 @@ import org.apache.juddi.datatype.response.TModelInfo;
 import org.apache.juddi.datatype.service.BusinessService;
 import org.apache.juddi.datatype.service.BusinessServices;
 import org.apache.juddi.datatype.tmodel.TModel;
-import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
 import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
@@ -45,68 +35,74 @@ import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
-import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.EmailAddress;
-import javax.xml.registry.infomodel.ExternalLink;
-import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.PostalAddress;
-import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.ServiceBinding;
-import javax.xml.registry.infomodel.Slot;
-import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
 import javax.xml.registry.infomodel.InternationalString;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Locale;
 import java.util.Vector;
 
 /**
  * Helper class that does UDDI->Jaxr Mapping
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class ScoutUddiJaxrHelper
 {
     public static Organization getOrganization(BusinessEntity entity,
                                                    LifeCycleManager lcm)
-                throws JAXRException
+        throws JAXRException
+    {
+        Vector namevect = entity.getNameVector();
+        Name n = (Name)namevect.elementAt(0);
+        String name = n.getValue() ;
+        Vector descvect = entity.getDescriptionVector();
+        Description desc = (Description)descvect.elementAt(0);
+
+        Organization org = new OrganizationImpl(lcm);
+        org.setName(getIString(name,lcm));
+        org.setDescription(getIString((String)desc.getValue(),lcm));
+        org.setKey(lcm.createKey(entity.getBusinessKey()));
+
+        //Set Services also
+        BusinessServices services = entity.getBusinessServices();
+        Vector svect = services.getBusinessServiceVector();
+        for(int i=0; svect != null && i< svect.size();i++)
         {
-            Vector namevect = entity.getNameVector();
-            Name n = (Name)namevect.elementAt(0);
-            String name = n.getValue() ;
-            Vector descvect = entity.getDescriptionVector();
-            Description desc = (Description)descvect.elementAt(0);
+            BusinessService s = (BusinessService)svect.elementAt(i);
+            org.addService(getService(s,lcm));
+        }
 
-            Organization org = new OrganizationImpl(lcm);
-            org.setName(getIString(name,lcm));
-            org.setDescription(getIString((String)desc.getValue(),lcm));
-            org.setKey(lcm.createKey(entity.getBusinessKey()));
+        /*
+         *  Users
+         *
+         *  we need to take the first contact and designate as the
+         *  'primary contact'.  Currently, the OrganizationImpl
+         *  class does that automatically as a safety in case
+         *  user forgets to set - lets be explicit here as to not
+         *  depend on that behavior
+         */
 
-            //Set Services also
-            BusinessServices services = entity.getBusinessServices();
-            Vector svect = services.getBusinessServiceVector();
-            for(int i=0; svect != null && i< svect.size();i++)
-            {
-                BusinessService s = (BusinessService)svect.elementAt(i);
-                org.addService(getService(s,lcm));
+        Contacts contacts = entity.getContacts();
+        Vector cvect = contacts.getContactVector();
+
+        for(int i=0; cvect != null && i< cvect.size();i++)
+        {
+            Contact contact = (Contact)cvect.elementAt(i);
+            User user = new UserImpl(null);
+            String pname = contact.getPersonName().getValue();
+            user.setPersonName(new PersonNameImpl(pname));
+
+            if (i == 0) {
+                org.setPrimaryContact(user);
             }
-            //Get Contacts or Users
-            Contacts contacts = entity.getContacts();
-            Vector cvect = contacts.getContactVector();
-            for(int i=0; cvect != null && i< cvect.size();i++)
-            {
-                Contact contact = (Contact)cvect.elementAt(i);
-                User user = new UserImpl(null);
-                String pname = contact.getPersonName().getValue();
-                user.setPersonName(new PersonNameImpl(pname));
+            else {
                 org.addUser(user);
             }
-            return org;
         }
+        return org;
+    }
 
 
     public static Organization getOrganization(BusinessDetail bizdetail,
@@ -134,7 +130,16 @@ public class ScoutUddiJaxrHelper
             BusinessService s = (BusinessService)svect.elementAt(i);
             org.addService(getService(s,lcm));
         }
-        //Get Contacts or Users
+
+        /*
+         *  Users
+         *
+         *  we need to take the first contact and designate as the
+         *  'primary contact'.  Currently, the OrganizationImpl
+         *  class does that automatically as a safety in case
+         *  user forgets to set - lets be explicit here as to not
+         *  depend on that behavior
+         */
         Contacts contacts = entity.getContacts();
         Vector cvect = contacts.getContactVector();
         for(int i=0; cvect != null && i< cvect.size();i++)
@@ -144,7 +149,13 @@ public class ScoutUddiJaxrHelper
             String pname = contact.getPersonName().getValue();
             user.setType( contact.getUseType());
             user.setPersonName(new PersonNameImpl(pname));
-            org.addUser(user);
+
+            if (i == 0) {
+                org.setPrimaryContact(user);
+            }
+            else {
+                org.addUser(user);
+            }
         }
         return org;
     }
