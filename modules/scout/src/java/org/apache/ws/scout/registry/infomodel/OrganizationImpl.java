@@ -16,7 +16,6 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
-import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.UnsupportedCapabilityException;
@@ -35,7 +34,8 @@ import java.util.Set;
  * * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class OrganizationImpl extends RegistryObjectImpl implements Organization
 {
@@ -52,6 +52,9 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
     public User getPrimaryContact() throws JAXRException
     {
         //TODO: How do we fix this? Run JAXRQueryTest and you will hit this problem.
+        //
+        //  gmj : I think I fixed w/ primary contact hack...
+        //
         //if (primaryContact == null) {
         //    throw new IllegalStateException("primaryContact is null and the spec says we cannot return a null value");
         //}
@@ -64,15 +67,38 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         {
             throw new IllegalArgumentException("primaryContact must not be null");
         }
-        users.add(user);
+
+        /*
+         * first check to see if user already exists in user set
+         */
+
         primaryContact = user;
-        ((UserImpl) user).setOrganization(this);
+
+        if (!users.contains(user)) {
+            addUser(user);
+        }
     }
 
     public void addUser(User user) throws JAXRException
     {
+        doPrimaryContactHack(user);
+
         users.add(user);
         ((UserImpl) user).setOrganization(this);
+    }
+
+    /**
+     *
+     *  to solve the getPrimaryContactProblem(), if we have no defined
+     *  primaryContact, we'll designate the first user as such
+     *
+     * @param user
+     */
+    private void doPrimaryContactHack(User user) {
+
+        if (primaryContact == null && users.size() == 0) {
+            primaryContact = user;
+        }
     }
 
     public void addUsers(Collection collection) throws JAXRException
@@ -81,8 +107,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         for (Iterator iterator = collection.iterator(); iterator.hasNext();)
         {
             User user = (User) iterator.next();
-            users.add(user);
-            ((UserImpl) user).setOrganization(this);
+            addUser(user);
         }
     }
 
@@ -93,20 +118,35 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
 
     public void removeUser(User user) throws JAXRException
     {
-        if (primaryContact.equals(user))
-        {
-            throw new InvalidRequestException("Cannot remove primaryContact");
+        if (user != null) {
+            users.remove(user);
         }
-        users.remove(user);
+
+        /*
+         * more primaryContact hakiness - nothing says that you can't
+         * remove the user that is the PC...
+         */
+
+        if (!users.contains(primaryContact)) {
+            primaryContact = null;
+        }
     }
 
     public void removeUsers(Collection collection) throws JAXRException
     {
-        if (collection.contains(primaryContact))
-        {
-            throw new InvalidRequestException("Cannot remove primaryContact");
+        if (collection != null) {
+            users.removeAll(collection);
         }
-        users.removeAll(collection);
+
+        /*
+         * more primaryContact hakiness - nothing says that you can't
+         * remove the user that is the PC...
+         */
+
+        if (!users.contains(primaryContact)) {
+            primaryContact = null;
+        }
+
     }
 
     public Collection getTelephoneNumbers(String phoneType) throws JAXRException
