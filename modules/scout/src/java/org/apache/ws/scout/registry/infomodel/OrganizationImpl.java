@@ -193,7 +193,8 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         for (Iterator iterator = collection.iterator(); iterator.hasNext();)
         {
             Service service = (Service) iterator.next();
-            services.add(service);
+
+            addService(service);
         }
     }
 
