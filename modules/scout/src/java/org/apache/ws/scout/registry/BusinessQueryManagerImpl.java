@@ -27,6 +27,9 @@ import org.apache.juddi.datatype.response.TModelDetail;
 import org.apache.juddi.datatype.response.TModelInfo;
 import org.apache.juddi.datatype.response.TModelInfos;
 import org.apache.juddi.datatype.response.TModelList;
+import org.apache.juddi.datatype.response.ServiceList;
+import org.apache.juddi.datatype.response.ServiceInfos;
+import org.apache.juddi.datatype.response.ServiceInfo;
 import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.error.RegistryException;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
@@ -410,12 +413,77 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         return null;
     }
 
+
+    /**
+     * Finds all Service objects that match all of the criteria specified by
+     * the parameters of this call.  This is a logical AND operation between
+     * all non-null parameters
+     *
+     * TODO - support findQualifiers, classifications and specifications
+     *
+     * @param orgKey
+     * @param findQualifiers
+     * @param namePatterns
+     * @param classifications
+     * @param specificationa
+     * @return
+     * @throws JAXRException
+     */
     public BulkResponse findServices(Key orgKey, Collection findQualifiers,
-                                     Collection namePattersn,
+                                     Collection namePatterns,
                                      Collection classifications,
                                      Collection specificationa) throws JAXRException
     {
-        return null;
+        BulkResponseImpl blkRes = new BulkResponseImpl();
+
+        IRegistry iRegistry = registryService.getRegistry();
+        FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
+
+        try
+        {
+            /*
+             * first, convert to JUDDI names
+             */
+            Vector juddiNames = new Vector();
+
+            Iterator it = namePatterns.iterator();
+
+            while(it.hasNext()) {
+                juddiNames.add(new org.apache.juddi.datatype.Name((String) it.next()));
+            }
+
+            /*
+             * hit the registry.  I dont' know why we limit to 10
+             */
+            ServiceList l = iRegistry.findService(orgKey.getId(), juddiNames,
+                    null, null, juddiFindQualifiers, 10);
+
+            /*
+             * now convert  from jUDDI ServiceInfo objects to JAXR Services
+             */
+            if (l != null) {
+
+                ServiceInfos serviceInfos = l.getServiceInfos();
+
+                Vector v = (serviceInfos != null ? serviceInfos.getServiceInfoVector() : null);
+
+                Collection col = new ArrayList();
+
+                for (int i=0; v != null && i < v.size(); i++) {
+                    ServiceInfo si = (ServiceInfo) v.elementAt(i);
+                    col.add(ScoutUddiJaxrHelper.getService(si,
+                            registryService.getBusinessLifeCycleManager()));
+                }
+
+                blkRes.setCollection(col);
+            }
+        }
+        catch (RegistryException e) {
+            e.printStackTrace();
+            throw new JAXRException(e.getLocalizedMessage());
+        }
+
+        return blkRes;
     }
 
     public RegistryObject getRegistryObject(String id) throws JAXRException
