@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
+import java.util.List;
 
 /**
  * Implements the JAXR BusinessQueryManager Interface
@@ -449,9 +450,16 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         try
         {
             /*
-             * hit the registry.
+             * hit the registry.  The key is not required for UDDI2
              */
-            ServiceList l = iRegistry.findService(orgKey.getId(), juddiNames,
+
+            String id = null;
+
+            if (orgKey != null) {
+                id = orgKey.getId();
+            }
+
+            ServiceList l = iRegistry.findService(id, juddiNames,
                     null, null, juddiFindQualifiers, registryService.getMaxRows());
 
             /*
@@ -595,9 +603,39 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
         return service;
     }
+
+    /**
+     * Gets the RegistryObjects owned by the caller. The objects
+     * are returned as their concrete type (e.g. Organization, User etc.)
+     *
+     *  TODO - need to figure out what the set are.  This is just to get some
+     *  basic functionality
+     *
+     * @return
+     * @throws JAXRException
+     */
     public BulkResponse getRegistryObjects() throws JAXRException
     {
-        return null;
+        String types[] = {
+            LifeCycleManager.ORGANIZATION,
+            LifeCycleManager.SERVICE};
+
+        Collection c = new ArrayList();
+
+        for (int i = 0; i < types.length; i++) {
+            try {
+                BulkResponse bk = getRegistryObjects(types[i]);
+
+                if (bk.getCollection() != null) {
+                    c.addAll(bk.getCollection());
+                }
+            }
+            catch(JAXRException e) {
+                // ignore - just a problem with that type?
+            }
+        }
+
+        return new BulkResponseImpl(c);
     }
 
     public BulkResponse getRegistryObjects(Collection objectKeys) throws JAXRException
@@ -702,7 +740,27 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
     public BulkResponse getRegistryObjects(String id) throws JAXRException
     {
-        throw new UnsupportedCapabilityException();
+        if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(id)) {
+            List a = new ArrayList();
+            a.add("%");
+
+            BulkResponse br = findOrganizations(null, a, null, null, null, null);
+
+            return br;
+        }
+        else if (LifeCycleManager.SERVICE.equalsIgnoreCase(id)) {
+            List a = new ArrayList();
+            a.add("%");
+
+            BulkResponse br = this.findServices(null,null, a, null, null);
+
+            return br;
+        }
+        else
+        {
+            throw new JAXRException("Unsupported type for getRegistryObjects() :" + id);
+        }
+
     }
 
     private static final Map findQualifierMapping;
