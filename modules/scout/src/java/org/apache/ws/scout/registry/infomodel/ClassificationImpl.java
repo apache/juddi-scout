@@ -26,7 +26,8 @@ import javax.xml.registry.infomodel.RegistryObject;
  * Implements JAXR Classification Interface.
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class ClassificationImpl extends RegistryObjectImpl
         implements javax.xml.registry.infomodel.Classification
@@ -63,15 +64,27 @@ public class ClassificationImpl extends RegistryObjectImpl
         return concept;
     }
 
+    /**
+     *
+     * @return he value of the taxonomy element if external Classification;
+     *      the value of the  Concept representing the taxonomy element
+     *      if internal Classification
+     * @throws JAXRException
+     */
     public String getValue() throws JAXRException
     {
-        return value;
+        if (isExternal()) {
+            return value;
+        }
+        else {
+            return concept.getValue();
+        }
     }
 
     public void setExternal(boolean b) {
         this.external = b;
     }
-    
+
     public boolean isExternal() throws JAXRException
     {
         return external;
@@ -81,6 +94,13 @@ public class ClassificationImpl extends RegistryObjectImpl
             throws JAXRException
     {
         scheme = cscheme;
+
+        /*
+         * not 100% clear, but I *think* the JavaDoc indicates that if
+         * our internality dictates that of the scheme.
+         */
+
+       ((ClassificationSchemeImpl) scheme).setExternal(isExternal());
     }
 
     public void setClassifiedObject(RegistryObject registryObject)
