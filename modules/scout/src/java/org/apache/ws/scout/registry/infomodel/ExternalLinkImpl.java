@@ -31,7 +31,6 @@ public class ExternalLinkImpl extends RegistryObjectImpl
         implements javax.xml.registry.infomodel.ExternalLink {
     private String uri = new String();
     private boolean validateuri = false;
-    private Collection links = new ArrayList();
 
     /**
      * Creates a new instance of ExternalLinkImpl
@@ -45,7 +44,7 @@ public class ExternalLinkImpl extends RegistryObjectImpl
     }
 
     public Collection getLinkedObjects() throws JAXRException {
-        return links;
+        throw new javax.xml.registry.InvalidRequestException("Not supported in UDDI");
     }
 
     public boolean getValidateURI() throws JAXRException {

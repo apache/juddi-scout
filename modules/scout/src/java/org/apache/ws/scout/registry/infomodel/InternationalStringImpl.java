@@ -40,6 +40,13 @@ public class InternationalStringImpl implements InternationalString {
     public InternationalStringImpl() {
     }
 
+    public InternationalStringImpl(String str)
+    {
+        Locale locale = Locale.getDefault();
+        map.put(new MapKey(locale, LocalizedString.DEFAULT_CHARSET_NAME), new LocalizedStringImpl(locale, str, LocalizedString.DEFAULT_CHARSET_NAME));
+
+    }
+
     public InternationalStringImpl(Locale locale, String str, String charsetName) {
         MapKey mapKey = new MapKey(locale, charsetName);
         map.put(mapKey, new LocalizedStringImpl(locale, str, charsetName));

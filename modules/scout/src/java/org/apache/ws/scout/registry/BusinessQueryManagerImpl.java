@@ -18,15 +18,23 @@ package org.apache.ws.scout.registry;
 
 import org.apache.juddi.IRegistry;
 import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.datatype.request.FindQualifiers;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.BusinessList;
+import org.apache.juddi.datatype.response.BusinessDetail;
+import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.error.RegistryException;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
-import javax.xml.registry.*;
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessQueryManager;
+import javax.xml.registry.FindQualifier;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
@@ -41,120 +49,204 @@ import java.util.Vector;
 /**
  * Implements the JAXR BusinessQueryManager Interface
  * For futher details, look into the JAXR API Javadoc.
+ *
  * @author Anil Saldhana  <anil@apache.org>
  * @author Jeremy Boynes  <jboynes@apache.org>
  */
-public class BusinessQueryManagerImpl implements BusinessQueryManager {
+public class BusinessQueryManagerImpl implements BusinessQueryManager
+{
     private final RegistryServiceImpl registryService;
 
-    public BusinessQueryManagerImpl(RegistryServiceImpl registry) {
+
+    public BusinessQueryManagerImpl(RegistryServiceImpl registry)
+    {
         this.registryService = registry;
     }
 
-    public RegistryService getRegistryService() {
+    public RegistryService getRegistryService()
+    {
         return registryService;
     }
 
-    public BulkResponse findOrganizations(Collection findQualifiers, Collection namePatterns, Collection classifications, Collection specifications, Collection externalIdentifiers, Collection externalLinks) throws JAXRException {
+    public BulkResponse findOrganizations(Collection findQualifiers,
+                                          Collection namePatterns,
+                                          Collection classifications,
+                                          Collection specifications,
+                                          Collection externalIdentifiers,
+                                          Collection externalLinks) throws JAXRException
+    {
         IRegistry registry = registryService.getRegistry();
-        try {
+        try
+        {
             FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
             Vector nameVector = mapNamePatterns(namePatterns);
-            BusinessList result = registry.findBusiness(nameVector, null, null, null, null, juddiFindQualifiers, registryService.getMaxRows());
+            BusinessList result = registry.findBusiness(nameVector,
+                                                   null, null, null, null,
+                                                   juddiFindQualifiers,
+                                                   registryService.getMaxRows());
             Vector v = result.getBusinessInfos().getBusinessInfoVector();
             Collection orgs = null;
             int len = 0;
-            if( v!= null )
+            if (v != null)
             {
                 len = v.size();
                 orgs = new ArrayList(len);
             }
-            for (int i = 0; i < len; i++) {
+            for (int i = 0; i < len; i++)
+            {
                 BusinessInfo info = (BusinessInfo) v.elementAt(i);
                 orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(info));
             }
             return new BulkResponseImpl(orgs);
-        } catch (RegistryException e) {
+        } catch (RegistryException e)
+        {
             throw new JAXRException(e);
         }
     }
 
-    public BulkResponse findAssociations(Collection findQualifiers, String sourceObjectId, String targetObjectId, Collection associationTypes) throws JAXRException {
+    public BulkResponse findAssociations(Collection findQualifiers,
+                                         String sourceObjectId,
+                                         String targetObjectId,
+                                         Collection associationTypes) throws JAXRException
+    {
         return null;
     }
 
-    public BulkResponse findCallerAssociations(Collection findQualifiers, Boolean confirmedByCaller, Boolean confirmedByOtherParty, Collection associationTypes) throws JAXRException {
+    public BulkResponse findCallerAssociations(Collection findQualifiers,
+                                               Boolean confirmedByCaller,
+                                               Boolean confirmedByOtherParty,
+                                               Collection associationTypes) throws JAXRException
+    {
         return null;
     }
 
-    public ClassificationScheme findClassificationSchemeByName(Collection findQualifiers, String namePatterns) throws JAXRException {
+    public ClassificationScheme findClassificationSchemeByName(Collection findQualifiers,
+                                                               String namePatterns) throws JAXRException
+    {
         ClassificationScheme scheme = null;
         //TODO:What to do with findQualifiers?
-        if(namePatterns.equalsIgnoreCase("uddi-org:types"))
+        if (namePatterns.equalsIgnoreCase("uddi-org:types"))
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setKey(new KeyImpl(TModel.TYPES_TMODEL_KEY));
+        } else if (namePatterns.equalsIgnoreCase("dnb-com:D-U-N-S"))
+        {
+            scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setKey(new KeyImpl(TModel.D_U_N_S_TMODEL_KEY));
+        } else if (namePatterns.equalsIgnoreCase("uddi-org:iso-ch:3166:1999"))
+        {
+            scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
+        } else if (namePatterns.equalsIgnoreCase("unspsc-org:unspsc"))
+        {
+            scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+        } else if (namePatterns.equalsIgnoreCase("ntis-gov:naics"))
+        {
+            scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+            scheme.setKey(new KeyImpl(TModel.NAICS_TMODEL_KEY));
         }
         return scheme;
     }
 
-    public BulkResponse findClassificationSchemes(Collection findQualifiers, Collection namePatterns, Collection classifications, Collection externalLinks) throws JAXRException {
+    public BulkResponse findClassificationSchemes(Collection findQualifiers,
+                                                  Collection namePatterns,
+                                                  Collection classifications,
+                                                  Collection externalLinks) throws JAXRException
+    {
         return null;
     }
 
-    public Concept findConceptByPath(String path) throws JAXRException {
+    public Concept findConceptByPath(String path) throws JAXRException
+    {
         return null;
     }
 
-    public BulkResponse findConcepts(Collection findQualifiers, Collection namePatterns, Collection classifications, Collection externalIdentifiers, Collection externalLinks) throws JAXRException {
+    public BulkResponse findConcepts(Collection findQualifiers,
+                                     Collection namePatterns,
+                                     Collection classifications,
+                                     Collection externalIdentifiers,
+                                     Collection externalLinks) throws JAXRException
+    {
         return null;
     }
 
-    public BulkResponse findRegistryPackages(Collection findQualifiers, Collection namePatterns, Collection classifications, Collection externalLinks) throws JAXRException {
+    public BulkResponse findRegistryPackages(Collection findQualifiers,
+                                             Collection namePatterns,
+                                             Collection classifications,
+                                             Collection externalLinks) throws JAXRException
+    {
         return null;
     }
 
-    public BulkResponse findServiceBindings(Key serviceKey, Collection findQualifiers, Collection classifications, Collection specificationa) throws JAXRException {
+    public BulkResponse findServiceBindings(Key serviceKey,
+                                            Collection findQualifiers,
+                                            Collection classifications,
+                                            Collection specifications) throws JAXRException
+    {
         return null;
     }
 
-    public BulkResponse findServices(Key orgKey, Collection findQualifiers, Collection namePattersn, Collection classifications, Collection specificationa) throws JAXRException {
+    public BulkResponse findServices(Key orgKey, Collection findQualifiers,
+                                     Collection namePattersn,
+                                     Collection classifications,
+                                     Collection specificationa) throws JAXRException
+    {
         return null;
     }
 
-    public RegistryObject getRegistryObject(String id) throws JAXRException {
+    public RegistryObject getRegistryObject(String id) throws JAXRException
+    {
         return null;
     }
 
-    public RegistryObject getRegistryObject(String id, String objectType) throws JAXRException {
+    public RegistryObject getRegistryObject(String id, String objectType) throws JAXRException
+    {
+        IRegistry registry = registryService.getRegistry();
         RegistryObject regobj = null;
-        if(LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
+        if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
         {
             regobj = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             regobj.setKey(new KeyImpl(id));
+        }if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType))
+        {
+            //Get the Organization from the uddi registry
+            try
+            {
+                BusinessDetail orgdetail = registry.getBusinessDetail(id);
+                regobj = (RegistryObject)ScoutUddiJaxrHelper.getOrganization(orgdetail,registryService.getBusinessLifeCycleManager());
+            } catch (RegistryException e)
+            {
+                e.printStackTrace();
+            }
         }
         return regobj;
     }
 
-    public BulkResponse getRegistryObjects() throws JAXRException {
+    public BulkResponse getRegistryObjects() throws JAXRException
+    {
         return null;
     }
 
-    public BulkResponse getRegistryObjects(Collection objectKeys) throws JAXRException {
+    public BulkResponse getRegistryObjects(Collection objectKeys) throws JAXRException
+    {
         return null;
     }
 
-    public BulkResponse getRegistryObjects(Collection objectKeys, String objectTypes) throws JAXRException {
+    public BulkResponse getRegistryObjects(Collection objectKeys, String objectTypes) throws JAXRException
+    {
         return null;
     }
 
-    public BulkResponse getRegistryObjects(String objectTypes) throws JAXRException {
+    public BulkResponse getRegistryObjects(String objectTypes) throws JAXRException
+    {
         return null;
     }
 
     private static final Map findQualifierMapping;
 
-    static {
+    static
+    {
         findQualifierMapping = new HashMap();
         findQualifierMapping.put(FindQualifier.AND_ALL_KEYS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.AND_ALL_KEYS));
         findQualifierMapping.put(FindQualifier.CASE_SENSITIVE_MATCH, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.CASE_SENSITIVE_MATCH));
@@ -170,16 +262,20 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager {
 //        findQualifierMapping.put(FindQualifier.SOUNDEX, null);
     }
 
-    static FindQualifiers mapFindQualifiers(Collection jaxrQualifiers) throws UnsupportedCapabilityException {
-        if (jaxrQualifiers == null) {
+    static FindQualifiers mapFindQualifiers(Collection jaxrQualifiers) throws UnsupportedCapabilityException
+    {
+        if (jaxrQualifiers == null)
+        {
             return null;
         }
         FindQualifiers result = new FindQualifiers(jaxrQualifiers.size());
-        for (Iterator i = jaxrQualifiers.iterator(); i.hasNext();) {
+        for (Iterator i = jaxrQualifiers.iterator(); i.hasNext();)
+        {
             String jaxrQualifier = (String) i.next();
             org.apache.juddi.datatype.request.FindQualifier juddiQualifier =
                     (org.apache.juddi.datatype.request.FindQualifier) findQualifierMapping.get(jaxrQualifier);
-            if (juddiQualifier == null) {
+            if (juddiQualifier == null)
+            {
                 throw new UnsupportedCapabilityException("jUDDI does not support FindQualifer: " + jaxrQualifier);
             }
             result.addFindQualifier(juddiQualifier);
@@ -187,11 +283,13 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager {
         return result;
     }
 
-    static Vector mapNamePatterns(Collection namePatterns) {
+    static Vector mapNamePatterns(Collection namePatterns)
+    {
         if (namePatterns == null)
             return null;
         Vector result = new Vector(namePatterns.size());
-        for (Iterator i = namePatterns.iterator(); i.hasNext();) {
+        for (Iterator i = namePatterns.iterator(); i.hasNext();)
+        {
             String pattern = (String) i.next();
             result.add(new Name(pattern));
         }

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.ws.scout.registry.Publish;
+package org.apache.ws.scout.registry.publish;
 
 import junit.framework.TestCase;
 
@@ -122,11 +122,13 @@ public class PublishConceptTest extends TestCase
                 {
                     Exception e = (Exception) iter.next();
                     System.err.println(e.toString());
+                    fail(e.toString());
                 }
             }
         } catch (JAXRException e)
         {
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
