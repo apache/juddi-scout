@@ -408,7 +408,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                              Collection classifications,
                                              Collection externalLinks) throws JAXRException
     {
-        return null;
+        throw new UnsupportedCapabilityException();
     }
 
     public BulkResponse findServiceBindings(Key serviceKey,
