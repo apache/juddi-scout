@@ -142,6 +142,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     public BulkResponse saveObjects(Collection col ) throws JAXRException
     {
         BulkResponseImpl bulk = new BulkResponseImpl();
+
         Iterator iter = col.iterator();
         //TODO:Check if juddi can provide a facility to store a collection of heterogenous
         //objects
@@ -150,45 +151,52 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         Collection exc = new ArrayList();
         bulk.setCollection(suc);
         bulk.setExceptions(exc);
+
         while(iter.hasNext())
         {
             keys.clear();
             RegistryObject reg = (RegistryObject)iter.next();
             keys.add(reg.getKey());
             BulkResponse  br = null;
+
+            Collection c = new ArrayList();
+            c.add(reg);
+
             if(reg instanceof javax.xml.registry.infomodel.Association)
             {
-                br = saveAssociations(keys, true);
+                br = saveAssociations(c, true);
             } else
             if(reg instanceof javax.xml.registry.infomodel.ClassificationScheme)
             {
-                br = saveClassificationSchemes(keys );
+                br = saveClassificationSchemes(c);
             }
             else
             if(reg instanceof javax.xml.registry.infomodel.Concept)
             {
-                br = saveConcepts(keys );
+                br = saveConcepts(c);
             }else
             if(reg instanceof javax.xml.registry.infomodel.Organization)
             {
-                br = saveOrganizations(keys );
+                br = saveOrganizations(c);
             }else
             if(reg instanceof javax.xml.registry.infomodel.Service)
             {
-                br = saveServices(keys );
+                br = saveServices(c);
             }else
             if(reg instanceof javax.xml.registry.infomodel.ServiceBinding)
             {
-                br = saveServiceBindings(keys );
+                br = saveServiceBindings(c);
             }
 
-            if(br != null ) updateBulkResponse(bulk,br);
+            if(br != null ) {
+                updateBulkResponse(bulk,br);
+            }
         }
 
         return bulk;
     }
 
-    public BulkResponse saveAssociations(Collection associationKeys, boolean replace) throws JAXRException
+    public BulkResponse saveAssociations(Collection associationObjects, boolean replace) throws JAXRException
     {    //TODO
         return null;
     }
@@ -584,13 +592,55 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return token;
     }
 
+
+    /**
+     *   TODO - fix me!
+     * @param bulk
+     * @param br
+     * @throws JAXRException
+     */
     private void updateBulkResponse(BulkResponseImpl bulk, BulkResponse  br)
     throws JAXRException
     {
-        bulk.getCollection().addAll(br.getCollection());
-        bulk.getExceptions().addAll(br.getExceptions());
-        if(bulk.getStatus() == JAXRResponse.STATUS_SUCCESS)
+        if (bulk == null || br == null) {
+            return;
+        }
+
+        /**
+         * TODO - fix when we fix BulkResponse
+         */
+
+        Collection data = br.getCollection();
+
+        if (data != null) {
+
+            Collection c = bulk.getCollection();
+
+            if (c == null) {
+                c = new ArrayList();
+            }
+
+            bulk.setCollection(c);
+            c.addAll(data);
+        }
+
+        data = br.getExceptions();
+
+        if (data != null) {
+            Collection c = bulk.getExceptions();
+
+            if (c == null) {
+                c = new ArrayList();
+            }
+
+            c.addAll(data);
+
+            bulk.setExceptions(c);
+        }
+
+        if(bulk.getStatus() == JAXRResponse.STATUS_SUCCESS) {
             bulk.setStatus(br.getStatus());
+        }
     }
 
 }
