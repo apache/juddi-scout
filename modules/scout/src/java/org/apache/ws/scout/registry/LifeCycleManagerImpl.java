@@ -141,7 +141,7 @@ public class LifeCycleManagerImpl implements LifeCycleManager
             throw new UnsupportedCapabilityException();
         } else if (LifeCycleManager.SLOT.equals(interfaceName))
         {
-            return new SlotImpl(this);
+            return new SlotImpl();
         } else if (LifeCycleManager.SPECIFICATION_LINK.equals(interfaceName))
         {
             return new SpecificationLinkImpl(this);
