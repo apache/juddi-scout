@@ -160,11 +160,31 @@ public class ScoutJaxrUddiHelper
             String name = iname.getValue();
             //bs.setDefaultNameString( name, Locale.getDefault().getLanguage());
             bs.addName(new Name(name, Locale.getDefault().getLanguage()));
-            /**
-             bs.setBusinessKey( ((RegistryObject) serve).getKey().getId() );
-             **/
-
             bs.addDescription(new Description(((RegistryObject) serve).getDescription().getValue()));
+
+            Organization o = serve.getProvidingOrganization();
+
+            /*
+             * there may not always be a key...
+             */
+            if (o != null) {
+                Key k = o.getKey();
+
+                if (k != null) {
+                    bs.setBusinessKey(k.getId());
+                }
+            }
+            else {
+                /*
+                 * gmj - I *think* this is the right thing to do
+                 */
+                throw new JAXRException("Service has no associated organization");
+            }
+
+            if (serve.getKey() != null) {
+                bs.setServiceKey(serve.getKey().getId());
+            }
+
             System.out.println("BusinessService=" + bs.toString());
         } catch (Exception ud)
         {
