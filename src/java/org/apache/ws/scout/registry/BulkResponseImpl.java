@@ -25,16 +25,11 @@ import java.util.Collection;
  * Implements JAXR BulkResponse Interface.
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <mailto:anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
-public class BulkResponseImpl implements BulkResponse
+public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
 {
-    public static int STATUS_FAILURE = 1;
-    public static int STATUS_SUCCESS = 0;
-    public static int STATUS_UNAVAILABLE = 2;
-    public static int STATUS_WARNING = 3;
-
-    private int status = STATUS_SUCCESS;
     private boolean partialResponse = false;
 
     private Collection exceptions = new ArrayList();
@@ -57,32 +52,19 @@ public class BulkResponseImpl implements BulkResponse
      */
     public Collection getCollection() throws JAXRException
     {
-        return collection;
+        return this.collection;
     }
 
     public Collection getExceptions() throws JAXRException
     {
-        return null;
-    }
-
-    public String getRequestId() throws JAXRException
-    {
-        return null;
-    }
-
-    public int getStatus() throws JAXRException
-    {
-        return status;
-    }
-
-    public boolean isAvailable() throws JAXRException
-    {
-        return false;
+        return this.exceptions;
     }
 
     public boolean isPartialResponse() throws JAXRException
     {
-        if (exceptions.size() > 0) this.partialResponse = true;
+        if (exceptions.size() > 0) {
+            this.partialResponse = true;
+        }
         return this.partialResponse;
     }
 
@@ -94,11 +76,6 @@ public class BulkResponseImpl implements BulkResponse
     public void setCollection(Collection coll) throws JAXRException
     {
         this.collection = coll;
-    }
-
-    public void setStatus(int status) throws JAXRException
-    {
-        this.status = status;
     }
 
     /**
