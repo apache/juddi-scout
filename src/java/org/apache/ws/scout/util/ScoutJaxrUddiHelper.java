@@ -199,10 +199,32 @@ public class ScoutJaxrUddiHelper
         TModel tm = new TModel();
         try
         {
-            tm.setTModelKey(scheme.getKey().getId());
-            tm.setAuthorizedName(scheme.getSlot("authorizedName").getName());
-            tm.setOperator(scheme.getSlot("operator").getName());
+            /*
+             * a fresh scheme might not have a key
+             */
 
+            Key k = scheme.getKey();
+
+            if(k != null) {
+                tm.setTModelKey(k.getId());
+
+            }
+
+            /*
+             * There's no reason to believe these are here either
+             */
+
+            Slot s = scheme.getSlot("authorizedName");
+
+            if (s != null) {
+                tm.setAuthorizedName(s.getName());
+            }
+
+            s = scheme.getSlot("operator");
+
+            if (s != null) {
+                tm.setOperator(s.getName());
+            }
 
             InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) scheme).getName();
             String name = iname.getValue();
