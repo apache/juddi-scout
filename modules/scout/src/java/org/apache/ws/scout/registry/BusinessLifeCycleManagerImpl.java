@@ -63,7 +63,8 @@ import java.util.Vector;
  * Implements JAXR BusinessLifeCycleManager Interface.
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         implements BusinessLifeCycleManager, Serializable
@@ -499,6 +500,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         try
         {
             Iterator iter = keys.iterator();
+
             while (iter.hasNext())
             {
                 Key key = (Key) iter.next();
@@ -524,15 +526,29 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                     exceptions.add(de);
                 }
             }
+        }
+        catch (RegistryException regExcept) {
 
-            bulk.setCollection(coll);
-            bulk.setExceptions(exceptions);
-        } catch (Exception tran)
+            /*
+             * jUDDI (and prollie others) throw an exception on any fault in
+             * the transaction w/ the registry, so we don't get any partial
+             * success
+             */
+            DeleteException de = new DeleteException(regExcept.getFaultCode()
+                    + ":" + regExcept.getFaultString(), regExcept);
+
+            bulk.setStatus(JAXRResponse.STATUS_FAILURE);
+            exceptions.add(de);
+        }
+        catch (JAXRException tran)
         {
             exceptions.add(new JAXRException("Apache JAXR Impl:", tran));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
-            bulk.setExceptions(exceptions);
         }
+
+        bulk.setCollection(coll);
+        bulk.setExceptions(exceptions);
+
         return bulk;
     }
 
