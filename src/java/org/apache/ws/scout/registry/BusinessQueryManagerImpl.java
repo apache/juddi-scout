@@ -551,21 +551,8 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     Vector v = sd.getBusinessServiceVector();
 
                     if (v.size() != 0) {
-                        BusinessService bs = (BusinessService) v.elementAt(0);
-
-                        Service service  = ScoutUddiJaxrHelper.getService(bs, lcm);
-
-                        /*
-                         * now get the Organization if we can
-                         */
-
-                        String busKey = bs.getBusinessKey();
-
-                        if (busKey != null) {
-                            Organization o = (Organization) getRegistryObject(busKey,
-                                    LifeCycleManager.ORGANIZATION);
-                            service.setProvidingOrganization(o);
-                        }
+                        Service service = getServiceFromBusinessService(
+                                (BusinessService) v.elementAt(0), lcm);
 
                         return service;
                     }
@@ -579,6 +566,35 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         return null;
     }
 
+    /**
+     *  Helper routine to take a jUDDI business service and turn into a useful
+     *  Service.  Needs to go back to the registry to get the organization to
+     *  properly hydrate the Service
+     *
+     * @param bs  BusinessService object to turn in to a Service
+     * @param lcm manager to use
+     * @return new Service object
+     * @throws JAXRException
+     */
+    protected Service getServiceFromBusinessService(BusinessService bs, LifeCycleManager lcm)
+        throws JAXRException {
+
+        Service service  = ScoutUddiJaxrHelper.getService(bs, lcm);
+
+        /*
+         * now get the Organization if we can
+         */
+
+        String busKey = bs.getBusinessKey();
+
+        if (busKey != null) {
+            Organization o = (Organization) getRegistryObject(busKey,
+                    LifeCycleManager.ORGANIZATION);
+            service.setProvidingOrganization(o);
+        }
+
+        return service;
+    }
     public BulkResponse getRegistryObjects() throws JAXRException
     {
         return null;
@@ -633,14 +649,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 }
             } catch (RegistryException e)
             {
-                e.printStackTrace();
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
         else if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType))
         {
-            try
-            {
+            try {
                 TModelDetail tmodeldetail = registry.getTModelDetail(keys);
                 Vector tmvect = tmodeldetail.getTModelVector();
                 for (int i = 0; tmvect != null && i < tmvect.size(); i++)
@@ -648,12 +662,40 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     col.add(ScoutUddiJaxrHelper.getConcept((TModel) tmvect.elementAt(i), lcm));
                 }
 
-            } catch (RegistryException e)
+            }
+            catch (RegistryException e)
             {
                 e.printStackTrace();
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
+        else if (LifeCycleManager.SERVICE.equalsIgnoreCase(objectType)) {
+
+            try {
+                ServiceDetail serviceDetail = registry.getServiceDetail(keys);
+
+                if (serviceDetail != null) {
+
+                    Vector v = serviceDetail.getBusinessServiceVector();
+
+                    for (int i=0; v != null && i < v.size(); i++) {
+
+                        Service service = getServiceFromBusinessService(
+                                (BusinessService) v.elementAt(i), lcm);
+
+                        col.add(service);
+                    }
+                }
+            }
+            catch (RegistryException e) {
+                throw new JAXRException(e);
+            }
+        }
+        else {
+            throw new JAXRException("Unsupported type " + objectType +
+                    " for getRegistryObjects() in Apache Scout");
+        }
+
         return new BulkResponseImpl(col);
 
     }
