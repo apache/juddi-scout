@@ -68,6 +68,10 @@ public class ClassificationImpl extends RegistryObjectImpl
         return value;
     }
 
+    public void setExternal(boolean b) {
+        this.external = b;
+    }
+    
     public boolean isExternal() throws JAXRException
     {
         return external;
