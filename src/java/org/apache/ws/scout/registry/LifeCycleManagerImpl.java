@@ -16,11 +16,24 @@
  */
 package org.apache.ws.scout.registry;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Vector;
+import org.apache.juddi.datatype.response.BusinessInfo;
+import org.apache.juddi.datatype.response.ServiceInfo;
+import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
+import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.EmailAddressImpl;
+import org.apache.ws.scout.registry.infomodel.ExternalIdentifierImpl;
+import org.apache.ws.scout.registry.infomodel.ExternalLinkImpl;
+import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.registry.infomodel.LocalizedStringImpl;
+import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
+import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
+import org.apache.ws.scout.registry.infomodel.RegistryEntryImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceImpl;
+import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
+import org.apache.ws.scout.registry.infomodel.UserImpl;
+
 import javax.activation.DataHandler;
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.InvalidRequestException;
@@ -50,24 +63,11 @@ import javax.xml.registry.infomodel.Slot;
 import javax.xml.registry.infomodel.SpecificationLink;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
-
-import org.apache.juddi.datatype.response.BusinessInfo;
-import org.apache.juddi.datatype.response.ServiceInfo;
-import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
-import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
-import org.apache.ws.scout.registry.infomodel.ConceptImpl;
-import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
-import org.apache.ws.scout.registry.infomodel.KeyImpl;
-import org.apache.ws.scout.registry.infomodel.LocalizedStringImpl;
-import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
-import org.apache.ws.scout.registry.infomodel.ServiceImpl;
-import org.apache.ws.scout.registry.infomodel.EmailAddressImpl;
-import org.apache.ws.scout.registry.infomodel.ExternalIdentifierImpl;
-import org.apache.ws.scout.registry.infomodel.ExternalLinkImpl;
-import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
-import org.apache.ws.scout.registry.infomodel.RegistryEntryImpl;
-import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
-import org.apache.ws.scout.registry.infomodel.UserImpl;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Vector;
 
 /**
  * @version $Revision$ $Date$

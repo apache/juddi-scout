@@ -16,15 +16,15 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.LocalizedString;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Collections;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.infomodel.InternationalString;
-import javax.xml.registry.infomodel.LocalizedString;
 
 /**
  * For futher details, look into the JAXR API Javadoc.

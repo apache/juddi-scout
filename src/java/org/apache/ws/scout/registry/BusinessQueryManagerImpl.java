@@ -16,12 +16,12 @@
  */
 package org.apache.ws.scout.registry;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
+import org.apache.juddi.IRegistry;
+import org.apache.juddi.datatype.request.FindQualifiers;
+import org.apache.juddi.datatype.response.BusinessInfo;
+import org.apache.juddi.datatype.response.BusinessList;
+import org.apache.juddi.error.RegistryException;
+
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.FindQualifier;
@@ -32,12 +32,12 @@ import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.RegistryObject;
-
-import org.apache.juddi.IRegistry;
-import org.apache.juddi.datatype.request.FindQualifiers;
-import org.apache.juddi.datatype.response.BusinessInfo;
-import org.apache.juddi.datatype.response.BusinessList;
-import org.apache.juddi.error.RegistryException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * @version $Revision$ $Date$
@@ -135,17 +135,17 @@ class BusinessQueryManagerImpl implements BusinessQueryManager {
     private static final Map findQualifierMapping;
     static {
         findQualifierMapping = new HashMap();
-        findQualifierMapping.put(FindQualifier.AND_ALL_KEYS, org.apache.juddi.datatype.request.FindQualifier.AND_ALL_KEYS);
-        findQualifierMapping.put(FindQualifier.CASE_SENSITIVE_MATCH, org.apache.juddi.datatype.request.FindQualifier.CASE_SENSITIVE_MATCH);
-        findQualifierMapping.put(FindQualifier.COMBINE_CLASSIFICATIONS, org.apache.juddi.datatype.request.FindQualifier.COMBINE_CATEGORY_BAGS);
-        findQualifierMapping.put(FindQualifier.EXACT_NAME_MATCH, org.apache.juddi.datatype.request.FindQualifier.EXACT_NAME_MATCH);
-        findQualifierMapping.put(FindQualifier.OR_ALL_KEYS, org.apache.juddi.datatype.request.FindQualifier.OR_ALL_KEYS);
-        findQualifierMapping.put(FindQualifier.OR_LIKE_KEYS, org.apache.juddi.datatype.request.FindQualifier.OR_LIKE_KEYS);
-        findQualifierMapping.put(FindQualifier.SERVICE_SUBSET, org.apache.juddi.datatype.request.FindQualifier.SERVICE_SUBSET);
-        findQualifierMapping.put(FindQualifier.SORT_BY_DATE_ASC, org.apache.juddi.datatype.request.FindQualifier.SORT_BY_DATE_ASC);
-        findQualifierMapping.put(FindQualifier.SORT_BY_DATE_DESC, org.apache.juddi.datatype.request.FindQualifier.SORT_BY_DATE_DESC);
-        findQualifierMapping.put(FindQualifier.SORT_BY_NAME_ASC, org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_ASC);
-        findQualifierMapping.put(FindQualifier.SORT_BY_NAME_DESC, org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_DESC);
+        findQualifierMapping.put(FindQualifier.AND_ALL_KEYS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.AND_ALL_KEYS));
+        findQualifierMapping.put(FindQualifier.CASE_SENSITIVE_MATCH, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.CASE_SENSITIVE_MATCH));
+        findQualifierMapping.put(FindQualifier.COMBINE_CLASSIFICATIONS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.COMBINE_CATEGORY_BAGS));
+        findQualifierMapping.put(FindQualifier.EXACT_NAME_MATCH, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.EXACT_NAME_MATCH));
+        findQualifierMapping.put(FindQualifier.OR_ALL_KEYS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.OR_ALL_KEYS));
+        findQualifierMapping.put(FindQualifier.OR_LIKE_KEYS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.OR_LIKE_KEYS));
+        findQualifierMapping.put(FindQualifier.SERVICE_SUBSET, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SERVICE_SUBSET));
+        findQualifierMapping.put(FindQualifier.SORT_BY_DATE_ASC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_DATE_ASC));
+        findQualifierMapping.put(FindQualifier.SORT_BY_DATE_DESC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_DATE_DESC));
+        findQualifierMapping.put(FindQualifier.SORT_BY_NAME_ASC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_ASC));
+        findQualifierMapping.put(FindQualifier.SORT_BY_NAME_DESC,new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_DESC));
 //        findQualifierMapping.put(FindQualifier.SOUNDEX, null);
     }
 

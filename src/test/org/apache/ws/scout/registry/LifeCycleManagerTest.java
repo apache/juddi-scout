@@ -16,9 +16,26 @@
  */
 package org.apache.ws.scout.registry;
 
-import javax.xml.registry.LifeCycleManager;
+import junit.framework.TestCase;
+import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
+import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.EmailAddressImpl;
+import org.apache.ws.scout.registry.infomodel.ExternalIdentifierImpl;
+import org.apache.ws.scout.registry.infomodel.ExternalLinkImpl;
+import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.registry.infomodel.LocalizedStringImpl;
+import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
+import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
+import org.apache.ws.scout.registry.infomodel.RegistryEntryImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceImpl;
+import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
+import org.apache.ws.scout.registry.infomodel.UserImpl;
+
 import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.Classification;
 import javax.xml.registry.infomodel.ClassificationScheme;
@@ -30,23 +47,6 @@ import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.RegistryEntry;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.User;
-
-import junit.framework.TestCase;
-import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
-import org.apache.ws.scout.registry.infomodel.LocalizedStringImpl;
-import org.apache.ws.scout.registry.infomodel.KeyImpl;
-import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
-import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
-import org.apache.ws.scout.registry.infomodel.ConceptImpl;
-import org.apache.ws.scout.registry.infomodel.EmailAddressImpl;
-import org.apache.ws.scout.registry.infomodel.ExternalIdentifierImpl;
-import org.apache.ws.scout.registry.infomodel.ExternalLinkImpl;
-import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
-import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
-import org.apache.ws.scout.registry.infomodel.RegistryEntryImpl;
-import org.apache.ws.scout.registry.infomodel.ServiceImpl;
-import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
-import org.apache.ws.scout.registry.infomodel.UserImpl;
 
 /**
  * @version $Revision$ $Date$

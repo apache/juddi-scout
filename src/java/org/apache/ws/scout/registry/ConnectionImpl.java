@@ -16,13 +16,13 @@
 
 package org.apache.ws.scout.registry;
 
-import java.net.URL;
-import java.util.Set;
+import org.apache.juddi.proxy.RegistryProxy;
+
 import javax.xml.registry.Connection;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
-
-import org.apache.juddi.proxy.RegistryProxy;
+import java.net.URL;
+import java.util.Set;
 
 
 /**

@@ -16,14 +16,14 @@
  */
 package org.apache.ws.scout.registry;
 
-import java.util.Properties;
-import javax.xml.registry.ConnectionFactory;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.Connection;
-import javax.xml.registry.InvalidRequestException;
-import javax.xml.registry.UnsupportedCapabilityException;
-
 import junit.framework.TestCase;
+
+import javax.xml.registry.Connection;
+import javax.xml.registry.ConnectionFactory;
+import javax.xml.registry.InvalidRequestException;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.UnsupportedCapabilityException;
+import java.util.Properties;
 
 /**
  * @version $Revision$ $Date$

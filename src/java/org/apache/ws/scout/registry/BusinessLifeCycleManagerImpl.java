@@ -16,13 +16,13 @@
  */
 package org.apache.ws.scout.registry;
 
-import java.util.Collection;
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.infomodel.Association;
+import java.util.Collection;
 
 /**
  * @version $Revision$ $Date$

@@ -15,11 +15,10 @@
  */
 
 package org.apache.ws.scout.registry;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.JAXRException;
+import java.util.ArrayList;
+import java.util.Collection;
  
 /**
  * Implements JAXR BulResponse Interface.

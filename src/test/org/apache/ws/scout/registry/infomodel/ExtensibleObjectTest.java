@@ -16,14 +16,14 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import junit.framework.TestCase;
+
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.infomodel.ExtensibleObject;
 import javax.xml.registry.infomodel.Slot;
-
-import junit.framework.TestCase;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @version $Revision$ $Date$

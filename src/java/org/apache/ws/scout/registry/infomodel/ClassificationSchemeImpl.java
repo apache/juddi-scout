@@ -16,10 +16,12 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.*;
-
-import java.util.*;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**

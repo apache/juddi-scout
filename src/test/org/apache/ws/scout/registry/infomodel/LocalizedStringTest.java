@@ -16,11 +16,11 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import java.util.Locale;
-import javax.xml.registry.infomodel.LocalizedString;
-import javax.xml.registry.JAXRException;
-
 import junit.framework.TestCase;
+
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.LocalizedString;
+import java.util.Locale;
 
 /**
  * @version $Revision$ $Date$

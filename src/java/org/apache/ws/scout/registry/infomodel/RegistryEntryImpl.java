@@ -16,10 +16,10 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
-import java.util.Date;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.RegistryEntry;
+import java.util.Date;
 
 /**
  * Implements JAXR Interface.

@@ -16,6 +16,11 @@
  */
 package org.apache.ws.scout.registry;
 
+import org.apache.juddi.IRegistry;
+import org.apache.juddi.proxy.RegistryProxy;
+import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
+
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.BusinessQueryManager;
@@ -26,11 +31,6 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.ClassificationScheme;
-
-import org.apache.juddi.proxy.RegistryProxy;
-import org.apache.juddi.IRegistry;
-import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
-import org.apache.ws.scout.registry.infomodel.KeyImpl;
 
 /**
  * @version $Revision$ $Date$
