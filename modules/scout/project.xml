@@ -52,6 +52,11 @@
             <version>1.0.4</version>
         </dependency>
         <dependency>
+            <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>axis</groupId>
             <artifactId>axis</artifactId>
             <version>1.2-RC1</version>
@@ -59,6 +64,11 @@
         <dependency>
             <groupId>axis</groupId>
             <artifactId>axis-saaj</artifactId>
+            <version>1.2-RC1</version>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
             <version>1.2-RC1</version>
         </dependency>
     </dependencies>

@@ -20,6 +20,7 @@ import org.apache.juddi.IRegistry;
 import org.apache.juddi.datatype.request.FindQualifiers;
 import org.apache.juddi.datatype.response.BusinessInfo;
 import org.apache.juddi.datatype.response.BusinessList;
+import org.apache.juddi.datatype.Name;
 import org.apache.juddi.error.RegistryException;
 
 import javax.xml.registry.BulkResponse;
@@ -168,6 +169,13 @@ class BusinessQueryManagerImpl implements BusinessQueryManager {
     }
 
     static Vector mapNamePatterns(Collection namePatterns) {
-        return namePatterns == null ? null :  new Vector(namePatterns);
+        if (namePatterns == null)
+            return null;
+        Vector result = new Vector(namePatterns.size());
+        for (Iterator i = namePatterns.iterator(); i.hasNext();) {
+            String pattern = (String) i.next();
+            result.add(new Name(pattern));
+        }
+        return result;
     }
 }
