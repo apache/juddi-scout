@@ -47,6 +47,7 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
@@ -478,53 +479,64 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
     public RegistryObject getRegistryObject(String id) throws JAXRException
     {
-        return null;
+        throw new UnsupportedCapabilityException();
     }
 
     public RegistryObject getRegistryObject(String id, String objectType) throws JAXRException
     {
         IRegistry registry = registryService.getRegistry();
-        RegistryObject regobj = null;
-        if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
-        {
-            try
-            {
-                TModelDetail tmodeldetail = registry.getTModelDetail(id);
-                regobj = (RegistryObject) ScoutUddiJaxrHelper.getConcept(tmodeldetail, registryService.getBusinessLifeCycleManager());
+        BusinessLifeCycleManager lcm = registryService.getBusinessLifeCycleManager();
 
-            } catch (RegistryException e)
-            {
+        if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType)) {
+
+            try {
+
+                TModelDetail tmodeldetail = registry.getTModelDetail(id);
+                Concept c = ScoutUddiJaxrHelper.getConcept(tmodeldetail, lcm);
+
+                /*
+                 * now turn into a concrete ClassificationScheme
+                 */
+
+                ClassificationScheme scheme = new ClassificationSchemeImpl(lcm);
+
+                scheme.setName(c.getName());
+                scheme.setDescription(c.getDescription());
+                scheme.setKey(c.getKey());
+
+                return scheme;
+            }
+            catch (RegistryException e) {
                 e.printStackTrace();
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
-        if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType))
-        {
-            //Get the Organization from the uddi registry
+        else if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType)) {
+
             try
             {
                 BusinessDetail orgdetail = registry.getBusinessDetail(id);
-                regobj = (RegistryObject) ScoutUddiJaxrHelper.getOrganization(orgdetail, registryService.getBusinessLifeCycleManager());
-            } catch (RegistryException e)
-            {
+                return ScoutUddiJaxrHelper.getOrganization(orgdetail, lcm);
+            }
+            catch (RegistryException e) {
                 e.printStackTrace();
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
-        if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType))
-        {
+        else if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType)) {
+
             try
             {
                 TModelDetail tmodeldetail = registry.getTModelDetail(id);
-                regobj = (RegistryObject) ScoutUddiJaxrHelper.getConcept(tmodeldetail, registryService.getBusinessLifeCycleManager());
-
-            } catch (RegistryException e)
-            {
+                return ScoutUddiJaxrHelper.getConcept(tmodeldetail, lcm);
+            }
+            catch (RegistryException e) {
                 e.printStackTrace();
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
-        return regobj;
+
+        return null;
     }
 
     public BulkResponse getRegistryObjects() throws JAXRException
@@ -534,7 +546,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
     public BulkResponse getRegistryObjects(Collection objectKeys) throws JAXRException
     {
-        return null;
+        throw new UnsupportedCapabilityException();
     }
 
     public BulkResponse getRegistryObjects(Collection objectKeys, String objectType) throws JAXRException
@@ -568,7 +580,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
-        if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType))
+        else if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType))
         {
             //Get the Organization from the uddi registry
             try
@@ -585,7 +597,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
-        if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType))
+        else if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType))
         {
             try
             {
@@ -606,9 +618,9 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
     }
 
-    public BulkResponse getRegistryObjects(String objectTypes) throws JAXRException
+    public BulkResponse getRegistryObjects(String id) throws JAXRException
     {
-        return null;
+        throw new UnsupportedCapabilityException();
     }
 
     private static final Map findQualifierMapping;
