@@ -17,6 +17,7 @@
 package org.apache.ws.scout.registry;
 
 import org.apache.juddi.IRegistry;
+import org.apache.juddi.error.RegistryException;
 import org.apache.juddi.proxy.RegistryProxy;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
@@ -116,7 +117,24 @@ public class RegistryServiceImpl implements RegistryService
 
     public String makeRegistrySpecificRequest(String s) throws JAXRException
     {
-        throw new UnsupportedCapabilityException();
+       String inquiry = "INQUIRY";
+       String publish = "PUBLISH";
+       String type = "";
+
+       //TODO: Need a better way to do this
+       String snippet = s.substring(0,20);
+       if( snippet.indexOf("save") > -1) type = publish;
+       else
+       type = inquiry;
+
+       try
+       {
+          return registry.execute(s,type);
+       }
+       catch (RegistryException e)
+       {
+          throw new JAXRException(e.getLocalizedMessage());
+       }
     }
 
     public ConnectionImpl getConnection()

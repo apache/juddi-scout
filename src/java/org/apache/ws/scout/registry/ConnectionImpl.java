@@ -55,7 +55,7 @@ public class ConnectionImpl implements Connection, Serializable
          * Even if the properties passed contains no values,
          * juddi takes default values
          */
-        registry = new RegistryProxy(prop);
+        registry = new RegistryProxy(prop);        
         registry.setInquiryURL(queryManagerURL);
         registry.setPublishURL(lifeCycleManagerURL);
         this.postalScheme = postalScheme;

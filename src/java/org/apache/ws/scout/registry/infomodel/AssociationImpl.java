@@ -22,6 +22,7 @@ import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.Key;
 
 /**
  * Implements JAXR Association Interface.
@@ -98,4 +99,57 @@ public class AssociationImpl extends RegistryObjectImpl implements Association
     {
         target = ro;
     }
+
+   /**
+    * There is an impedance mismatch as specified in the JAXR specification
+    * Section D-11
+    */
+   public Key getKey()
+   {
+      String id = null;
+      Key key = null;
+      try
+      {
+         id = source.getKey().getId();
+         id += ":" + target.getKey().getId();
+         Key k = null;
+         if(type != null ) k = type.getKey();
+         if(k == null || k.getId() == "" ) id +=":NULL";
+         else
+          id+=":"+k.getId();
+         id += ":" + "Concept";  //UDDI: KeyedReference->Key Name
+         String val = "NULL";
+         if(type!= null)  id += ":" + type.getValue();
+         else  id +=":NULL";
+
+      }
+      catch (JAXRException e)
+      {
+         e.printStackTrace();
+      }
+
+      if(id != null) key = new KeyImpl(id);
+      return key;
+   }
+
+   public void setConfirmed(boolean b)
+   {
+      this.isConfirmed = b;
+   }
+
+   public void setConfirmedBySourceOwner(boolean b)
+   {
+      isConfirmedBySourceOwner = b;
+   }
+
+   public void setConfirmedByTargetOwner(boolean b)
+   {
+      isConfirmedByTargetOwner = b;
+   }
+
+   public void setExtramural(boolean b)
+   {
+      isExtramural = b;
+   } 
+
 }
