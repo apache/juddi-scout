@@ -29,7 +29,8 @@ import java.util.Iterator;
  * Implements JAXR Interface.
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class ClassificationSchemeImpl
         extends RegistryEntryImpl
@@ -94,6 +95,10 @@ public class ClassificationSchemeImpl
          */
 
         throw new UnsupportedCapabilityException();
+    }
+
+    protected void setExternal(boolean b) {
+        this.external = b;
     }
 
     public boolean isExternal() throws JAXRException
