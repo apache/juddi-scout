@@ -61,6 +61,7 @@ import java.util.Vector;
  *
  * @author Anil Saldhana  <anil@apache.org>
  * @author Jeremy Boynes  <jboynes@apache.org>
+ * @author Geir Magnusson Jr  <geirm@apache.org>
  */
 public class BusinessQueryManagerImpl implements BusinessQueryManager
 {
