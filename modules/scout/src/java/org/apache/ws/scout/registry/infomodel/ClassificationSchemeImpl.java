@@ -18,6 +18,7 @@ package org.apache.ws.scout.registry.infomodel;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import java.util.ArrayList;
@@ -85,9 +86,14 @@ public class ClassificationSchemeImpl
         return coll;
     }
 
-    public int getValueType() throws JAXRException
+    public int getValueType()
+        throws JAXRException
     {
-        return this.valueType;
+        /*
+         * we are a level 0 provider
+         */
+
+        throw new UnsupportedCapabilityException();
     }
 
     public boolean isExternal() throws JAXRException
@@ -107,9 +113,14 @@ public class ClassificationSchemeImpl
         this.childConcepts.removeAll(collection);
     }
 
-    public void setValueType(int param) throws JAXRException
+    public void setValueType(int param)
+        throws JAXRException
     {
-        this.valueType = param;
+        /*
+         * we are a level 0 provider
+         */
+
+        throw new UnsupportedCapabilityException();
     }
 
 }
