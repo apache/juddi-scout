@@ -37,13 +37,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
-import java.util.Iterator;
 
 /**
  * Implements JAXR LifeCycleManager Interface
  * For futher details, look into the JAXR API Javadoc.
  *
- * @author Anil Saldhana  <anil@apache.org>
+ * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
+ * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class LifeCycleManagerImpl implements LifeCycleManager
 {
@@ -166,6 +166,9 @@ public class LifeCycleManagerImpl implements LifeCycleManager
         cl.setClassificationScheme(scheme);
         cl.setName(name);
         cl.setValue(value);
+
+        ((ClassificationImpl)cl).setExternal(true);
+
         return cl;
     }
 
