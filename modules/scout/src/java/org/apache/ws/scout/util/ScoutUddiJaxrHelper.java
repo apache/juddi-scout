@@ -71,7 +71,15 @@ public class ScoutUddiJaxrHelper
       Name n = (Name)namevect.elementAt(0);
       String name = n.getValue();
       Vector descvect = entity.getDescriptionVector();
-      Description desc = (Description)descvect.elementAt(0);
+
+       Description desc = null;
+
+       if (descvect != null && descvect.size() > 0) {
+           desc = (Description)descvect.elementAt(0);
+       }
+       else {
+           desc = new Description("");
+       }
 
       Organization org = new OrganizationImpl(lcm);
       org.setName(getIString(name, lcm));
@@ -163,7 +171,15 @@ public class ScoutUddiJaxrHelper
       Name n = (Name)namevect.elementAt(0);
       String name = n.getValue();
       Vector descvect = entity.getDescriptionVector();
-      Description desc = (Description)descvect.elementAt(0);
+
+        Description desc = null;
+
+        if (descvect != null && descvect.size() > 0) {
+            desc = (Description)descvect.elementAt(0);
+        }
+        else {
+            desc = new Description("");
+        }
 
       Organization org = new OrganizationImpl(lcm);
       org.setName(getIString(name, lcm));
@@ -265,7 +281,16 @@ public class ScoutUddiJaxrHelper
       String name = n.getValue();
       serve.setName(lcm.createInternationalString(name));
       Vector descvect = bs.getDescriptionVector();
-      Description desc = (Description)descvect.elementAt(0);
+
+       Description desc = null;
+
+       if (descvect != null && descvect.size() > 0) {
+           desc = (Description)descvect.elementAt(0);
+       }
+       else {
+           desc = new Description("");
+       }
+
       serve.setDescription(lcm.createInternationalString(desc.getValue()));
       return serve;
    }
@@ -335,7 +360,16 @@ public class ScoutUddiJaxrHelper
       concept.setName(lcm.createInternationalString(tmodel.getName()));
 
       Vector descvect = tmodel.getDescriptionVector();
-      Description desc = (Description)descvect.elementAt(0);
+
+       Description desc = null;
+
+       if (descvect != null && descvect.size() > 0) {
+           desc = (Description) descvect.elementAt(0);
+       }
+       else {
+           desc = new Description("");
+       }
+
       concept.setDescription(lcm.createInternationalString(desc.getValue()));
 
       return concept;
@@ -349,7 +383,16 @@ public class ScoutUddiJaxrHelper
       concept.setName(lcm.createInternationalString(tmodel.getName()));
 
       Vector descvect = tmodel.getDescriptionVector();
-      Description desc = (Description)descvect.elementAt(0);
+
+       Description desc = null;
+
+       if (descvect != null && descvect.size() > 0) {
+           desc = (Description) descvect.elementAt(0);
+       }
+       else {
+           desc = new Description("");
+       }
+
       concept.setDescription(lcm.createInternationalString(desc.getValue()));
 
       return concept;
