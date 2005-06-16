@@ -230,6 +230,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
         catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
+            bulk.setExceptions(exceptions);
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
             return bulk;
         }
@@ -542,27 +543,21 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
 
         return regobj;
-
     }
 
-    private void clearPublisherAssertions( AuthInfo authinfo,Vector orgkeys,IRegistry ireg) throws JAXRException
+    private void clearPublisherAssertions( AuthInfo authinfo,Vector orgkeys,IRegistry ireg)
     {
-
        Vector pasvect  = null;
        try
        {
-          AssertionStatusReport report = ireg.getAssertionStatusReport(authinfo,"");
-          Vector v = report.getAssertionStatusItemVector();  
+          AssertionStatusReport report = ireg.getAssertionStatusReport(authinfo,"status:complete");
+          Vector v = report.getAssertionStatusItemVector();
 
-          int len = 0;
-            if (v != null)
-            {
-                len = v.size();
-            }
-            for (int i = 0; i < len; i++)
-            {
+          int len = v != null? v.size() : 0;
+          for (int i = 0; i < len; i++)
+          {
                 AssertionStatusItem asi = (AssertionStatusItem) v.elementAt(i);
-                String sourceKey = asi.getFromKey();
+               /* String sourceKey = asi.getFromKey();
                 String targetKey = asi.getToKey();
                 PublisherAssertion pa = new PublisherAssertion();
                 pa.setFromKey(sourceKey);
@@ -573,8 +568,31 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 pa.setKeyName(keyr.getKeyName());
                 pa.setKeyValue(keyr.getKeyValue());
                 if(pasvect == null) pasvect = new Vector(len);
-                pasvect.add(pa);
-            }
+                pasvect.add(pa);*/
+                if(pasvect == null) pasvect = new Vector(len);
+                pasvect.add(this.getPublisherAssertion(asi));
+           }
+          report = ireg.getAssertionStatusReport(authinfo,"status:toKey_incomplete");
+          v = report.getAssertionStatusItemVector();
+
+          len = v != null? v.size() : 0;
+          for (int i = 0; i < len; i++)
+          {
+                AssertionStatusItem asi = (AssertionStatusItem) v.elementAt(i);
+                if(pasvect == null) pasvect = new Vector(len);
+                pasvect.add(this.getPublisherAssertion(asi));
+          }
+
+          report = ireg.getAssertionStatusReport(authinfo,"status:fromKey_incomplete");
+          v = report.getAssertionStatusItemVector();
+
+          len = v != null? v.size() : 0;
+          for (int i = 0; i < len; i++)
+          {
+                AssertionStatusItem asi = (AssertionStatusItem) v.elementAt(i);
+                if(pasvect == null) pasvect = new Vector(len);
+                pasvect.add(this.getPublisherAssertion(asi));
+          }
        }
        catch (RegistryException e)
        {
@@ -614,7 +632,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 Key key = (Key) iter.next();
                 keyvect.add(key.getId());
             }
-            System.out.println("Method:" + op + ": ENlength=" + keyvect.size());
+            //System.out.println("Method:" + op + ": ENlength=" + keyvect.size());
             // Save business
             DispositionReport bd = (DispositionReport) executeOperation(keyvect, op);
 
@@ -681,9 +699,27 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         try {
             token = ireg.getAuthToken(username, pwd);
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
+            e.printStackTrace();
             throw new JAXRException(e);
         }
         return token;
     }
+
+    private PublisherAssertion getPublisherAssertion(AssertionStatusItem asi)
+    {
+        String sourceKey = asi.getFromKey();
+        String targetKey = asi.getToKey();
+        PublisherAssertion pa = new PublisherAssertion();
+        pa.setFromKey(sourceKey);
+        pa.setToKey(targetKey);
+        KeyedReference keyr = asi.getKeyedReference();
+        pa.setKeyedReference(keyr);
+        pa.setTModelKey(keyr.getTModelKey());
+        pa.setKeyName(keyr.getKeyName());
+        pa.setKeyValue(keyr.getKeyValue());
+        return pa;
+    }
+
 }
