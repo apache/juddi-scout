@@ -68,22 +68,14 @@ public class ScoutUddiJaxrHelper
            throws JAXRException
    {
       Vector namevect = entity.getNameVector();
-      Name n = (Name)namevect.elementAt(0);
-      String name = n.getValue();
+      Name n = namevect != null ? (Name)namevect.elementAt(0) : null;
+      String name = n != null ? n.getValue() : null;
       Vector descvect = entity.getDescriptionVector();
-
-       Description desc = null;
-
-       if (descvect != null && descvect.size() > 0) {
-           desc = (Description)descvect.elementAt(0);
-       }
-       else {
-           desc = new Description("");
-       }
+      Description desc = descvect != null ? (Description)descvect.elementAt(0): null;
 
       Organization org = new OrganizationImpl(lcm);
-      org.setName(getIString(name, lcm));
-      org.setDescription(getIString((String)desc.getValue(), lcm));
+      if(name != null ) org.setName(getIString(name, lcm));
+      if( desc != null) org.setDescription(getIString((String)desc.getValue(), lcm));
       org.setKey(lcm.createKey(entity.getBusinessKey()));
 
       //Set Services also
@@ -168,22 +160,14 @@ public class ScoutUddiJaxrHelper
 
       BusinessEntity entity = (BusinessEntity)bz.elementAt(0);
       Vector namevect = entity.getNameVector();
-      Name n = (Name)namevect.elementAt(0);
-      String name = n.getValue();
+      Name n = namevect != null ? (Name)namevect.elementAt(0) : null;
+      String name = n != null ? n.getValue(): null;
       Vector descvect = entity.getDescriptionVector();
-
-        Description desc = null;
-
-        if (descvect != null && descvect.size() > 0) {
-            desc = (Description)descvect.elementAt(0);
-        }
-        else {
-            desc = new Description("");
-        }
+      Description desc = descvect != null? (Description)descvect.elementAt(0) : null;
 
       Organization org = new OrganizationImpl(lcm);
-      org.setName(getIString(name, lcm));
-      org.setDescription(getIString((String)desc.getValue(), lcm));
+      if( name != null ) org.setName(getIString(name, lcm));
+      if( desc != null ) org.setDescription(getIString((String)desc.getValue(), lcm));
       org.setKey(lcm.createKey(entity.getBusinessKey()));
 
       //Set Services also
@@ -205,7 +189,7 @@ public class ScoutUddiJaxrHelper
        *  depend on that behavior
        */
       Contacts contacts = entity.getContacts();
-      Vector cvect = contacts.getContactVector();
+      Vector cvect = contacts != null ? contacts.getContactVector():null;
       for (int i = 0; cvect != null && i < cvect.size(); i++)
       {
          Contact contact = (Contact)cvect.elementAt(i);
@@ -281,17 +265,8 @@ public class ScoutUddiJaxrHelper
       String name = n.getValue();
       serve.setName(lcm.createInternationalString(name));
       Vector descvect = bs.getDescriptionVector();
-
-       Description desc = null;
-
-       if (descvect != null && descvect.size() > 0) {
-           desc = (Description)descvect.elementAt(0);
-       }
-       else {
-           desc = new Description("");
-       }
-
-      serve.setDescription(lcm.createInternationalString(desc.getValue()));
+      Description desc = descvect != null ? (Description)descvect.elementAt(0) : null;
+      if(desc != null ) serve.setDescription(lcm.createInternationalString(desc.getValue()));
       return serve;
    }
 
@@ -334,6 +309,8 @@ public class ScoutUddiJaxrHelper
          svc.setKey(lcm.createKey(keystr));
          ((ServiceBindingImpl)serve).setService(svc);
       }
+      String bindingKey = bs.getBindingKey();
+      if(bindingKey != null) serve.setKey(new KeyImpl(bindingKey));
       //TODO:Add more stuff
       //Access URI
       AccessPoint access = bs.getAccessPoint();
@@ -360,17 +337,8 @@ public class ScoutUddiJaxrHelper
       concept.setName(lcm.createInternationalString(tmodel.getName()));
 
       Vector descvect = tmodel.getDescriptionVector();
-
-       Description desc = null;
-
-       if (descvect != null && descvect.size() > 0) {
-           desc = (Description) descvect.elementAt(0);
-       }
-       else {
-           desc = new Description("");
-       }
-
-      concept.setDescription(lcm.createInternationalString(desc.getValue()));
+      Description desc = getDescription(tmodel);
+      if( desc != null ) concept.setDescription(lcm.createInternationalString(desc.getValue()));
 
       return concept;
    }
@@ -383,16 +351,7 @@ public class ScoutUddiJaxrHelper
       concept.setName(lcm.createInternationalString(tmodel.getName()));
 
       Vector descvect = tmodel.getDescriptionVector();
-
-       Description desc = null;
-
-       if (descvect != null && descvect.size() > 0) {
-           desc = (Description) descvect.elementAt(0);
-       }
-       else {
-           desc = new Description("");
-       }
-
+      Description desc = getDescription(tmodel);
       concept.setDescription(lcm.createInternationalString(desc.getValue()));
 
       return concept;
@@ -406,6 +365,13 @@ public class ScoutUddiJaxrHelper
       concept.setName(lcm.createInternationalString(tm.getName().getValue()));
 
       return concept;
+   }
+
+   private static Description getDescription( TModel tmodel )
+   {
+      Vector descvect = tmodel.getDescriptionVector();
+      Description desc = descvect != null ? (Description)descvect.elementAt(0) : null;
+      return desc;
    }
 
 }
