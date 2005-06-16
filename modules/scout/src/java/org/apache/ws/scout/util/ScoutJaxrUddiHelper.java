@@ -107,6 +107,7 @@ public class ScoutJaxrUddiHelper
             throws JAXRException
     {
         BindingTemplate bt = new BindingTemplate();
+        if( serve.getKey() != null) bt.setBindingKey(serve.getKey().getId());
         try
         {
             //Set Access URI
@@ -114,6 +115,7 @@ public class ScoutJaxrUddiHelper
             if (accessuri != null)
             {
                 AccessPoint ap = new AccessPoint();
+                ap.setURLType(getURLType(accessuri));
                 ap.setURL(accessuri);
                 bt.setAccessPoint(ap);
             }
@@ -172,7 +174,13 @@ public class ScoutJaxrUddiHelper
             String v = c.getValue();
             KeyedReference kr = new KeyedReference();
             Key key = c.getKey();
-            if(key != null ) kr.setTModelKey(c.getKey().getId());
+            if(key == null )
+            {
+                //TODO:Need to check this.  If the concept is a predefined
+                //enumeration, the key can be the parent classification scheme
+                key = c.getClassificationScheme().getKey();
+            }
+            kr.setTModelKey(key.getId());
             kr.setKeyName("Concept");
             kr.setKeyValue(v);
             pa.setKeyedReference(kr);
@@ -195,7 +203,10 @@ public class ScoutJaxrUddiHelper
                pa.setFromKey(getToken(token.nextToken()));
                pa.setToKey(getToken(token.nextToken()));
                KeyedReference kr = new KeyedReference();
-               kr.setTModelKey(getToken(token.nextToken()));
+               //Sometimes the Key is UUID:something
+               String str = getToken(token.nextToken());
+               if("UUID".equals(str)) str += ":" + getToken(token.nextToken());
+               kr.setTModelKey(str);
                kr.setKeyName(getToken(token.nextToken()));
                kr.setKeyValue(getToken(token.nextToken()));
                pa.setKeyedReference(kr);
@@ -494,6 +505,18 @@ public class ScoutJaxrUddiHelper
       //Token can have the value NULL which need to be converted into null
       if(tokenstr.equals("NULL")) tokenstr="";
       return tokenstr;
+   }
+
+   private static String getURLType( String accessuri)
+   {
+       String acc = accessuri.toLowerCase();
+       String uri = "other";
+       if( acc.startsWith("http:")) uri = "http";
+       else if(acc.startsWith("https:")) uri = "https";
+       else if(acc.startsWith("ftp:")) uri = "ftp";
+       else if(acc.startsWith("phone:")) uri = "phone";//TODO:Handle this better
+
+       return uri;
    }
 
 }
