@@ -31,7 +31,7 @@
   <!-- The version of the project under development, e.g.
        1.1, 1.2, 2.0-SNAPSHOT -->
 
-  <currentVersion>1.0-SNAPSHOT</currentVersion>
+  <currentVersion>0.5</currentVersion>
   <!-- details about the organization that 'owns' the project -->
 
   <organization>
@@ -97,6 +97,20 @@
             <email>dims@yahoo.com</email>
             <organization></organization>
         </developer>
+        <developer>
+            <name>Geir Magnusson Jr.</name>
+            <id>geirm</id>
+            <email>geirm@apache.org</email>
+            <organization/>
+        </developer>
+        <developer>
+            <name>Jeremy Boynes</name>
+            <id>jboynes</id>
+            <email>jboynes@apache.org</email>
+            <organization/>
+        </developer>
+
+
   </developers>
 
   <build>
