@@ -1,0 +1,11 @@
+2005-07-30
+
+This is the first released version of Apache Scout, 
+the Apache implementation of JAXR 1.0
+
+Note that this version is not a complete implementation of
+JAXR 1.0. We believe that it is complete except for support
+of asynchronous requests.  This feature will be completed
+soon for the Scout v1.0 release.
+
+
