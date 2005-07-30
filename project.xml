@@ -39,7 +39,7 @@
         <dependency>
             <groupId>juddi</groupId>
             <artifactId>juddi</artifactId>
-            <version>SNAPSHOT</version>
+            <version>0.9rc4</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>
