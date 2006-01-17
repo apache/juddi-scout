@@ -18,18 +18,17 @@
  -->
 <project default="compilexsd"  xmlns:ant="jelly:ant">
 	<goal name="compilexsd">
-		<ant:mkdir dir="uddi-datatypes" />
+		<ant:mkdir dir="modules/scout/target/classes" />
 		<ant:java classname="org.apache.xmlbeans.impl.tool.SchemaCompiler" classpathref="maven.dependency.classpath" fork="true">
-			<arg value="-out" />
-			<arg value="uddi-datatypes/uddiv2-datatypes.jar" />
+			<arg value="-d" />
+			<arg value="modules/scout/target/classes" />
 			<arg value="etc/uddi_v2.xsd" />
 		</ant:java>
-		<ant:copy file="uddi-datatypes/uddiv2-datatypes.jar" tofile="${maven.home.local}/repository/scout/jars/uddiv2-datatypes-2.0.jar" />
 		<attainGoal name="multiproject:install"/>
 	</goal>
 
 	<preGoal name="multiproject:clean">
-		<ant:delete dir="uddi-datatypes" />
+		<ant:delete dir="modules/scout/target/classes/schema" />
+		<ant:delete dir="modules/scout/target/classes/uddiOrgApiV2" />
 	</preGoal>
-
 </project>
