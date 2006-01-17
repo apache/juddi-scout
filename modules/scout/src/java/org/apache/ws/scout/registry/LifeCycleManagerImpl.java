@@ -16,11 +16,6 @@
  */
 package org.apache.ws.scout.registry;
 
-import org.apache.juddi.datatype.Description;
-import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.response.BusinessDetail;
-import org.apache.juddi.datatype.response.BusinessInfo;
-import org.apache.juddi.datatype.response.ServiceInfo;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
@@ -41,6 +36,12 @@ import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
 import org.apache.ws.scout.registry.infomodel.SlotImpl;
 import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
+
+import uddiOrgApiV2.BusinessDetail;
+import uddiOrgApiV2.BusinessInfo;
+import uddiOrgApiV2.Description;
+import uddiOrgApiV2.Name;
+import uddiOrgApiV2.ServiceInfo;
 
 import javax.activation.DataHandler;
 import javax.xml.registry.BulkResponse;
@@ -75,7 +76,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 /**
  * Implements JAXR LifeCycleManager Interface
@@ -451,21 +451,21 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
 
     Organization createOrganization(BusinessInfo info) throws JAXRException {
         String key = info.getBusinessKey();
-        Vector names = info.getNameVector();
-        Vector descriptions = info.getDescriptionVector();
-        Vector serviceInfos = info.getServiceInfos().getServiceInfoVector();
+        Name[] names = info.getNameArray();
+        Description[] descriptions = info.getDescriptionArray();
+        ServiceInfo[] serviceInfos = info.getServiceInfos().getServiceInfoArray();
         OrganizationImpl org = new OrganizationImpl(this);
         org.setKey(createKey(key));
-        if (names != null && !names.isEmpty()) {
-            org.setName(createInternationalString(((Name) names.get(0)).getValue()));
+        if (names != null && names.length > 0) {
+            org.setName(createInternationalString(((Name) names[0]).getStringValue()));
         }
-        if (descriptions != null && !descriptions.isEmpty()) {
-            org.setDescription(createInternationalString(((Description) descriptions.get(0)).getValue()));
+        if (descriptions != null && descriptions.length > 0) {
+            org.setDescription(createInternationalString(((Description) descriptions[0]).getStringValue()));
         }
-        if (serviceInfos != null && !serviceInfos.isEmpty()) {
-            List services = new ArrayList(serviceInfos.size());
-            for (int i = 0; i < serviceInfos.size(); i++) {
-                ServiceInfo serviceInfo = (ServiceInfo) serviceInfos.elementAt(i);
+        if (serviceInfos != null && serviceInfos.length > 0) {
+            List services = new ArrayList(serviceInfos.length);
+            for (int i = 0; i < serviceInfos.length; i++) {
+                ServiceInfo serviceInfo = (ServiceInfo) serviceInfos[i];
                 services.add(createService(serviceInfo));
             }
             org.addServices(services);
@@ -480,11 +480,11 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
 
     Service createService(ServiceInfo info) throws JAXRException {
         String key = info.getServiceKey();
-        Vector names = info.getNameVector();
+        Name[] names = info.getNameArray();
         ServiceImpl service = new ServiceImpl(this);
         service.setKey(createKey(key));
-        if (!names.isEmpty()) {
-            service.setName(createInternationalString(((Name) names.get(0)).getValue()));
+        if (names != null && names.length > 0) {
+            service.setName(createInternationalString(names[0].getStringValue()));
         }
         return service;
     }

@@ -16,33 +16,31 @@
  */
 package org.apache.ws.scout.util;
 
-import org.apache.juddi.datatype.Description;
-import org.apache.juddi.datatype.DiscoveryURL;
-import org.apache.juddi.datatype.DiscoveryURLs;
-import org.apache.juddi.datatype.IdentifierBag;
-import org.apache.juddi.datatype.KeyedReference;
-import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.binding.AccessPoint;
-import org.apache.juddi.datatype.binding.BindingTemplate;
-import org.apache.juddi.datatype.binding.TModelInstanceDetails;
-import org.apache.juddi.datatype.binding.TModelInstanceInfo;
-import org.apache.juddi.datatype.business.BusinessEntity;
-import org.apache.juddi.datatype.business.Contact;
-import org.apache.juddi.datatype.business.Contacts;
-import org.apache.juddi.datatype.response.BusinessDetail;
-import org.apache.juddi.datatype.response.ServiceInfo;
-import org.apache.juddi.datatype.response.TModelDetail;
-import org.apache.juddi.datatype.response.TModelInfo;
-import org.apache.juddi.datatype.service.BusinessService;
-import org.apache.juddi.datatype.service.BusinessServices;
-import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.ws.scout.registry.infomodel.*;
+
+import uddiOrgApiV2.AccessPoint;
+import uddiOrgApiV2.BindingTemplate;
+import uddiOrgApiV2.BusinessDetail;
+import uddiOrgApiV2.BusinessEntity;
+import uddiOrgApiV2.BusinessService;
+import uddiOrgApiV2.BusinessServices;
+import uddiOrgApiV2.Contact;
+import uddiOrgApiV2.Contacts;
+import uddiOrgApiV2.Description;
+import uddiOrgApiV2.DiscoveryURL;
+import uddiOrgApiV2.DiscoveryURLs;
+import uddiOrgApiV2.IdentifierBag;
+import uddiOrgApiV2.KeyedReference;
+import uddiOrgApiV2.Name;
+import uddiOrgApiV2.ServiceInfo;
+import uddiOrgApiV2.TModel;
+import uddiOrgApiV2.TModelDetail;
+import uddiOrgApiV2.TModelInfo;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.*;
 import java.util.Collection;
-import java.util.Vector;
 
 /**
  * Helper class that does UDDI->Jaxr Mapping
@@ -67,23 +65,23 @@ public class ScoutUddiJaxrHelper
                                               LifeCycleManager lcm)
            throws JAXRException
    {
-      Vector namevect = entity.getNameVector();
-      Name n = namevect != null ? (Name)namevect.elementAt(0) : null;
-      String name = n != null ? n.getValue() : null;
-      Vector descvect = entity.getDescriptionVector();
-      Description desc = descvect != null ? (Description)descvect.elementAt(0): null;
+      Name[] namearray = entity.getNameArray();
+      Name n = namearray != null && namearray.length > 0 ? namearray[0] : null;
+      String name = n != null ? n.getStringValue() : null;
+      Description[] descarray = entity.getDescriptionArray();
+      Description desc = descarray != null && descarray.length > 0 ? descarray[0]: null;
 
       Organization org = new OrganizationImpl(lcm);
       if(name != null ) org.setName(getIString(name, lcm));
-      if( desc != null) org.setDescription(getIString((String)desc.getValue(), lcm));
+      if( desc != null) org.setDescription(getIString((String)desc.getStringValue(), lcm));
       org.setKey(lcm.createKey(entity.getBusinessKey()));
 
       //Set Services also
       BusinessServices services = entity.getBusinessServices();
-      Vector svect = services.getBusinessServiceVector();
-      for (int i = 0; svect != null && i < svect.size(); i++)
+      BusinessService[] sarr = services != null ? services.getBusinessServiceArray() : null;
+      for (int i = 0; sarr != null && i < sarr.length; i++)
       {
-         BusinessService s = (BusinessService)svect.elementAt(i);
+         BusinessService s = (BusinessService)sarr[i];
          org.addService(getService(s, lcm));
       }
 
@@ -98,13 +96,13 @@ public class ScoutUddiJaxrHelper
        */
 
       Contacts contacts = entity.getContacts();
-      Vector cvect = contacts.getContactVector();
+      Contact[] carr = contacts != null ? contacts.getContactArray() : null;
 
-      for (int i = 0; cvect != null && i < cvect.size(); i++)
+      for (int i = 0; carr != null && i < carr.length; i++)
       {
-         Contact contact = (Contact)cvect.elementAt(i);
+         Contact contact = (Contact)carr[i];
          User user = new UserImpl(null);
-         String pname = contact.getPersonName().getValue();
+         String pname = contact.getPersonName();
          user.setPersonName(new PersonNameImpl(pname));
 
          if (i == 0)
@@ -121,12 +119,12 @@ public class ScoutUddiJaxrHelper
       DiscoveryURLs durls = entity.getDiscoveryURLs();
       if (durls != null)
       {
-         Vector dvect = durls.getDiscoveryURLVector();
-         for (int j = 0; j < dvect.size(); j++)
+         DiscoveryURL[] darr = durls.getDiscoveryURLArray();
+         for (int j = 0; darr != null && j < darr.length; j++)
          {
-            DiscoveryURL durl = (DiscoveryURL)dvect.elementAt(j);
+            DiscoveryURL durl = (DiscoveryURL)darr[j];
             ExternalLink link = new ExternalLinkImpl(lcm);
-            link.setExternalURI(durl.getValue());
+            link.setExternalURI(durl.getStringValue());
             org.addExternalLink(link);
          }
       }
@@ -136,10 +134,10 @@ public class ScoutUddiJaxrHelper
       IdentifierBag ibag = entity.getIdentifierBag();
       if (ibag != null)
       {
-         Vector keyrvect = ibag.getKeyedReferenceVector();
-         for (int i = 0; i < keyrvect.size(); i++)
+         KeyedReference[] keyrarr = ibag.getKeyedReferenceArray();
+         for (int i = 0; keyrarr != null && i < keyrarr.length; i++)
          {
-            KeyedReference keyr = (KeyedReference)keyrvect.elementAt(i);
+            KeyedReference keyr = (KeyedReference)keyrarr[i];
             ExternalIdentifier eid = new ExternalIdentifierImpl(lcm);
             String kkey = keyr.getTModelKey();
             if (kkey != null) eid.setKey(new KeyImpl(kkey));
@@ -156,26 +154,26 @@ public class ScoutUddiJaxrHelper
                                               LifeCycleManager lcm)
            throws JAXRException
    {
-      Vector bz = bizdetail.getBusinessEntityVector();
+      BusinessEntity[] bz = bizdetail.getBusinessEntityArray();
 
-      BusinessEntity entity = (BusinessEntity)bz.elementAt(0);
-      Vector namevect = entity.getNameVector();
-      Name n = namevect != null ? (Name)namevect.elementAt(0) : null;
-      String name = n != null ? n.getValue(): null;
-      Vector descvect = entity.getDescriptionVector();
-      Description desc = descvect != null? (Description)descvect.elementAt(0) : null;
+      BusinessEntity entity = bz[0];
+      Name[] namearr = entity.getNameArray();
+      Name n = namearr != null && namearr.length > 0 ? namearr[0] : null;
+      String name = n != null ? n.getStringValue(): null;
+      Description[] descarr = entity.getDescriptionArray();
+      Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
 
       Organization org = new OrganizationImpl(lcm);
       if( name != null ) org.setName(getIString(name, lcm));
-      if( desc != null ) org.setDescription(getIString((String)desc.getValue(), lcm));
+      if( desc != null ) org.setDescription(getIString(desc.getStringValue(), lcm));
       org.setKey(lcm.createKey(entity.getBusinessKey()));
 
       //Set Services also
       BusinessServices services = entity.getBusinessServices();
-      Vector svect = services.getBusinessServiceVector();
-      for (int i = 0; svect != null && i < svect.size(); i++)
+      BusinessService[] sarr = services != null ? services.getBusinessServiceArray() : null;
+      for (int i = 0; sarr != null && i < sarr.length; i++)
       {
-         BusinessService s = (BusinessService)svect.elementAt(i);
+         BusinessService s = (BusinessService)sarr[i];
          org.addService(getService(s, lcm));
       }
 
@@ -189,12 +187,12 @@ public class ScoutUddiJaxrHelper
        *  depend on that behavior
        */
       Contacts contacts = entity.getContacts();
-      Vector cvect = contacts != null ? contacts.getContactVector():null;
-      for (int i = 0; cvect != null && i < cvect.size(); i++)
+      Contact[] carr = contacts != null ? contacts.getContactArray():null;
+      for (int i = 0; carr != null && i < carr.length; i++)
       {
-         Contact contact = (Contact)cvect.elementAt(i);
+         Contact contact = carr[i];
          User user = new UserImpl(null);
-         String pname = contact.getPersonName().getValue();
+         String pname = contact.getPersonName();
          user.setType(contact.getUseType());
          user.setPersonName(new PersonNameImpl(pname));
 
@@ -212,12 +210,12 @@ public class ScoutUddiJaxrHelper
       DiscoveryURLs durls = entity.getDiscoveryURLs();
       if (durls != null)
       {
-         Vector dvect = durls.getDiscoveryURLVector();
-         for (int j = 0; j < dvect.size(); j++)
+         DiscoveryURL[] darr = durls.getDiscoveryURLArray();
+         for (int j = 0; darr != null && j < darr.length; j++)
          {
-            DiscoveryURL durl = (DiscoveryURL)dvect.elementAt(j);
+            DiscoveryURL durl = darr[j];
             ExternalLink link = new ExternalLinkImpl(lcm);
-            link.setExternalURI(durl.getValue());
+            link.setExternalURI(durl.getStringValue());
             org.addExternalLink(link);
          }
       }
@@ -226,10 +224,10 @@ public class ScoutUddiJaxrHelper
       IdentifierBag ibag = entity.getIdentifierBag();
       if (ibag != null)
       {
-         Vector keyrvect = ibag.getKeyedReferenceVector();
-         for (int i = 0; i < keyrvect.size(); i++)
+         KeyedReference[] keyrarr = ibag.getKeyedReferenceArray();
+         for (int i = 0; keyrarr != null && i < keyrarr.length; i++)
          {
-            KeyedReference keyr = (KeyedReference)keyrvect.elementAt(i);
+            KeyedReference keyr = (KeyedReference)keyrarr[i];
             ExternalIdentifier eid = new ExternalIdentifierImpl(lcm);
             String kkey = keyr.getTModelKey();
             if (kkey != null) eid.setKey(new KeyImpl(kkey));
@@ -259,14 +257,18 @@ public class ScoutUddiJaxrHelper
          serve.setKey(lcm.createKey(keystr));
       }
 
-      Vector namevect = bs.getNameVector();
+      Name[] namearr = bs.getNameArray();
 
-      Name n = (Name)namevect.elementAt(0);
-      String name = n.getValue();
+      Name n = namearr != null && namearr.length > 0 ? namearr[0] : null;
+
+      if (n != null) {
+    	  String name = n.getStringValue();
       serve.setName(lcm.createInternationalString(name));
-      Vector descvect = bs.getDescriptionVector();
-      Description desc = descvect != null ? (Description)descvect.elementAt(0) : null;
-      if(desc != null ) serve.setDescription(lcm.createInternationalString(desc.getValue()));
+      }
+
+      Description[] descarr = bs.getDescriptionArray();
+      Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
+      if(desc != null ) serve.setDescription(lcm.createInternationalString(desc.getStringValue()));
       return serve;
    }
 
@@ -282,10 +284,13 @@ public class ScoutUddiJaxrHelper
          service.setKey(lcm.createKey(keystr));
       }
 
-      Vector namevect = si.getNameVector();
-      Name n = (Name)namevect.elementAt(0);
-      String name = n.getValue();
+      Name[] namearr = si.getNameArray();
+      Name n = namearr != null && namearr.length > 0 ? namearr[0] : null;
+
+      if (n != null) {
+    	  String name = n.getStringValue();
       service.setName(lcm.createInternationalString(name));
+      }
 
       return service;
    }
@@ -295,13 +300,6 @@ public class ScoutUddiJaxrHelper
    {
       ServiceBinding serve = new ServiceBindingImpl(lcm);
 
-
-      TModelInstanceDetails details = bs.getTModelInstanceDetails();
-      Vector tiv = details.getTModelInstanceInfoVector();
-      for (int i = 0; tiv != null && i < tiv.size(); i++)
-      {
-         TModelInstanceInfo info = (TModelInstanceInfo)tiv.elementAt(i);
-      }
       String keystr = bs.getServiceKey();
       if (keystr != null)
       {
@@ -314,14 +312,15 @@ public class ScoutUddiJaxrHelper
       //TODO:Add more stuff
       //Access URI
       AccessPoint access = bs.getAccessPoint();
-      if (access != null) serve.setAccessURI(access.getURL());
+      //FIXME: accesspoint should have a getURL? 
+      if (access != null) serve.setAccessURI(access.getStringValue());
 
       //Description
-      Vector dv = bs.getDescriptionVector();
-      if (dv != null)
+      Description[] da = bs.getDescriptionArray();
+      if (da != null && da.length > 0)
       {
-         Description des = (Description)dv.elementAt(0);
-         serve.setDescription(new InternationalStringImpl(des.getValue()));
+         Description des = da[0];
+         serve.setDescription(new InternationalStringImpl(des.getStringValue()));
       }
 
       return serve;
@@ -331,14 +330,16 @@ public class ScoutUddiJaxrHelper
            throws JAXRException
    {
       Concept concept = new ConceptImpl(lcm);
-      Vector tc = tm.getTModelVector();
-      TModel tmodel = (TModel)tc.elementAt(0);
+      TModel[] tc = tm.getTModelArray();
+      TModel tmodel = tc != null && tc.length > 0 ? tc[0] : null;
+      
+      if (tmodel != null) {
       concept.setKey(lcm.createKey(tmodel.getTModelKey()));
-      concept.setName(lcm.createInternationalString(tmodel.getName()));
+    	  concept.setName(lcm.createInternationalString(tmodel.getName().getStringValue()));
 
-      Vector descvect = tmodel.getDescriptionVector();
       Description desc = getDescription(tmodel);
-      if( desc != null ) concept.setDescription(lcm.createInternationalString(desc.getValue()));
+    	  if( desc != null ) concept.setDescription(lcm.createInternationalString(desc.getStringValue()));
+      }
 
       return concept;
    }
@@ -348,11 +349,10 @@ public class ScoutUddiJaxrHelper
    {
       Concept concept = new ConceptImpl(lcm);
       concept.setKey(lcm.createKey(tmodel.getTModelKey()));
-      concept.setName(lcm.createInternationalString(tmodel.getName()));
+      concept.setName(lcm.createInternationalString(tmodel.getName().getStringValue()));
 
-      Vector descvect = tmodel.getDescriptionVector();
       Description desc = getDescription(tmodel);
-      concept.setDescription(lcm.createInternationalString(desc.getValue()));
+      concept.setDescription(lcm.createInternationalString(desc.getStringValue()));
 
       return concept;
    }
@@ -362,15 +362,15 @@ public class ScoutUddiJaxrHelper
    {
       Concept concept = new ConceptImpl(lcm);
       concept.setKey(lcm.createKey(tm.getTModelKey()));
-      concept.setName(lcm.createInternationalString(tm.getName().getValue()));
+      concept.setName(lcm.createInternationalString(tm.getName().getStringValue()));
 
       return concept;
    }
 
    private static Description getDescription( TModel tmodel )
    {
-      Vector descvect = tmodel.getDescriptionVector();
-      Description desc = descvect != null ? (Description)descvect.elementAt(0) : null;
+      Description[] descarr = tmodel.getDescriptionArray();
+      Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
       return desc;
    }
 

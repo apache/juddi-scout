@@ -19,4 +19,12 @@
 <project>
     <pomVersion>3</pomVersion>
     <extend>etc/project.xml</extend>
+
+	<dependencies>
+		<dependency>
+			<groupId>xmlbeans</groupId>
+			<artifactId>xbean</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+	</dependencies>
 </project>

@@ -29,17 +29,17 @@
             <artifactId>jaxr-api</artifactId>
             <version>${pom.currentVersion}</version>
         </dependency>
+		<dependency>
+			<groupId>scout</groupId>
+			<artifactId>uddiv2-datatypes</artifactId>
+			<version>2.0</version>
+		</dependency>
 
         <!-- external JARs -->
         <dependency>
             <groupId>geronimo-spec</groupId>
             <artifactId>geronimo-spec-activation</artifactId>
             <version>1.0.2-rc4</version>
-        </dependency>
-        <dependency>
-            <groupId>juddi</groupId>
-            <artifactId>juddi</artifactId>
-            <version>0.9rc4</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>commons-discovery</groupId>
             <artifactId>commons-discovery</artifactId>
-            <version>SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>axis</groupId>
@@ -72,5 +72,15 @@
             <artifactId>axis-jaxrpc</artifactId>
             <version>1.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>xmlbeans</groupId>
+            <artifactId>xbean</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+		</dependency>
     </dependencies>
 </project>

@@ -16,17 +16,6 @@
  */
 package org.apache.ws.scout.registry;
 
-import org.apache.juddi.IRegistry;
-import org.apache.juddi.datatype.KeyedReference;
-import org.apache.juddi.datatype.Name;
-import org.apache.juddi.datatype.assertion.PublisherAssertion;
-import org.apache.juddi.datatype.binding.BindingTemplate;
-import org.apache.juddi.datatype.business.BusinessEntity;
-import org.apache.juddi.datatype.request.FindQualifiers;
-import org.apache.juddi.datatype.response.*;
-import org.apache.juddi.datatype.service.BusinessService;
-import org.apache.juddi.datatype.tmodel.TModel;
-import org.apache.juddi.error.RegistryException;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
@@ -36,10 +25,34 @@ import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.util.EnumerationHelper;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
+import uddiOrgApiV2.AssertionStatusItem;
+import uddiOrgApiV2.AssertionStatusReport;
+import uddiOrgApiV2.AuthToken;
+import uddiOrgApiV2.BindingDetail;
+import uddiOrgApiV2.BindingTemplate;
+import uddiOrgApiV2.BusinessDetail;
+import uddiOrgApiV2.BusinessEntity;
+import uddiOrgApiV2.BusinessInfo;
+import uddiOrgApiV2.BusinessList;
+import uddiOrgApiV2.BusinessService;
+import uddiOrgApiV2.FindQualifiers;
+import uddiOrgApiV2.KeyedReference;
+import uddiOrgApiV2.Name;
+import uddiOrgApiV2.PublisherAssertion;
+import uddiOrgApiV2.PublisherAssertions;
+import uddiOrgApiV2.ServiceDetail;
+import uddiOrgApiV2.ServiceInfo;
+import uddiOrgApiV2.ServiceInfos;
+import uddiOrgApiV2.ServiceList;
+import uddiOrgApiV2.TModel;
+import uddiOrgApiV2.TModelDetail;
+import uddiOrgApiV2.TModelInfo;
+import uddiOrgApiV2.TModelInfos;
+import uddiOrgApiV2.TModelList;
+
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.BusinessQueryManager;
-import javax.xml.registry.FindQualifier;
 import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
@@ -56,12 +69,9 @@ import javax.xml.registry.infomodel.ServiceBinding;
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 /**
  * Implements the JAXR BusinessQueryManager Interface
@@ -109,23 +119,23 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         try
         {
             FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
-            Vector nameVector = mapNamePatterns(namePatterns);
-            BusinessList result = registry.findBusiness(nameVector,
+            Name[] nameArray = mapNamePatterns(namePatterns);
+            BusinessList result = registry.findBusiness(nameArray,
                     null, null, null, null,
                     juddiFindQualifiers,
                     registryService.getMaxRows());
-            Vector v = result.getBusinessInfos().getBusinessInfoVector();
+            BusinessInfo[] a = result.getBusinessInfos() != null ? result.getBusinessInfos().getBusinessInfoArray() : null;
 
             Collection orgs = new ArrayList();
             int len = 0;
-            if (v != null)
+            if (a != null)
             {
-                len = v.size();
+                len = a.length;
                 orgs = new ArrayList(len);
             }
             for (int i = 0; i < len; i++)
             {
-                BusinessInfo info = (BusinessInfo) v.elementAt(i);
+                BusinessInfo info = a[i];
                 //Now get the details on the individual biz
                 BusinessDetail detail = registry.getBusinessDetail(info.getBusinessKey());
 
@@ -147,24 +157,22 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         IRegistry registry = registryService.getRegistry();
         try
         {
-            FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
-
             ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
             AuthToken auth = this.getAuthToken(con,registry);
             PublisherAssertions result =
                     registry.getPublisherAssertions(auth.getAuthInfo());
-            Vector v = result.getPublisherAssertionVector();
+            PublisherAssertion[] a = result.getPublisherAssertionArray();
 
             Collection col = null;
             int len = 0;
-            if (v != null)
+            if (a != null)
             {
-                len = v.size();
+                len = a.length;
                 col = new ArrayList(len);
             }
             for (int i = 0; i < len; i++)
             {
-                PublisherAssertion pas = (PublisherAssertion) v.elementAt(i);
+                PublisherAssertion pas = a[i];
                 String sourceKey = pas.getFromKey();
                 String targetKey = pas.getToKey();
                 Collection orgcol = new ArrayList();
@@ -197,8 +205,6 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         IRegistry registry = registryService.getRegistry();
         try
         {
-            FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
-
             ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
             AuthToken auth = this.getAuthToken(con,registry);
            
@@ -208,26 +214,26 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             boolean other = confirmedByOtherParty.booleanValue();
 
             if(caller  && other   )
-                        confirm = CompletionStatus.COMPLETE;
+                        confirm = Constants.COMPLETION_STATUS_COMPLETE;
             else
               if(!caller  && other  )
-                        confirm = CompletionStatus.FROMKEY_INCOMPLETE;
+                        confirm = Constants.COMPLETION_STATUS_FROMKEY_INCOMPLETE;
            else
                  if(caller  && !other   )
-                        confirm = CompletionStatus.TOKEY_INCOMPLETE;
+                        confirm = Constants.COMPLETION_STATUS_TOKEY_INCOMPLETE;
 
             report = registry.getAssertionStatusReport(auth.getAuthInfo(),confirm);
-            Vector v = report.getAssertionStatusItemVector();
+            AssertionStatusItem[] a = report.getAssertionStatusItemArray();
             Collection col = new ArrayList();
             int len = 0;
-            if (v != null)
+            if (a != null)
             {
-                len = v.size();
+                len = a.length;
                 col = new ArrayList(len);
             }
             for (int i = 0; i < len; i++)
             {
-                AssertionStatusItem asi = (AssertionStatusItem) v.elementAt(i);
+                AssertionStatusItem asi = a[i];
                 String sourceKey = asi.getFromKey();
                 String targetKey = asi.getToKey();
                 Collection orgcol = new ArrayList();
@@ -240,7 +246,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 ((AssociationImpl)asso).setConfirmedBySourceOwner(caller);
                 ((AssociationImpl)asso).setConfirmedByTargetOwner(other);
 
-                if(confirm != CompletionStatus.COMPLETE)
+                if(confirm != Constants.COMPLETION_STATUS_COMPLETE)
                      ((AssociationImpl)asso).setConfirmed(false);
 
                 Concept c = new ConceptImpl(getRegistryService().getBusinessLifeCycleManager());
@@ -278,49 +284,49 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
-            scheme.setKey(new KeyImpl(TModel.TYPES_TMODEL_KEY));
+            scheme.setKey(new KeyImpl(Constants.TMODEL_TYPES_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("dnb-com:D-U-N-S") != -1) {
 
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
-            scheme.setKey(new KeyImpl(TModel.D_U_N_S_TMODEL_KEY));
+            scheme.setKey(new KeyImpl(Constants.TMODEL_D_U_N_S_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("uddi-org:iso-ch:3166:1999") != -1)
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
-            scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
+            scheme.setKey(new KeyImpl(Constants.TMODEL_ISO_CH_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("uddi-org:iso-ch:3166-1999") != -1)
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
-            scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
+            scheme.setKey(new KeyImpl(Constants.TMODEL_ISO_CH_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("iso-ch:3166:1999") != -1)
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
-            scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
+            scheme.setKey(new KeyImpl(Constants.TMODEL_ISO_CH_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("iso-ch:3166-1999") != -1)
         {
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
-            scheme.setKey(new KeyImpl(TModel.ISO_CH_TMODEL_KEY));
+            scheme.setKey(new KeyImpl(Constants.TMODEL_ISO_CH_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("unspsc-org:unspsc") != -1) {
 
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
-            scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+            scheme.setKey(new KeyImpl(Constants.TMODEL_UNSPSC_TMODEL_KEY));
         }
         else if (namePatterns.indexOf("ntis-gov:naics") != -1) {
 
             scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
             scheme.setName(new InternationalStringImpl(namePatterns));
-            scheme.setKey(new KeyImpl(TModel.NAICS_TMODEL_KEY));
+            scheme.setKey(new KeyImpl(Constants.TMODEL_NAICS_TMODEL_KEY));
         }
         else
         {   //TODO:Before going to the registry, check if it a predefined Enumeration
@@ -334,7 +340,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 scheme.setName(new InternationalStringImpl(namePatterns));
 
-                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+                scheme.setKey(new KeyImpl(Constants.TMODEL_UNSPSC_TMODEL_KEY));
 
                 addChildConcept((ClassificationSchemeImpl)scheme, "RelatedTo");
                 addChildConcept((ClassificationSchemeImpl)scheme, "HasChild");
@@ -357,7 +363,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 scheme.setName(new InternationalStringImpl(namePatterns));
 
-                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+                scheme.setKey(new KeyImpl(Constants.TMODEL_UNSPSC_TMODEL_KEY));
 
                 addChildConcept((ClassificationSchemeImpl)scheme, "CPP");
                 addChildConcept((ClassificationSchemeImpl)scheme, "CPA");
@@ -381,7 +387,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 scheme.setName(new InternationalStringImpl(namePatterns));
 
-                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+                scheme.setKey(new KeyImpl(Constants.TMODEL_UNSPSC_TMODEL_KEY));
 
                 addChildConcept((ClassificationSchemeImpl)scheme, "OfficePhone");
                 addChildConcept((ClassificationSchemeImpl)scheme, "HomePhone");
@@ -394,7 +400,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 scheme.setName(new InternationalStringImpl(namePatterns));
 
-                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+                scheme.setKey(new KeyImpl(Constants.TMODEL_UNSPSC_TMODEL_KEY));
 
                 addChildConcept((ClassificationSchemeImpl)scheme, "HTTP");
                 addChildConcept((ClassificationSchemeImpl)scheme, "HTTPS");
@@ -408,7 +414,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 scheme.setName(new InternationalStringImpl(namePatterns));
 
-                scheme.setKey(new KeyImpl(TModel.UNSPSC_TMODEL_KEY));
+                scheme.setKey(new KeyImpl(Constants.TMODEL_UNSPSC_TMODEL_KEY));
 
                 addChildConcept((ClassificationSchemeImpl)scheme, "StreetNumber");
                 addChildConcept((ClassificationSchemeImpl)scheme, "Street");
@@ -422,23 +428,22 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 //Lets ask the uddi registry if it has the TModels
                 IRegistry registry = registryService.getRegistry();
                 FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
-                Vector nameVector = new Vector();
-                nameVector.add(namePatterns);
                 try
                 {
                     //We are looking for one exact match, so getting upto 3 records is fine
                     TModelList list = registry.findTModel(namePatterns, null, null, juddiFindQualifiers, 3);
                     TModelInfos infos = null;
-                    Vector tmvect = null;
+                    TModelInfo[] tmarr = null;
                     if (list != null) infos = list.getTModelInfos();
-                    if (infos != null) tmvect = infos.getTModelInfoVector();
-                    if (tmvect != null)
+                    if (infos != null) tmarr = infos.getTModelInfoArray();
+                    if (tmarr != null && tmarr.length > 0)
                     {
-                        if (tmvect.size() > 1)
+                        if (tmarr.length > 1)
                             throw new InvalidRequestException("Multiple matches found");
 
-                        TModelInfo info = (TModelInfo) tmvect.elementAt(0);
-                        scheme.setName(new InternationalStringImpl(info.getName().getValue()));
+                        TModelInfo info = tmarr[0];
+                        scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+                        scheme.setName(new InternationalStringImpl(info.getName().getStringValue()));
                         scheme.setKey(new KeyImpl(info.getTModelKey()));
                     }
 
@@ -520,12 +525,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             {
                 TModelList list = registry.findTModel(namestr, null, null, juddiFindQualifiers, 10);
                 TModelInfos infos = null;
-                Vector tmvect = null;
+                TModelInfo[] tmarr = null;
                 if (list != null) infos = list.getTModelInfos();
-                if (infos != null) tmvect = infos.getTModelInfoVector();
-                for (int i = 0; tmvect != null && i < tmvect.size(); i++)
+                if (infos != null) tmarr = infos.getTModelInfoArray();
+                for (int i = 0; tmarr != null && i < tmarr.length; i++)
                 {
-                    TModelInfo info = (TModelInfo) tmvect.elementAt(i);
+                    TModelInfo info = tmarr[i];
                     col.add(ScoutUddiJaxrHelper.getConcept(info, this.registryService.getBusinessLifeCycleManager()));
                 }
 
@@ -567,11 +572,11 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
              */
             if (l != null) {
 
-                Vector bindvect= l.getBindingTemplateVector();
+                BindingTemplate[] bindarr= l.getBindingTemplateArray();
                 Collection col = new ArrayList();
 
-                for (int i=0; bindvect != null && i < bindvect.size(); i++) {
-                    BindingTemplate si = (BindingTemplate) bindvect.elementAt(i);
+                for (int i=0; bindarr != null && i < bindarr.length; i++) {
+                    BindingTemplate si = bindarr[i];
                     ServiceBinding sb =  ScoutUddiJaxrHelper.getServiceBinding(si,
                             registryService.getBusinessLifeCycleManager());
                     col.add(sb);
@@ -616,7 +621,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
         IRegistry iRegistry = registryService.getRegistry();
         FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
-        Vector juddiNames = mapNamePatterns(namePatterns);
+        Name[] juddiNames = mapNamePatterns(namePatterns);
 
         try
         {
@@ -640,12 +645,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 ServiceInfos serviceInfos = l.getServiceInfos();
 
-                Vector v = (serviceInfos != null ? serviceInfos.getServiceInfoVector() : null);
+                ServiceInfo[] a = (serviceInfos != null ? serviceInfos.getServiceInfoArray() : null);
 
                 Collection col = new ArrayList();
 
-                for (int i=0; v != null && i < v.size(); i++) {
-                    ServiceInfo si = (ServiceInfo) v.elementAt(i);
+                for (int i=0; a != null && i < a.length; i++) {
+                    ServiceInfo si = (ServiceInfo) a[i];
                     col.add(ScoutUddiJaxrHelper.getService(si,
                             registryService.getBusinessLifeCycleManager()));
                 }
@@ -728,11 +733,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 if (sd != null) {
 
-                    Vector v = sd.getBusinessServiceVector();
+                    BusinessService[] a = sd.getBusinessServiceArray();
 
-                    if (v.size() != 0) {
-                        Service service = getServiceFromBusinessService(
-                                (BusinessService) v.elementAt(0), lcm);
+                    if (a != null && a.length != 0) {
+                        Service service = getServiceFromBusinessService(a[0], lcm);
 
                         return service;
                     }
@@ -819,12 +823,14 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     {
         IRegistry registry = registryService.getRegistry();
         //Convert into a vector of strings
-        Vector keys = new Vector();
+        String[] keys = new String[objectKeys.size()];
+        int currLoc = 0;
         Iterator iter = objectKeys.iterator();
         while(iter.hasNext())
         {
             Key key = (Key)iter.next();
-            keys.add(key.getId());
+            keys[currLoc] = key.getId();
+            currLoc++;
         }
         Collection col = new ArrayList();
         LifeCycleManager lcm = registryService.getLifeCycleManagerImpl();
@@ -834,10 +840,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try
             {
                 TModelDetail tmodeldetail = registry.getTModelDetail(keys);
-                Vector tmvect = tmodeldetail.getTModelVector();
-                for (int i = 0; tmvect != null && i < tmvect.size(); i++)
+                TModel[] tmarray = tmodeldetail.getTModelArray();
+                for (int i = 0; tmarray != null && i < tmarray.length; i++)
                 {
-                    col.add(ScoutUddiJaxrHelper.getConcept((TModel) tmvect.elementAt(i), lcm));
+                    col.add(ScoutUddiJaxrHelper.getConcept(tmarray[i], lcm));
                 }
 
             } catch (RegistryException e)
@@ -852,10 +858,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try
             {
                 BusinessDetail orgdetail = registry.getBusinessDetail(keys);
-                Vector bizvect = orgdetail.getBusinessEntityVector();
-                for (int i = 0; bizvect != null && i < bizvect.size(); i++)
+                BusinessEntity[] bizarr = orgdetail.getBusinessEntityArray();
+                for (int i = 0; bizarr != null && i < bizarr.length; i++)
                 {
-                    col.add(ScoutUddiJaxrHelper.getOrganization((BusinessEntity) bizvect.elementAt(i), lcm));
+                    col.add(ScoutUddiJaxrHelper.getOrganization(bizarr[i], lcm));
                 }
             } catch (RegistryException e)
             {
@@ -866,10 +872,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         {
             try {
                 TModelDetail tmodeldetail = registry.getTModelDetail(keys);
-                Vector tmvect = tmodeldetail.getTModelVector();
-                for (int i = 0; tmvect != null && i < tmvect.size(); i++)
+                TModel[] tmarr = tmodeldetail.getTModelArray();
+                for (int i = 0; tmarr != null && i < tmarr.length; i++)
                 {
-                    col.add(ScoutUddiJaxrHelper.getConcept((TModel) tmvect.elementAt(i), lcm));
+                    col.add(ScoutUddiJaxrHelper.getConcept(tmarr[i], lcm));
                 }
 
             }
@@ -886,12 +892,11 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 if (serviceDetail != null) {
 
-                    Vector v = serviceDetail.getBusinessServiceVector();
+                    BusinessService[] a = serviceDetail.getBusinessServiceArray();
 
-                    for (int i=0; v != null && i < v.size(); i++) {
+                    for (int i=0; a != null && i < a.length; i++) {
 
-                        Service service = getServiceFromBusinessService(
-                                (BusinessService) v.elementAt(i), lcm);
+                        Service service = getServiceFromBusinessService(a[i], lcm);
 
                         col.add(service);
                     }
@@ -935,37 +940,17 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
     }
 
-    private static final Map findQualifierMapping;
-
-    static
-    {
-        findQualifierMapping = new HashMap();
-        findQualifierMapping.put(FindQualifier.AND_ALL_KEYS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.AND_ALL_KEYS));
-        findQualifierMapping.put(FindQualifier.CASE_SENSITIVE_MATCH, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.CASE_SENSITIVE_MATCH));
-        findQualifierMapping.put(FindQualifier.COMBINE_CLASSIFICATIONS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.COMBINE_CATEGORY_BAGS));
-        findQualifierMapping.put(FindQualifier.EXACT_NAME_MATCH, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.EXACT_NAME_MATCH));
-        findQualifierMapping.put(FindQualifier.OR_ALL_KEYS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.OR_ALL_KEYS));
-        findQualifierMapping.put(FindQualifier.OR_LIKE_KEYS, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.OR_LIKE_KEYS));
-        findQualifierMapping.put(FindQualifier.SERVICE_SUBSET, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SERVICE_SUBSET));
-        findQualifierMapping.put(FindQualifier.SORT_BY_DATE_ASC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_DATE_ASC));
-        findQualifierMapping.put(FindQualifier.SORT_BY_DATE_DESC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_DATE_DESC));
-        findQualifierMapping.put(FindQualifier.SORT_BY_NAME_ASC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_ASC));
-        findQualifierMapping.put(FindQualifier.SORT_BY_NAME_DESC, new org.apache.juddi.datatype.request.FindQualifier(org.apache.juddi.datatype.request.FindQualifier.SORT_BY_NAME_DESC));
-//        findQualifierMapping.put(FindQualifier.SOUNDEX, null);
-    }
-
     static FindQualifiers mapFindQualifiers(Collection jaxrQualifiers) throws UnsupportedCapabilityException
     {
         if (jaxrQualifiers == null)
         {
             return null;
         }
-        FindQualifiers result = new FindQualifiers(jaxrQualifiers.size());
+        FindQualifiers result = FindQualifiers.Factory.newInstance();
         for (Iterator i = jaxrQualifiers.iterator(); i.hasNext();)
         {
             String jaxrQualifier = (String) i.next();
-            org.apache.juddi.datatype.request.FindQualifier juddiQualifier =
-                    (org.apache.juddi.datatype.request.FindQualifier) findQualifierMapping.get(jaxrQualifier);
+            String juddiQualifier = jaxrQualifier;
             if (juddiQualifier == null)
             {
                 throw new UnsupportedCapabilityException("jUDDI does not support FindQualifer: " + jaxrQualifier);
@@ -975,15 +960,19 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         return result;
     }
 
-    static Vector mapNamePatterns(Collection namePatterns)
+    static Name[] mapNamePatterns(Collection namePatterns)
     {
         if (namePatterns == null)
             return null;
-        Vector result = new Vector(namePatterns.size());
+        Name[] result = new Name[namePatterns.size()];
+        int currLoc = 0;
         for (Iterator i = namePatterns.iterator(); i.hasNext();)
         {
             String pattern = (String) i.next();
-            result.add(new Name(pattern));
+            Name n = Name.Factory.newInstance();
+            n.setStringValue(pattern);
+            result[currLoc] = n;
+            currLoc++;
         }
         return result;
     }

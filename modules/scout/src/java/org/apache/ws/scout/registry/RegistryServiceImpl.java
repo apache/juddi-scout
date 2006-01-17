@@ -16,9 +16,6 @@
  */
 package org.apache.ws.scout.registry;
 
-import org.apache.juddi.IRegistry;
-import org.apache.juddi.error.RegistryException;
-import org.apache.juddi.proxy.RegistryProxy;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 
@@ -42,7 +39,7 @@ import javax.xml.registry.infomodel.ClassificationScheme;
  */
 public class RegistryServiceImpl implements RegistryService
 {
-    private final RegistryProxy registry;
+    private final RegistryImpl registry;
     private final BusinessQueryManagerImpl queryManager;
     private final BusinessLifeCycleManagerImpl lifeCycleManager;
 
@@ -52,7 +49,7 @@ public class RegistryServiceImpl implements RegistryService
 
     private ConnectionImpl connection;
 
-    public RegistryServiceImpl(RegistryProxy registry, String postalScheme, int maxRows)
+    public RegistryServiceImpl(RegistryImpl registry, String postalScheme, int maxRows)
     {
         this.registry = registry;
         this.maxRows = maxRows;

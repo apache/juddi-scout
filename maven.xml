@@ -16,5 +16,20 @@
  * limitations under the License.
  */
  -->
-<project default="multiproject:install">
+<project default="compilexsd"  xmlns:ant="jelly:ant">
+	<goal name="compilexsd">
+		<ant:mkdir dir="uddi-datatypes" />
+		<ant:java classname="org.apache.xmlbeans.impl.tool.SchemaCompiler" classpathref="maven.dependency.classpath" fork="true">
+			<arg value="-out" />
+			<arg value="uddi-datatypes/uddiv2-datatypes.jar" />
+			<arg value="etc/uddi_v2.xsd" />
+		</ant:java>
+		<ant:copy file="uddi-datatypes/uddiv2-datatypes.jar" tofile="${maven.home.local}/repository/scout/jars/uddiv2-datatypes-2.0.jar" />
+		<attainGoal name="multiproject:install"/>
+	</goal>
+
+	<preGoal name="multiproject:clean">
+		<ant:delete dir="uddi-datatypes" />
+	</preGoal>
+
 </project>
