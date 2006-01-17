@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.ws.scout.registry.query;
+package org.apache.ws.scout;
 
 import junit.framework.TestCase;
 
@@ -25,6 +25,7 @@ import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.FindQualifier;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Classification;
 import javax.xml.registry.infomodel.EmailAddress;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.PersonName;
@@ -33,31 +34,49 @@ import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
+
+import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Testcase for JaxrQuery
  * @author <mailto:dims@yahoo.com>Davanum Srinivas
  * @author <mailto:anil@apache.org>Anil Saldhana
  */
-public class JAXRQueryTest extends TestCase
+public class JAXR02QueryOrgTest extends TestCase
 {
+	private Connection connection = null;
+
+    String queryString = "USA";
+
+    private String userid = System.getProperty("uddi.test.uid") == null ? 
+			"juddi" : 
+			System.getProperty("uddi.test.uid");
+
+    private String passwd = System.getProperty("uddi.test.pass") == null ? 
+			"password" : 
+			System.getProperty("uddi.test.pass");
+
     public void testQuery() throws Exception
     {
-        String queryString = "IBM";
-        Connection connection = null;
 
         // Define connection configuration properties
         // To query, you need only the query URL
         Properties props = new Properties();
-
         props.setProperty("javax.xml.registry.queryManagerURL",
-        				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
-        				"http://localhost:8080/juddi/inquiry" : 
-        				System.getProperty("javax.xml.registry.queryManagerURL"));
+				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
+				"http://localhost:8080/juddi/inquiry" : 
+				System.getProperty("javax.xml.registry.queryManagerURL"));
+
+        props.setProperty("javax.xml.registry.factoryClass",
+                "org.apache.ws.scout.registry.ConnectionFactoryImpl");
+        props.setProperty("javax.xml.registry.uddi.maxRows",
+        		"2");
 
         try
         {
@@ -65,10 +84,10 @@ public class JAXRQueryTest extends TestCase
             ConnectionFactory factory = ConnectionFactory.newInstance();
             factory.setProperties(props);
             connection = factory.createConnection();
+            login();
         } catch (JAXRException e)
         {
-            e.printStackTrace();
-            fail(e.getMessage());
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         try
@@ -115,6 +134,8 @@ public class JAXRQueryTest extends TestCase
                     printUser(org);
 
                     printServices(org);
+                    
+                    printClassifications(org);
                     // Print spacer between organizations
                     System.out.println(" --- ");
                 }
@@ -122,7 +143,7 @@ public class JAXRQueryTest extends TestCase
         } catch (JAXRException e)
         {
             e.printStackTrace();
-            fail(e.getMessage());
+			fail(e.getMessage());
         } finally
         {
             connection.close();
@@ -173,6 +194,25 @@ public class JAXRQueryTest extends TestCase
         }
     }
 
+    /**
+     * Does authentication with the uddi registry
+     */
+    private void login()
+    {
+        PasswordAuthentication passwdAuth = new PasswordAuthentication(userid,
+                passwd.toCharArray());
+        Set creds = new HashSet();
+        creds.add(passwdAuth);
+
+        try
+        {
+            connection.setCredentials(creds);
+        } catch (JAXRException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     private static String getName(RegistryObject ro) throws JAXRException
     {
         if (ro != null && ro.getName() != null)
@@ -198,5 +238,17 @@ public class JAXRQueryTest extends TestCase
             return ro.getKey().getId();
         }
         return "";
+    }
+
+    private static void printClassifications(Organization ro) throws JAXRException
+    {
+    	Collection c = ro.getClassifications();
+    	Iterator i = c.iterator();
+
+    	System.out.println("Classification: " + ro.getClassifications());
+    	while (i.hasNext()) {
+    		Classification cl = (Classification)i.next();
+    		System.out.println("Classification: " + cl.getName());
+    	}
     }
 }

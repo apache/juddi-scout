@@ -16,21 +16,28 @@
  */
 package org.apache.ws.scout.registry;
 
-import org.apache.juddi.IRegistry;
-import org.apache.juddi.datatype.binding.BindingTemplate;
-import org.apache.juddi.datatype.business.BusinessEntity;
-import org.apache.juddi.datatype.response.*;
-import org.apache.juddi.datatype.service.BusinessService;
-import org.apache.juddi.datatype.tmodel.TModel;
-import org.apache.juddi.datatype.assertion.PublisherAssertion;
-import org.apache.juddi.datatype.KeyedReference;
-import org.apache.juddi.datatype.request.AuthInfo;
-import org.apache.juddi.error.RegistryException;
+import uddiOrgApiV2.BindingTemplate;
+import uddiOrgApiV2.BusinessEntity;
+import uddiOrgApiV2.AssertionStatusItem;
+import uddiOrgApiV2.AssertionStatusReport;
+import uddiOrgApiV2.AuthToken;
+import uddiOrgApiV2.BindingDetail;
+import uddiOrgApiV2.BusinessDetail;
+import uddiOrgApiV2.BusinessService;
+import uddiOrgApiV2.DispositionReport;
+import uddiOrgApiV2.ErrInfo;
+import uddiOrgApiV2.PublisherAssertions;
+import uddiOrgApiV2.Result;
+import uddiOrgApiV2.ServiceDetail;
+import uddiOrgApiV2.TModel;
+import uddiOrgApiV2.PublisherAssertion;
+import uddiOrgApiV2.KeyedReference;
+import uddiOrgApiV2.TModelDetail;
+import org.apache.ws.scout.registry.IRegistry;
+import org.apache.ws.scout.registry.RegistryException;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
-import org.apache.ws.scout.registry.infomodel.ConceptImpl;
-import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
-import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
+import org.apache.xmlbeans.XmlObject;
 
 import javax.xml.registry.*;
 import javax.xml.registry.infomodel.Association;
@@ -125,7 +132,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     }
 
     /**
-     * aves one or more Objects to the registry. An object may be a
+     * Saves one or more Objects to the registry. An object may be a
      * RegistryObject  subclass instance. If an object is not in the registry,
      * it is created in the registry.  If it already exists in the registry
      * and has been modified, then its  state is updated (replaced) in the
@@ -207,17 +214,18 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     public BulkResponse saveAssociations(Collection asso, boolean replace) throws JAXRException {    //TODO
         BulkResponseImpl bulk = new BulkResponseImpl();
-        Vector svect = new Vector();
+        PublisherAssertion[] sarr = new PublisherAssertion[asso.size()];
 
         Collection coll = new ArrayList();
         Collection exceptions = new ArrayList();
 
-
         Iterator iter = asso.iterator();
+        int currLoc = 0;
         while (iter.hasNext()) {
             try {
                 PublisherAssertion pa = ScoutJaxrUddiHelper.getPubAssertionFromJAXRAssociation((Association) iter.next());
-                svect.add(pa);
+                sarr[currLoc] = pa;
+                currLoc++;
             }
             catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
@@ -226,7 +234,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         // Save PublisherAssertion
         PublisherAssertions bd = null;
         try {
-            bd = (PublisherAssertions) executeOperation(svect, "SAVE_ASSOCIATION");
+            bd = (PublisherAssertions) executeOperation(sarr, "SAVE_ASSOCIATION");
         }
         catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
@@ -236,9 +244,9 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
         if(bd != null)
         {
-           Vector keyvect = bd.getPublisherAssertionVector();
-           for (int i = 0; keyvect != null && i < keyvect.size(); i++) {
-               PublisherAssertion result = (PublisherAssertion) keyvect.elementAt(i);
+        	PublisherAssertion[] keyarr = bd.getPublisherAssertionArray();
+        	for (int i = 0; keyarr != null && i < keyarr.length; i++) {
+        		PublisherAssertion result = (PublisherAssertion) keyarr[i];
                KeyedReference kr = result.getKeyedReference();
                coll.add(kr.getTModelKey()); //TODO:Verify This
 
@@ -253,28 +261,29 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     public BulkResponse saveClassificationSchemes(Collection schemes) throws JAXRException {
         //Now we need to convert the collection into a vector for juddi
         BulkResponseImpl bulk = new BulkResponseImpl();
-        Vector entityvect = new Vector();
+        TModel[] entityarr = new TModel[schemes.size()];
 
         Collection coll = new ArrayList();
         Collection exceptions = new ArrayList();
 
-
         Iterator iter = schemes.iterator();
+        int currLoc = 0;
         while (iter.hasNext()) {
             try {
                 TModel en =
                         ScoutJaxrUddiHelper.getTModelFromJAXRClassificationScheme((ClassificationScheme) iter.next());
-                entityvect.add(en);
+                entityarr[currLoc] = en;
+                currLoc++;
             }
             catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_classificationscheme: ENlength=" + entityvect.size());
+        System.out.println("Method:save_classificationscheme: ENlength=" + entityarr.length);
         // Save business
         TModelDetail td = null;
         try {
-            td = (TModelDetail) executeOperation(entityvect, "SAVE_TMODEL");
+            td = (TModelDetail) executeOperation(entityarr, "SAVE_TMODEL");
         }
         catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
@@ -282,10 +291,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        entityvect = td.getTModelVector();
-        System.out.println("After Saving TModel. Obtained vector size:" + entityvect.size());
-        for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
-            TModel tm = (TModel) entityvect.elementAt(i);
+        entityarr = td.getTModelArray();
+        System.out.println("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        for (int i = 0; entityarr != null && i < entityarr.length; i++) {
+            TModel tm = (TModel) entityarr[i];
             coll.add(new KeyImpl(tm.getTModelKey()));
         }
 
@@ -298,28 +307,29 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     public BulkResponse saveConcepts(Collection concepts) throws JAXRException {
         //Now we need to convert the collection into a vector for juddi
         BulkResponseImpl bulk = new BulkResponseImpl();
-        Vector entityvect = new Vector();
+        TModel[] entityarr = new TModel[concepts.size()];
 
         Collection coll = new ArrayList();
         Collection exceptions = new ArrayList();
 
-
         Iterator iter = concepts.iterator();
+        int currLoc = 0;
         while (iter.hasNext()) {
             try {
                 TModel en =
                         ScoutJaxrUddiHelper.getTModelFromJAXRConcept((Concept) iter.next());
-                entityvect.add(en);
+                entityarr[currLoc] = en;
+                currLoc++;
             }
             catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_concept: ENlength=" + entityvect.size());
+        System.out.println("Method:save_concept: ENlength=" + entityarr.length);
         // Save business
         TModelDetail td = null;
         try {
-            td = (TModelDetail) executeOperation(entityvect, "SAVE_TMODEL");
+            td = (TModelDetail) executeOperation(entityarr, "SAVE_TMODEL");
         }
         catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
@@ -327,10 +337,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        entityvect = td.getTModelVector();
-        System.out.println("After Saving TModel. Obtained vector size:" + entityvect.size());
-        for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
-            TModel tm = (TModel) entityvect.elementAt(i);
+        entityarr = td.getTModelArray();
+        System.out.println("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        for (int i = 0; entityarr != null && i < entityarr.length; i++) {
+            TModel tm = (TModel) entityarr[i];
             coll.add(new KeyImpl(tm.getTModelKey()));
         }
 
@@ -343,28 +353,29 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     public BulkResponse saveOrganizations(Collection organizations) throws JAXRException {
         //Now we need to convert the collection into a vector for juddi
         BulkResponseImpl bulk = new BulkResponseImpl();
-        Vector entityvect = new Vector();
+        BusinessEntity[] entityarr = new BusinessEntity[organizations.size()];
 
         Collection coll = new ArrayList();
         Collection exceptions = new ArrayList();
 
-
         Iterator iter = organizations.iterator();
+        int currLoc = 0;
         while (iter.hasNext()) {
             try {
                 BusinessEntity en =
                         ScoutJaxrUddiHelper.getBusinessEntityFromJAXROrg((Organization) iter.next());
-                entityvect.add(en);
+                entityarr[currLoc] = en;
+                currLoc++;
             }
             catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_business: ENlength=" + entityvect.size());
+        System.out.println("Method:save_business: ENlength=" + entityarr.length);
         // Save business
         BusinessDetail bd = null;
         try {
-            bd = (BusinessDetail) executeOperation(entityvect, "SAVE_ORG");
+            bd = (BusinessDetail) executeOperation(entityarr, "SAVE_ORG");
         }
         catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
@@ -372,10 +383,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        entityvect = bd.getBusinessEntityVector();
-        System.out.println("After Saving Business. Obtained vector size:" + entityvect.size());
-        for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
-            BusinessEntity entity = (BusinessEntity) entityvect.elementAt(i);
+        entityarr = bd.getBusinessEntityArray();
+        System.out.println("After Saving Business. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        for (int i = 0; entityarr != null && i < entityarr.length; i++) {
+            BusinessEntity entity = (BusinessEntity) entityarr[i];
             coll.add(new KeyImpl(entity.getBusinessKey()));
         }
 
@@ -387,16 +398,18 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     public BulkResponse saveServiceBindings(Collection bindings) throws JAXRException {
         BulkResponseImpl bulk = new BulkResponseImpl();
-        Vector sbvect = new Vector();
+        BindingTemplate[] sbarr = new BindingTemplate[bindings.size()];
 
         Collection coll = new ArrayList();
         Collection exceptions = new ArrayList();
 
         Iterator iter = bindings.iterator();
+        int currLoc = 0;
         while (iter.hasNext()) {
             try {
                 BindingTemplate bs = ScoutJaxrUddiHelper.getBindingTemplateFromJAXRSB((ServiceBinding) iter.next());
-                sbvect.add(bs);
+                sbarr[currLoc] = bs;
+                currLoc++;
             }
             catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
@@ -405,7 +418,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         // Save ServiceBinding
         BindingDetail bd = null;
         try {
-            bd = (BindingDetail) executeOperation(sbvect, "SAVE_SERVICE_BINDING");
+            bd = (BindingDetail) executeOperation(sbarr, "SAVE_SERVICE_BINDING");
         }
         catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
@@ -413,9 +426,9 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        sbvect = bd.getBindingTemplateVector();
-        for (int i = 0; sbvect != null && i < sbvect.size(); i++) {
-            BindingTemplate bt = (BindingTemplate) sbvect.elementAt(i);
+        sbarr = bd.getBindingTemplateArray();
+        for (int i = 0; sbarr != null && i < sbarr.length; i++) {
+            BindingTemplate bt = (BindingTemplate) sbarr[i];
             coll.add(new KeyImpl(bt.getBindingKey()));
         }
         bulk.setCollection(coll);
@@ -426,17 +439,19 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     public BulkResponse saveServices(Collection services) throws JAXRException {
         BulkResponseImpl bulk = new BulkResponseImpl();
-        Vector svect = new Vector();
+        BusinessService[] sarr = new BusinessService[services.size()];
 
         Collection coll = new ArrayList();
         Collection exceptions = new ArrayList();
 
 
         Iterator iter = services.iterator();
+        int currLoc = 0;
         while (iter.hasNext()) {
             try {
                 BusinessService bs = ScoutJaxrUddiHelper.getBusinessServiceFromJAXRService((Service) iter.next());
-                svect.add(bs);
+                sarr[currLoc] = bs;
+                currLoc++;
             }
             catch (ClassCastException ce) {
                 throw new UnexpectedObjectException();
@@ -445,7 +460,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         // Save Service
         ServiceDetail sd = null;
         try {
-            sd = (ServiceDetail) executeOperation(svect, "SAVE_SERVICE");
+            sd = (ServiceDetail) executeOperation(sarr, "SAVE_SERVICE");
         }
         catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
@@ -453,9 +468,9 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        svect = sd.getBusinessServiceVector();
-        for (int i = 0; svect != null && i < svect.size(); i++) {
-            BusinessService entity = (BusinessService) svect.elementAt(i);
+        sarr = sd.getBusinessServiceArray();
+        for (int i = 0; sarr != null && i < sarr.length; i++) {
+            BusinessService entity = (BusinessService) sarr[i];
             coll.add(new KeyImpl(entity.getServiceKey()));
         }
         bulk.setCollection(coll);
@@ -484,9 +499,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     }
 
     //Protected Methods
-    protected org.apache.juddi.datatype.RegistryObject executeOperation(Vector datavect, String op)
-            throws org.apache.juddi.error.RegistryException, JAXRException {
-        org.apache.juddi.datatype.RegistryObject regobj = null;
+    protected XmlObject executeOperation(Object dataarray, String op)
+            throws RegistryException, JAXRException {
+        //org.apache.juddi.datatype.RegistryObject regobj = null;
+    	XmlObject regobj = null;
 
         IRegistry ireg = null;
         if (registry != null) {
@@ -498,45 +514,45 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
         if(op.equalsIgnoreCase("SAVE_ASSOCIATION"))
         {
-            regobj = ireg.setPublisherAssertions(token.getAuthInfo(), datavect);
+            regobj = ireg.setPublisherAssertions(token.getAuthInfo(), (PublisherAssertion[]) dataarray);
         } else
         if (op.equalsIgnoreCase("SAVE_SERVICE")) {
-            regobj = ireg.saveService(token.getAuthInfo(), datavect);
+            regobj = ireg.saveService(token.getAuthInfo(), (BusinessService[])dataarray);
         }
         else if (op.equalsIgnoreCase("SAVE_SERVICE_BINDING")) {
-            regobj = ireg.saveBinding(token.getAuthInfo(), datavect);
+            regobj = ireg.saveBinding(token.getAuthInfo(), (BindingTemplate[]) dataarray);
         }
         else if (op.equalsIgnoreCase("SAVE_ORG")) {
-            regobj = ireg.saveBusiness(token.getAuthInfo(), datavect);
+            regobj = ireg.saveBusiness(token.getAuthInfo(), (BusinessEntity[]) dataarray);
         }
         else if (op.equalsIgnoreCase("SAVE_TMODEL")) {
-            regobj = ireg.saveTModel(token.getAuthInfo(), datavect);
+            regobj = ireg.saveTModel(token.getAuthInfo(), (TModel[]) dataarray);
         }
         else if (op.equalsIgnoreCase("DELETE_ORG")) {
-            clearPublisherAssertions(token.getAuthInfo(),datavect,ireg);
-            regobj = ireg.deleteBusiness(token.getAuthInfo(), datavect);
+            clearPublisherAssertions(token.getAuthInfo(), (String[]) dataarray,ireg);
+            regobj = ireg.deleteBusiness(token.getAuthInfo(), (String[]) dataarray);
         }
         else if (op.equalsIgnoreCase("DELETE_SERVICE")) {
-            regobj = ireg.deleteService(token.getAuthInfo(), datavect);
+            regobj = ireg.deleteService(token.getAuthInfo(), (String[]) dataarray);
         }
         else if (op.equalsIgnoreCase("DELETE_SERVICEBINDING")) {
-            regobj = ireg.deleteBinding(token.getAuthInfo(), datavect);
+            regobj = ireg.deleteBinding(token.getAuthInfo(), (String[]) dataarray);
         }
         else if (op.equalsIgnoreCase("DELETE_CONCEPT")) {
-            regobj = ireg.deleteTModel(token.getAuthInfo(), datavect);
+            regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
         }
         else if (op.equalsIgnoreCase("DELETE_ASSOCIATION")) {
-           int len = datavect.size();
-            Vector pavect = new Vector(len);
+           int len = ((String[]) dataarray).length;
+            PublisherAssertion[] paarr = new PublisherAssertion[len];
             for(int i=0;i<len;i++)
             {
-               String keystr = (String)datavect.elementAt(i);
-               pavect.add(ScoutJaxrUddiHelper.getPubAssertionFromJAXRAssociationKey(keystr));
+               String keystr = ((String[])dataarray)[i];
+               paarr[i] = ScoutJaxrUddiHelper.getPubAssertionFromJAXRAssociationKey(keystr);
             }
-            regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), pavect);
+            regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), paarr);
         }
         else if (op.equalsIgnoreCase("DELETE_CLASSIFICATIONSCHEME")) {
-            regobj = ireg.deleteTModel(token.getAuthInfo(), datavect);
+            regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
         }
         else {
             throw new JAXRException("Unsupported operation:" + op);
@@ -545,18 +561,19 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return regobj;
     }
 
-    private void clearPublisherAssertions( AuthInfo authinfo,Vector orgkeys,IRegistry ireg)
+    private void clearPublisherAssertions( String authinfo,String[] orgkeys,IRegistry ireg)
     {
        Vector pasvect  = null;
+       PublisherAssertion[] pasarr  = null;
        try
        {
           AssertionStatusReport report = ireg.getAssertionStatusReport(authinfo,"status:complete");
-          Vector v = report.getAssertionStatusItemVector();
+          AssertionStatusItem[] a = report.getAssertionStatusItemArray();
 
-          int len = v != null? v.size() : 0;
+          int len = a != null? a.length : 0;
           for (int i = 0; i < len; i++)
           {
-                AssertionStatusItem asi = (AssertionStatusItem) v.elementAt(i);
+                AssertionStatusItem asi = a[i];
                /* String sourceKey = asi.getFromKey();
                 String targetKey = asi.getToKey();
                 PublisherAssertion pa = new PublisherAssertion();
@@ -573,25 +590,35 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 pasvect.add(this.getPublisherAssertion(asi));
            }
           report = ireg.getAssertionStatusReport(authinfo,"status:toKey_incomplete");
-          v = report.getAssertionStatusItemVector();
+          a = report.getAssertionStatusItemArray();
 
-          len = v != null? v.size() : 0;
+          len = a != null? a.length : 0;
           for (int i = 0; i < len; i++)
           {
-                AssertionStatusItem asi = (AssertionStatusItem) v.elementAt(i);
+                AssertionStatusItem asi = (AssertionStatusItem) a[i];
                 if(pasvect == null) pasvect = new Vector(len);
                 pasvect.add(this.getPublisherAssertion(asi));
           }
 
           report = ireg.getAssertionStatusReport(authinfo,"status:fromKey_incomplete");
-          v = report.getAssertionStatusItemVector();
+          a = report.getAssertionStatusItemArray();
 
-          len = v != null? v.size() : 0;
+          len = a != null? a.length : 0;
           for (int i = 0; i < len; i++)
           {
-                AssertionStatusItem asi = (AssertionStatusItem) v.elementAt(i);
+                AssertionStatusItem asi = (AssertionStatusItem) a[i];
                 if(pasvect == null) pasvect = new Vector(len);
                 pasvect.add(this.getPublisherAssertion(asi));
+          }
+
+          if (pasvect != null) {
+        	  pasarr = new PublisherAssertion[pasvect.size()];
+        	  Iterator iter = pasvect.iterator();
+        	  int pasarrPos = 0;
+        	  while (iter.hasNext()) {
+        		  pasarr[pasarrPos] = ((PublisherAssertion) iter.next());
+        		  pasarrPos++;
+        	  }
           }
        }
        catch (RegistryException e)
@@ -599,10 +626,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
           e.printStackTrace();
        }
 
-          if(pasvect != null && pasvect.size() > 0)
+          if(pasarr != null && pasarr.length > 0)
              try
              {
-                ireg.deletePublisherAssertions(authinfo,pasvect);
+                ireg.deletePublisherAssertions(authinfo, pasarr);
              }
              catch (RegistryException e)
              {
@@ -620,33 +647,35 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
        
         //Now we need to convert the collection into a vector for juddi
         BulkResponseImpl bulk = new BulkResponseImpl();
-        Vector keyvect = new Vector();
+        String[] keyarr = new String[keys.size()];
+        Result[] keyResultArr;
 
         Collection coll = new ArrayList();
         Collection exceptions = new ArrayList();
 
         try {
             Iterator iter = keys.iterator();
-
+            int currLoc = 0;
             while (iter.hasNext()) {
                 Key key = (Key) iter.next();
-                keyvect.add(key.getId());
+                keyarr[currLoc] = key.getId();
+                currLoc++;
             }
             //System.out.println("Method:" + op + ": ENlength=" + keyvect.size());
             // Save business
-            DispositionReport bd = (DispositionReport) executeOperation(keyvect, op);
+            DispositionReport bd = (DispositionReport) executeOperation(keyarr, op);
 
-            keyvect = bd.getResultVector();
-            System.out.println("After deleting Business. Obtained vector size:" + keyvect.size());
-            for (int i = 0; keyvect != null && i < keyvect.size(); i++) {
-                Result result = (Result) keyvect.elementAt(i);
+            keyResultArr = bd.getResultArray();
+            System.out.println("After deleting Business. Obtained vector size:" + keyResultArr != null ? keyResultArr.length : 0);
+            for (int i = 0; keyResultArr != null && i < keyResultArr.length; i++) {
+                Result result = (Result) keyResultArr[i];
                 int errno = result.getErrno();
                 if (errno == 0) {
                     coll.addAll(keys);
                 }
                 else {
                     ErrInfo errinfo = result.getErrInfo();
-                    DeleteException de = new DeleteException(errinfo.getErrCode() + ":" + errinfo.getErrMsg());
+                    DeleteException de = new DeleteException(errinfo.getErrCode() + ":" + errinfo.getStringValue());
                     bulk.setStatus(JAXRResponse.STATUS_FAILURE);
                     exceptions.add(de);
                 }
@@ -688,13 +717,16 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     private AuthToken getAuthToken(ConnectionImpl connection, IRegistry ireg)
             throws JAXRException {
         Set creds = connection.getCredentials();
-        Iterator it = creds.iterator();
         String username = "", pwd = "";
+        if (creds != null) {
+        	Iterator it = creds.iterator();
         while (it.hasNext()) {
             PasswordAuthentication pass = (PasswordAuthentication) it.next();
             username = pass.getUserName();
             pwd = new String(pass.getPassword());
         }
+        }
+
         AuthToken token = null;
         try {
             token = ireg.getAuthToken(username, pwd);
@@ -711,14 +743,24 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     {
         String sourceKey = asi.getFromKey();
         String targetKey = asi.getToKey();
-        PublisherAssertion pa = new PublisherAssertion();
+        PublisherAssertion pa = PublisherAssertion.Factory.newInstance();
+        
+        if (sourceKey != null) {
         pa.setFromKey(sourceKey);
+        }
+        
+        if (targetKey != null) {
         pa.setToKey(targetKey);
+        }
+        
         KeyedReference keyr = asi.getKeyedReference();
+        
+        if (keyr != null) {
         pa.setKeyedReference(keyr);
-        pa.setTModelKey(keyr.getTModelKey());
-        pa.setKeyName(keyr.getKeyName());
-        pa.setKeyValue(keyr.getKeyValue());
+        }
+        //pa.setTModelKey(keyr.getTModelKey());
+        //pa.setKeyName(keyr.getKeyName());
+        //pa.setKeyValue(keyr.getKeyValue()); // -CBC- These are redundant?
         return pa;
     }
 

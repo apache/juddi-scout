@@ -16,8 +16,6 @@
 
 package org.apache.ws.scout.registry;
 
-import org.apache.juddi.proxy.RegistryProxy;
-
 import javax.xml.registry.Connection;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
@@ -37,7 +35,7 @@ public class ConnectionImpl implements Connection, Serializable
     private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;
-    private final RegistryProxy registry;
+    private final RegistryImpl registry;
     private final String postalScheme;
     private final int maxRows;
 
@@ -55,7 +53,7 @@ public class ConnectionImpl implements Connection, Serializable
          * Even if the properties passed contains no values,
          * juddi takes default values
          */
-        registry = new RegistryProxy(prop);        
+        registry = new RegistryImpl(prop);        
         registry.setInquiryURL(queryManagerURL);
         registry.setPublishURL(lifeCycleManagerURL);
         this.postalScheme = postalScheme;
