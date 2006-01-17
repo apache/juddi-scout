@@ -29,11 +29,6 @@
             <artifactId>jaxr-api</artifactId>
             <version>${pom.currentVersion}</version>
         </dependency>
-		<dependency>
-			<groupId>scout</groupId>
-			<artifactId>uddiv2-datatypes</artifactId>
-			<version>2.0</version>
-		</dependency>
 
         <!-- external JARs -->
         <dependency>
