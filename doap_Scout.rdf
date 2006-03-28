@@ -45,11 +45,13 @@
           <foaf:mbox rdf:resource="mailto:anil@apache.org"/>
       </foaf:Person>
     </maintainer>
+   <asfext:implements>
     <asfext:standard>
       <asfext:title>Java API For XML Registries</asfext:title>
       <asfext:body>JCP</asfext:body>
       <asfext:id>93</asfext:id>
       <asfext:url rdf:resource="http://jcp.org/en/jsr/detail?id=93"/>
     </asfext:standard>
+   </asfext:implements>
   </Project>
 </rdf:RDF>
