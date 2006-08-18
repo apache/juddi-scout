@@ -18,12 +18,12 @@
  -->
 
 
-<project>
+<project  default="multiproject:install">
   <!-- the version of maven's project object model -->
 
   <pomVersion>3</pomVersion>
   <!-- a unique name for this project -->
-
+  <id>scout</id>
   <groupId>scout</groupId>
   <!-- a short but descriptive name for the project -->
 
@@ -31,7 +31,7 @@
   <!-- The version of the project under development, e.g.
        1.1, 1.2, 2.0-SNAPSHOT -->
 
-  <currentVersion>0.5</currentVersion>
+  <currentVersion>0.7rc1</currentVersion>
   <!-- details about the organization that 'owns' the project -->
 
   <organization>
