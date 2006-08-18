@@ -34,7 +34,8 @@ import java.util.Set;
  */
 public class ConnectionImpl implements Connection, Serializable
 {
-    private boolean closed = false;
+	private static final long serialVersionUID = -4020142276466440718L;
+	private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;
     private final RegistryProxy registry;

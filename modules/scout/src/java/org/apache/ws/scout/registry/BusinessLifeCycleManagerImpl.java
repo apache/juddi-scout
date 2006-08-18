@@ -16,31 +16,6 @@
  */
 package org.apache.ws.scout.registry;
 
-import org.apache.juddi.IRegistry;
-import org.apache.juddi.datatype.binding.BindingTemplate;
-import org.apache.juddi.datatype.business.BusinessEntity;
-import org.apache.juddi.datatype.response.*;
-import org.apache.juddi.datatype.service.BusinessService;
-import org.apache.juddi.datatype.tmodel.TModel;
-import org.apache.juddi.datatype.assertion.PublisherAssertion;
-import org.apache.juddi.datatype.KeyedReference;
-import org.apache.juddi.datatype.request.AuthInfo;
-import org.apache.juddi.error.RegistryException;
-import org.apache.ws.scout.registry.infomodel.KeyImpl;
-import org.apache.ws.scout.registry.infomodel.ConceptImpl;
-import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
-import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
-import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
-
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.Association;
-import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.Key;
-import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.ServiceBinding;
-import javax.xml.registry.infomodel.RegistryObject;
 import java.io.Serializable;
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
@@ -48,6 +23,49 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.DeleteException;
+import javax.xml.registry.InvalidRequestException;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRResponse;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.SaveException;
+import javax.xml.registry.UnexpectedObjectException;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
+
+import org.apache.juddi.IRegistry;
+import org.apache.juddi.datatype.KeyedReference;
+import org.apache.juddi.datatype.assertion.PublisherAssertion;
+import org.apache.juddi.datatype.binding.BindingTemplate;
+import org.apache.juddi.datatype.business.BusinessEntity;
+import org.apache.juddi.datatype.request.AuthInfo;
+import org.apache.juddi.datatype.response.AssertionStatusItem;
+import org.apache.juddi.datatype.response.AssertionStatusReport;
+import org.apache.juddi.datatype.response.AuthToken;
+import org.apache.juddi.datatype.response.BindingDetail;
+import org.apache.juddi.datatype.response.BusinessDetail;
+import org.apache.juddi.datatype.response.DispositionReport;
+import org.apache.juddi.datatype.response.ErrInfo;
+import org.apache.juddi.datatype.response.PublisherAssertions;
+import org.apache.juddi.datatype.response.Result;
+import org.apache.juddi.datatype.response.ServiceDetail;
+import org.apache.juddi.datatype.response.TModelDetail;
+import org.apache.juddi.datatype.service.BusinessService;
+import org.apache.juddi.datatype.tmodel.TModel;
+import org.apache.juddi.error.RegistryException;
+import org.apache.log4j.Logger;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
 
 /**
  * Implements JAXR BusinessLifeCycleManager Interface.
@@ -59,7 +77,11 @@ import java.util.Vector;
 public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         implements BusinessLifeCycleManager, Serializable {
 
-    public BusinessLifeCycleManagerImpl(RegistryService registry) {
+	private static final long serialVersionUID = 4662854497208312765L;
+	
+	private static Logger log = Logger.getLogger(BusinessLifeCycleManagerImpl.class);
+
+	public BusinessLifeCycleManagerImpl(RegistryService registry) {
         super(registry);
     }
 
@@ -270,7 +292,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_classificationscheme: ENlength=" + entityvect.size());
+        log.debug("Method:save_classificationscheme: ENlength=" + entityvect.size());
         // Save business
         TModelDetail td = null;
         try {
@@ -283,7 +305,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
 
         entityvect = td.getTModelVector();
-        System.out.println("After Saving TModel. Obtained vector size:" + entityvect.size());
+        log.debug("After Saving TModel. Obtained vector size:" + entityvect.size());
         for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
             TModel tm = (TModel) entityvect.elementAt(i);
             coll.add(new KeyImpl(tm.getTModelKey()));
@@ -315,7 +337,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_concept: ENlength=" + entityvect.size());
+        log.debug("Method:save_concept: ENlength=" + entityvect.size());
         // Save business
         TModelDetail td = null;
         try {
@@ -328,7 +350,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
 
         entityvect = td.getTModelVector();
-        System.out.println("After Saving TModel. Obtained vector size:" + entityvect.size());
+        log.debug("After Saving TModel. Obtained vector size:" + entityvect.size());
         for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
             TModel tm = (TModel) entityvect.elementAt(i);
             coll.add(new KeyImpl(tm.getTModelKey()));
@@ -360,7 +382,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_business: ENlength=" + entityvect.size());
+        log.debug("Method:save_business: ENlength=" + entityvect.size());
         // Save business
         BusinessDetail bd = null;
         try {
@@ -373,7 +395,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
 
         entityvect = bd.getBusinessEntityVector();
-        System.out.println("After Saving Business. Obtained vector size:" + entityvect.size());
+        log.debug("After Saving Business. Obtained vector size:" + entityvect.size());
         for (int i = 0; entityvect != null && i < entityvect.size(); i++) {
             BusinessEntity entity = (BusinessEntity) entityvect.elementAt(i);
             coll.add(new KeyImpl(entity.getBusinessKey()));
@@ -596,7 +618,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
        }
        catch (RegistryException e)
        {
-          e.printStackTrace();
+          log.error("Error:",e);
        }
 
           if(pasvect != null && pasvect.size() > 0)
@@ -606,7 +628,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
              }
              catch (RegistryException e)
              {
-                e.printStackTrace();
+                log.error("Ignorable exception:",e);
                 //IGNORE
              }
        }
@@ -631,13 +653,12 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             while (iter.hasNext()) {
                 Key key = (Key) iter.next();
                 keyvect.add(key.getId());
-            }
-            //System.out.println("Method:" + op + ": ENlength=" + keyvect.size());
+            } 
             // Save business
             DispositionReport bd = (DispositionReport) executeOperation(keyvect, op);
 
             keyvect = bd.getResultVector();
-            System.out.println("After deleting Business. Obtained vector size:" + keyvect.size());
+            log.debug("After deleting Business. Obtained vector size:" + keyvect.size());
             for (int i = 0; keyvect != null && i < keyvect.size(); i++) {
                 Result result = (Result) keyvect.elementAt(i);
                 int errno = result.getErrno();
@@ -701,7 +722,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            log.error("Exception::",e);
             throw new JAXRException(e);
         }
         return token;

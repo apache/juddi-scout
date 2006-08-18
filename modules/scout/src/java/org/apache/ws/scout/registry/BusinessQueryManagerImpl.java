@@ -17,6 +17,8 @@
 package org.apache.ws.scout.registry;
 
 import org.apache.juddi.IRegistry;
+import org.apache.juddi.datatype.CategoryBag;
+import org.apache.juddi.datatype.Description;
 import org.apache.juddi.datatype.KeyedReference;
 import org.apache.juddi.datatype.Name;
 import org.apache.juddi.datatype.assertion.PublisherAssertion;
@@ -27,6 +29,7 @@ import org.apache.juddi.datatype.response.*;
 import org.apache.juddi.datatype.service.BusinessService;
 import org.apache.juddi.datatype.tmodel.TModel;
 import org.apache.juddi.error.RegistryException;
+import org.apache.log4j.Logger;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
@@ -49,6 +52,7 @@ import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.LocalizedString;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Service;
@@ -59,6 +63,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -74,6 +79,8 @@ import java.util.Vector;
 public class BusinessQueryManagerImpl implements BusinessQueryManager
 {
     private final RegistryServiceImpl registryService;
+    
+    private static Logger log = Logger.getLogger(BusinessQueryManagerImpl.class);
 
 
     public BusinessQueryManagerImpl(RegistryServiceImpl registry)
@@ -146,9 +153,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         //TODO: Currently we just return all the Association objects owned by the caller
         IRegistry registry = registryService.getRegistry();
         try
-        {
-            FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
-
+        {  
             ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
             AuthToken auth = this.getAuthToken(con,registry);
             PublisherAssertions result =
@@ -196,9 +201,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         //TODO: Currently we just return all the Association objects owned by the caller
         IRegistry registry = registryService.getRegistry();
         try
-        {
-            FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
-
+        { 
             ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
             AuthToken auth = this.getAuthToken(con,registry);
            
@@ -444,7 +447,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 } catch (RegistryException e)
                 {
-                    e.printStackTrace();
+                    log.error("Exception ::",e);
                     throw new JAXRException(e.getLocalizedMessage());
                 }
             }
@@ -531,7 +534,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
             } catch (RegistryException e)
             {
-                e.printStackTrace();
+                log.error("RegistryException::",e);
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -584,7 +587,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             }
         }
         catch (RegistryException e) {
-            e.printStackTrace();
+            log.error("RegistryException::",e);
             throw new JAXRException(e.getLocalizedMessage());
         }
 
@@ -654,7 +657,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             }
         }
         catch (RegistryException e) {
-            e.printStackTrace();
+            log.error("RegistryException::",e);
             throw new JAXRException(e.getLocalizedMessage());
         }
 
@@ -676,22 +679,43 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try {
 
                 TModelDetail tmodeldetail = registry.getTModelDetail(id);
-                Concept c = ScoutUddiJaxrHelper.getConcept(tmodeldetail, lcm);
+                if(tmodeldetail != null && tmodeldetail.getTModelVector().size() > 0)
+                {
+                	TModel tmodel = (TModel)tmodeldetail.getTModelVector().elementAt(0);
+                	ClassificationSchemeImpl scheme = new ClassificationSchemeImpl(lcm);
+                	boolean uddiBased = isUDDIBasedTModel(tmodel);
+                    if(uddiBased)
+                    {
+                    	scheme.setName(new InternationalStringImpl(tmodel.getName()));
+                    	Vector descVect = tmodel.getDescriptionVector();
+                    	if(descVect != null && descVect.size() > 0)
+                    	{
+                    		Description d = (Description)descVect.elementAt(0);
+                    		scheme.setDescription(new InternationalStringImpl(d.getValue()));
+                    	}
+                    	scheme.setExternalLinks(ScoutUddiJaxrHelper.getExternalLinks(tmodel.getOverviewDoc()
+                    			                              ,lcm));
+                    	scheme.setExternalIdentifiers(ScoutUddiJaxrHelper.getExternalIdentifiers(tmodel.getIdentifierBag()
+                    			                              ,lcm));  
+                    	scheme.setClassifications(ScoutUddiJaxrHelper.getClassifications(tmodel.getCategoryBag(),lcm));
+                    }
+                    else
+                    {
+                    	Concept c = ScoutUddiJaxrHelper.getConcept(tmodeldetail, lcm);
 
-                /*
-                 * now turn into a concrete ClassificationScheme
-                 */
+                        /*
+                         * now turn into a concrete ClassificationScheme
+                         */ 
+                        scheme.setName(c.getName());
+                        scheme.setDescription(c.getDescription());
+                        scheme.setKey(c.getKey()); 
+                    }
 
-                ClassificationScheme scheme = new ClassificationSchemeImpl(lcm);
-
-                scheme.setName(c.getName());
-                scheme.setDescription(c.getDescription());
-                scheme.setKey(c.getKey());
-
-                return scheme;
+                    return scheme;
+                } 
             }
             catch (RegistryException e) {
-                e.printStackTrace();
+            	log.error("RegistryException::",e);
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -703,7 +727,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 return ScoutUddiJaxrHelper.getOrganization(orgdetail, lcm);
             }
             catch (RegistryException e) {
-                e.printStackTrace();
+            	log.error("RegistryException::",e);
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -715,7 +739,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 return ScoutUddiJaxrHelper.getConcept(tmodeldetail, lcm);
             }
             catch (RegistryException e) {
-                e.printStackTrace();
+            	log.error("RegistryException::",e);
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -739,7 +763,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 }
             }
             catch (RegistryException e) {
-                e.printStackTrace();
+            	log.error("RegistryException::",e);
             }
         }
 
@@ -842,7 +866,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
             } catch (RegistryException e)
             {
-                e.printStackTrace();
+            	log.error("RegistryException::",e);
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -875,7 +899,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             }
             catch (RegistryException e)
             {
-                e.printStackTrace();
+            	log.error("RegistryException::",e);
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -976,14 +1000,27 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     }
 
     static Vector mapNamePatterns(Collection namePatterns)
+    throws JAXRException
     {
         if (namePatterns == null)
             return null;
         Vector result = new Vector(namePatterns.size());
         for (Iterator i = namePatterns.iterator(); i.hasNext();)
         {
-            String pattern = (String) i.next();
-            result.add(new Name(pattern));
+        	Name name = null;
+        	Object obj = i.next();
+        	Locale locale = Locale.getDefault();
+        	if(obj instanceof String)
+        	{ 
+        		name = new Name((String)obj, locale.getLanguage()); 
+        	}
+        	else
+        	 if(obj instanceof LocalizedString)
+        	 {
+        		LocalizedString ls = (LocalizedString)obj;
+        		name = new Name(ls.getValue(),ls.getLocale().getLanguage()); 
+        	 } 
+            result.add(name);
         }
         return result;
     }
@@ -1014,5 +1051,47 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             throw new JAXRException(e);
         }
         return token;
+    }
+    
+    private boolean isUDDIBasedTModel(TModel tmodel)
+    {
+    	/**
+    	 * JAXR 1.0 Specification: Section 6.4.3
+    	 */
+    	String uddi_org_types = "uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4";
+    	
+    	boolean result = false;
+    	CategoryBag cbag = tmodel.getCategoryBag();
+    	if(cbag != null)
+    	{
+    		Vector vect  = cbag.getKeyedReferenceVector();
+    		if(vect != null)
+    		{
+    			Iterator iter = vect.iterator();
+    			while(iter.hasNext())
+    			{
+    				KeyedReference kr = (KeyedReference)iter.next();
+    				if(kr != null)
+    	    		{
+    	    			String key = kr.getTModelKey();
+    	    			String tval = kr.getKeyValue();
+    	    			result = key.equals(uddi_org_types); 
+    	    			//Check the taxonomy values
+    	    			result = checkTaxonomyValue(tval);
+    	    			if(result)
+    	    				break;
+    	    		}
+    			}
+    		} 
+    	}
+    	return result;
+    }
+    
+    private boolean checkTaxonomyValue(String tval)
+    {
+    	return (tval.equalsIgnoreCase("Identifier") || 
+				tval.equalsIgnoreCase("Namespace") || 
+				tval.equalsIgnoreCase("Categorization") ||
+				tval.equalsIgnoreCase("PostalAddress"));
     }
 }

@@ -27,9 +27,11 @@ import org.apache.juddi.datatype.service.BusinessService;
 import org.apache.juddi.datatype.service.BusinessServices;
 import org.apache.juddi.datatype.binding.BindingTemplate;
 import org.apache.juddi.datatype.binding.AccessPoint;
+import org.apache.juddi.datatype.binding.BindingTemplates;
 import org.apache.juddi.datatype.binding.HostingRedirector;
 import org.apache.juddi.datatype.binding.TModelInstanceDetails;
 import org.apache.juddi.datatype.binding.TModelInstanceInfo;
+import org.apache.log4j.Logger;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 
 import javax.xml.registry.infomodel.*;
@@ -49,6 +51,11 @@ import java.util.StringTokenizer;
  */
 public class ScoutJaxrUddiHelper
 {
+	private static Logger log = Logger.getLogger(ScoutJaxrUddiHelper.class);
+	
+	//Some constants
+	private static final String UDDI_ORG_TYPES = "uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4";
+	
     /**
      * Get UDDI Address given JAXR Postal Address
      */
@@ -154,7 +161,7 @@ public class ScoutJaxrUddiHelper
               }
               bt.setTModelInstanceDetails(tid);
            }
-            System.out.println("BindingTemplate=" + bt.toString());
+           log.debug("BindingTemplate=" + bt.toString());
         } catch (Exception ud)
         {
             throw new JAXRException("Apache JAXR Impl:", ud);
@@ -180,7 +187,8 @@ public class ScoutJaxrUddiHelper
                 //enumeration, the key can be the parent classification scheme
                 key = c.getClassificationScheme().getKey();
             }
-            kr.setTModelKey(key.getId());
+            if(key != null)
+              kr.setTModelKey(key.getId());
             kr.setKeyName("Concept");
             kr.setKeyValue(v);
             pa.setKeyedReference(kr);
@@ -253,8 +261,11 @@ public class ScoutJaxrUddiHelper
             if (serve.getKey() != null) {
                 bs.setServiceKey(serve.getKey().getId());
             }
+            
+            //Add the ServiceBinding information
+            bs.setBindingTemplates(getBindingTemplates(serve.getServiceBindings()));
 
-            System.out.println("BusinessService=" + bs.toString());
+            log.debug("BusinessService=" + bs.toString());
         } catch (Exception ud)
         {
             throw new JAXRException("Apache JAXR Impl:", ud);
@@ -327,7 +338,26 @@ public class ScoutJaxrUddiHelper
             String name = iname.getValue();
             tm.setName(new Name(name, Locale.getDefault().getLanguage()));
             tm.addDescription(new Description( scheme.getDescription().getValue()));
-            //ToDO:  overviewDoc,identifierBag,categoryBag
+             
+            //External Links 
+            Collection externalLinks = scheme.getExternalLinks(); 
+            if(externalLinks != null && externalLinks.size() > 0)
+            {
+            	tm.setOverviewDoc(getOverviewDocFromExternalLink((ExternalLink)externalLinks.iterator().next()));
+            }  
+            
+            //External Identifiers 
+            IdentifierBag idBag = new IdentifierBag();
+            idBag.setKeyedReferenceVector(getKeyedReferenceVector(scheme.getExternalIdentifiers()));
+            tm.setIdentifierBag(idBag);
+            
+            //Classifications
+            Collection classifications = scheme.getClassifications();
+            if(classifications != null && classifications.isEmpty() == false)
+            {
+            	//Spec says from Concept, always assume the uddi-org:types
+            	tm.setCategoryBag(getCategoryBagFromConcept()); 
+            } 
         } catch (Exception ud)
         {
             throw new JAXRException("Apache JAXR Impl:", ud);
@@ -356,7 +386,7 @@ public class ScoutJaxrUddiHelper
                 biz.setAuthorizedName(org.getPrimaryContact().getPersonName().getFullName());
 
             Collection s = org.getServices();
-            System.out.println("?Org has services=" + s.isEmpty());
+            log.debug("?Org has services=" + s.isEmpty());
             Iterator iter = s.iterator();
             while (iter.hasNext())
             {
@@ -375,11 +405,8 @@ public class ScoutJaxrUddiHelper
             Vector cvect = new Vector();
 
             User primaryContact = org.getPrimaryContact();
-            Collection users = org.getUsers();
-
-            // TODO - remove this
-            System.out.println("?Org has users=" + users.isEmpty());
-
+            Collection users = org.getUsers(); 
+            
             /*
              * first do primary, and then filter that out in the loop
              */
@@ -472,7 +499,7 @@ public class ScoutJaxrUddiHelper
                 TelephoneNumber t = (TelephoneNumber) it.next();
                 Phone phone = new Phone();
                 String str = t.getNumber();
-                System.out.println("Telephone=" + str);
+                log.debug("Telephone=" + str);
                 phone.setValue(str);
                 // phone.setText( str );
                 phonevect.add(phone);
@@ -518,5 +545,129 @@ public class ScoutJaxrUddiHelper
 
        return uri;
    }
+   
+   private static OverviewDoc getOverviewDocFromExternalLink(ExternalLink link)
+   throws JAXRException
+   {
+	   OverviewDoc od = new OverviewDoc();
+	   String url = link.getExternalURI();
+	   if(url != null)
+		   od.setOverviewURL(new OverviewURL(url));
+	   InternationalString extDesc = link.getDescription();
+	   if(extDesc != null)
+		   od.addDescription(new Description(extDesc.getValue()));
+	   return od;
+   }
+   
+   private static Vector getKeyedReferenceVector(Collection externalIdentifiers)
+   throws JAXRException
+   {
+	   Vector krv = new Vector();
+	   if(externalIdentifiers != null)
+	   {
+		   Iterator iter = externalIdentifiers.iterator();
+		   while(iter.hasNext())
+		   {
+			   KeyedReference kr = new KeyedReference();
+			   ExternalIdentifier eid = (ExternalIdentifier)iter.next();
+			   kr.setTModelKey(eid.getObjectType().getClassificationScheme().getKey().getId());
+			   kr.setKeyName(eid.getObjectType().getName().getValue());
+			   kr.setKeyValue(eid.getObjectType().getValue());
 
+			   krv.add(kr); 
+		   }
+	   }
+	   return krv;
+   }
+   
+   private static CategoryBag getCategoryBagFromConcept()  
+   {
+	   /**
+	    * JAXR 1.0 Specification: Section D6.4.4
+	    * Specification related tModels mapped from Concept may be automatically
+	    * categorized by the well-known uddi-org:types taxonomy in UDDI (with
+	    * tModelKey uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4) as follows:
+	    * The keyed reference is assigned a taxonomy value of specification.
+	    */
+	   CategoryBag cbag = new CategoryBag();
+	   Vector krv = new Vector();
+	   KeyedReference kr = new KeyedReference();
+	   kr.setTModelKey(UDDI_ORG_TYPES);
+	   kr.setKeyValue("specification"); 
+	   krv.add(kr);
+	   cbag.setKeyedReferenceVector(krv);
+	   return cbag; 
+   }
+   
+   private static BindingTemplates getBindingTemplates(Collection serviceBindings)
+   throws JAXRException
+   {
+	   BindingTemplates bt = new BindingTemplates();
+	   if(serviceBindings != null)
+	   {
+		   Iterator iter = serviceBindings.iterator();
+		   while(iter.hasNext())
+		   {
+			   ServiceBinding sb = (ServiceBinding)iter.next();
+			   bt.addBindingTemplate(getBindingTemplate(sb));
+		   }
+	   }
+	   return bt; 
+   } 
+   
+   private static BindingTemplate getBindingTemplate(ServiceBinding serviceBinding)
+   throws JAXRException
+   {
+	   BindingTemplate bt = new BindingTemplate();
+	   if(serviceBinding != null)
+	   {
+		   //Access URI
+		   String accessURI = serviceBinding.getAccessURI();
+		   if(accessURI != null)
+			   bt.setAccessPoint(getAccessPoint(accessURI));
+		   ServiceBinding sb = serviceBinding.getTargetBinding();
+		   if(sb != null)
+		   {
+			  bt.setHostingRedirector(new HostingRedirector(accessURI));
+		   }
+		    
+		   Key key = serviceBinding.getKey();
+		   if(key != null)
+		     bt.setBindingKey(key.getId());
+		   Key serviceKey = serviceBinding.getService().getKey();
+		   if(serviceKey != null)
+		     bt.setServiceKey(serviceKey.getId());
+		   //Description
+		   InternationalString desc = serviceBinding.getDescription();
+		   if(desc != null)
+		   {
+			   Vector dvect = new Vector();
+			   dvect.add(new Description(desc.getValue()));
+			   bt.setDescriptionVector(dvect);
+		   } 
+	   }
+	   return bt; 
+   }
+   
+   private static AccessPoint getAccessPoint(String accessURI)
+   {
+	   String type = AccessPoint.OTHER;
+	   String temp = accessURI.toLowerCase();
+	   if(temp.startsWith("https"))
+		   type = AccessPoint.HTTPS;
+	   else
+		   if(temp.startsWith("http"))
+			   type = AccessPoint.HTTP;
+		   else
+			   if(temp.startsWith("mail"))
+			     type = AccessPoint.MAILTO;
+			   else
+				   if(temp.startsWith("ftp"))
+			         type = AccessPoint.FTP;
+				   else
+					   if(Character.isLetterOrDigit(temp.charAt(0)))
+				         type = AccessPoint.PHONE; 
+	   
+	   return new AccessPoint(type, accessURI);
+   }
 }

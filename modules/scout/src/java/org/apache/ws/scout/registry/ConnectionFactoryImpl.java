@@ -38,7 +38,8 @@ import java.util.Properties;
  */
 public class ConnectionFactoryImpl extends ConnectionFactory implements Serializable
 {
-    private static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
+	private static final long serialVersionUID = 462542187808710650L;
+	private static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
     private static final String LIFECYCLEMANAGER_PROPERTY = "javax.xml.registry.lifeCycleManagerURL";
     private static final String SEMANTICEQUIVALENCES_PROPERTY = "javax.xml.registry.semanticEquivalences";
     private static final String POSTALADDRESSSCHEME_PROPERTY = "javax.xml.registry.postalAddressScheme";

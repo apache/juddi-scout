@@ -37,9 +37,7 @@ public class ClassificationSchemeImpl
         implements ClassificationScheme
 {
 
-    private Collection childConcepts = new ArrayList();
-
-    private int valueType = 1;
+    private Collection childConcepts = new ArrayList(); 
 
     private boolean external = false;
     

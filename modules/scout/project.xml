@@ -18,7 +18,7 @@
  -->
 <project>
     <pomVersion>3</pomVersion>
-    <extend>../../project.xml</extend>
+    <extend>../../etc/project.xml</extend>
 
     <id>scout</id>
     <name>Apache Scout Implementation</name>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>scout</groupId>
             <artifactId>jaxr-api</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>0.7</version>
         </dependency>
 
         <!-- external JARs -->
@@ -52,11 +52,13 @@
             <artifactId>commons-logging</artifactId>
             <version>${clogging_version}</version>
         </dependency>
+    <!--
         <dependency>
             <groupId>commons-discovery</groupId>
             <artifactId>commons-discovery</artifactId>
             <version>${commons_discovery_version}</version>
         </dependency>
+    -->
         <dependency>
             <groupId>axis</groupId>
             <artifactId>axis</artifactId>
@@ -71,6 +73,11 @@
             <groupId>axis</groupId>
             <artifactId>axis-jaxrpc</artifactId>
             <version>${axis_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j_version}</version>
         </dependency>
     </dependencies>
 </project>

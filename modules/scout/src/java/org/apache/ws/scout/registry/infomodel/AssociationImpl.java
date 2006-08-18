@@ -24,6 +24,8 @@ import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Key;
 
+import org.apache.log4j.Logger;
+
 /**
  * Implements JAXR Association Interface.
  * For futher details, look into the JAXR API Javadoc.
@@ -32,6 +34,8 @@ import javax.xml.registry.infomodel.Key;
  */
 public class AssociationImpl extends RegistryObjectImpl implements Association
 {
+	private static Logger log = Logger.getLogger(AssociationImpl.class);
+	
     private Concept type = null;
     private RegistryObject source = null;
     private RegistryObject target = null;
@@ -117,15 +121,14 @@ public class AssociationImpl extends RegistryObjectImpl implements Association
          if(k == null || k.getId() == "" ) id +=":NULL";
          else
           id+=":"+k.getId();
-         id += ":" + "Concept";  //UDDI: KeyedReference->Key Name
-         String val = "NULL";
+         id += ":" + "Concept";  //UDDI: KeyedReference->Key Name 
          if(type!= null)  id += ":" + type.getValue();
          else  id +=":NULL";
 
       }
       catch (JAXRException e)
       {
-         e.printStackTrace();
+         log.error("JaxrException::",e);
       }
 
       if(id != null) key = new KeyImpl(id);

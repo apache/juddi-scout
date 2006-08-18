@@ -16,14 +16,19 @@
  */
 package org.apache.ws.scout.util;
 
+import org.apache.juddi.datatype.CategoryBag;
 import org.apache.juddi.datatype.Description;
 import org.apache.juddi.datatype.DiscoveryURL;
 import org.apache.juddi.datatype.DiscoveryURLs;
 import org.apache.juddi.datatype.IdentifierBag;
 import org.apache.juddi.datatype.KeyedReference;
 import org.apache.juddi.datatype.Name;
+import org.apache.juddi.datatype.OverviewDoc;
 import org.apache.juddi.datatype.binding.AccessPoint;
 import org.apache.juddi.datatype.binding.BindingTemplate;
+import org.apache.juddi.datatype.binding.BindingTemplates;
+import org.apache.juddi.datatype.binding.HostingRedirector;
+import org.apache.juddi.datatype.binding.InstanceDetails; 
 import org.apache.juddi.datatype.binding.TModelInstanceDetails;
 import org.apache.juddi.datatype.binding.TModelInstanceInfo;
 import org.apache.juddi.datatype.business.BusinessEntity;
@@ -41,7 +46,10 @@ import org.apache.ws.scout.registry.infomodel.*;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.*;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -80,7 +88,7 @@ public class ScoutUddiJaxrHelper
 
       //Set Services also
       BusinessServices services = entity.getBusinessServices();
-      Vector svect = services.getBusinessServiceVector();
+      Vector svect = services != null ? services.getBusinessServiceVector() : null;
       for (int i = 0; svect != null && i < svect.size(); i++)
       {
          BusinessService s = (BusinessService)svect.elementAt(i);
@@ -98,7 +106,7 @@ public class ScoutUddiJaxrHelper
        */
 
       Contacts contacts = entity.getContacts();
-      Vector cvect = contacts.getContactVector();
+      Vector cvect = contacts != null ? contacts.getContactVector(): null;
 
       for (int i = 0; cvect != null && i < cvect.size(); i++)
       {
@@ -267,6 +275,10 @@ public class ScoutUddiJaxrHelper
       Vector descvect = bs.getDescriptionVector();
       Description desc = descvect != null ? (Description)descvect.elementAt(0) : null;
       if(desc != null ) serve.setDescription(lcm.createInternationalString(desc.getValue()));
+      //Get Service Binding
+      BindingTemplates bindingTemplates = bs.getBindingTemplates();
+      if(bindingTemplates != null) 
+    	  serve.addServiceBindings(getServiceBindings(bindingTemplates,lcm));
       return serve;
    }
 
@@ -293,25 +305,38 @@ public class ScoutUddiJaxrHelper
    public static ServiceBinding getServiceBinding(BindingTemplate bs, LifeCycleManager lcm)
            throws JAXRException
    {
-      ServiceBinding serve = new ServiceBindingImpl(lcm);
+      ServiceBindingImpl serve = new ServiceBindingImpl(lcm);
 
-
+      /**Section D.10 of JAXR 1.0 Specification */
+      
       TModelInstanceDetails details = bs.getTModelInstanceDetails();
       Vector tiv = details.getTModelInstanceInfoVector();
       for (int i = 0; tiv != null && i < tiv.size(); i++)
       {
          TModelInstanceInfo info = (TModelInstanceInfo)tiv.elementAt(i);
+         InstanceDetails idetails = info.getInstanceDetails(); 
+         Collection elinks = getExternalLinks(idetails.getOverviewDoc(),lcm);
+         SpecificationLinkImpl slink = new SpecificationLinkImpl(lcm);
+         slink.addExternalIdentifiers(elinks);
+         serve.addSpecificationLink(slink); 
+         
+         ConceptImpl c = new ConceptImpl(lcm);
+         c.setExternalLinks(elinks);
+         c.setKey(lcm.createKey(info.getTModelKey())); 
+         c.setName(lcm.createInternationalString(idetails.getInstanceParmsString()));
+         c.setValue(idetails.getInstanceParms().getValue()); 
+         
+         slink.setSpecificationObject(c);
       }
       String keystr = bs.getServiceKey();
       if (keystr != null)
       {
          Service svc = new ServiceImpl(lcm);
          svc.setKey(lcm.createKey(keystr));
-         ((ServiceBindingImpl)serve).setService(svc);
+         serve.setService(svc);
       }
       String bindingKey = bs.getBindingKey();
-      if(bindingKey != null) serve.setKey(new KeyImpl(bindingKey));
-      //TODO:Add more stuff
+      if(bindingKey != null) serve.setKey(new KeyImpl(bindingKey)); 
       //Access URI
       AccessPoint access = bs.getAccessPoint();
       if (access != null) serve.setAccessURI(access.getURL());
@@ -322,6 +347,14 @@ public class ScoutUddiJaxrHelper
       {
          Description des = (Description)dv.elementAt(0);
          serve.setDescription(new InternationalStringImpl(des.getValue()));
+      }
+      
+      HostingRedirector hr = bs.getHostingRedirector();
+      if(hr != null)
+      {
+    	 ServiceBinding sb = lcm.createServiceBinding();
+    	 sb.setKey(new KeyImpl(hr.getBindingKey()));
+         serve.setTargetBinding(sb);
       }
 
       return serve;
@@ -335,10 +368,12 @@ public class ScoutUddiJaxrHelper
       TModel tmodel = (TModel)tc.elementAt(0);
       concept.setKey(lcm.createKey(tmodel.getTModelKey()));
       concept.setName(lcm.createInternationalString(tmodel.getName()));
-
-      Vector descvect = tmodel.getDescriptionVector();
+ 
       Description desc = getDescription(tmodel);
       if( desc != null ) concept.setDescription(lcm.createInternationalString(desc.getValue()));
+      
+      CategoryBag cbag = tmodel.getCategoryBag();
+      concept.setClassifications(getClassifications(cbag,lcm)); 
 
       return concept;
    }
@@ -349,8 +384,7 @@ public class ScoutUddiJaxrHelper
       Concept concept = new ConceptImpl(lcm);
       concept.setKey(lcm.createKey(tmodel.getTModelKey()));
       concept.setName(lcm.createInternationalString(tmodel.getName()));
-
-      Vector descvect = tmodel.getDescriptionVector();
+ 
       Description desc = getDescription(tmodel);
       concept.setDescription(lcm.createInternationalString(desc.getValue()));
 
@@ -366,12 +400,90 @@ public class ScoutUddiJaxrHelper
 
       return concept;
    }
+   
+   public static Collection getExternalLinks(OverviewDoc odoc , LifeCycleManager lcm)
+   throws JAXRException
+   {
+	   ArrayList alist = new ArrayList(1);
+	   if(odoc != null)
+	   {
+		   Vector descVect = odoc.getDescriptionVector();
+		   String desc = "";
+		   if(descVect != null && descVect.size() > 0)
+		     desc = ((Description)descVect.elementAt(0)).getValue(); 
+		   alist.add(lcm.createExternalLink(odoc.getOverviewURLString(),desc));
+	   }
+	   
+	   return alist;
+   }
+   
+   public static Collection getExternalIdentifiers(IdentifierBag ibag , LifeCycleManager lcm)
+   throws JAXRException
+   {
+	   ArrayList alist = new ArrayList(1);
+	   if(ibag != null)
+	   {
+		   Vector krv = ibag.getKeyedReferenceVector();
+		   KeyedReference kr = null; 
+		   if(krv != null && krv.size() > 0)
+		   {
+			   kr = (KeyedReference)krv.elementAt(0);
+			   ClassificationSchemeImpl csimpl = new ClassificationSchemeImpl(lcm);
+			   csimpl.setKey(new KeyImpl(kr.getTModelKey()));
+			   ExternalIdentifierImpl ei = new ExternalIdentifierImpl(lcm);
+			   ei.setIdentificationScheme(csimpl);
+			   ei.setName(lcm.createInternationalString(kr.getKeyName()));
+			   ei.setValue(kr.getKeyValue());
+               alist.add(ei); 
+		   } 
+	   }
+	   
+	   return alist;
+   }
+   
+   public static Collection getClassifications(CategoryBag cbag, LifeCycleManager lcm)
+   throws JAXRException
+   {
+	   ArrayList alist = new ArrayList(1);
+	   if(cbag != null)
+	   { 
+		   Vector krv = cbag.getKeyedReferenceVector();
+		   KeyedReference kr = null; 
+		   if(krv != null && krv.size() > 0)
+		   {
+			   kr = (KeyedReference)krv.elementAt(0);
+			   ClassificationImpl cimpl = new ClassificationImpl(lcm);
+			   ClassificationSchemeImpl csimpl = new ClassificationSchemeImpl(lcm);
+			   csimpl.setKey(new KeyImpl(kr.getTModelKey())); 
+               cimpl.setClassificationScheme(csimpl);
+               cimpl.setName(lcm.createInternationalString(kr.getKeyName()));
+               cimpl.setValue(kr.getKeyValue());
+               alist.add(cimpl); 
+		   } 
+	   }
+	   
+	   return alist;
+   }
+   
 
    private static Description getDescription( TModel tmodel )
    {
       Vector descvect = tmodel.getDescriptionVector();
       Description desc = descvect != null ? (Description)descvect.elementAt(0) : null;
       return desc;
-   }
+   } 
 
+   private static Collection getServiceBindings(BindingTemplates bts, LifeCycleManager lcm)
+   throws JAXRException
+   {
+	   ArrayList alist = new ArrayList();
+	   Vector vect = bts.getBindingTemplateVector();
+	   Iterator iter = vect != null ? vect.iterator() : null;
+	   while(iter != null && iter.hasNext())
+	   {
+		  BindingTemplate bt = (BindingTemplate)iter.next();
+		  alist.add(getServiceBinding(bt,lcm)); 
+	   }
+	   return alist;
+   }
 }
