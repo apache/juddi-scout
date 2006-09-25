@@ -35,7 +35,7 @@ import java.util.Iterator;
  */
 public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBinding
 {
-    private Collection links = null;
+    private Collection links = new ArrayList();
     private String accessuri = null;
     private Service service = null;
     private ServiceBinding targetbinding = null;
@@ -52,8 +52,7 @@ public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBin
     }
 
     public void addSpecificationLink(SpecificationLink sl) throws JAXRException
-    {
-        if(links == null) links = new ArrayList();
+    { 
         links.add(sl);
         ((SpecificationLinkImpl)sl).setServiceBinding(this);
     }
@@ -61,8 +60,7 @@ public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBin
     public void addSpecificationLinks(Collection col) throws JAXRException
     {
         try
-        {
-            if(links == null) links = new ArrayList();
+        { 
             Iterator iter = col.iterator();
             while(iter.hasNext())
             {
@@ -95,14 +93,12 @@ public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBin
     }
 
     public void removeSpecificationLink(SpecificationLink link) throws JAXRException
-    {
-        if(links == null) links = new ArrayList();
+    { 
         links.remove(link);
     }
 
     public void removeSpecificationLinks(Collection col) throws JAXRException
-    {
-        if(links == null) links = new ArrayList();
+    { 
         links.removeAll(col);
     }
 
