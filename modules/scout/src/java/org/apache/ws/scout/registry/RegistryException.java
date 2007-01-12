@@ -15,10 +15,10 @@
  */
 package org.apache.ws.scout.registry;
 
-import uddiOrgApiV2.DispositionReport;
-import uddiOrgApiV2.DispositionReportDocument;
-import uddiOrgApiV2.ErrInfo;
-import uddiOrgApiV2.Result;
+import org.apache.ws.scout.uddi.DispositionReport;
+import org.apache.ws.scout.uddi.DispositionReportDocument;
+import org.apache.ws.scout.uddi.ErrInfo;
+import org.apache.ws.scout.uddi.Result;
 
 /**
  * Thrown to indicate that a UDDI Exception was encountered.

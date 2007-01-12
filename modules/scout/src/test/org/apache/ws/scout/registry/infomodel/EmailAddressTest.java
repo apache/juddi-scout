@@ -16,10 +16,10 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import junit.framework.TestCase;
-
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.infomodel.EmailAddress;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Revision$ $Date$

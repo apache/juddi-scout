@@ -18,17 +18,21 @@
  -->
 <project default="compilexsd"  xmlns:ant="jelly:ant">
 	<goal name="compilexsd">
-		<ant:mkdir dir="modules/scout/target/classes" />
-		<ant:java classname="org.apache.xmlbeans.impl.tool.SchemaCompiler" classpathref="maven.dependency.classpath" fork="true">
-			<arg value="-d" />
-			<arg value="modules/scout/target/classes" />
-			<arg value="etc/uddi_v2.xsd" />
-		</ant:java>
+		<ant:mkdir dir="modules/scout/src/java/org/apache/ws/scout/uddi" />
+		
+		<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" classpathref="maven.dependency.classpath" />	
+		<xmlbean
+			classgendir="modules/scout/target/classes"
+			srcgendir="modules/scout/src/java" 
+			classpathref="maven.dependency.classpath">
+			<fileset dir="etc/" includes="uddi_v2.xsd,uddi_v2.xsdconfig"/>
+		</xmlbean>
 		<attainGoal name="multiproject:install"/>
 	</goal>
 
 	<preGoal name="multiproject:clean">
 		<ant:delete dir="modules/scout/target/classes/schema" />
-		<ant:delete dir="modules/scout/target/classes/uddiOrgApiV2" />
+		<ant:delete dir="modules/scout/target/classes/org/apache/ws/scout/uddi" />
 	</preGoal>
+	
 </project>

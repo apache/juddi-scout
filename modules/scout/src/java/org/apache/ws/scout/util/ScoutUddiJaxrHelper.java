@@ -18,24 +18,25 @@ package org.apache.ws.scout.util;
 
 import org.apache.ws.scout.registry.infomodel.*;
 
-import uddiOrgApiV2.AccessPoint;
-import uddiOrgApiV2.BindingTemplate;
-import uddiOrgApiV2.BusinessDetail;
-import uddiOrgApiV2.BusinessEntity;
-import uddiOrgApiV2.BusinessService;
-import uddiOrgApiV2.BusinessServices;
-import uddiOrgApiV2.Contact;
-import uddiOrgApiV2.Contacts;
-import uddiOrgApiV2.Description;
-import uddiOrgApiV2.DiscoveryURL;
-import uddiOrgApiV2.DiscoveryURLs;
-import uddiOrgApiV2.IdentifierBag;
-import uddiOrgApiV2.KeyedReference;
-import uddiOrgApiV2.Name;
-import uddiOrgApiV2.ServiceInfo;
-import uddiOrgApiV2.TModel;
-import uddiOrgApiV2.TModelDetail;
-import uddiOrgApiV2.TModelInfo;
+import org.apache.ws.scout.uddi.AccessPoint;
+import org.apache.ws.scout.uddi.BindingTemplate;
+import org.apache.ws.scout.uddi.BindingTemplates;
+import org.apache.ws.scout.uddi.BusinessDetail;
+import org.apache.ws.scout.uddi.BusinessEntity;
+import org.apache.ws.scout.uddi.BusinessService;
+import org.apache.ws.scout.uddi.BusinessServices;
+import org.apache.ws.scout.uddi.Contact;
+import org.apache.ws.scout.uddi.Contacts;
+import org.apache.ws.scout.uddi.Description;
+import org.apache.ws.scout.uddi.DiscoveryURL;
+import org.apache.ws.scout.uddi.DiscoveryURLs;
+import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.KeyedReference;
+import org.apache.ws.scout.uddi.Name;
+import org.apache.ws.scout.uddi.ServiceInfo;
+import org.apache.ws.scout.uddi.TModel;
+import org.apache.ws.scout.uddi.TModelDetail;
+import org.apache.ws.scout.uddi.TModelInfo;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
@@ -175,6 +176,7 @@ public class ScoutUddiJaxrHelper
       {
          BusinessService s = (BusinessService)sarr[i];
          org.addService(getService(s, lcm));
+         
       }
 
       /*
@@ -269,6 +271,16 @@ public class ScoutUddiJaxrHelper
       Description[] descarr = bs.getDescriptionArray();
       Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
       if(desc != null ) serve.setDescription(lcm.createInternationalString(desc.getStringValue()));
+      
+      //Populate the ServiceBindings for this Service
+      BindingTemplates bts = bs.getBindingTemplates();
+      BindingTemplate[] btarr = bts != null ? bts.getBindingTemplateArray() : null;
+      for (int i = 0; btarr != null && i < btarr.length; i++)
+      {
+    	  BindingTemplate bindingTemplate = (BindingTemplate)btarr[i];
+          serve.addServiceBinding(getServiceBinding(bindingTemplate, lcm));
+      }
+      
       return serve;
    }
 

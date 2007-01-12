@@ -16,11 +16,12 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import javax.xml.registry.infomodel.Slot;
+
 import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.Slot;
 
 import junit.framework.TestCase;
 

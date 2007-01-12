@@ -16,7 +16,7 @@
 package org.apache.ws.scout.transport;
 
 import java.io.ByteArrayInputStream;
-import java.net.URL;
+import java.net.URI;
 import java.util.Vector;
 
 import org.apache.ws.scout.registry.RegistryException;
@@ -43,7 +43,7 @@ public class AxisTransport implements Transport
   // private reference to the jUDDI logger
   private static Log log = LogFactory.getLog(AxisTransport.class);
 
-  public Element send(Element request,URL endpointURL)
+  public Element send(Element request,URI endpointURL)
     throws RegistryException
   {    
     Service service = null;
@@ -56,8 +56,8 @@ public class AxisTransport implements Transport
     try {
       service = new Service();
       call = (Call)service.createCall();
-      call.setTargetEndpointAddress(endpointURL);
-
+      call.setTargetEndpointAddress(endpointURL.toURL());
+      
       String requestString = XMLUtils.ElementToString(request);
       SOAPBodyElement body = new SOAPBodyElement(new ByteArrayInputStream(requestString.getBytes("UTF-8")));
       Object[] soapBodies = new Object[] { body };
@@ -87,7 +87,7 @@ public class AxisTransport implements Transport
     return response;
   }
   
-  public String send(String request,URL endpointURL)
+  public String send(String request,URI endpointURL)
     throws RegistryException
   {    
     Service service = null;
@@ -100,7 +100,7 @@ public class AxisTransport implements Transport
         
       service = new Service();
       call = (Call)service.createCall();
-      call.setTargetEndpointAddress(endpointURL);
+      call.setTargetEndpointAddress(endpointURL.toURL());
     
       SOAPBodyElement body = new SOAPBodyElement(new ByteArrayInputStream(request.getBytes("UTF-8")));
       Object[] soapBodies = new Object[] { body };

@@ -16,26 +16,21 @@
  */
 package org.apache.ws.scout;
 
-import junit.framework.TestCase;
-
-import javax.xml.registry.BulkResponse;
-import javax.xml.registry.BusinessLifeCycleManager;
-import javax.xml.registry.BusinessQueryManager;
-import javax.xml.registry.Connection;
-import javax.xml.registry.ConnectionFactory;
-import javax.xml.registry.FindQualifier;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.RegistryService;
-import javax.xml.registry.infomodel.Key;
-import javax.xml.registry.infomodel.Organization;
-
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.Set;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.BusinessQueryManager;
+import javax.xml.registry.FindQualifier;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
 
 /**
  * Testcase for Delete organization.
@@ -48,57 +43,29 @@ import java.util.Set;
  * 
  * @since Sep 27, 2005
  */
-public class JAXR03DeleteOrgTest extends TestCase
+public class JAXR03DeleteOrgTest extends BaseTestCase
 {
-    Connection connection = null;
     
     String queryString = "USA -- APACHE SCOUT TEST";
 
     BusinessQueryManager bqm = null;
     BusinessLifeCycleManager blm = null;
-
-    private String userid = System.getProperty("uddi.test.uid") == null ? 
-							"juddi" : 
-							System.getProperty("uddi.test.uid");
-
-    private String passwd = System.getProperty("uddi.test.pass") == null ? 
-							"password" : 
-							System.getProperty("uddi.test.pass");
+    
+    @Override
+    public void setUp() {
+    	// TODO Auto-generated method stub
+    	super.setUp();
+    }
+    
+    @Override
+    public void tearDown() {
+    	// TODO Auto-generated method stub
+    	super.tearDown();
+    }
 
 	public void testDelete() throws Exception
     {
-
-        // Define connection configuration properties
-        // To query, you need only the query URL
-        Properties props = new Properties();
-
-        props.setProperty("javax.xml.registry.queryManagerURL",
-        				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
-        				"http://localhost:8080/juddi/inquiry" : 
-        				System.getProperty("javax.xml.registry.queryManagerURL"));
-
-        props.setProperty("javax.xml.registry.lifeCycleManagerURL",
-						System.getProperty("javax.xml.registry.lifeCycleManagerURL") == null ? 
-						"http://localhost:8080/juddi/publish" :
-						System.getProperty("javax.xml.registry.lifeCycleManagerURL"));
-
-        props.setProperty("javax.xml.registry.factoryClass",
-                "org.apache.ws.scout.registry.ConnectionFactoryImpl");
-        props.setProperty("javax.xml.registry.uddi.maxRows",
-        		"2");
-
-        try
-        {
-            // Create the connection, passing it the configuration properties
-            ConnectionFactory factory = ConnectionFactory.newInstance();
-            factory.setProperties(props);
-            connection = factory.createConnection();
-            login();
-        } catch (JAXRException e)
-        {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
+		login();
         try
         {
             // Get registry service and business query manager
@@ -125,9 +92,6 @@ public class JAXR03DeleteOrgTest extends TestCase
         {
             e.printStackTrace();
 			fail(e.getMessage());
-        } finally
-        {
-            connection.close();
         }
 
     }

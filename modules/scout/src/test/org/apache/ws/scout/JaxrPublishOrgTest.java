@@ -16,12 +16,30 @@
  */
 package org.apache.ws.scout;
 
-import junit.framework.TestCase;
-
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.*;
-import java.util.*;
 import java.net.PasswordAuthentication;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRResponse;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Classification;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.EmailAddress;
+import javax.xml.registry.infomodel.ExternalIdentifier;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.PersonName;
+import javax.xml.registry.infomodel.PostalAddress;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.TelephoneNumber;
+import javax.xml.registry.infomodel.User;
 
 /**
  * Test to check Jaxr Publish
@@ -30,48 +48,21 @@ import java.net.PasswordAuthentication;
  * @author <mailto:anil@apache.org>Anil Saldhana
  * @since Nov 20, 2004
  */
-public class JaxrPublishOrgTest extends TestCase
+public class JaxrPublishOrgTest extends BaseTestCase
 {
-    private Connection connection = null;
     //Tested on a local jboss instance
-    private String userid = "jboss";
-    private String passwd = "jboss";
+    //private String userid = "jboss";
+    //private String passwd = "jboss";
     private BusinessLifeCycleManager blm = null;
 
     public void setUp()
     {
-        // Define connection configuration properties
-        // To query, you need only the query URL
-        Properties props = new Properties();
-        props.setProperty("javax.xml.registry.queryManagerURL",
-                "http://localhost:7080/juddi/inquiry");
-        props.setProperty("javax.xml.registry.lifeCycleManagerURL",
-                "http://localhost:7080/juddi/publish");
-        props.setProperty("javax.xml.registry.factoryClass",
-                "org.apache.ws.scout.registry.ConnectionFactoryImpl");
-
-        try
-        {
-            // Create the connection, passing it the configuration properties
-            ConnectionFactory factory = ConnectionFactory.newInstance();
-            factory.setProperties(props);
-            connection = factory.createConnection();
-        } catch (JAXRException e)
-        {
-            e.printStackTrace();
-        }
+    	super.setUp();
     }
 
     public void tearDown()
     {
-        try
-        {
-            if (connection != null)
-                connection.close();
-        } catch (JAXRException e)
-        {
-
-        }
+        super.tearDown();
     }
 
     public void testPublish()

@@ -15,10 +15,9 @@
  */
 package org.apache.ws.scout.transport;
 
-import java.net.URL;
+import java.net.URI;
 
 import org.apache.ws.scout.registry.RegistryException;
-
 import org.w3c.dom.Element;
 
 /**
@@ -30,9 +29,9 @@ import org.w3c.dom.Element;
  */
 public interface Transport
 {
-  Element send(Element request,URL endPointURL)
+  Element send(Element request,URI endPointURI)
     throws RegistryException;
   
-  String send(String request,URL endpointURL)
+  String send(String request,URI endpointURI)
     throws RegistryException;
 }

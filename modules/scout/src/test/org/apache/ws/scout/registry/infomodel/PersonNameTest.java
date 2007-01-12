@@ -16,9 +16,9 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import javax.xml.registry.infomodel.PersonName;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.infomodel.PersonName;
 
 import junit.framework.TestCase;
 

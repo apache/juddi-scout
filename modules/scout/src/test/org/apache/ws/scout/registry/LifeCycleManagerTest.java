@@ -16,7 +16,31 @@
  */
 package org.apache.ws.scout.registry;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.InvalidRequestException;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.Classification;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.EmailAddress;
+import javax.xml.registry.infomodel.ExternalIdentifier;
+import javax.xml.registry.infomodel.ExternalLink;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.PersonName;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.User;
+
 import junit.framework.TestCase;
+
+import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
@@ -27,36 +51,14 @@ import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.LocalizedStringImpl;
 import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
-import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
-import org.apache.ws.scout.registry.infomodel.ServiceImpl;
-import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
-import org.apache.ws.scout.registry.infomodel.UserImpl;
 import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
+import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.registry.infomodel.SlotImpl;
 import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
-import org.apache.ws.scout.registry.infomodel.AssociationImpl;
-import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
-
-import javax.xml.registry.InvalidRequestException;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.LifeCycleManager;
-import javax.xml.registry.UnsupportedCapabilityException;
-import javax.xml.registry.BulkResponse;
-import javax.xml.registry.RegistryService;
-import javax.xml.registry.infomodel.Classification;
-import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.EmailAddress;
-import javax.xml.registry.infomodel.ExternalIdentifier;
-import javax.xml.registry.infomodel.ExternalLink;
-import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.User;
-import javax.xml.registry.infomodel.Association;
-import javax.xml.registry.infomodel.PersonName;
-import javax.xml.registry.infomodel.ServiceBinding;
-import java.util.ArrayList;
-import java.util.Collection;
+import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
+import org.apache.ws.scout.registry.infomodel.UserImpl;
 
 /**
  *

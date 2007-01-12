@@ -45,11 +45,11 @@
   <package>org.apache.ws.scout</package>
   <logo>/images/scout.jpg</logo>
   <description>
-    Apache Scout is an implementation of the JSR 93 (JAXR)
+      Apache Scout is an implementation of the JSR 93 - JavaTM API for XML Registries 1.0 (JAXR)
   </description>
   <!-- a short description of what the project does -->
 
-  <shortDescription>Apache Scout is an implementation of the JSR 93 - JavaTM API for XML Registries 1.0 (JAXR)</shortDescription>
+  <shortDescription>Apache Scout is an implementation of the JSR 93 (JAXR)</shortDescription>
   <!-- the project home page -->
 
   <url>http://ws.apache.org/scout/</url>
@@ -95,6 +95,12 @@
             <name>Davanum Srinivas</name>
             <id>dims</id>
             <email>dims@yahoo.com</email>
+            <organization></organization>
+        </developer>
+        <developer>
+            <name>Kurt T Stam</name>
+            <id>kstam</id>
+            <email>kstam@apache.org</email>
             <organization></organization>
         </developer>
   </developers>

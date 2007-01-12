@@ -16,14 +16,15 @@
  */
 package org.apache.ws.scout.registry;
 
-import junit.framework.TestCase;
+import java.util.Properties;
 
 import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.UnsupportedCapabilityException;
-import java.util.Properties;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Revision$ $Date$
@@ -140,30 +141,32 @@ public class ConnectionFactoryTest extends TestCase {
         }
     }
 
-    public void testCreateConnectionWithInvalidQueryURL() {
-        factory.setQueryManagerURL("foo:bar");
-        try {
-            factory.createConnection();
-            fail("did not reject invalid URL");
-        } catch (InvalidRequestException e) {
-            // OK
-        } catch (JAXRException e) {
-            fail("threw JAXRException");
-        }
-    }
-
-    public void testCreateConnectionWithInvalidLifeCycleURL() {
-        factory.setQueryManagerURL("http://localhost");
-        factory.setLifeCycleManagerURL("foo:bar");
-        try {
-            factory.createConnection();
-            fail("did not reject invalid URL");
-        } catch (InvalidRequestException e) {
-            // OK
-        } catch (JAXRException e) {
-            fail("threw JAXRException");
-        }
-    }
+// KS: This is no longer invalid..
+//    
+//    public void testCreateConnectionWithInvalidQueryURL() {
+//        factory.setQueryManagerURL("foo:bar");
+//        try {
+//            factory.createConnection();
+//            fail("did not reject invalid URL");
+//        } catch (InvalidRequestException e) {
+//            // OK
+//        } catch (JAXRException e) {
+//            fail("threw JAXRException");
+//        }
+//    }
+//
+//    public void testCreateConnectionWithInvalidLifeCycleURL() {
+//        factory.setQueryManagerURL("http://localhost");
+//        factory.setLifeCycleManagerURL("foo:bar");
+//        try {
+//            factory.createConnection();
+//            fail("did not reject invalid URL");
+//        } catch (InvalidRequestException e) {
+//            // OK
+//        } catch (JAXRException e) {
+//            fail("threw JAXRException");
+//        }
+//    }
 
     public void testCreateConnectionWithNullQueryURL() {
         try {
