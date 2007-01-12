@@ -37,11 +37,11 @@ import org.apache.ws.scout.registry.infomodel.SlotImpl;
 import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
 
-import uddiOrgApiV2.BusinessDetail;
-import uddiOrgApiV2.BusinessInfo;
-import uddiOrgApiV2.Description;
-import uddiOrgApiV2.Name;
-import uddiOrgApiV2.ServiceInfo;
+import org.apache.ws.scout.uddi.BusinessDetail;
+import org.apache.ws.scout.uddi.BusinessInfo;
+import org.apache.ws.scout.uddi.Description;
+import org.apache.ws.scout.uddi.Name;
+import org.apache.ws.scout.uddi.ServiceInfo;
 
 import javax.activation.DataHandler;
 import javax.xml.registry.BulkResponse;

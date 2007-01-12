@@ -24,6 +24,8 @@ import javax.xml.registry.infomodel.PostalAddress;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,7 +44,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
     private User primaryContact;
     private Set users = new HashSet();
     private Set telephoneNumbers = new HashSet();
-    private Set services = new HashSet();
+    private Collection services = new ArrayList();
 
     public OrganizationImpl(LifeCycleManager lifeCycleManager)
     {
@@ -212,7 +214,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
 
     public void removeService(Service service) throws JAXRException
     {
-        services.remove(service);
+    	services.remove(service);
     }
 
     public void removeServices(Collection collection) throws JAXRException

@@ -27,7 +27,7 @@
         <dependency>
             <groupId>scout</groupId>
             <artifactId>jaxr-api</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <!-- external JARs -->
@@ -77,5 +77,42 @@
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.8.0</version>
+		</dependency>
+		<!--  added for unittesting, to run embedded juddi -->
+		<dependency>
+			<groupId>juddi</groupId>
+			<artifactId>juddi</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<packaging>jar</packaging>
+		</dependency>
+		<dependency>
+			<groupId>juddi</groupId>
+			<artifactId>juddi-client</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<packaging>jar</packaging>
+		</dependency> 
+		<dependency>
+			<groupId>mysql</groupId>
+    		<artifactId>mysql-connector-java</artifactId>
+    		<version>3.1.13</version>
+    		<packaging>jar</packaging>
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+    		<artifactId>jnpserver</artifactId>
+    		<version>3.2.3</version>
+    		<packaging>jar</packaging>
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+    		<artifactId>jbossall-client</artifactId>
+    		<version>3.2.1</version>
+    		<packaging>jar</packaging>
+		</dependency>
+		<!-- close embedded juddi -->
     </dependencies>
 </project>

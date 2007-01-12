@@ -16,12 +16,33 @@
  */
 package org.apache.ws.scout;
 
-import junit.framework.TestCase;
-
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.*;
-import java.util.*;
 import java.net.PasswordAuthentication;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.BusinessQueryManager;
+import javax.xml.registry.FindQualifier;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRResponse;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Classification;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.EmailAddress;
+import javax.xml.registry.infomodel.ExternalIdentifier;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.PersonName;
+import javax.xml.registry.infomodel.PostalAddress;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.TelephoneNumber;
+import javax.xml.registry.infomodel.User;
 
 /**
  * Test to check Jaxr Publish
@@ -30,61 +51,19 @@ import java.net.PasswordAuthentication;
  * @author <mailto:anil@apache.org>Anil Saldhana
  * @since Nov 20, 2004
  */
-public class JAXR01PublishOrgTest extends TestCase
+public class JAXR01PublishOrgTest extends BaseTestCase
 {
-    private Connection connection = null;
-
-    private String userid = System.getProperty("uddi.test.uid") == null ? 
-    						"juddi" : 
-    						System.getProperty("uddi.test.uid");
-
-    private String passwd = System.getProperty("uddi.test.pass") == null ? 
-							"password" : 
-							System.getProperty("uddi.test.pass");
 
     private BusinessLifeCycleManager blm = null;
 
     public void setUp()
     {
-        // Define connection configuration properties
-        // To query, you need only the query URL
-        Properties props = new Properties();
-
-        props.setProperty("javax.xml.registry.queryManagerURL",
-        				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
-        				"http://localhost:8080/juddi/inquiry" : 
-        				System.getProperty("javax.xml.registry.queryManagerURL"));
-
-        props.setProperty("javax.xml.registry.lifeCycleManagerURL",
-        				System.getProperty("javax.xml.registry.lifeCycleManagerURL") == null ? 
-        						"http://localhost:8080/juddi/publish" :
-        				System.getProperty("javax.xml.registry.lifeCycleManagerURL"));
-
-        props.setProperty("javax.xml.registry.factoryClass",
-                "org.apache.ws.scout.registry.ConnectionFactoryImpl");
-
-        try
-        {
-            // Create the connection, passing it the configuration properties
-            ConnectionFactory factory = ConnectionFactory.newInstance();
-            factory.setProperties(props);
-            connection = factory.createConnection();
-        } catch (JAXRException e)
-        {
-            e.printStackTrace();
-        }
+        super.setUp();
     }
 
     public void tearDown()
     {
-        try
-        {
-            if (connection != null)
-                connection.close();
-        } catch (JAXRException e)
-        {
-
-        }
+      super.tearDown();
     }
 
     public void testPublish()
@@ -122,6 +101,29 @@ public class JAXR01PublishOrgTest extends TestCase
                     System.err.println(e.toString());
                 }
             }
+            
+            BusinessQueryManager bqm = rs.getBusinessQueryManager();
+            System.out.println("We have the Business Query Manager");
+
+            // Define find qualifiers and name patterns
+            Collection findQualifiers = new ArrayList();
+            findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
+            Collection namePatterns = new ArrayList();
+            namePatterns.add("%Kurt%");
+
+            // Find based upon qualifier type and values
+            System.out.println("\n-- searching the registry --\n");
+            BulkResponse response =
+                    bqm.findOrganizations(findQualifiers,
+                            namePatterns,
+                            null,
+                            null,
+                            null,
+                            null);
+
+            // check how many organisation we have matched
+            Collection org2s = response.getCollection();
+            
         } catch (JAXRException e)
         {
             e.printStackTrace();
@@ -137,10 +139,17 @@ public class JAXR01PublishOrgTest extends TestCase
     private Organization createOrganization()
             throws JAXRException
     {
-        Organization org = blm.createOrganization(getIString("USA -- APACHE SCOUT TEST"));
+        Organization org = blm.createOrganization(getIString("Kurt SCOUT TEST"));
         org.setDescription(getIString("Apache Software Foundation"));
-        Service service = blm.createService(getIString("Apache JAXR Service"));
+        Service service = blm.createService(getIString("Apache JAXR Service with Binding"));
         service.setDescription(getIString("Services of UDDI Registry"));
+        
+        ServiceBinding serviceBinding = blm.createServiceBinding();
+		serviceBinding.setName(blm.createInternationalString("JBossESB Test ServiceBinding"));
+		serviceBinding.setDescription(blm.createInternationalString("Binding Description"));
+		serviceBinding.setAccessURI("http://www.jboss.com/services/TestService");
+	    service.addServiceBinding(serviceBinding);
+        
         User user = blm.createUser();
         org.setPrimaryContact(user);
         PersonName personName = blm.createPersonName("Anil S");

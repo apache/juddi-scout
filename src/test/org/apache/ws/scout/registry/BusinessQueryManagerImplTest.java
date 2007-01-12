@@ -1,10 +1,12 @@
 package org.apache.ws.scout.registry;
 
-import junit.framework.TestCase;
-
 import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.infomodel.ClassificationScheme;
+
+import org.apache.ws.scout.BaseTestCase;
+
+import junit.framework.TestCase;
 
 /**
  *  Tests the BusinessLifecycleManagerImpl class

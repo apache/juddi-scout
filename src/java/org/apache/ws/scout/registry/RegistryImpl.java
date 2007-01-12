@@ -16,13 +16,15 @@
 package org.apache.ws.scout.registry;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.ws.scout.transport.Transport;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Document;
@@ -30,81 +32,79 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import org.apache.ws.scout.transport.Transport;
-
-import uddiOrgApiV2.AssertionStatusReport;
-import uddiOrgApiV2.AssertionStatusReportDocument;
-import uddiOrgApiV2.AuthToken;
-import uddiOrgApiV2.AuthTokenDocument;
-import uddiOrgApiV2.BindingDetail;
-import uddiOrgApiV2.BindingDetailDocument;
-import uddiOrgApiV2.BindingTemplate;
-import uddiOrgApiV2.BusinessDetail;
-import uddiOrgApiV2.BusinessDetailDocument;
-import uddiOrgApiV2.BusinessEntity;
-import uddiOrgApiV2.BusinessList;
-import uddiOrgApiV2.BusinessListDocument;
-import uddiOrgApiV2.BusinessService;
-import uddiOrgApiV2.CategoryBag;
-import uddiOrgApiV2.DeleteBinding;
-import uddiOrgApiV2.DeleteBindingDocument;
-import uddiOrgApiV2.DeleteBusiness;
-import uddiOrgApiV2.DeleteBusinessDocument;
-import uddiOrgApiV2.DeletePublisherAssertions;
-import uddiOrgApiV2.DeletePublisherAssertionsDocument;
-import uddiOrgApiV2.DeleteService;
-import uddiOrgApiV2.DeleteServiceDocument;
-import uddiOrgApiV2.DeleteTModel;
-import uddiOrgApiV2.DeleteTModelDocument;
-import uddiOrgApiV2.DiscoveryURLs;
-import uddiOrgApiV2.DispositionReport;
-import uddiOrgApiV2.DispositionReportDocument;
-import uddiOrgApiV2.FindBinding;
-import uddiOrgApiV2.FindBindingDocument;
-import uddiOrgApiV2.FindBusiness;
-import uddiOrgApiV2.FindBusinessDocument;
-import uddiOrgApiV2.FindQualifiers;
-import uddiOrgApiV2.FindService;
-import uddiOrgApiV2.FindServiceDocument;
-import uddiOrgApiV2.FindTModel;
-import uddiOrgApiV2.FindTModelDocument;
-import uddiOrgApiV2.GetAssertionStatusReport;
-import uddiOrgApiV2.GetAssertionStatusReportDocument;
-import uddiOrgApiV2.GetAuthToken;
-import uddiOrgApiV2.GetAuthTokenDocument;
-import uddiOrgApiV2.GetBusinessDetail;
-import uddiOrgApiV2.GetBusinessDetailDocument;
-import uddiOrgApiV2.GetPublisherAssertions;
-import uddiOrgApiV2.GetPublisherAssertionsDocument;
-import uddiOrgApiV2.GetServiceDetail;
-import uddiOrgApiV2.GetServiceDetailDocument;
-import uddiOrgApiV2.GetTModelDetail;
-import uddiOrgApiV2.GetTModelDetailDocument;
-import uddiOrgApiV2.IdentifierBag;
-import uddiOrgApiV2.Name;
-import uddiOrgApiV2.PublisherAssertion;
-import uddiOrgApiV2.PublisherAssertions;
-import uddiOrgApiV2.PublisherAssertionsDocument;
-import uddiOrgApiV2.SaveBinding;
-import uddiOrgApiV2.SaveBindingDocument;
-import uddiOrgApiV2.SaveBusiness;
-import uddiOrgApiV2.SaveBusinessDocument;
-import uddiOrgApiV2.SaveService;
-import uddiOrgApiV2.SaveServiceDocument;
-import uddiOrgApiV2.SaveTModel;
-import uddiOrgApiV2.SaveTModelDocument;
-import uddiOrgApiV2.ServiceDetail;
-import uddiOrgApiV2.ServiceDetailDocument;
-import uddiOrgApiV2.ServiceList;
-import uddiOrgApiV2.ServiceListDocument;
-import uddiOrgApiV2.SetPublisherAssertions;
-import uddiOrgApiV2.SetPublisherAssertionsDocument;
-import uddiOrgApiV2.TModel;
-import uddiOrgApiV2.TModelBag;
-import uddiOrgApiV2.TModelDetail;
-import uddiOrgApiV2.TModelDetailDocument;
-import uddiOrgApiV2.TModelList;
-import uddiOrgApiV2.TModelListDocument;
+import org.apache.ws.scout.uddi.AssertionStatusReport;
+import org.apache.ws.scout.uddi.AssertionStatusReportDocument;
+import org.apache.ws.scout.uddi.AuthToken;
+import org.apache.ws.scout.uddi.AuthTokenDocument;
+import org.apache.ws.scout.uddi.BindingDetail;
+import org.apache.ws.scout.uddi.BindingDetailDocument;
+import org.apache.ws.scout.uddi.BindingTemplate;
+import org.apache.ws.scout.uddi.BusinessDetail;
+import org.apache.ws.scout.uddi.BusinessDetailDocument;
+import org.apache.ws.scout.uddi.BusinessEntity;
+import org.apache.ws.scout.uddi.BusinessList;
+import org.apache.ws.scout.uddi.BusinessListDocument;
+import org.apache.ws.scout.uddi.BusinessService;
+import org.apache.ws.scout.uddi.CategoryBag;
+import org.apache.ws.scout.uddi.DeleteBinding;
+import org.apache.ws.scout.uddi.DeleteBindingDocument;
+import org.apache.ws.scout.uddi.DeleteBusiness;
+import org.apache.ws.scout.uddi.DeleteBusinessDocument;
+import org.apache.ws.scout.uddi.DeletePublisherAssertions;
+import org.apache.ws.scout.uddi.DeletePublisherAssertionsDocument;
+import org.apache.ws.scout.uddi.DeleteService;
+import org.apache.ws.scout.uddi.DeleteServiceDocument;
+import org.apache.ws.scout.uddi.DeleteTModel;
+import org.apache.ws.scout.uddi.DeleteTModelDocument;
+import org.apache.ws.scout.uddi.DiscoveryURLs;
+import org.apache.ws.scout.uddi.DispositionReport;
+import org.apache.ws.scout.uddi.DispositionReportDocument;
+import org.apache.ws.scout.uddi.FindBinding;
+import org.apache.ws.scout.uddi.FindBindingDocument;
+import org.apache.ws.scout.uddi.FindBusiness;
+import org.apache.ws.scout.uddi.FindBusinessDocument;
+import org.apache.ws.scout.uddi.FindQualifiers;
+import org.apache.ws.scout.uddi.FindService;
+import org.apache.ws.scout.uddi.FindServiceDocument;
+import org.apache.ws.scout.uddi.FindTModel;
+import org.apache.ws.scout.uddi.FindTModelDocument;
+import org.apache.ws.scout.uddi.GetAssertionStatusReport;
+import org.apache.ws.scout.uddi.GetAssertionStatusReportDocument;
+import org.apache.ws.scout.uddi.GetAuthToken;
+import org.apache.ws.scout.uddi.GetAuthTokenDocument;
+import org.apache.ws.scout.uddi.GetBusinessDetail;
+import org.apache.ws.scout.uddi.GetBusinessDetailDocument;
+import org.apache.ws.scout.uddi.GetPublisherAssertions;
+import org.apache.ws.scout.uddi.GetPublisherAssertionsDocument;
+import org.apache.ws.scout.uddi.GetServiceDetail;
+import org.apache.ws.scout.uddi.GetServiceDetailDocument;
+import org.apache.ws.scout.uddi.GetTModelDetail;
+import org.apache.ws.scout.uddi.GetTModelDetailDocument;
+import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.Name;
+import org.apache.ws.scout.uddi.PublisherAssertion;
+import org.apache.ws.scout.uddi.PublisherAssertions;
+import org.apache.ws.scout.uddi.PublisherAssertionsDocument;
+import org.apache.ws.scout.uddi.SaveBinding;
+import org.apache.ws.scout.uddi.SaveBindingDocument;
+import org.apache.ws.scout.uddi.SaveBusiness;
+import org.apache.ws.scout.uddi.SaveBusinessDocument;
+import org.apache.ws.scout.uddi.SaveService;
+import org.apache.ws.scout.uddi.SaveServiceDocument;
+import org.apache.ws.scout.uddi.SaveTModel;
+import org.apache.ws.scout.uddi.SaveTModelDocument;
+import org.apache.ws.scout.uddi.ServiceDetail;
+import org.apache.ws.scout.uddi.ServiceDetailDocument;
+import org.apache.ws.scout.uddi.ServiceList;
+import org.apache.ws.scout.uddi.ServiceListDocument;
+import org.apache.ws.scout.uddi.SetPublisherAssertions;
+import org.apache.ws.scout.uddi.SetPublisherAssertionsDocument;
+import org.apache.ws.scout.uddi.TModel;
+import org.apache.ws.scout.uddi.TModelBag;
+import org.apache.ws.scout.uddi.TModelDetail;
+import org.apache.ws.scout.uddi.TModelDetailDocument;
+import org.apache.ws.scout.uddi.TModelList;
+import org.apache.ws.scout.uddi.TModelListDocument;
 
 /**
  * RegistryImpl is the implementation of IRegistry.
@@ -138,9 +138,9 @@ public class RegistryImpl implements IRegistry {
 	public static final String DEFAULT_UDDI_VERSION = "2.0";
 	public static final String DEFAULT_UDDI_NAMESPACE = "urn:uddi-org:api_v2";
 
-	private URL adminURL;
-	private URL inquiryURL;
-	private URL publishURL;
+	private URI adminURI;
+	private URI inquiryURI;
+	private URI publishURI;
 
 	private Transport transport;
 
@@ -171,22 +171,22 @@ public class RegistryImpl implements IRegistry {
 		try {
 			String iURL = props.getProperty(INQUIRY_ENDPOINT_PROPERTY_NAME);
 			if (iURL != null)
-				this.setInquiryURL(new URL(iURL));
+				this.setInquiryURI(new URI(iURL));
 			else
-				this.setInquiryURL(new URL(DEFAULT_INQUIRY_ENDPOINT));
+				this.setInquiryURI(new URI(DEFAULT_INQUIRY_ENDPOINT));
 
 			String pURL = props.getProperty(PUBLISH_ENDPOINT_PROPERTY_NAME);
 			if (pURL != null)
-				this.setPublishURL(new URL(pURL));
+				this.setPublishURI(new URI(pURL));
 			else
-				this.setPublishURL(new URL(DEFAULT_PUBLISH_ENDPOINT));
+				this.setPublishURI(new URI(DEFAULT_PUBLISH_ENDPOINT));
 
 			String aURL = props.getProperty(ADMIN_ENDPOINT_PROPERTY_NAME);
 			if (aURL != null)
-				this.setAdminURL(new URL(aURL));
+				this.setAdminURI(new URI(aURL));
 			else
-				this.setAdminURL(new URL(DEFAULT_ADMIN_ENDPOINT));
-		} catch (MalformedURLException muex) {
+				this.setAdminURI(new URI(DEFAULT_ADMIN_ENDPOINT));
+		} catch (URISyntaxException muex) {
 			muex.printStackTrace();
 		}
 
@@ -229,11 +229,11 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public String execute(String uddiRequest, String urltype)
 			throws RegistryException {
-		URL endPointURL = null;
+		URI endPointURL = null;
 		if (urltype.equalsIgnoreCase("INQUIRY"))
-			endPointURL = this.getInquiryURL();
+			endPointURL = this.getInquiryURI();
 		else
-			endPointURL = this.getPublishURL();
+			endPointURL = this.getPublishURI();
 
 		// A SOAP request is made and a SOAP response
 		// is returned.
@@ -244,13 +244,15 @@ public class RegistryImpl implements IRegistry {
 	/**
 	 * 
 	 */
-	public XmlObject execute(XmlObject uddiRequest, URL endPointURL)
+	public XmlObject execute(XmlObject uddiRequest, URI endPointURI)
 			throws RegistryException {
 
 		Document doc;
 		try {
-			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-					.parse(uddiRequest.newInputStream());
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			docBuilderFactory.setNamespaceAware(true);
+			DocumentBuilder docBuilder= docBuilderFactory.newDocumentBuilder();
+			doc = docBuilder.parse(uddiRequest.newInputStream());
 		} catch (SAXException saxe) {
 			throw (new RegistryException(saxe));
 		} catch (ParserConfigurationException pce) {
@@ -259,15 +261,16 @@ public class RegistryImpl implements IRegistry {
 			throw (new RegistryException(ioe));
 		}
 
+		
 		Element request = doc.getDocumentElement();
+		
 
 		request.setAttribute("generic", this.getUddiVersion());
-		request.setAttribute("xmlns", this.getUddiNamespace());
-
+		request.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
 		// A SOAP request is made and a SOAP response
 		// is returned.
 
-		Element response = transport.send(request, endPointURL);
+		Element response = transport.send(request, endPointURI);
 
 		// First, let's make sure that a response
 		// (any response) is found in the SOAP Body.
@@ -352,31 +355,31 @@ public class RegistryImpl implements IRegistry {
 	/**
 	 * @return Returns the adminURL.
 	 */
-	public URL getAdminURL() {
-		return this.adminURL;
+	public URI getAdminURI() {
+		return this.adminURI;
 	}
 
 	/**
 	 * @param adminURL
 	 *            The adminURL to set.
 	 */
-	public void setAdminURL(URL url) {
-		this.adminURL = url;
+	public void setAdminURI(URI url) {
+		this.adminURI = url;
 	}
 
 	/**
 	 * @return Returns the inquiryURL.
 	 */
-	public URL getInquiryURL() {
-		return this.inquiryURL;
+	public URI getInquiryURI() {
+		return this.inquiryURI;
 	}
 
 	/**
 	 * @param inquiryURL
 	 *            The inquiryURL to set.
 	 */
-	public void setInquiryURL(URL url) {
-		this.inquiryURL = url;
+	public void setInquiryURI(URI url) {
+		this.inquiryURI = url;
 	}
 
 	/**
@@ -397,16 +400,16 @@ public class RegistryImpl implements IRegistry {
 	/**
 	 * @return Returns the publishURL.
 	 */
-	public URL getPublishURL() {
-		return this.publishURL;
+	public URI getPublishURI() {
+		return this.publishURI;
 	}
 
 	/**
 	 * @param publishURL
 	 *            The publishURL to set.
 	 */
-	public void setPublishURL(URL url) {
-		this.publishURL = url;
+	public void setPublishURI(URI url) {
+		this.publishURI = url;
 	}
 
 	/**
@@ -489,7 +492,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				DispositionReportDocument.type);
 		dr = ((DispositionReportDocument) o).getDispositionReport();
 
@@ -516,7 +519,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				DispositionReportDocument.type);
 		dr = ((DispositionReportDocument) o).getDispositionReport();
 
@@ -542,7 +545,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				DispositionReportDocument.type);
 		dr = ((DispositionReportDocument) o).getDispositionReport();
 
@@ -569,7 +572,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				DispositionReportDocument.type);
 		dr = ((DispositionReportDocument) o).getDispositionReport();
 
@@ -597,7 +600,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				DispositionReportDocument.type);
 		dr = ((DispositionReportDocument) o).getDispositionReport();
 
@@ -645,7 +648,7 @@ public class RegistryImpl implements IRegistry {
 		request.setMaxRows(maxRows);
 
 		BusinessList bl;
-		XmlObject o = execute(doc, this.getInquiryURL()).changeType(
+		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
 				BusinessListDocument.type);
 		bl = ((BusinessListDocument) o).getBusinessList();
 
@@ -685,7 +688,7 @@ public class RegistryImpl implements IRegistry {
 		request.setMaxRows(maxRows);
 
 		BindingDetail bd;
-		XmlObject o = execute(request, this.getInquiryURL()).changeType(
+		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
 				BindingDetailDocument.type);
 		bd = ((BindingDetailDocument) o).getBindingDetail();
 
@@ -730,7 +733,7 @@ public class RegistryImpl implements IRegistry {
 		request.setMaxRows(maxRows);
 
 		ServiceList sl;
-		XmlObject o = execute(doc, this.getInquiryURL()).changeType(
+		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
 				ServiceListDocument.type);
 		sl = ((ServiceListDocument) o).getServiceList();
 
@@ -772,7 +775,7 @@ public class RegistryImpl implements IRegistry {
 		request.setMaxRows(maxRows);
 
 		TModelList tml;
-		XmlObject o = execute(doc, this.getInquiryURL()).changeType(
+		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
 				TModelListDocument.type);
 		tml = ((TModelListDocument) o).getTModelList();
 
@@ -797,7 +800,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		AssertionStatusReport asr;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				AssertionStatusReportDocument.type);
 		asr = ((AssertionStatusReportDocument) o).getAssertionStatusReport();
 
@@ -826,7 +829,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		AuthToken at;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				AuthTokenDocument.type);
 		at = ((AuthTokenDocument) o).getAuthToken();
 
@@ -864,7 +867,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		BusinessDetail bd;
-		XmlObject o = execute(doc, this.getInquiryURL()).changeType(
+		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
 				BusinessDetailDocument.type);
 		bd = ((BusinessDetailDocument) o).getBusinessDetail();
 
@@ -885,7 +888,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		PublisherAssertions pa;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				PublisherAssertionsDocument.type);
 		pa = ((PublisherAssertionsDocument) o).getPublisherAssertions();
 
@@ -923,7 +926,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		ServiceDetail sd;
-		XmlObject o = execute(doc, this.getInquiryURL()).changeType(
+		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
 				ServiceDetailDocument.type);
 		sd = ((ServiceDetailDocument) o).getServiceDetail();
 
@@ -961,7 +964,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		TModelDetail tmd;
-		XmlObject o = execute(doc, this.getInquiryURL()).changeType(
+		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
 				TModelDetailDocument.type);
 		tmd = ((TModelDetailDocument) o).getTModelDetail();
 
@@ -986,7 +989,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		PublisherAssertions pa;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				PublisherAssertionsDocument.type);
 		pa = ((PublisherAssertionsDocument) o).getPublisherAssertions();
 
@@ -1014,7 +1017,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		BindingDetail bd;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				BindingDetailDocument.type);
 		bd = ((BindingDetailDocument) o).getBindingDetail();
 
@@ -1043,7 +1046,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		BusinessDetail bd;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				BusinessDetailDocument.type);
 		bd = ((BusinessDetailDocument) o).getBusinessDetail();
 
@@ -1070,7 +1073,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		ServiceDetail sd;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				ServiceDetailDocument.type);
 		sd = ((ServiceDetailDocument) o).getServiceDetail();
 
@@ -1096,7 +1099,7 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		TModelDetail tmd;
-		XmlObject o = execute(doc, this.getPublishURL()).changeType(
+		XmlObject o = execute(doc, this.getPublishURI()).changeType(
 				TModelDetailDocument.type);
 		tmd = ((TModelDetailDocument) o).getTModelDetail();
 
@@ -1152,8 +1155,8 @@ public class RegistryImpl implements IRegistry {
 			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
 			clazz = Class.forName(name, true, ccl);
 		} catch (Exception e) {
-			// log.warn("Failed to load the class " + name + " with context
-			// class loader " + e);
+			 //log.warn("Failed to load the class " + name + " with context
+			 //class loader " + e);
 		}
 
 		if (null == clazz) {

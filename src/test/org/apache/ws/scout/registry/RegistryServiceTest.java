@@ -16,12 +16,12 @@
  */
 package org.apache.ws.scout.registry;
 
-import junit.framework.TestCase;
-
 import javax.xml.registry.CapabilityProfile;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Revision$ $Date$

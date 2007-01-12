@@ -16,17 +16,18 @@
 
 package org.apache.ws.scout.registry;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.Properties;
+
 import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.FederatedConnection;
 import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.UnsupportedCapabilityException;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Properties;
 
 /**
  * Our implmentation of javax.xml.registry.ConnectionFactory.
@@ -47,6 +48,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
 
     private String queryManagerURL;
     private String lifeCycleManagerURL;
+    private String transportClass;
     private String semanticEquivalences;
     private String authenticationMethod;
     private Integer maxRows;
@@ -66,23 +68,23 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         {
             throw new InvalidRequestException("queryManager is not set");
         }
-        URL queryManager;
-        URL lifeCycleManager;
+        URI queryManager;
+        URI lifeCycleManager;
         try
         {
-            queryManager = new URL(queryManagerURL);
-        } catch (MalformedURLException e)
+            queryManager = new URI(queryManagerURL);
+        } catch (URISyntaxException e)
         {
             throw new InvalidRequestException("Invalid queryManagerURL: " + queryManagerURL, e);
         }
         try
         {
-            lifeCycleManager = lifeCycleManagerURL == null ? queryManager : new URL(lifeCycleManagerURL);
-        } catch (MalformedURLException e)
+            lifeCycleManager = lifeCycleManagerURL == null ? queryManager : new URI(lifeCycleManagerURL);
+        } catch (URISyntaxException e)
         {
             throw new InvalidRequestException("Invalid lifeCycleManagerURL: " + lifeCycleManagerURL, e);
         }
-        return new ConnectionImpl(queryManager, lifeCycleManager, null, maxRows == null ? -1 : maxRows.intValue());
+        return new ConnectionImpl(queryManager, lifeCycleManager, transportClass, null, maxRows == null ? -1 : maxRows.intValue());
     }
 
     public FederatedConnection createFederatedConnection(Collection collection) throws JAXRException
@@ -136,6 +138,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
     {
         queryManagerURL = properties.getProperty(QUERYMANAGER_PROPERTY);
         lifeCycleManagerURL = properties.getProperty(LIFECYCLEMANAGER_PROPERTY);
+        transportClass = properties.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
         semanticEquivalences = properties.getProperty(SEMANTICEQUIVALENCES_PROPERTY);
         authenticationMethod = properties.getProperty(AUTHENTICATIONMETHOD_PROPERTY);
         postalAddressScheme = properties.getProperty(POSTALADDRESSSCHEME_PROPERTY);
@@ -207,4 +210,12 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
     {
         this.semanticEquivalences = semanticEquivalences;
     }
+
+	public String getTransportClass() {
+		return transportClass;
+	}
+
+	public void setTransportClass(String transportClass) {
+		this.transportClass = transportClass;
+	}
 }

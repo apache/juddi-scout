@@ -16,30 +16,32 @@
  */
 package org.apache.ws.scout.util;
 
-import uddiOrgApiV2.Address;
-import uddiOrgApiV2.AddressLine;
-import uddiOrgApiV2.DiscoveryURL;
-import uddiOrgApiV2.DiscoveryURLs;
-import uddiOrgApiV2.Email;
-import uddiOrgApiV2.KeyedReference;
-import uddiOrgApiV2.Name;
-import uddiOrgApiV2.Phone;
-import uddiOrgApiV2.PublisherAssertion;
-import uddiOrgApiV2.BusinessEntity;
-import uddiOrgApiV2.Contacts;
-import uddiOrgApiV2.Contact;
-import uddiOrgApiV2.BusinessService;
-import uddiOrgApiV2.BusinessServices;
-import uddiOrgApiV2.TModel;
-import uddiOrgApiV2.AccessPoint;
-import uddiOrgApiV2.BindingTemplate;
-import uddiOrgApiV2.Description;
-import uddiOrgApiV2.HostingRedirector;
-import uddiOrgApiV2.IdentifierBag;
-import uddiOrgApiV2.URLType;
-import uddiOrgApiV2.TModelInstanceDetails;
-import uddiOrgApiV2.TModelInstanceInfo;
+import org.apache.ws.scout.uddi.Address;
+import org.apache.ws.scout.uddi.AddressLine;
+import org.apache.ws.scout.uddi.DiscoveryURL;
+import org.apache.ws.scout.uddi.DiscoveryURLs;
+import org.apache.ws.scout.uddi.Email;
+import org.apache.ws.scout.uddi.KeyedReference;
+import org.apache.ws.scout.uddi.Name;
+import org.apache.ws.scout.uddi.Phone;
+import org.apache.ws.scout.uddi.PublisherAssertion;
+import org.apache.ws.scout.uddi.BusinessEntity;
+import org.apache.ws.scout.uddi.Contacts;
+import org.apache.ws.scout.uddi.Contact;
+import org.apache.ws.scout.uddi.BusinessService;
+import org.apache.ws.scout.uddi.BusinessServices;
+import org.apache.ws.scout.uddi.TModel;
+import org.apache.ws.scout.uddi.AccessPoint;
+import org.apache.ws.scout.uddi.BindingTemplate;
+import org.apache.ws.scout.uddi.Description;
+import org.apache.ws.scout.uddi.HostingRedirector;
+import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.URLType;
+import org.apache.ws.scout.uddi.TModelInstanceDetails;
+import org.apache.ws.scout.uddi.TModelInstanceInfo;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 
 import javax.xml.registry.infomodel.*;
@@ -56,6 +58,8 @@ import java.util.StringTokenizer;
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
 public class ScoutJaxrUddiHelper {
+	
+	private static Log log = LogFactory.getLog(ScoutJaxrUddiHelper.class);
     /**
      * Get UDDI Address given JAXR Postal Address
      */
@@ -180,8 +184,8 @@ public class ScoutJaxrUddiHelper {
 					}
               }
               bt.setTModelInstanceDetails(tid);
-           }
-            System.out.println("BindingTemplate=" + bt.toString());
+            }
+			log.debug("BindingTemplate=" + bt.toString());
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
@@ -306,7 +310,7 @@ public class ScoutJaxrUddiHelper {
                 bs.setServiceKey(serve.getKey().getId());
             }
 
-            System.out.println("BusinessService=" + bs.toString());
+            log.debug("BusinessService=" + bs.toString());
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
@@ -444,7 +448,7 @@ public class ScoutJaxrUddiHelper {
 			}
 
             Collection s = org.getServices();
-            System.out.println("?Org has services=" + s.isEmpty());
+            log.debug("?Org has services=" + s.isEmpty());
 
 			barr = new BusinessService[s.size()];
 
@@ -491,7 +495,7 @@ public class ScoutJaxrUddiHelper {
             carr = new Contact[carrSize];
 
             // TODO - remove this
-            System.out.println("?Org has users=" + users.isEmpty());
+            log.debug("?Org has users=" + users.isEmpty());
 
             /*
              * first do primary, and then filter that out in the loop
@@ -607,7 +611,7 @@ public class ScoutJaxrUddiHelper {
                 TelephoneNumber t = (TelephoneNumber) it.next();
 				Phone phone = Phone.Factory.newInstance();
                 String str = t.getNumber();
-                System.out.println("Telephone=" + str);
+                log.debug("Telephone=" + str);
 				
 				// FIXME: If phone number is null, should the phone 
 				// not be set at all, or set to empty string?

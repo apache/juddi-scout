@@ -16,26 +16,30 @@
  */
 package org.apache.ws.scout.registry;
 
-import uddiOrgApiV2.BindingTemplate;
-import uddiOrgApiV2.BusinessEntity;
-import uddiOrgApiV2.AssertionStatusItem;
-import uddiOrgApiV2.AssertionStatusReport;
-import uddiOrgApiV2.AuthToken;
-import uddiOrgApiV2.BindingDetail;
-import uddiOrgApiV2.BusinessDetail;
-import uddiOrgApiV2.BusinessService;
-import uddiOrgApiV2.DispositionReport;
-import uddiOrgApiV2.ErrInfo;
-import uddiOrgApiV2.PublisherAssertions;
-import uddiOrgApiV2.Result;
-import uddiOrgApiV2.ServiceDetail;
-import uddiOrgApiV2.TModel;
-import uddiOrgApiV2.PublisherAssertion;
-import uddiOrgApiV2.KeyedReference;
-import uddiOrgApiV2.TModelDetail;
+import org.apache.ws.scout.uddi.BindingTemplate;
+import org.apache.ws.scout.uddi.BusinessEntity;
+import org.apache.ws.scout.uddi.AssertionStatusItem;
+import org.apache.ws.scout.uddi.AssertionStatusReport;
+import org.apache.ws.scout.uddi.AuthToken;
+import org.apache.ws.scout.uddi.BindingDetail;
+import org.apache.ws.scout.uddi.BusinessDetail;
+import org.apache.ws.scout.uddi.BusinessService;
+import org.apache.ws.scout.uddi.DispositionReport;
+import org.apache.ws.scout.uddi.ErrInfo;
+import org.apache.ws.scout.uddi.PublisherAssertions;
+import org.apache.ws.scout.uddi.Result;
+import org.apache.ws.scout.uddi.ServiceDetail;
+import org.apache.ws.scout.uddi.TModel;
+import org.apache.ws.scout.uddi.PublisherAssertion;
+import org.apache.ws.scout.uddi.KeyedReference;
+import org.apache.ws.scout.uddi.TModelDetail;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.ws.scout.registry.IRegistry;
 import org.apache.ws.scout.registry.RegistryException;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.transport.LocalTransport;
 import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
 import org.apache.xmlbeans.XmlObject;
 
@@ -65,7 +69,9 @@ import java.util.Vector;
  */
 public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         implements BusinessLifeCycleManager, Serializable {
-
+	
+	private Log log = LogFactory.getLog(this.getClass());
+	
     public BusinessLifeCycleManagerImpl(RegistryService registry) {
         super(registry);
     }
@@ -279,7 +285,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_classificationscheme: ENlength=" + entityarr.length);
+        log.debug("Method:save_classificationscheme: ENlength=" + entityarr.length);
         // Save business
         TModelDetail td = null;
         try {
@@ -292,7 +298,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
 
         entityarr = td.getTModelArray();
-        System.out.println("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        log.debug("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             TModel tm = (TModel) entityarr[i];
             coll.add(new KeyImpl(tm.getTModelKey()));
@@ -325,7 +331,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_concept: ENlength=" + entityarr.length);
+        log.debug("Method:save_concept: ENlength=" + entityarr.length);
         // Save business
         TModelDetail td = null;
         try {
@@ -338,7 +344,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
 
         entityarr = td.getTModelArray();
-        System.out.println("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        log.debug("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             TModel tm = (TModel) entityarr[i];
             coll.add(new KeyImpl(tm.getTModelKey()));
@@ -371,7 +377,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 throw new UnexpectedObjectException();
             }
         }
-        System.out.println("Method:save_business: ENlength=" + entityarr.length);
+        log.debug("Method:save_business: ENlength=" + entityarr.length);
         // Save business
         BusinessDetail bd = null;
         try {
@@ -384,7 +390,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         }
 
         entityarr = bd.getBusinessEntityArray();
-        System.out.println("After Saving Business. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        log.debug("After Saving Business. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             BusinessEntity entity = (BusinessEntity) entityarr[i];
             coll.add(new KeyImpl(entity.getBusinessKey()));

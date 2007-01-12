@@ -16,12 +16,15 @@
  */
 package org.apache.ws.scout;
 
-import junit.framework.TestCase;
+import java.net.PasswordAuthentication;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessQueryManager;
-import javax.xml.registry.Connection;
-import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.FindQualifier;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
@@ -35,60 +38,25 @@ import javax.xml.registry.infomodel.ServiceBinding;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
 
-import java.net.PasswordAuthentication;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-
 /**
  * Testcase for JaxrQuery
  * @author <mailto:dims@yahoo.com>Davanum Srinivas
  * @author <mailto:anil@apache.org>Anil Saldhana
  */
-public class JAXR02QueryOrgTest extends TestCase
+public class JAXR02QueryOrgTest extends BaseTestCase
 {
-	private Connection connection = null;
-
     String queryString = "USA";
-
-    private String userid = System.getProperty("uddi.test.uid") == null ? 
-			"juddi" : 
-			System.getProperty("uddi.test.uid");
-
-    private String passwd = System.getProperty("uddi.test.pass") == null ? 
-			"password" : 
-			System.getProperty("uddi.test.pass");
+    
+    public void setUp() {
+    	super.setUp();
+    }
+    
+    public void tearDown() {
+    	super.tearDown();
+    }
 
     public void testQuery() throws Exception
     {
-
-        // Define connection configuration properties
-        // To query, you need only the query URL
-        Properties props = new Properties();
-        props.setProperty("javax.xml.registry.queryManagerURL",
-				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
-				"http://localhost:8080/juddi/inquiry" : 
-				System.getProperty("javax.xml.registry.queryManagerURL"));
-
-        props.setProperty("javax.xml.registry.factoryClass",
-                "org.apache.ws.scout.registry.ConnectionFactoryImpl");
-        props.setProperty("javax.xml.registry.uddi.maxRows",
-        		"2");
-
-        try
-        {
-            // Create the connection, passing it the configuration properties
-            ConnectionFactory factory = ConnectionFactory.newInstance();
-            factory.setProperties(props);
-            connection = factory.createConnection();
-            login();
-        } catch (JAXRException e)
-        {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
 
         try
         {
@@ -144,11 +112,7 @@ public class JAXR02QueryOrgTest extends TestCase
         {
             e.printStackTrace();
 			fail(e.getMessage());
-        } finally
-        {
-            connection.close();
-        }
-
+        } 
     }
 
     private static void printServices(Organization org)

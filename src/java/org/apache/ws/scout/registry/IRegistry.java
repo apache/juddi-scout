@@ -15,32 +15,32 @@
  */
 package org.apache.ws.scout.registry;
 
-import java.net.URL;
+import java.net.URI;
 
 import org.apache.ws.scout.transport.Transport;
 
-import uddiOrgApiV2.AssertionStatusReport;
-import uddiOrgApiV2.AuthToken;
-import uddiOrgApiV2.BindingDetail;
-import uddiOrgApiV2.BindingTemplate;
-import uddiOrgApiV2.BusinessDetail;
-import uddiOrgApiV2.BusinessEntity;
-import uddiOrgApiV2.BusinessList;
-import uddiOrgApiV2.BusinessService;
-import uddiOrgApiV2.CategoryBag;
-import uddiOrgApiV2.DiscoveryURLs;
-import uddiOrgApiV2.DispositionReport;
-import uddiOrgApiV2.FindQualifiers;
-import uddiOrgApiV2.IdentifierBag;
-import uddiOrgApiV2.Name;
-import uddiOrgApiV2.PublisherAssertion;
-import uddiOrgApiV2.PublisherAssertions;
-import uddiOrgApiV2.ServiceDetail;
-import uddiOrgApiV2.ServiceList;
-import uddiOrgApiV2.TModel;
-import uddiOrgApiV2.TModelBag;
-import uddiOrgApiV2.TModelDetail;
-import uddiOrgApiV2.TModelList;
+import org.apache.ws.scout.uddi.AssertionStatusReport;
+import org.apache.ws.scout.uddi.AuthToken;
+import org.apache.ws.scout.uddi.BindingDetail;
+import org.apache.ws.scout.uddi.BindingTemplate;
+import org.apache.ws.scout.uddi.BusinessDetail;
+import org.apache.ws.scout.uddi.BusinessEntity;
+import org.apache.ws.scout.uddi.BusinessList;
+import org.apache.ws.scout.uddi.BusinessService;
+import org.apache.ws.scout.uddi.CategoryBag;
+import org.apache.ws.scout.uddi.DiscoveryURLs;
+import org.apache.ws.scout.uddi.DispositionReport;
+import org.apache.ws.scout.uddi.FindQualifiers;
+import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.Name;
+import org.apache.ws.scout.uddi.PublisherAssertion;
+import org.apache.ws.scout.uddi.PublisherAssertions;
+import org.apache.ws.scout.uddi.ServiceDetail;
+import org.apache.ws.scout.uddi.ServiceList;
+import org.apache.ws.scout.uddi.TModel;
+import org.apache.ws.scout.uddi.TModelBag;
+import org.apache.ws.scout.uddi.TModelDetail;
+import org.apache.ws.scout.uddi.TModelList;
 
 /**
  * 
@@ -59,22 +59,22 @@ public interface IRegistry {
 	/**
 	 * @return Returns the inquiryURL.
 	 */
-	URL getInquiryURL();
+	URI getInquiryURI();
 	
 	/**
 	 * @param inquiryURL The inquiryURL to set.
 	 */
-	void setInquiryURL(URL url);
+	void setInquiryURI(URI uri);
 	
 	/**
 	 * @return Returns the publishURL.
 	 */
-	URL getPublishURL();
+	URI getPublishURI();
 	
 	/**
 	 * @param publishURL The publishURL to set.
 	 */
-	void setPublishURL(URL url);
+	void setPublishURI(URI uri);
 	
 	/**
 	 * @return Returns the transport.

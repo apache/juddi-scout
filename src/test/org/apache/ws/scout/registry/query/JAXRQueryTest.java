@@ -16,7 +16,10 @@
  */
 package org.apache.ws.scout.registry.query;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessQueryManager;
@@ -33,43 +36,33 @@ import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Properties;
+
+import org.apache.ws.scout.BaseTestCase;
+
+import junit.framework.TestCase;
 
 /**
  * Testcase for JaxrQuery
  * @author <mailto:dims@yahoo.com>Davanum Srinivas
  * @author <mailto:anil@apache.org>Anil Saldhana
  */
-public class JAXRQueryTest extends TestCase
+public class JAXRQueryTest extends BaseTestCase
 {
+	@Override
+	public void setUp() {
+		// TODO Auto-generated method stub
+		super.setUp();
+	}
+	
+	@Override
+	public void tearDown() {
+		// TODO Auto-generated method stub
+		super.tearDown();
+	}
+	
     public void testQuery() throws Exception
     {
         String queryString = "IBM";
-        Connection connection = null;
-
-        // Define connection configuration properties
-        // To query, you need only the query URL
-        Properties props = new Properties();
-
-        props.setProperty("javax.xml.registry.queryManagerURL",
-        				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
-        				"http://localhost:8080/juddi/inquiry" : 
-        				System.getProperty("javax.xml.registry.queryManagerURL"));
-
-        try
-        {
-            // Create the connection, passing it the configuration properties
-            ConnectionFactory factory = ConnectionFactory.newInstance();
-            factory.setProperties(props);
-            connection = factory.createConnection();
-        } catch (JAXRException e)
-        {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
 
         try
         {

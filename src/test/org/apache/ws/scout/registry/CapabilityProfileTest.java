@@ -16,10 +16,10 @@
  */
 package org.apache.ws.scout.registry;
 
-import junit.framework.TestCase;
-
 import javax.xml.registry.CapabilityProfile;
 import javax.xml.registry.JAXRException;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Revision$ $Date$

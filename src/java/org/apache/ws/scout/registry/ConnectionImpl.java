@@ -16,13 +16,14 @@
 
 package org.apache.ws.scout.registry;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Properties;
+import java.util.Set;
+
 import javax.xml.registry.Connection;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * Apache Scout Implementation of a JAXR Connection.
@@ -39,7 +40,7 @@ public class ConnectionImpl implements Connection, Serializable
     private final String postalScheme;
     private final int maxRows;
 
-    public ConnectionImpl(URL queryManagerURL, URL lifeCycleManagerURL, String postalScheme, int maxRows)
+    public ConnectionImpl(URI queryManagerURI, URI lifeCycleManagerURI, String transportClass, String postalScheme, int maxRows)
     {
         Properties prop = new Properties();
         /**
@@ -47,15 +48,21 @@ public class ConnectionImpl implements Connection, Serializable
          * juddi RegistryProxy uses, set the System property
          * accordingly.
          */
-        String transport = System.getProperty("juddi.proxy.transportClass");
-        if (transport != null) prop.setProperty("juddi.proxy.transportClass", transport);
+        if (transportClass!=null) {
+    		prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transportClass);
+    	} else {
+    		String transport = System.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
+    		if (transport != null) {
+    			prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transport);
+    		}
+        }
         /**
          * Even if the properties passed contains no values,
          * juddi takes default values
          */
-        registry = new RegistryImpl(prop);        
-        registry.setInquiryURL(queryManagerURL);
-        registry.setPublishURL(lifeCycleManagerURL);
+        registry = new RegistryImpl(prop);   
+        registry.setInquiryURI(queryManagerURI);
+        registry.setPublishURI(lifeCycleManagerURI);
         this.postalScheme = postalScheme;
         this.maxRows = maxRows;
 
