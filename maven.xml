@@ -23,7 +23,7 @@
 		<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" classpathref="maven.dependency.classpath" />	
 		<xmlbean
 			classgendir="modules/scout/target/classes"
-			srcgendir="modules/scout/src/java" 
+			srcgendir="modules/scout/target/src/java" 
 			classpathref="maven.dependency.classpath">
 			<fileset dir="etc/" includes="uddi_v2.xsd,uddi_v2.xsdconfig"/>
 		</xmlbean>
