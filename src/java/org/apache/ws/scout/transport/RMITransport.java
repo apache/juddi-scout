@@ -51,8 +51,10 @@ public class RMITransport implements Transport
   {    
     Element response = null;
 
-    log.debug("\nRequest message:\n" + XMLUtils.convertNodeToXMLString(request));
-    log.debug("Calling " + endpointURI + " using rmi");
+    if (log.isDebugEnabled()) {
+    	log.debug("\nRequest message:\n" + XMLUtils.convertNodeToXMLString(request));
+    	log.debug("Calling " + endpointURI + " using rmi");
+    }
     
     try {
 		String host       = endpointURI.getHost();
@@ -88,7 +90,9 @@ public class RMITransport implements Transport
     catch (Exception ex) {
       throw new RegistryException(ex);
     }
-    log.debug("\nResponse message:\n" + XMLUtils.convertNodeToXMLString(response));
+    if (log.isDebugEnabled()) {
+    	log.debug("\nResponse message:\n" + XMLUtils.convertNodeToXMLString(response));
+    }
     return response;
   }
   

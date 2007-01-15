@@ -48,9 +48,10 @@ public class LocalTransport implements Transport
   {    
     Element response = null;
 
-    log.debug("\nRequest message:\n" + XMLUtils.convertNodeToXMLString(request));
-    log.info("Calling " + endpointURI + " locally");
-    
+    if (log.isDebugEnabled()) {
+    	log.debug("\nRequest message:\n" + XMLUtils.convertNodeToXMLString(request));
+    	log.debug("Calling " + endpointURI + " locally");
+    }
     try {
     	String className = endpointURI.getPath();
     	String methodName = endpointURI.getFragment();
@@ -65,7 +66,9 @@ public class LocalTransport implements Transport
     catch (Exception ex) {
       throw new RegistryException(ex);
     }
-    log.debug("\nResponse message:\n" + XMLUtils.convertNodeToXMLString(response));
+    if (log.isDebugEnabled()) {
+    	log.debug("\nResponse message:\n" + XMLUtils.convertNodeToXMLString(response));
+    }
     return response;
   }
   
