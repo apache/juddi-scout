@@ -116,15 +116,16 @@
       <excludes>
         <exclude>**/NaughtyTest.java</exclude>
       </excludes>
+      <resources>
+        <resource>
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>*.properties</include>
+          </includes>
+        </resource>
+      </resources>
     </unitTest>
-    <resources>
-      <resource>
-        <directory>src/conf</directory>
-        <includes>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-    </resources>
+    
   </build>
 
     <!-- ======= -->
