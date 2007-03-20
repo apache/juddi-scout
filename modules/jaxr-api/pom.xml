@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.ws.scout</groupId>
+        <artifactId>scout-parent</artifactId>
+        <version>SNAPSHOT</version>
+    </parent>
+    <artifactId>jaxr-api</artifactId>
+    <name>JAXR API</name>
+    <version>SNAPSHOT</version>
+    <description>The JAXR API</description>
+    <dependencies>
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-activation</artifactId>
+            <version>1.0.2-rc4</version>
+        </dependency>
+    </dependencies>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>conf</directory>
+        <excludes>
+          <exclude>**/*.properties</exclude>
+        </excludes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+    <plugin>
+  		<artifactId>maven-surefire-plugin</artifactId>
+  		<inherited>true</inherited>
+  		<configuration>
+  			<skip>false</skip>
+  			<excludes>
+                <exclude>**/*Abstract*.java</exclude>
+            </excludes>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+  		</configuration>
+  	  </plugin>
+    </plugins>
+  </build>
+</project>
