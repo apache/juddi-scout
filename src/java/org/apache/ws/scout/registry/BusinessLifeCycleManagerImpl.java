@@ -507,17 +507,19 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     //Protected Methods
     protected XmlObject executeOperation(Object dataarray, String op)
             throws RegistryException, JAXRException {
-        //org.apache.juddi.datatype.RegistryObject regobj = null;
-    	XmlObject regobj = null;
-
-        IRegistry ireg = null;
-        if (registry != null) {
-            ireg = registry.getRegistry();
+        if (registry == null) {
+            throw new IllegalStateException("No registry");
         }
+
+        IRegistry ireg =  registry.getRegistry();
 
         ConnectionImpl connection = registry.getConnection();
         AuthToken token = getAuthToken(connection, ireg);
+        if (token == null) {
+            throw new IllegalStateException("No auth token returned");
+        }
 
+        XmlObject regobj;
         if(op.equalsIgnoreCase("SAVE_ASSOCIATION"))
         {
             regobj = ireg.setPublisherAssertions(token.getAuthInfo(), (PublisherAssertion[]) dataarray);
