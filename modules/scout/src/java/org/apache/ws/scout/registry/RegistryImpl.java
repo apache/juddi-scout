@@ -247,23 +247,8 @@ public class RegistryImpl implements IRegistry {
 	public XmlObject execute(XmlObject uddiRequest, URI endPointURI)
 			throws RegistryException {
 
-		Document doc;
-		try {
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-			docBuilderFactory.setNamespaceAware(true);
-			DocumentBuilder docBuilder= docBuilderFactory.newDocumentBuilder();
-			doc = docBuilder.parse(uddiRequest.newInputStream());
-		} catch (SAXException saxe) {
-			throw (new RegistryException(saxe));
-		} catch (ParserConfigurationException pce) {
-			throw (new RegistryException(pce));
-		} catch (IOException ioe) {
-			throw (new RegistryException(ioe));
-		}
-
-		
+        Document doc = (Document) uddiRequest.newDomNode();
 		Element request = doc.getDocumentElement();
-		
 
 		request.setAttribute("generic", this.getUddiVersion());
 		request.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
@@ -319,7 +304,7 @@ public class RegistryImpl implements IRegistry {
 			if (nodeList.getLength() > 0)
 				fActor = nodeList.item(0).getNodeValue();
 
-			DispositionReport dispRpt = DispositionReport.Factory.newInstance();
+			DispositionReport dispRpt = null;
 
 			nodeList = response.getElementsByTagName("detail");
 			if (nodeList.getLength() > 0) {
@@ -334,9 +319,8 @@ public class RegistryImpl implements IRegistry {
 						throw (new RegistryException(xmle));
 					}
 
-					XmlObject o = dispRptObj.changeType(DispositionReportDocument.type);
-					dispRpt = ((DispositionReportDocument) o).getDispositionReport();
-				}
+					dispRpt = (DispositionReport) dispRptObj.changeType(DispositionReport.type);
+                }
 			}
 
 			RegistryException e = new RegistryException(fCode, fString, fActor, dispRpt);
@@ -360,7 +344,7 @@ public class RegistryImpl implements IRegistry {
 	}
 
 	/**
-	 * @param adminURL
+	 * @param url
 	 *            The adminURL to set.
 	 */
 	public void setAdminURI(URI url) {
@@ -375,11 +359,11 @@ public class RegistryImpl implements IRegistry {
 	}
 
 	/**
-	 * @param inquiryURL
-	 *            The inquiryURL to set.
+	 * @param inquiryURI
+	 *            The inquiryURI to set.
 	 */
-	public void setInquiryURI(URI url) {
-		this.inquiryURI = url;
+	public void setInquiryURI(URI inquiryURI) {
+		this.inquiryURI = inquiryURI;
 	}
 
 	/**
@@ -393,8 +377,8 @@ public class RegistryImpl implements IRegistry {
 	 * @param protocolHandler
 	 *            The protocolHandler to set.
 	 */
-	public void setProtocolHandler(String protoHandler) {
-		this.protocolHandler = protoHandler;
+	public void setProtocolHandler(String protocolHandler) {
+		this.protocolHandler = protocolHandler;
 	}
 
 	/**
@@ -405,11 +389,11 @@ public class RegistryImpl implements IRegistry {
 	}
 
 	/**
-	 * @param publishURL
-	 *            The publishURL to set.
+	 * @param publishURI
+	 *            The publishURI to set.
 	 */
-	public void setPublishURI(URI url) {
-		this.publishURI = url;
+	public void setPublishURI(URI publishURI) {
+		this.publishURI = publishURI;
 	}
 
 	/**
@@ -423,8 +407,8 @@ public class RegistryImpl implements IRegistry {
 	 * @param securityProvider
 	 *            The securityProvider to set.
 	 */
-	public void setSecurityProvider(String secProvider) {
-		this.securityProvider = secProvider;
+	public void setSecurityProvider(String securityProvider) {
+		this.securityProvider = securityProvider;
 	}
 
 	/**
@@ -468,8 +452,8 @@ public class RegistryImpl implements IRegistry {
 	 * @param uddiVersion
 	 *            The uddiVersion to set.
 	 */
-	public void setUddiVersion(String uddiVer) {
-		this.uddiVersion = uddiVer;
+	public void setUddiVersion(String uddiVersion) {
+		this.uddiVersion = uddiVersion;
 	}
 
 	/**
@@ -491,12 +475,8 @@ public class RegistryImpl implements IRegistry {
 			request.setBindingKeyArray(bindingKeyArray);
 		}
 
-		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				DispositionReportDocument.type);
-		dr = ((DispositionReportDocument) o).getDispositionReport();
-
-		return dr;
+        return (DispositionReport) execute(doc, this.getPublishURI()).changeType(
+                DispositionReport.type);
 	}
 
 	/**
@@ -518,12 +498,8 @@ public class RegistryImpl implements IRegistry {
 			request.setBusinessKeyArray(businessKeyArray);
 		}
 
-		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				DispositionReportDocument.type);
-		dr = ((DispositionReportDocument) o).getDispositionReport();
-
-		return dr;
+        return (DispositionReport) execute(doc, this.getPublishURI()).changeType(
+                DispositionReport.type);
 	}
 
 	/**
@@ -544,12 +520,8 @@ public class RegistryImpl implements IRegistry {
 			request.setPublisherAssertionArray(assertionArray);
 		}
 
-		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				DispositionReportDocument.type);
-		dr = ((DispositionReportDocument) o).getDispositionReport();
-
-		return dr;
+        return (DispositionReport) execute(doc, this.getPublishURI()).changeType(
+                DispositionReport.type);
 	}
 
 	/**
@@ -571,12 +543,8 @@ public class RegistryImpl implements IRegistry {
 			request.setServiceKeyArray(serviceKeyArray);
 		}
 
-		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				DispositionReportDocument.type);
-		dr = ((DispositionReportDocument) o).getDispositionReport();
-
-		return dr;
+	    return (DispositionReport) execute(doc, this.getPublishURI()).changeType(
+				DispositionReport.type);
 	}
 
 	/**
@@ -599,12 +567,8 @@ public class RegistryImpl implements IRegistry {
 			request.setTModelKeyArray(tModelKeyArray);
 		}
 
-		DispositionReport dr;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				DispositionReportDocument.type);
-		dr = ((DispositionReportDocument) o).getDispositionReport();
-
-		return dr;
+		return (DispositionReport) execute(doc, this.getPublishURI()).changeType(
+				DispositionReport.type);
 	}
 
 	/**
@@ -647,12 +611,7 @@ public class RegistryImpl implements IRegistry {
 
 		request.setMaxRows(maxRows);
 
-		BusinessList bl;
-		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-				BusinessListDocument.type);
-		bl = ((BusinessListDocument) o).getBusinessList();
-
-		return bl;
+		return (BusinessList) execute(doc, this.getInquiryURI()).changeType(BusinessList.type);
 	}
 
 	/**
@@ -687,12 +646,8 @@ public class RegistryImpl implements IRegistry {
 		}
 		request.setMaxRows(maxRows);
 
-		BindingDetail bd;
-		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-				BindingDetailDocument.type);
-		bd = ((BindingDetailDocument) o).getBindingDetail();
-
-		return bd;
+		return (BindingDetail) execute(doc, this.getInquiryURI()).changeType(
+				BindingDetail.type);
 	}
 
 	/**
@@ -732,12 +687,8 @@ public class RegistryImpl implements IRegistry {
 
 		request.setMaxRows(maxRows);
 
-		ServiceList sl;
-		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-				ServiceListDocument.type);
-		sl = ((ServiceListDocument) o).getServiceList();
-
-		return sl;
+		return (ServiceList) execute(doc, this.getInquiryURI()).changeType(
+				ServiceList.type);
 	}
 
 	/**
@@ -774,12 +725,8 @@ public class RegistryImpl implements IRegistry {
 
 		request.setMaxRows(maxRows);
 
-		TModelList tml;
-		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-				TModelListDocument.type);
-		tml = ((TModelListDocument) o).getTModelList();
-
-		return tml;
+		return (TModelList) execute(doc, this.getInquiryURI()).changeType(
+				TModelList.type);
 	}
 
 	/**
@@ -799,12 +746,8 @@ public class RegistryImpl implements IRegistry {
 			request.setCompletionStatus(completionStatus);
 		}
 
-		AssertionStatusReport asr;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				AssertionStatusReportDocument.type);
-		asr = ((AssertionStatusReportDocument) o).getAssertionStatusReport();
-
-		return asr;
+		return (AssertionStatusReport) execute(doc, this.getPublishURI()).changeType(
+				AssertionStatusReport.type);
 	}
 
 	/**
@@ -828,12 +771,8 @@ public class RegistryImpl implements IRegistry {
 			request.setCred(cred);
 		}
 
-		AuthToken at;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				AuthTokenDocument.type);
-		at = ((AuthTokenDocument) o).getAuthToken();
-
-		return at;
+        return (AuthToken) execute(doc, this.getPublishURI()).changeType(
+                AuthToken.type);
 	}
 
 	/**
@@ -866,12 +805,8 @@ public class RegistryImpl implements IRegistry {
 			request.setBusinessKeyArray(businessKeyArray);
 		}
 
-		BusinessDetail bd;
-		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-				BusinessDetailDocument.type);
-		bd = ((BusinessDetailDocument) o).getBusinessDetail();
-
-		return bd;
+		return (BusinessDetail) execute(doc, this.getInquiryURI()).changeType(
+				BusinessDetail.type);
 	}
 
 	/**
@@ -887,12 +822,8 @@ public class RegistryImpl implements IRegistry {
 			request.setAuthInfo(authInfo);
 		}
 
-		PublisherAssertions pa;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				PublisherAssertionsDocument.type);
-		pa = ((PublisherAssertionsDocument) o).getPublisherAssertions();
-
-		return pa;
+		return (PublisherAssertions) execute(doc, this.getPublishURI()).changeType(
+				PublisherAssertions.type);
 	}
 
 	/**
@@ -925,12 +856,8 @@ public class RegistryImpl implements IRegistry {
 			request.setServiceKeyArray(serviceKeyArray);
 		}
 
-		ServiceDetail sd;
-		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-				ServiceDetailDocument.type);
-		sd = ((ServiceDetailDocument) o).getServiceDetail();
-
-		return sd;
+		return (ServiceDetail) execute(doc, this.getInquiryURI()).changeType(
+				ServiceDetail.type);
 	}
 
 	/**
@@ -963,12 +890,8 @@ public class RegistryImpl implements IRegistry {
 			request.setTModelKeyArray(tModelKeyArray);
 		}
 
-		TModelDetail tmd;
-		XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-				TModelDetailDocument.type);
-		tmd = ((TModelDetailDocument) o).getTModelDetail();
-
-		return tmd;
+	    return (TModelDetail) execute(doc, this.getInquiryURI()).changeType(
+				TModelDetail.type);
 	}
 
 	/**
@@ -988,12 +911,8 @@ public class RegistryImpl implements IRegistry {
 			request.setPublisherAssertionArray(assertionArray);
 		}
 
-		PublisherAssertions pa;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				PublisherAssertionsDocument.type);
-		pa = ((PublisherAssertionsDocument) o).getPublisherAssertions();
-
-		return pa;
+		return (PublisherAssertions) execute(doc, this.getPublishURI()).changeType(
+				PublisherAssertions.type);
 	}
 
 	/**
@@ -1016,12 +935,8 @@ public class RegistryImpl implements IRegistry {
 			request.setBindingTemplateArray(bindingArray);
 		}
 
-		BindingDetail bd;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				BindingDetailDocument.type);
-		bd = ((BindingDetailDocument) o).getBindingDetail();
-
-		return bd;
+		return (BindingDetail) execute(doc, this.getPublishURI()).changeType(
+				BindingDetail.type);
 	}
 
 	/**
@@ -1045,12 +960,8 @@ public class RegistryImpl implements IRegistry {
 			request.setBusinessEntityArray(businessArray);
 		}
 
-		BusinessDetail bd;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				BusinessDetailDocument.type);
-		bd = ((BusinessDetailDocument) o).getBusinessDetail();
-
-		return bd;
+	    return (BusinessDetail) execute(doc, this.getPublishURI()).changeType(
+				BusinessDetail.type);
 	}
 
 	/**
@@ -1072,12 +983,8 @@ public class RegistryImpl implements IRegistry {
 			request.setBusinessServiceArray(serviceArray);
 		}
 
-		ServiceDetail sd;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				ServiceDetailDocument.type);
-		sd = ((ServiceDetailDocument) o).getServiceDetail();
-
-		return sd;
+		return (ServiceDetail) execute(doc, this.getPublishURI()).changeType(
+				ServiceDetail.type);
 	}
 
 	/**
@@ -1098,12 +1005,8 @@ public class RegistryImpl implements IRegistry {
 			request.setTModelArray(tModelArray);
 		}
 
-		TModelDetail tmd;
-		XmlObject o = execute(doc, this.getPublishURI()).changeType(
-				TModelDetailDocument.type);
-		tmd = ((TModelDetailDocument) o).getTModelDetail();
-
-		return tmd;
+		return (TModelDetail) execute(doc, this.getPublishURI()).changeType(
+				TModelDetail.type);
 	}
 
 	/**
