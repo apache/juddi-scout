@@ -31,6 +31,7 @@ import org.apache.ws.scout.uddi.Description;
 import org.apache.ws.scout.uddi.DiscoveryURL;
 import org.apache.ws.scout.uddi.DiscoveryURLs;
 import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.CategoryBag;
 import org.apache.ws.scout.uddi.KeyedReference;
 import org.apache.ws.scout.uddi.Name;
 import org.apache.ws.scout.uddi.ServiceInfo;
@@ -131,22 +132,9 @@ public class ScoutUddiJaxrHelper
       }
 
 
-      //External Identifiers
-      IdentifierBag ibag = entity.getIdentifierBag();
-      if (ibag != null)
-      {
-         KeyedReference[] keyrarr = ibag.getKeyedReferenceArray();
-         for (int i = 0; keyrarr != null && i < keyrarr.length; i++)
-         {
-            KeyedReference keyr = (KeyedReference)keyrarr[i];
-            ExternalIdentifier eid = new ExternalIdentifierImpl(lcm);
-            String kkey = keyr.getTModelKey();
-            if (kkey != null) eid.setKey(new KeyImpl(kkey));
-            eid.setValue(keyr.getKeyValue());
-            eid.setName(new InternationalStringImpl(keyr.getKeyName()));
-            org.addExternalIdentifier(eid);
-         }
-      }
+      addExternalIdentifiers(entity.getIdentifierBag(), org, lcm);
+      addClassifications(entity.getCategoryBag(), org, lcm);
+      
       return org;
    }
 
@@ -222,22 +210,9 @@ public class ScoutUddiJaxrHelper
          }
       }
 
-      //External Identifiers
-      IdentifierBag ibag = entity.getIdentifierBag();
-      if (ibag != null)
-      {
-         KeyedReference[] keyrarr = ibag.getKeyedReferenceArray();
-         for (int i = 0; keyrarr != null && i < keyrarr.length; i++)
-         {
-            KeyedReference keyr = (KeyedReference)keyrarr[i];
-            ExternalIdentifier eid = new ExternalIdentifierImpl(lcm);
-            String kkey = keyr.getTModelKey();
-            if (kkey != null) eid.setKey(new KeyImpl(kkey));
-            eid.setValue(keyr.getKeyValue());
-            eid.setName(new InternationalStringImpl(keyr.getKeyName()));
-            org.addExternalIdentifier(eid);
-         }
-      }
+      addExternalIdentifiers(entity.getIdentifierBag(), org, lcm);
+      addClassifications(entity.getCategoryBag(), org, lcm);
+      
       return org;
    }
 
@@ -280,6 +255,8 @@ public class ScoutUddiJaxrHelper
     	  BindingTemplate bindingTemplate = (BindingTemplate)btarr[i];
           serve.addServiceBinding(getServiceBinding(bindingTemplate, lcm));
       }
+      
+      addClassifications(bs.getCategoryBag(), serve, lcm);
       
       return serve;
    }
@@ -351,6 +328,9 @@ public class ScoutUddiJaxrHelper
 
       Description desc = getDescription(tmodel);
     	  if( desc != null ) concept.setDescription(lcm.createInternationalString(desc.getStringValue()));
+
+          addExternalIdentifiers(tmodel.getIdentifierBag(), concept, lcm);
+    	  addClassifications(tmodel.getCategoryBag(), concept, lcm);
       }
 
       return concept;
@@ -365,6 +345,9 @@ public class ScoutUddiJaxrHelper
 
       Description desc = getDescription(tmodel);
       concept.setDescription(lcm.createInternationalString(desc.getStringValue()));
+
+      addExternalIdentifiers(tmodel.getIdentifierBag(), concept, lcm);
+	  addClassifications(tmodel.getCategoryBag(), concept, lcm);
 
       return concept;
    }
@@ -386,4 +369,62 @@ public class ScoutUddiJaxrHelper
       return desc;
    }
 
+   /**
+    * Classifications - going to assume all are external since UDDI does not use "Concepts".
+    * 
+    * @param cbag
+    * @param destinationObj
+    * @param lcm
+    * @throws JAXRException
+    */
+   private static void addClassifications(CategoryBag cbag, RegistryObject destinationObj, LifeCycleManager lcm) throws JAXRException {
+      if (cbag != null) {
+          KeyedReference[] keyrarr = cbag.getKeyedReferenceArray();
+          for (int i = 0; keyrarr != null && i < keyrarr.length; i++)
+          {
+             KeyedReference keyr = (KeyedReference)keyrarr[i];
+             Classification classification = new ClassificationImpl(lcm);
+             classification.setValue(keyr.getKeyValue());
+             classification.setName(new InternationalStringImpl(keyr.getKeyName()));
+             
+             String tmodelKey = keyr.getTModelKey();
+             if (tmodelKey != null) {
+            	 ClassificationScheme scheme = new ClassificationSchemeImpl(lcm);
+            	 scheme.setKey(new KeyImpl(tmodelKey));
+            	 classification.setClassificationScheme(scheme);
+             }
+             destinationObj.addClassification(classification);
+          }
+      }
+   }
+   
+   /**
+    * External Identifiers
+    * 
+    * @param ibag
+    * @param destinationObj
+    * @param lcm
+    * @throws JAXRException
+    */
+   private static void addExternalIdentifiers(IdentifierBag ibag, RegistryObject destinationObj, LifeCycleManager lcm) throws JAXRException {
+      if (ibag != null) {
+          KeyedReference[] keyrarr = ibag.getKeyedReferenceArray();
+          for (int i = 0; keyrarr != null && i < keyrarr.length; i++)
+          {
+             KeyedReference keyr = (KeyedReference)keyrarr[i];
+             ExternalIdentifier extId = new ExternalIdentifierImpl(lcm);
+             extId.setValue(keyr.getKeyValue());
+             extId.setName(new InternationalStringImpl(keyr.getKeyName()));
+             
+             String tmodelKey = keyr.getTModelKey();
+             if (tmodelKey != null) {
+            	 ClassificationScheme scheme = new ClassificationSchemeImpl(lcm);
+            	 scheme.setKey(new KeyImpl(tmodelKey));
+            	 extId.setIdentificationScheme(scheme);
+             }
+             destinationObj.addExternalIdentifier(extId);
+          }
+      }
+   }
+   
 }
