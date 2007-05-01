@@ -36,6 +36,7 @@ import org.apache.ws.scout.uddi.BindingTemplate;
 import org.apache.ws.scout.uddi.Description;
 import org.apache.ws.scout.uddi.HostingRedirector;
 import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.CategoryBag;
 import org.apache.ws.scout.uddi.URLType;
 import org.apache.ws.scout.uddi.TModelInstanceDetails;
 import org.apache.ws.scout.uddi.TModelInstanceInfo;
@@ -310,6 +311,10 @@ public class ScoutJaxrUddiHelper {
                 bs.setServiceKey(serve.getKey().getId());
             }
 
+			addCategories(serve.getClassifications(), bs.addNewCategoryBag());
+
+   		    // TODO: need to do ServiceBindings->BindingTemplates
+   		    
             log.debug("BusinessService=" + bs.toString());
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
@@ -364,7 +369,11 @@ public class ScoutJaxrUddiHelper {
 			if (scheme.getDescription() != null && scheme.getDescription().getValue() != null) {
 				emptyDesc.setStringValue(scheme.getDescription().getValue());
 			}
-			// ToDO: overviewDoc,identifierBag,categoryBag
+
+			addIdentifiers(scheme.getExternalIdentifiers(), tm.addNewIdentifierBag());
+			addCategories(scheme.getClassifications(), tm.addNewCategoryBag());
+			
+			// ToDO: overviewDoc
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
@@ -373,7 +382,7 @@ public class ScoutJaxrUddiHelper {
 
     public static TModel getTModelFromJAXRConcept(Concept scheme)
 			throws JAXRException {
-		TModel tm = TModel.Factory.newInstance();
+    	TModel tm = TModel.Factory.newInstance();
 		if (scheme == null)
 			return null;
 		try {
@@ -405,13 +414,17 @@ public class ScoutJaxrUddiHelper {
 				emptyDesc.setStringValue(scheme.getDescription().getValue());
 			}
 
-			// ToDO: overviewDoc,identifierBag,categoryBag
+			addIdentifiers(scheme.getExternalIdentifiers(), tm.addNewIdentifierBag());
+			addCategories(scheme.getClassifications(), tm.addNewCategoryBag());
+
+			// ToDO: overviewDoc
+
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return tm;
     }
-
+    
     public static BusinessEntity getBusinessEntityFromJAXROrg(Organization org)
 			throws JAXRException {
 		BusinessEntity biz = BusinessEntity.Factory.newInstance();
@@ -536,26 +549,10 @@ public class ScoutJaxrUddiHelper {
 					emptyDU.setStringValue(link.getExternalURI());
 				}
             }
-			// External Identifiers
-           Collection exid = org.getExternalIdentifiers();
-           Iterator exiditer = exid.iterator();
-			while (exiditer.hasNext()) {
-				ExternalIdentifier ei = (ExternalIdentifier) exiditer.next();
-
-				IdentifierBag ibag = biz.addNewIdentifierBag();
-				KeyedReference keyr = ibag.addNewKeyedReference();
-              Key ekey = ei.getKey();
-				if (ekey != null && ekey.getId() != null)
-					keyr.setTModelKey(ekey.getId());
-				
-				if (ei.getValue() != null) {
-              keyr.setKeyValue(ei.getValue());
-				}
-				
-				if (ei.getName() != null && ei.getName().getValue() != null) {
-              keyr.setKeyName(ei.getName().getValue());
-           }
-			}
+			
+		  addIdentifiers(org.getExternalIdentifiers(), biz.addNewIdentifierBag());
+		  addCategories(org.getClassifications(), biz.addNewCategoryBag());
+			
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
@@ -679,4 +676,109 @@ public class ScoutJaxrUddiHelper {
        return uri;
    }
 
+    /**
+     * According to JAXR Javadoc, there are two types of classification, internal and external and they use the Classification, Concept,     
+     * and ClassificationScheme objects.  It seems the only difference between internal and external (as related to UDDI) is that the
+     * name/value pair of the categorization is held in the Concept for internal classifications and the Classification for external (bypassing
+     * the Concept entirely).
+     * 
+     * The translation to UDDI is simple.  Relevant objects have a category bag which contains a bunch of KeyedReferences (name/value pairs).  
+     * These KeyedReferences optionally refer to a tModel that identifies the type of category (translates to the ClassificationScheme key).  If
+     * this is set and the tModel doesn't exist in the UDDI registry, then an invalid key error will occur when trying to save the object.
+     * 
+     * @param regObj
+     * @param destinationObj
+     * @throws JAXRException
+     */
+    private static void addCategories(Collection classifications, CategoryBag cbag) throws JAXRException {
+    	try {
+			if (classifications == null || cbag == null)
+				return;
+    		
+    		// Classifications
+			Iterator classiter = classifications.iterator();
+			while (classiter.hasNext()) {
+				Classification classification = (Classification) classiter.next();
+				if (classification != null ) {
+					KeyedReference keyr = cbag.addNewKeyedReference();
+	
+					InternationalStringImpl iname = null;
+					String value = null;
+					ClassificationScheme scheme = classification.getClassificationScheme();
+					if (classification.isExternal()) {
+						iname = (InternationalStringImpl) ((RegistryObject) classification).getName();
+						value = classification.getValue();
+						scheme = classification.getClassificationScheme();
+					}
+					else {
+						Concept concept = classification.getConcept();
+						if (concept != null) {
+							iname = (InternationalStringImpl) ((RegistryObject) concept).getName();
+							value = concept.getValue();
+							scheme = concept.getClassificationScheme();
+						}
+					}
+	
+					String name = iname.getValue();
+					if (name != null)
+						keyr.setKeyName(name);
+	
+					if (value != null)
+						keyr.setKeyValue(value);
+					
+					if (scheme != null) {
+						Key key = scheme.getKey();
+						if (key != null && key.getId() != null)
+							keyr.setTModelKey(key.getId());
+					}
+				}
+			}
+    	} catch (Exception ud) {
+			throw new JAXRException("Apache JAXR Impl:", ud);
+		}
+    }
+	
+    /**
+     * Adds the objects identifiers from JAXR's external identifier collection
+     * 
+     * @param identifiers
+     * @param ibag
+     * @throws JAXRException
+     */
+    private static void addIdentifiers(Collection identifiers, IdentifierBag ibag) throws JAXRException {
+    	try {
+			if (identifiers == null || ibag == null)
+				return;
+    		
+    		// Identifiers
+			Iterator iditer = identifiers.iterator();
+			while (iditer.hasNext()) {
+				ExternalIdentifier extid = (ExternalIdentifier) iditer.next();
+				if (extid != null ) {
+					KeyedReference keyr = ibag.addNewKeyedReference();
+	
+					InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) extid).getName();
+					String value = extid.getValue();
+					ClassificationScheme scheme = extid.getIdentificationScheme();
+	
+					String name = iname.getValue();
+					if (name != null)
+						keyr.setKeyName(name);
+	
+					if (value != null)
+						keyr.setKeyValue(value);
+					
+					if (scheme != null) {
+						Key key = scheme.getKey();
+						if (key != null && key.getId() != null)
+							keyr.setTModelKey(key.getId());
+					}
+				}
+			}
+    	} catch (Exception ud) {
+			throw new JAXRException("Apache JAXR Impl:", ud);
+		}
+    }
+
+    
 }
