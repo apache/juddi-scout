@@ -247,7 +247,19 @@ public class RegistryImpl implements IRegistry {
 	public XmlObject execute(XmlObject uddiRequest, URI endPointURI)
 			throws RegistryException {
 
-        Document doc = (Document) uddiRequest.newDomNode();
+        Document doc;
+        try {
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            docBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder docBuilder= docBuilderFactory.newDocumentBuilder();
+            doc = docBuilder.parse(uddiRequest.newInputStream());
+        } catch (SAXException saxe) {
+            throw (new RegistryException(saxe));
+        } catch (ParserConfigurationException pce) {
+            throw (new RegistryException(pce));
+        } catch (IOException ioe) {
+            throw (new RegistryException(ioe));
+        }
 		Element request = doc.getDocumentElement();
 
 		request.setAttribute("generic", this.getUddiVersion());
