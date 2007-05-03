@@ -40,6 +40,7 @@ import org.apache.ws.scout.uddi.CategoryBag;
 import org.apache.ws.scout.uddi.URLType;
 import org.apache.ws.scout.uddi.TModelInstanceDetails;
 import org.apache.ws.scout.uddi.TModelInstanceInfo;
+import org.apache.xmlbeans.XmlObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -311,7 +312,7 @@ public class ScoutJaxrUddiHelper {
                 bs.setServiceKey(serve.getKey().getId());
             }
 
-			addCategories(serve.getClassifications(), bs.addNewCategoryBag());
+			bs.setCategoryBag(getCategoryBagFromClassifications(serve.getClassifications()));
 
    		    // TODO: need to do ServiceBindings->BindingTemplates
    		    
@@ -370,8 +371,8 @@ public class ScoutJaxrUddiHelper {
 				emptyDesc.setStringValue(scheme.getDescription().getValue());
 			}
 
-			addIdentifiers(scheme.getExternalIdentifiers(), tm.addNewIdentifierBag());
-			addCategories(scheme.getClassifications(), tm.addNewCategoryBag());
+			tm.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers()));
+			tm.setCategoryBag(getCategoryBagFromClassifications(scheme.getClassifications()));
 			
 			// ToDO: overviewDoc
 		} catch (Exception ud) {
@@ -414,8 +415,8 @@ public class ScoutJaxrUddiHelper {
 				emptyDesc.setStringValue(scheme.getDescription().getValue());
 			}
 
-			addIdentifiers(scheme.getExternalIdentifiers(), tm.addNewIdentifierBag());
-			addCategories(scheme.getClassifications(), tm.addNewCategoryBag());
+			tm.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers()));
+			tm.setCategoryBag(getCategoryBagFromClassifications(scheme.getClassifications()));
 
 			// ToDO: overviewDoc
 
@@ -550,8 +551,8 @@ public class ScoutJaxrUddiHelper {
 				}
             }
 			
-		  addIdentifiers(org.getExternalIdentifiers(), biz.addNewIdentifierBag());
-		  addCategories(org.getClassifications(), biz.addNewCategoryBag());
+		  biz.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(org.getExternalIdentifiers()));
+		  biz.setCategoryBag(getCategoryBagFromClassifications(org.getClassifications()));
 			
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
@@ -676,7 +677,7 @@ public class ScoutJaxrUddiHelper {
        return uri;
    }
 
-    /**
+	/**
      * According to JAXR Javadoc, there are two types of classification, internal and external and they use the Classification, Concept,     
      * and ClassificationScheme objects.  It seems the only difference between internal and external (as related to UDDI) is that the
      * name/value pair of the categorization is held in the Concept for internal classifications and the Classification for external (bypassing
@@ -690,12 +691,13 @@ public class ScoutJaxrUddiHelper {
      * @param destinationObj
      * @throws JAXRException
      */
-    private static void addCategories(Collection classifications, CategoryBag cbag) throws JAXRException {
+	public static CategoryBag getCategoryBagFromClassifications(Collection classifications) throws JAXRException {
     	try {
-			if (classifications == null || cbag == null)
-				return;
+			if (classifications == null)
+				return null;
     		
     		// Classifications
+			CategoryBag cbag = (CategoryBag)(XmlObject.Factory.newInstance()).changeType(CategoryBag.type);
 			Iterator classiter = classifications.iterator();
 			while (classiter.hasNext()) {
 				Classification classification = (Classification) classiter.next();
@@ -733,24 +735,26 @@ public class ScoutJaxrUddiHelper {
 					}
 				}
 			}
+			return cbag;
     	} catch (Exception ud) {
 			throw new JAXRException("Apache JAXR Impl:", ud);
 		}
     }
 	
-    /**
+	/**
      * Adds the objects identifiers from JAXR's external identifier collection
      * 
      * @param identifiers
      * @param ibag
      * @throws JAXRException
      */
-    private static void addIdentifiers(Collection identifiers, IdentifierBag ibag) throws JAXRException {
+	public static IdentifierBag getIdentifierBagFromExternalIdentifiers(Collection identifiers) throws JAXRException {
     	try {
-			if (identifiers == null || ibag == null)
-				return;
+			if (identifiers == null)
+				return null;
     		
     		// Identifiers
+			IdentifierBag ibag = (IdentifierBag)(XmlObject.Factory.newInstance()).changeType(IdentifierBag.type);
 			Iterator iditer = identifiers.iterator();
 			while (iditer.hasNext()) {
 				ExternalIdentifier extid = (ExternalIdentifier) iditer.next();
@@ -775,10 +779,10 @@ public class ScoutJaxrUddiHelper {
 					}
 				}
 			}
+			return ibag;
     	} catch (Exception ud) {
 			throw new JAXRException("Apache JAXR Impl:", ud);
 		}
     }
-
     
 }

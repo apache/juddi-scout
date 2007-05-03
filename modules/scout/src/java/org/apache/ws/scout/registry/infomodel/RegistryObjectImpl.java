@@ -109,10 +109,12 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
 
     public void addClassifications(Collection collection)
     {
-        for (Iterator i = collection.iterator(); i.hasNext();)
-        {
-            Classification classification = (Classification) i.next();
-            classifications.add(classification);
+        if (collection!=null) {
+            for (Iterator i = collection.iterator(); i.hasNext();)
+            {
+                Classification classification = (Classification) i.next();
+                classifications.add(classification);
+            }
         }
     }
 
@@ -202,11 +204,13 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
 
     public void addExternalIdentifiers(Collection collection)
     {
-        for (Iterator i = collection.iterator(); i.hasNext();)
-        {
-            ExternalIdentifier externalId = (ExternalIdentifier) i.next();
-            externalIds.add(externalId);
-            ((ExternalIdentifierImpl) externalId).setRegistryObject(this);
+        if (collection!=null) {
+            for (Iterator i = collection.iterator(); i.hasNext();)
+            {
+                ExternalIdentifier externalId = (ExternalIdentifier) i.next();
+                externalIds.add(externalId);
+                ((ExternalIdentifierImpl) externalId).setRegistryObject(this);
+            }
         }
     }
 
