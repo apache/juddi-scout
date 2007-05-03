@@ -24,6 +24,7 @@ import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
 import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.util.EnumerationHelper;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
+import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
 
 import org.apache.ws.scout.uddi.AssertionStatusItem;
 import org.apache.ws.scout.uddi.AssertionStatusReport;
@@ -121,7 +122,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
             Name[] nameArray = mapNamePatterns(namePatterns);
             BusinessList result = registry.findBusiness(nameArray,
-                    null, null, null, null,
+                    null, 
+                    ScoutJaxrUddiHelper.getIdentifierBagFromExternalIdentifiers(externalIdentifiers), 
+                    ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
+                    null,
                     juddiFindQualifiers,
                     registryService.getMaxRows());
             BusinessInfo[] a = result.getBusinessInfos() != null ? result.getBusinessInfos().getBusinessInfoArray() : null;
@@ -475,25 +479,24 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         scheme.addChildConcept(c);
     }
 
-    public BulkResponse findClassificationSchemes(Collection findQualifiers,
-                                                  Collection namePatterns,
-                                                  Collection classifications,
-                                                  Collection externalLinks) throws JAXRException
-    {
-        //TODO: Handle this better
-        Collection col = new ArrayList();
-        Iterator iter = namePatterns.iterator();
-        String name = "";
-        while(iter.hasNext())
-        {
-          name = (String)iter.next();
-          break;
-        }
-
-        col.add(this.findClassificationSchemeByName(findQualifiers,name));
-        return new BulkResponseImpl(col);
-
-    }
+    public BulkResponse findClassificationSchemes(Collection findQualifiers, 
+    											  Collection namePatterns, 
+    											  Collection classifications, 
+    											  Collection externalLinks) throws JAXRException
+	{
+		//TODO: Handle this better
+		Collection col = new ArrayList();
+		Iterator iter = namePatterns.iterator();
+		String name = "";
+		while(iter.hasNext())
+		{
+			name = (String)iter.next();
+			break;
+		}
+		
+		col.add(this.findClassificationSchemeByName(findQualifiers,name));
+		return new BulkResponseImpl(col);
+	}
 
     public Concept findConceptByPath(String path) throws JAXRException
     {
@@ -523,7 +526,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             String namestr = (String) iter.next();
             try
             {
-                TModelList list = registry.findTModel(namestr, null, null, juddiFindQualifiers, 10);
+                TModelList list = registry.findTModel(namestr, 
+                        ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
+                        ScoutJaxrUddiHelper.getIdentifierBagFromExternalIdentifiers(externalIdentifiers), 
+                		juddiFindQualifiers, 10);
                 TModelInfos infos = null;
                 TModelInfo[] tmarr = null;
                 if (list != null) infos = list.getTModelInfos();
@@ -565,7 +571,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         try
         {
  
-            BindingDetail l = iRegistry.findBinding(serviceKey.getId(),null,null,juddiFindQualifiers,registryService.getMaxRows());
+            BindingDetail l = iRegistry.findBinding(serviceKey.getId(),
+                    ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
+            		null,
+            		juddiFindQualifiers,registryService.getMaxRows());
 
             /*
              * now convert  from jUDDI ServiceInfo objects to JAXR Services
@@ -635,8 +644,11 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 id = orgKey.getId();
             }
 
-            ServiceList l = iRegistry.findService(id, juddiNames,
-                    null, null, juddiFindQualifiers, registryService.getMaxRows());
+            ServiceList l = iRegistry.findService(id, 
+            		juddiNames,
+                    ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
+                    null, 
+                    juddiFindQualifiers, registryService.getMaxRows());
 
             /*
              * now convert  from jUDDI ServiceInfo objects to JAXR Services
