@@ -268,7 +268,10 @@ public class RegistryImpl implements IRegistry {
 		// is returned.
 
 		Element response = transport.send(request, endPointURI);
-
+        
+        if (response.getNamespaceURI()==null) {
+            response.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
+        }
 		// First, let's make sure that a response
 		// (any response) is found in the SOAP Body.
 
