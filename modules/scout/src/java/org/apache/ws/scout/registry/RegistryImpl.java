@@ -20,11 +20,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.ws.scout.transport.Transport;
+import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Document;
@@ -262,43 +264,58 @@ public class RegistryImpl implements IRegistry {
         }
 		Element request = doc.getDocumentElement();
 
-		request.setAttribute("generic", this.getUddiVersion());
-		request.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
-		// A SOAP request is made and a SOAP response
-		// is returned.
+	    request.setAttribute("generic", this.getUddiVersion());
+	    request.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
+	    // A SOAP request is made and a SOAP response
+	    // is returned.
 
-		Element response = transport.send(request, endPointURI);
+	    Element response = transport.send(request, endPointURI);
         
         if (response.getNamespaceURI()==null) {
             response.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
         }
-		// First, let's make sure that a response
-		// (any response) is found in the SOAP Body.
+	    // First, let's make sure that a response
+	    // (any response) is found in the SOAP Body.
 
-		String responseName = response.getLocalName();
-		if (responseName == null) {
-			throw new RegistryException("Unsupported response "
-					+ "from registry. A value was not present.");
+	    String responseName = response.getLocalName();
+	    if (responseName == null) {
+	        throw new RegistryException("Unsupported response "
+	                + "from registry. A value was not present.");
 		}
+ 
+        // Let's now try to determine which UDDI response
+        // we received and unmarshal it appropriately or
+        // throw a RegistryException if it's unknown.
+        // Well, we have now determined that something was
+        // returned and it is "a something" that we know
+        // about so let's unmarshal it into a RegistryObject
+        // Next, let's make sure we didn't recieve a SOAP
+        // Fault. If it is a SOAP Fault then throw it
+        // immediately.
 
-		// Let's now try to determine which UDDI response
-		// we received and unmarshal it appropriately or
-		// throw a RegistryException if it's unknown.
-
-		// Well, we have now determined that something was
-		// returned and it is "a something" that we know
-		// about so let's unmarshal it into a RegistryObject
-
-		// Next, let's make sure we didn't recieve a SOAP
-		// Fault. If it is a SOAP Fault then throw it
-		// immediately.
-
-		XmlObject uddiResponse = null;
-		try {
-			uddiResponse = XmlObject.Factory.parse(response);
-		} catch (XmlException xmle) {
-			throw (new RegistryException(xmle));
-		}
+        XmlObject uddiResponse = null;
+	    try {
+	        uddiResponse = XmlObject.Factory.parse(response);
+            XmlCursor cursor = uddiResponse.newCursor();
+            cursor.toNextToken();
+            //set the namespace if it is empty here.  This is needed for the find_element_user to work.
+            if ("".equals(cursor.getName().getNamespaceURI())) {
+                cursor.setName(new QName(this.getUddiNamespace(), cursor.getName().getLocalPart()));
+                //there seems to have a bug in setName and it will set the next Start with xmlns="".
+                //The workaround is to set it to uddiNamespace when it is empty.
+                while (cursor.hasNextToken()) {
+                    cursor.toNextToken();
+                    if (cursor.isStart()) {
+                        if ("".equals(cursor.getName().getNamespaceURI())) {
+                            cursor.setName(new QName(this.getUddiNamespace(), cursor.getName().getLocalPart()));
+                        }
+                    }
+                }
+                cursor.dispose();
+            }
+	    } catch (XmlException xmle) {
+	        throw (new RegistryException(xmle));
+	    }
 
 		if (responseName.toLowerCase().equals("fault")) {
 			NodeList nodeList = null;

@@ -343,8 +343,10 @@ public class ScoutUddiJaxrHelper
       concept.setName(lcm.createInternationalString(tmodel.getName().getStringValue()));
 
       Description desc = getDescription(tmodel);
-      concept.setDescription(lcm.createInternationalString(desc.getStringValue()));
-
+      if (desc != null) {
+          concept.setDescription(lcm.createInternationalString(desc.getStringValue()));
+      }
+      
       concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lcm));
       concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lcm));
 

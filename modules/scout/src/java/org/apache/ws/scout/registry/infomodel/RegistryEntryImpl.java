@@ -18,6 +18,7 @@ package org.apache.ws.scout.registry.infomodel;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.RegistryEntry;
 import java.util.Date;
 
@@ -47,57 +48,57 @@ public class RegistryEntryImpl extends RegistryObjectImpl implements RegistryEnt
 
     public Date getExpiration() throws JAXRException
     {
-        return expiry;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public int getMajorVersion() throws JAXRException
     {
-        return major;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public int getMinorVersion() throws JAXRException
     {
-        return minor;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public int getStability() throws JAXRException
     {
-        return stability;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public int getStatus() throws JAXRException
     {
-        return status;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public String getUserVersion() throws JAXRException
     {
-        return userversion;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public void setExpiration(Date date) throws JAXRException
     {
-        expiry = date;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public void setMajorVersion(int param) throws JAXRException
     {
-        major = param;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public void setMinorVersion(int param) throws JAXRException
     {
-        minor = param;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public void setStability(int param) throws JAXRException
     {
-        stability = param;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
     public void setUserVersion(String str) throws JAXRException
     {
-        userversion = str;
+        throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
 }
