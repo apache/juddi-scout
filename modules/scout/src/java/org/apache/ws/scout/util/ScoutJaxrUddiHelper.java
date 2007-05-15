@@ -537,18 +537,23 @@ public class ScoutJaxrUddiHelper {
 
             biz.setBusinessServices(bss);
 
-			// External Links
+            // External Links
             Iterator exiter = org.getExternalLinks().iterator();
-			while (exiter.hasNext()) {
-				ExternalLink link = (ExternalLink) exiter.next();
-				/** Note: jUDDI adds its own discoverURL as the businessEntity* */
-				DiscoveryURLs emptyDUs = biz.addNewDiscoveryURLs();
-				DiscoveryURL emptyDU = emptyDUs.addNewDiscoveryURL();
-				emptyDU.setUseType("businessEntityExt");
+            DiscoveryURLs emptyDUs = null;
+            boolean first = true;
+            while (exiter.hasNext()) {
+                ExternalLink link = (ExternalLink) exiter.next();
+                /** Note: jUDDI adds its own discoverURL as the businessEntity* */
+                if (first) {
+                    emptyDUs = biz.addNewDiscoveryURLs();
+                    first = false;
+                }
+                DiscoveryURL emptyDU = emptyDUs.addNewDiscoveryURL();
+                emptyDU.setUseType("businessEntityExt");
 				
-				if (link.getExternalURI() != null) {
-					emptyDU.setStringValue(link.getExternalURI());
-				}
+                if (link.getExternalURI() != null) {
+                    emptyDU.setStringValue(link.getExternalURI());
+                }
             }
 			
 		  biz.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(org.getExternalIdentifiers()));
