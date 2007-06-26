@@ -107,8 +107,8 @@
 
   <build>
     <nagEmailAddress>scout-dev@ws.apache.org</nagEmailAddress>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
     <unitTest>
       <includes>
         <include>**/*Test.java</include>

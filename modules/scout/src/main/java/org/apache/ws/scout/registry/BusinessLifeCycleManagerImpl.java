@@ -56,6 +56,7 @@ import java.io.Serializable;
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
@@ -161,7 +162,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
         Iterator iter = col.iterator();
 
-        Collection suc = new ArrayList();
+        HashSet suc = new HashSet();
         Collection exc = new ArrayList();
 
         while (iter.hasNext()) {
@@ -222,7 +223,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         PublisherAssertion[] sarr = new PublisherAssertion[asso.size()];
 
-        Collection coll = new ArrayList();
+        HashSet coll = new HashSet();
         Collection exceptions = new ArrayList();
 
         Iterator iter = asso.iterator();
@@ -269,7 +270,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         TModel[] entityarr = new TModel[schemes.size()];
 
-        Collection coll = new ArrayList();
+        HashSet coll = new HashSet();
         Collection exceptions = new ArrayList();
 
         Iterator iter = schemes.iterator();
@@ -315,7 +316,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         TModel[] entityarr = new TModel[concepts.size()];
 
-        Collection coll = new ArrayList();
+        HashSet coll = new HashSet();
         Collection exceptions = new ArrayList();
 
         Iterator iter = concepts.iterator();
@@ -361,7 +362,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BusinessEntity[] entityarr = new BusinessEntity[organizations.size()];
 
-        Collection coll = new ArrayList();
+        HashSet coll = new HashSet();
         Collection exceptions = new ArrayList();
 
         Iterator iter = organizations.iterator();
@@ -406,7 +407,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BindingTemplate[] sbarr = new BindingTemplate[bindings.size()];
 
-        Collection coll = new ArrayList();
+        HashSet coll = new HashSet();
         Collection exceptions = new ArrayList();
 
         Iterator iter = bindings.iterator();
@@ -447,7 +448,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BusinessService[] sarr = new BusinessService[services.size()];
 
-        Collection coll = new ArrayList();
+        HashSet coll = new HashSet();
         Collection exceptions = new ArrayList();
 
 
@@ -487,7 +488,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     public void confirmAssociation(Association assoc) throws JAXRException, InvalidRequestException {
        //Store it in the UDDI registry
-       Collection col = new ArrayList();
+       HashSet col = new HashSet();
        col.add(assoc);
        BulkResponse br = this.saveAssociations(col, true);
        if(br.getExceptions()!= null)
@@ -658,7 +659,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         String[] keyarr = new String[keys.size()];
         Result[] keyResultArr;
 
-        Collection coll = new ArrayList();
+        HashSet coll = new HashSet();
         Collection exceptions = new ArrayList();
 
         try {

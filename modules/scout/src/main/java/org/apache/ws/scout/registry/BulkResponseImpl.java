@@ -18,8 +18,11 @@ package org.apache.ws.scout.registry;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.RegistryObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Implements JAXR BulkResponse Interface.
@@ -33,8 +36,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
     private boolean partialResponse = false;
 
     private Collection exceptions = new ArrayList();
-    private Collection collection = new ArrayList();
-
+    private HashSet collection = new HashSet();
     /**
      * Creates a new instance of BulkResponseImpl
      */
@@ -42,7 +44,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
     {
     }
 
-    BulkResponseImpl(Collection collection)
+    BulkResponseImpl(HashSet collection)
     {
         this.collection = collection;
     }
@@ -86,7 +88,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
         this.partialResponse = b;
     }
 
-    public void setCollection(Collection coll) throws JAXRException
+    public void setCollection(HashSet coll) throws JAXRException
     {
         this.collection = coll;
     }

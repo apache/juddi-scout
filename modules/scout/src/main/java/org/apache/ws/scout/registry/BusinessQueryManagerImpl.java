@@ -70,6 +70,7 @@ import javax.xml.registry.infomodel.ServiceBinding;
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -130,12 +131,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     registryService.getMaxRows());
             BusinessInfo[] a = result.getBusinessInfos() != null ? result.getBusinessInfos().getBusinessInfoArray() : null;
 
-            Collection orgs = new ArrayList();
+            HashSet orgs = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                orgs = new ArrayList(len);
+                orgs = new HashSet();
             }
             for (int i = 0; i < len; i++)
             {
@@ -167,12 +168,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     registry.getPublisherAssertions(auth.getAuthInfo());
             PublisherAssertion[] a = result.getPublisherAssertionArray();
 
-            Collection col = null;
+            HashSet col = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                col = new ArrayList(len);
+                col = new HashSet();
             }
             for (int i = 0; i < len; i++)
             {
@@ -228,12 +229,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
             report = registry.getAssertionStatusReport(auth.getAuthInfo(),confirm);
             AssertionStatusItem[] a = report.getAssertionStatusItemArray();
-            Collection col = new ArrayList();
+            HashSet col = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                col = new ArrayList(len);
+                col = new HashSet();
             }
             for (int i = 0; i < len; i++)
             {
@@ -485,7 +486,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     											  Collection externalLinks) throws JAXRException
 	{
 		//TODO: Handle this better
-		Collection col = new ArrayList();
+        HashSet col = new HashSet();
 		Iterator iter = namePatterns.iterator();
 		String name = "";
 		while(iter.hasNext())
@@ -514,7 +515,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                      Collection externalIdentifiers,
                                      Collection externalLinks) throws JAXRException
     {
-        Collection col = new ArrayList();
+        HashSet col = new HashSet();
 
         //Lets ask the uddi registry if it has the TModels
         IRegistry registry = registryService.getRegistry();
@@ -582,7 +583,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             if (l != null) {
 
                 BindingTemplate[] bindarr= l.getBindingTemplateArray();
-                Collection col = new ArrayList();
+                HashSet col = new HashSet();
 
                 for (int i=0; bindarr != null && i < bindarr.length; i++) {
                     BindingTemplate si = bindarr[i];
@@ -659,7 +660,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 ServiceInfo[] a = (serviceInfos != null ? serviceInfos.getServiceInfoArray() : null);
 
-                Collection col = new ArrayList();
+                HashSet col = new HashSet();
 
                 for (int i=0; a != null && i < a.length; i++) {
                     ServiceInfo si = (ServiceInfo) a[i];
@@ -808,7 +809,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             LifeCycleManager.ORGANIZATION,
             LifeCycleManager.SERVICE};
 
-        Collection c = new ArrayList();
+        HashSet c = new HashSet();
 
         for (int i = 0; i < types.length; i++) {
             try {
@@ -844,7 +845,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             keys[currLoc] = key.getId();
             currLoc++;
         }
-        Collection col = new ArrayList();
+        HashSet col = new HashSet();
         LifeCycleManager lcm = registryService.getLifeCycleManagerImpl();
 
         if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))

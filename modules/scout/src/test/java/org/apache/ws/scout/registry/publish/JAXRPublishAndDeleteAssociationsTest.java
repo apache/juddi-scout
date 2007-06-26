@@ -267,6 +267,8 @@ public class JAXRPublishAndDeleteAssociationsTest extends BaseTestCase {
 	private ArrayList findTempOrgs() throws JAXRException {
 
 		ArrayList toReturn = new ArrayList(2);
+        toReturn.add(null);
+        toReturn.add(null);
 
 		// Define find qualifiers and name patterns
 		Collection findQualifiers = new ArrayList();
