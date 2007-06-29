@@ -22,81 +22,9 @@
         </dependency>
 
         <!-- external JARs -->
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-activation</artifactId>
-            <version>1.0.2-rc4</version>
-        </dependency>
-        <dependency>
-            <groupId>jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>1.0</version>
-        </dependency>
 
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-discovery</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-saaj</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-jaxrpc</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>xmlbeans</groupId>
-            <artifactId>xbean</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.8.0</version>
-		</dependency>
     </dependencies>
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>test</testSourceDirectory>
-    <resources>
-      <resource>
-        <directory>conf</directory>
-        <excludes>
-          <exclude>**/*.properties</exclude>
-        </excludes>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>src</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
-    </resources>
     <plugins>
 	      <plugin>
 	        <artifactId>maven-compiler-plugin</artifactId>
@@ -108,7 +36,7 @@
 	      </plugin>
     <plugin>
   		<artifactId>maven-surefire-plugin</artifactId>
-  		<inherited>true</inherited>
+        <version>2.3</version>
   		<configuration>
   			<skip>false</skip>
   			<excludes>
@@ -143,7 +71,7 @@
                                     classgendir="${compiled.classes.dir}"
                                     srcgendir="${schema.generated.src.dir}" 
                                     classpathref="maven.runtime.classpath">
-                                    <fileset dir="${basedir}/../../etc/" includes="uddi_v2.xsd,uddi_v2.xsdconfig"/>
+                                    <fileset dir="${basedir}/../etc/" includes="uddi_v2.xsd,uddi_v2.xsdconfig"/>
                                 </xmlbean>
 							</tasks>
 						</configuration>
