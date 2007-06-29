@@ -1,7 +1,7 @@
 package org.apache.ws.scout.registry;
 
-import javax.xml.registry.JAXRResponse;
 import javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRResponse;
 
 /**
  * Implementation of JAXRResponse

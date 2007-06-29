@@ -16,42 +16,58 @@
  */
 package org.apache.ws.scout.util;
 
-import org.apache.ws.scout.uddi.Address;
-import org.apache.ws.scout.uddi.AddressLine;
-import org.apache.ws.scout.uddi.DiscoveryURL;
-import org.apache.ws.scout.uddi.DiscoveryURLs;
-import org.apache.ws.scout.uddi.Email;
-import org.apache.ws.scout.uddi.KeyedReference;
-import org.apache.ws.scout.uddi.Name;
-import org.apache.ws.scout.uddi.Phone;
-import org.apache.ws.scout.uddi.PublisherAssertion;
-import org.apache.ws.scout.uddi.BusinessEntity;
-import org.apache.ws.scout.uddi.Contacts;
-import org.apache.ws.scout.uddi.Contact;
-import org.apache.ws.scout.uddi.BusinessService;
-import org.apache.ws.scout.uddi.BusinessServices;
-import org.apache.ws.scout.uddi.TModel;
-import org.apache.ws.scout.uddi.AccessPoint;
-import org.apache.ws.scout.uddi.BindingTemplate;
-import org.apache.ws.scout.uddi.Description;
-import org.apache.ws.scout.uddi.HostingRedirector;
-import org.apache.ws.scout.uddi.IdentifierBag;
-import org.apache.ws.scout.uddi.CategoryBag;
-import org.apache.ws.scout.uddi.URLType;
-import org.apache.ws.scout.uddi.TModelInstanceDetails;
-import org.apache.ws.scout.uddi.TModelInstanceInfo;
-import org.apache.xmlbeans.XmlObject;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.StringTokenizer;
+
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.Classification;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.EmailAddress;
+import javax.xml.registry.infomodel.ExternalIdentifier;
+import javax.xml.registry.infomodel.ExternalLink;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.PostalAddress;
+import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.Slot;
+import javax.xml.registry.infomodel.SpecificationLink;
+import javax.xml.registry.infomodel.TelephoneNumber;
+import javax.xml.registry.infomodel.User;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
-
-import javax.xml.registry.infomodel.*;
-import javax.xml.registry.JAXRException;
-import java.util.Locale;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.StringTokenizer;
+import org.apache.ws.scout.uddi.AccessPoint;
+import org.apache.ws.scout.uddi.Address;
+import org.apache.ws.scout.uddi.AddressLine;
+import org.apache.ws.scout.uddi.BindingTemplate;
+import org.apache.ws.scout.uddi.BusinessEntity;
+import org.apache.ws.scout.uddi.BusinessService;
+import org.apache.ws.scout.uddi.BusinessServices;
+import org.apache.ws.scout.uddi.CategoryBag;
+import org.apache.ws.scout.uddi.Contact;
+import org.apache.ws.scout.uddi.Contacts;
+import org.apache.ws.scout.uddi.Description;
+import org.apache.ws.scout.uddi.DiscoveryURL;
+import org.apache.ws.scout.uddi.DiscoveryURLs;
+import org.apache.ws.scout.uddi.Email;
+import org.apache.ws.scout.uddi.HostingRedirector;
+import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.KeyedReference;
+import org.apache.ws.scout.uddi.Name;
+import org.apache.ws.scout.uddi.Phone;
+import org.apache.ws.scout.uddi.PublisherAssertion;
+import org.apache.ws.scout.uddi.TModel;
+import org.apache.ws.scout.uddi.TModelInstanceDetails;
+import org.apache.ws.scout.uddi.TModelInstanceInfo;
+import org.apache.ws.scout.uddi.URLType;
+import org.apache.xmlbeans.XmlObject;
 
 /**
  * Helper class that does Jaxr->UDDI Mapping

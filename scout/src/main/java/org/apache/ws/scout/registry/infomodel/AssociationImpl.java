@@ -21,8 +21,8 @@ import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.InternationalString;
-import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.RegistryObject;
 
 /**
  * Implements JAXR Association Interface.

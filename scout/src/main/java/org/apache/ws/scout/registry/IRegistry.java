@@ -18,7 +18,6 @@ package org.apache.ws.scout.registry;
 import java.net.URI;
 
 import org.apache.ws.scout.transport.Transport;
-
 import org.apache.ws.scout.uddi.AssertionStatusReport;
 import org.apache.ws.scout.uddi.AuthToken;
 import org.apache.ws.scout.uddi.BindingDetail;
