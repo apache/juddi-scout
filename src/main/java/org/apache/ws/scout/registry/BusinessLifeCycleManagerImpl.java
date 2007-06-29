@@ -77,7 +77,9 @@ import org.apache.xmlbeans.XmlObject;
 public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         implements BusinessLifeCycleManager, Serializable {
 	
-	private Log log = LogFactory.getLog(this.getClass());
+	
+    private static final long serialVersionUID = 1L;
+    private Log log = LogFactory.getLog(this.getClass());
 	
     public BusinessLifeCycleManagerImpl(RegistryService registry) {
         super(registry);

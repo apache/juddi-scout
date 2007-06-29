@@ -29,7 +29,7 @@ import org.apache.ws.scout.uddi.Result;
  */
 public class RegistryException extends Exception
 {
-
+    private static final long serialVersionUID = 1L;
 	public static final int E_ASSERTION_NOT_FOUND = 30000;
 	public static final int E_AUTH_TOKEN_EXPIRED = 10110;
 	public static final int E_AUTH_TOKEN_REQUIRED = 10120;

@@ -32,7 +32,7 @@ import javax.xml.registry.infomodel.Slot;
  */
 public class ExtensibleObjectImpl implements ExtensibleObject
 {
-    private Map slots = new HashMap();
+    private Map<String,Slot> slots = new HashMap<String,Slot>();
 
     public void addSlot(Slot slot) throws JAXRException
     {
@@ -52,7 +52,7 @@ public class ExtensibleObjectImpl implements ExtensibleObject
         return (Slot) slots.get(slotName);
     }
 
-    public Collection getSlots()
+    public Collection<Slot> getSlots()
     {
         return slots.values();
     }
@@ -62,7 +62,7 @@ public class ExtensibleObjectImpl implements ExtensibleObject
         slots.remove(slotName);
     }
 
-    public void removeSlots(Collection slotNames)
+    public void removeSlots(Collection<String> slotNames)
     {
         slots.keySet().removeAll(slotNames);
     }

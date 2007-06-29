@@ -50,10 +50,10 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
     private InternationalString name = new InternationalStringImpl();
     private InternationalString desc = new InternationalStringImpl();
 
-    private Set classifications = new HashSet();
-    private Set associations = new HashSet();
-    private Set externalIds = new HashSet();
-    private Set externalLinks = new HashSet();
+    private Set<Classification> classifications = new HashSet<Classification>();
+    private Set<Association> associations = new HashSet<Association>();
+    private Set<ExternalIdentifier> externalIds = new HashSet<ExternalIdentifier>();
+    private Set<ExternalLink> externalLinks = new HashSet<ExternalLink>();
 
     private OrganizationImpl submittingOrganization;
 
@@ -124,7 +124,7 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         classifications.remove(classification);
     }
 
-    public void removeClassifications(Collection collection)
+    public void removeClassifications(Collection<Classification> collection)
     {
         classifications.removeAll(collection);
     }
@@ -134,9 +134,9 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         return Collections.unmodifiableSet(classifications);
     }
 
-    public void setClassifications(Collection collection)
+    public void setClassifications(Collection<Classification> collection)
     {
-        Set newClassifications = new HashSet(collection.size());
+        Set<Classification> newClassifications = new HashSet<Classification>(collection.size());
         for (Iterator i = collection.iterator(); i.hasNext();)
         {
             Classification classification = (Classification) i.next();
@@ -171,14 +171,14 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         }
     }
 
-    public Collection getAssociations() throws JAXRException
+    public Collection<Association> getAssociations() throws JAXRException
     {
         return Collections.unmodifiableSet(associations);
     }
 
     public void setAssociations(Collection collection)
     {
-        Set newAssociations = new HashSet(collection.size());
+        Set<Association> newAssociations = new HashSet<Association>(collection.size());
         for (Iterator i = collection.iterator(); i.hasNext();)
         {
             Association association = (Association) i.next();
@@ -233,14 +233,14 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         externalIds.removeAll(collection);
     }
 
-    public Collection getExternalIdentifiers()
+    public Collection<ExternalIdentifier> getExternalIdentifiers()
     {
         return Collections.unmodifiableSet(externalIds);
     }
 
-    public void setExternalIdentifiers(Collection collection)
+    public void setExternalIdentifiers(Collection<ExternalIdentifier> collection)
     {
-        Set newExternalIds = new HashSet(collection.size());
+        Set<ExternalIdentifier> newExternalIds = new HashSet<ExternalIdentifier>(collection.size());
         for (Iterator i = collection.iterator(); i.hasNext();)
         {
             ExternalIdentifier externalId = (ExternalIdentifier) i.next();
@@ -255,7 +255,7 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         ((ExternalLinkImpl) externalLink).addLinkedObject(this);
     }
 
-    public void addExternalLinks(Collection collection)
+    public void addExternalLinks(Collection<ExternalLink> collection)
     {
         for (Iterator i = collection.iterator(); i.hasNext();)
         {
@@ -282,14 +282,14 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         externalLinks.removeAll(collection);
     }
 
-    public Collection getExternalLinks()
+    public Collection<ExternalLink> getExternalLinks()
     {
         return Collections.unmodifiableSet(externalLinks);
     }
 
-    public void setExternalLinks(Collection collection)
+    public void setExternalLinks(Collection<ExternalLink> collection)
     {
-        Set newExternalLinks = new HashSet(collection.size());
+        Set<ExternalLink> newExternalLinks = new HashSet<ExternalLink>(collection.size());
         for (Iterator i = collection.iterator(); i.hasNext();)
         {
             ExternalLink externalLink = (ExternalLink) i.next();

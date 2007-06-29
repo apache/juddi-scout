@@ -118,7 +118,7 @@ public class AssociationImpl extends RegistryObjectImpl implements Association
          else
           id+=":"+k.getId();
          id += ":" + "Concept";  //UDDI: KeyedReference->Key Name
-         String val = "NULL";
+         //String val = "NULL"; KS unused
          if(type!= null)  id += ":" + type.getValue();
          else  id +=":NULL";
 

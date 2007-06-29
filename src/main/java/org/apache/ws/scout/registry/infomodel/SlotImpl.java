@@ -33,8 +33,9 @@ public class SlotImpl implements Slot
 {
     private String slotType;
     private String name;
-    private Collection values;
+    private Collection<String> values;
 
+    @SuppressWarnings("unchecked")
     public SlotImpl()
     {
         values = Collections.EMPTY_SET;
@@ -50,7 +51,7 @@ public class SlotImpl implements Slot
         return slotType;
     }
 
-    public Collection getValues() throws JAXRException
+    public Collection<String> getValues() throws JAXRException
     {
         return values;
     }
@@ -65,7 +66,7 @@ public class SlotImpl implements Slot
         slotType = s;
     }
 
-    public void setValues(Collection collection) throws JAXRException
+    public void setValues(Collection<String> collection) throws JAXRException
     {
         if (collection == null)
         {
@@ -73,7 +74,7 @@ public class SlotImpl implements Slot
         }
         // "the value of a Slot is locally unique within a slot instance"
         // to enforce this, convert the supplied Collection to a Set
-        values = new HashSet(collection);
+        values = new HashSet<String>(collection);
     }
 
     /**

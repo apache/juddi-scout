@@ -114,7 +114,7 @@ public class ExtensibleObjectTest extends TestCase {
             return null;
         }
 
-        public Collection getValues() throws JAXRException {
+        public Collection<String> getValues() throws JAXRException {
             return null;
         }
 

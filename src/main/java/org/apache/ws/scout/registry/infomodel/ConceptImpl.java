@@ -40,7 +40,7 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept
     private Concept parentconcept = null;
 
     private ClassificationScheme scheme = null;
-    private Collection childconcepts = new ArrayList();
+    private Collection<Concept> childconcepts = new ArrayList<Concept>();
 
     /**
      * Creates a new instance of ConceptImpl
@@ -56,7 +56,7 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept
         ((ConceptImpl)concept).setParentconcept(this);
     }
 
-    public void addChildConcepts(Collection collection)
+    public void addChildConcepts(Collection<Concept> collection)
     {
         Iterator iter = collection.iterator();
         while(iter.hasNext())
@@ -73,7 +73,7 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept
         return this.childconcepts.size();
     }
 
-    public Collection getChildrenConcepts()
+    public Collection<Concept> getChildrenConcepts()
     {
         return this.childconcepts;
     }
@@ -83,9 +83,9 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept
         return scheme;
     }
 
-    public Collection getDescendantConcepts()
+    public Collection<Concept> getDescendantConcepts()
     {
-        Collection coll = new ArrayList();
+        Collection<Concept> coll = new ArrayList<Concept>();
         Iterator iter = childconcepts.iterator();
         while(iter != null && iter.hasNext())
         {
@@ -154,7 +154,7 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept
         this.scheme = scheme;
     }
 
-    public void setChildconcepts(Collection childconcepts)
+    public void setChildconcepts(Collection<Concept> childconcepts)
     {
         this.childconcepts.clear();
         Iterator iter = childconcepts.iterator();
