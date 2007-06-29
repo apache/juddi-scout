@@ -16,16 +16,37 @@
  */
 package org.apache.ws.scout.registry;
 
+import java.net.PasswordAuthentication;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.BusinessQueryManager;
+import javax.xml.registry.InvalidRequestException;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.UnsupportedCapabilityException;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
+
+import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
-import org.apache.ws.scout.registry.infomodel.AssociationImpl;
-import org.apache.ws.scout.util.EnumerationHelper;
-import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
-import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
-
 import org.apache.ws.scout.uddi.AssertionStatusItem;
 import org.apache.ws.scout.uddi.AssertionStatusReport;
 import org.apache.ws.scout.uddi.AuthToken;
@@ -50,30 +71,9 @@ import org.apache.ws.scout.uddi.TModelDetail;
 import org.apache.ws.scout.uddi.TModelInfo;
 import org.apache.ws.scout.uddi.TModelInfos;
 import org.apache.ws.scout.uddi.TModelList;
-
-import javax.xml.registry.BulkResponse;
-import javax.xml.registry.BusinessLifeCycleManager;
-import javax.xml.registry.BusinessQueryManager;
-import javax.xml.registry.InvalidRequestException;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.LifeCycleManager;
-import javax.xml.registry.RegistryService;
-import javax.xml.registry.UnsupportedCapabilityException;
-import javax.xml.registry.infomodel.Association;
-import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.Key;
-import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.RegistryObject;
-import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.ServiceBinding;
-import java.net.PasswordAuthentication;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import org.apache.ws.scout.util.EnumerationHelper;
+import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
+import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
 /**
  * Implements the JAXR BusinessQueryManager Interface

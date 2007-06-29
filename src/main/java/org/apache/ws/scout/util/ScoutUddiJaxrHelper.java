@@ -16,8 +16,37 @@
  */
 package org.apache.ws.scout.util;
 
-import org.apache.ws.scout.registry.infomodel.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.Classification;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.ExternalIdentifier;
+import javax.xml.registry.infomodel.ExternalLink;
+import javax.xml.registry.infomodel.InternationalString;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.User;
+
+import org.apache.ws.scout.registry.infomodel.AssociationImpl;
+import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
+import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.ExternalIdentifierImpl;
+import org.apache.ws.scout.registry.infomodel.ExternalLinkImpl;
+import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
+import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceImpl;
+import org.apache.ws.scout.registry.infomodel.UserImpl;
 import org.apache.ws.scout.uddi.AccessPoint;
 import org.apache.ws.scout.uddi.BindingTemplate;
 import org.apache.ws.scout.uddi.BindingTemplates;
@@ -25,25 +54,19 @@ import org.apache.ws.scout.uddi.BusinessDetail;
 import org.apache.ws.scout.uddi.BusinessEntity;
 import org.apache.ws.scout.uddi.BusinessService;
 import org.apache.ws.scout.uddi.BusinessServices;
+import org.apache.ws.scout.uddi.CategoryBag;
 import org.apache.ws.scout.uddi.Contact;
 import org.apache.ws.scout.uddi.Contacts;
 import org.apache.ws.scout.uddi.Description;
 import org.apache.ws.scout.uddi.DiscoveryURL;
 import org.apache.ws.scout.uddi.DiscoveryURLs;
 import org.apache.ws.scout.uddi.IdentifierBag;
-import org.apache.ws.scout.uddi.CategoryBag;
 import org.apache.ws.scout.uddi.KeyedReference;
 import org.apache.ws.scout.uddi.Name;
 import org.apache.ws.scout.uddi.ServiceInfo;
 import org.apache.ws.scout.uddi.TModel;
 import org.apache.ws.scout.uddi.TModelDetail;
 import org.apache.ws.scout.uddi.TModelInfo;
-
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.LifeCycleManager;
-import javax.xml.registry.infomodel.*;
-import java.util.Collection;
-import java.util.ArrayList;
 
 /**
  * Helper class that does UDDI->Jaxr Mapping

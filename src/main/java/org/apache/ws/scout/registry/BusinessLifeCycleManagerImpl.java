@@ -16,42 +16,6 @@
  */
 package org.apache.ws.scout.registry;
 
-import org.apache.ws.scout.uddi.BindingTemplate;
-import org.apache.ws.scout.uddi.BusinessEntity;
-import org.apache.ws.scout.uddi.AssertionStatusItem;
-import org.apache.ws.scout.uddi.AssertionStatusReport;
-import org.apache.ws.scout.uddi.AuthToken;
-import org.apache.ws.scout.uddi.BindingDetail;
-import org.apache.ws.scout.uddi.BusinessDetail;
-import org.apache.ws.scout.uddi.BusinessService;
-import org.apache.ws.scout.uddi.DispositionReport;
-import org.apache.ws.scout.uddi.ErrInfo;
-import org.apache.ws.scout.uddi.PublisherAssertions;
-import org.apache.ws.scout.uddi.Result;
-import org.apache.ws.scout.uddi.ServiceDetail;
-import org.apache.ws.scout.uddi.TModel;
-import org.apache.ws.scout.uddi.PublisherAssertion;
-import org.apache.ws.scout.uddi.KeyedReference;
-import org.apache.ws.scout.uddi.TModelDetail;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.ws.scout.registry.IRegistry;
-import org.apache.ws.scout.registry.RegistryException;
-import org.apache.ws.scout.registry.infomodel.KeyImpl;
-import org.apache.ws.scout.transport.LocalTransport;
-import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
-import org.apache.xmlbeans.XmlObject;
-
-import javax.xml.registry.*;
-import javax.xml.registry.infomodel.Association;
-import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.Key;
-import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.Service;
-import javax.xml.registry.infomodel.ServiceBinding;
-import javax.xml.registry.infomodel.RegistryObject;
 import java.io.Serializable;
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
@@ -60,6 +24,48 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.DeleteException;
+import javax.xml.registry.InvalidRequestException;
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.JAXRResponse;
+import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.RegistryService;
+import javax.xml.registry.SaveException;
+import javax.xml.registry.UnexpectedObjectException;
+import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.RegistryObject;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.uddi.AssertionStatusItem;
+import org.apache.ws.scout.uddi.AssertionStatusReport;
+import org.apache.ws.scout.uddi.AuthToken;
+import org.apache.ws.scout.uddi.BindingDetail;
+import org.apache.ws.scout.uddi.BindingTemplate;
+import org.apache.ws.scout.uddi.BusinessDetail;
+import org.apache.ws.scout.uddi.BusinessEntity;
+import org.apache.ws.scout.uddi.BusinessService;
+import org.apache.ws.scout.uddi.DispositionReport;
+import org.apache.ws.scout.uddi.ErrInfo;
+import org.apache.ws.scout.uddi.KeyedReference;
+import org.apache.ws.scout.uddi.PublisherAssertion;
+import org.apache.ws.scout.uddi.PublisherAssertions;
+import org.apache.ws.scout.uddi.Result;
+import org.apache.ws.scout.uddi.ServiceDetail;
+import org.apache.ws.scout.uddi.TModel;
+import org.apache.ws.scout.uddi.TModelDetail;
+import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
+import org.apache.xmlbeans.XmlObject;
 
 /**
  * Implements JAXR BusinessLifeCycleManager Interface.

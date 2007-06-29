@@ -16,13 +16,12 @@
 
 package org.apache.ws.scout.registry;
 
-import javax.xml.registry.BulkResponse;
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.infomodel.RegistryObject;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+
+import javax.xml.registry.BulkResponse;
+import javax.xml.registry.JAXRException;
 
 /**
  * Implements JAXR BulkResponse Interface.

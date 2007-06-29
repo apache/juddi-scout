@@ -15,17 +15,18 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
-import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.UnexpectedObjectException;
 import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
 import javax.xml.registry.infomodel.SpecificationLink;
-import java.util.Collection;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Implements JAXR Interface.

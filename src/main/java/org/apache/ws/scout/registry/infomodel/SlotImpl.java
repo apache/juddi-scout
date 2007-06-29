@@ -16,11 +16,12 @@
  */
 package org.apache.ws.scout.registry.infomodel;
 
-import javax.xml.registry.JAXRException;
-import javax.xml.registry.infomodel.Slot;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.Slot;
 
 /**
  * Implements Jaxr API

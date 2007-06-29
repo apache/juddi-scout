@@ -16,15 +16,16 @@
 
 package org.apache.ws.scout.registry.infomodel;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.UnsupportedCapabilityException;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.PersonName;
 import javax.xml.registry.infomodel.User;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Implements JAXR Interface.

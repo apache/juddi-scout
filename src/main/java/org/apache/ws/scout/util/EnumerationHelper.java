@@ -16,14 +16,15 @@
  */
 package org.apache.ws.scout.util;
 
-import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
-import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
-import org.apache.ws.scout.registry.infomodel.ConceptImpl;
-
-import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.JAXRException;
 import java.util.StringTokenizer;
+
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+
+import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 
 /**
  * Helper class that deals with predefined enumerations

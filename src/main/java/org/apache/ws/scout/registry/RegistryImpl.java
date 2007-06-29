@@ -26,14 +26,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.ws.scout.transport.Transport;
-import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import org.apache.ws.scout.uddi.AssertionStatusReport;
 import org.apache.ws.scout.uddi.AssertionStatusReportDocument;
 import org.apache.ws.scout.uddi.AuthToken;
@@ -107,6 +99,13 @@ import org.apache.ws.scout.uddi.TModelDetail;
 import org.apache.ws.scout.uddi.TModelDetailDocument;
 import org.apache.ws.scout.uddi.TModelList;
 import org.apache.ws.scout.uddi.TModelListDocument;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * RegistryImpl is the implementation of IRegistry.
