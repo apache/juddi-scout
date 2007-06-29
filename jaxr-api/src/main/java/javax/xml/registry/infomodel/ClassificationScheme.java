@@ -36,7 +36,7 @@ public interface ClassificationScheme extends RegistryEntry {
 
     void addChildConcept(Concept concept) throws JAXRException;
 
-    void addChildConcepts(Collection concepts) throws JAXRException;
+    void addChildConcepts(Collection<Concept> concepts) throws JAXRException;
 
     int getChildConceptCount() throws JAXRException;
 
@@ -50,7 +50,7 @@ public interface ClassificationScheme extends RegistryEntry {
 
     void removeChildConcept(Concept concept) throws JAXRException;
 
-    void removeChildConcepts(Collection concepts) throws JAXRException;
+    void removeChildConcepts(Collection<Concept> concepts) throws JAXRException;
 
     void setValueType(int valueType) throws JAXRException;
 }

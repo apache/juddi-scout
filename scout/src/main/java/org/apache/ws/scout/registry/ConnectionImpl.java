@@ -33,6 +33,7 @@ import javax.xml.registry.RegistryService;
  */
 public class ConnectionImpl implements Connection, Serializable
 {
+    private static final long serialVersionUID = 1L;
     private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;

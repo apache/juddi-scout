@@ -41,11 +41,11 @@ public interface RegistryObject extends ExtensibleObject {
 
     void addExternalIdentifier(ExternalIdentifier externalIdentifier) throws JAXRException;
 
-    void addExternalIdentifiers(Collection externalIdentifiers) throws JAXRException;
+    void addExternalIdentifiers(Collection<ExternalIdentifier> externalIdentifiers) throws JAXRException;
 
     void addExternalLink(ExternalLink externalLink) throws JAXRException;
 
-    void addExternalLinks(Collection externalLinks) throws JAXRException;
+    void addExternalLinks(Collection<ExternalLink> externalLinks) throws JAXRException;
 
     Collection getAssociatedObjects() throws JAXRException;
 
@@ -57,9 +57,9 @@ public interface RegistryObject extends ExtensibleObject {
 
     InternationalString getDescription() throws JAXRException;
 
-    Collection getExternalIdentifiers() throws JAXRException;
+    Collection<ExternalIdentifier> getExternalIdentifiers() throws JAXRException;
 
-    Collection getExternalLinks() throws JAXRException;
+    Collection<ExternalLink> getExternalLinks() throws JAXRException;
 
     Key getKey() throws JAXRException;
 
@@ -79,7 +79,7 @@ public interface RegistryObject extends ExtensibleObject {
 
     void removeClassification(Classification classification) throws JAXRException;
 
-    void removeClassifications(Collection classifications) throws JAXRException;
+    void removeClassifications(Collection<Classification> classifications) throws JAXRException;
 
     void removeExternalIdentifier(ExternalIdentifier externalIdentifier) throws JAXRException;
 
@@ -93,11 +93,11 @@ public interface RegistryObject extends ExtensibleObject {
 
     void setDescription(InternationalString description) throws JAXRException;
 
-    void setClassifications(Collection classifications) throws JAXRException;
+    void setClassifications(Collection<Classification> classifications) throws JAXRException;
 
-    void setExternalIdentifiers(Collection externalIdentifiers) throws JAXRException;
+    void setExternalIdentifiers(Collection<ExternalIdentifier> externalIdentifiers) throws JAXRException;
 
-    void setExternalLinks(Collection externalLinks) throws JAXRException;
+    void setExternalLinks(Collection<ExternalLink> externalLinks) throws JAXRException;
 
     void setKey(Key key) throws JAXRException;
 

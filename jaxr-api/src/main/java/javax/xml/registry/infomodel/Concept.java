@@ -32,15 +32,15 @@ import javax.xml.registry.JAXRException;
 public interface Concept extends RegistryObject {
     void addChildConcept(Concept concept) throws JAXRException;
 
-    void addChildConcepts(Collection concepts) throws JAXRException;
+    void addChildConcepts(Collection<Concept> concepts) throws JAXRException;
 
     int getChildConceptCount() throws JAXRException;
 
-    Collection getChildrenConcepts() throws JAXRException;
+    Collection<Concept> getChildrenConcepts() throws JAXRException;
 
     ClassificationScheme getClassificationScheme() throws JAXRException;
 
-    Collection getDescendantConcepts() throws JAXRException;
+    Collection<Concept> getDescendantConcepts() throws JAXRException;
 
     RegistryObject getParent() throws JAXRException;
 
@@ -52,7 +52,7 @@ public interface Concept extends RegistryObject {
 
     void removeChildConcept(Concept concept) throws JAXRException;
 
-    void removeChildConcepts(Collection concepts) throws JAXRException;
+    void removeChildConcepts(Collection<Concept> concepts) throws JAXRException;
 
     void setValue(String value) throws JAXRException;
 }

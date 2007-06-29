@@ -38,9 +38,9 @@ public class ClassificationSchemeImpl
         implements ClassificationScheme
 {
 
-    private Collection childConcepts = new ArrayList();
+    private Collection<Concept> childConcepts = new ArrayList<Concept>();
 
-    private int valueType = 1;
+    //private int valueType = 1; KS: not used.
 
     private boolean external = false;
     
@@ -58,7 +58,7 @@ public class ClassificationSchemeImpl
         childConcepts.add(concept);
     }
 
-    public void addChildConcepts(Collection collection)
+    public void addChildConcepts(Collection<Concept> collection)
             throws JAXRException
     {
         childConcepts.addAll(collection);
@@ -77,7 +77,7 @@ public class ClassificationSchemeImpl
 
     public Collection getDescendantConcepts() throws JAXRException
     {
-         Collection coll = new ArrayList();
+        Collection<Concept> coll = new ArrayList<Concept>();
         Iterator iter = childConcepts.iterator();
         while(iter != null && iter.hasNext())
         {

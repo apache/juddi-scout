@@ -144,7 +144,7 @@ public interface LifeCycleManager {
 
     ServiceBinding createServiceBinding() throws JAXRException;
 
-    Slot createSlot(String name, Collection values, String slotType) throws JAXRException;
+    Slot createSlot(String name, Collection<String> values, String slotType) throws JAXRException;
 
     Slot createSlot(String name, String value, String slotType) throws JAXRException;
 

@@ -37,7 +37,7 @@ public class InternationalStringImpl implements InternationalString
     /**
      * Maintains an Hashmap of locale to string value
      */
-    private final Map map = new HashMap();
+    private final Map<MapKey,LocalizedString> map = new HashMap<MapKey,LocalizedString>();
 
     public InternationalStringImpl()
     {
@@ -71,7 +71,7 @@ public class InternationalStringImpl implements InternationalString
         }
     }
 
-    public Collection getLocalizedStrings() throws JAXRException
+    public Collection<LocalizedString> getLocalizedStrings() throws JAXRException
     {
         return Collections.unmodifiableCollection(map.values());
     }

@@ -355,7 +355,7 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
     }
 
     public Slot createSlot(String name, String value, String slotType) throws JAXRException {
-        Collection col = new ArrayList();
+        Collection<String> col = new ArrayList<String>();
         col.add(value);
         Slot slot = (Slot) this.createObject(LifeCycleManager.SLOT);
         slot.setName(name);
@@ -364,7 +364,7 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
         return slot;
     }
 
-    public Slot createSlot(String name, Collection values, String slotType) throws JAXRException {
+    public Slot createSlot(String name, Collection<String> values, String slotType) throws JAXRException {
         Slot slot = (Slot) this.createObject(LifeCycleManager.SLOT);
         slot.setName(name);
         slot.setValues(values);
@@ -463,7 +463,7 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
             org.setDescription(createInternationalString(((Description) descriptions[0]).getStringValue()));
         }
         if (serviceInfos != null && serviceInfos.length > 0) {
-            List services = new ArrayList(serviceInfos.length);
+            List<Service> services = new ArrayList<Service>(serviceInfos.length);
             for (int i = 0; i < serviceInfos.length; i++) {
                 ServiceInfo serviceInfo = (ServiceInfo) serviceInfos[i];
                 services.add(createService(serviceInfo));

@@ -39,11 +39,11 @@ public interface Slot {
 
     String getSlotType() throws JAXRException;
 
-    Collection getValues() throws JAXRException;
+    Collection<String> getValues() throws JAXRException;
 
     void setName(String name) throws JAXRException;
 
     void setSlotType(String slotType) throws JAXRException;
 
-    void setValues(Collection values) throws JAXRException;
+    void setValues(Collection<String> values) throws JAXRException;
 }

@@ -31,13 +31,13 @@ import javax.xml.registry.infomodel.RegistryEntry;
  */
 public class RegistryEntryImpl extends RegistryObjectImpl implements RegistryEntry
 {
-    private Date expiry = null;
-    private int major = 1;
-    private int minor = 0;
-    private int stability = 1;
-    private int status = 1;
+    //private Date expiry = null;
+    //private int major = 1;
+    //private int minor = 0;
+    //private int stability = 1;
+    //private int status = 1;
 
-    private String userversion = new String();
+    //private String userversion = new String();
 
     /**
      * Creates a new instance of RegistryEntryImpl

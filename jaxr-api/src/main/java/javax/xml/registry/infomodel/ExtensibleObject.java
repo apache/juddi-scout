@@ -40,5 +40,5 @@ public interface ExtensibleObject {
 
     void removeSlot(String slotName) throws JAXRException;
 
-    void removeSlots(Collection slotNames) throws JAXRException;
+    void removeSlots(Collection<String> slotNames) throws JAXRException;
 }
