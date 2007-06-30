@@ -32,6 +32,7 @@ import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.EmailAddress;
 import javax.xml.registry.infomodel.ExternalIdentifier;
 import javax.xml.registry.infomodel.ExternalLink;
+import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.PersonName;
 import javax.xml.registry.infomodel.Service;
@@ -227,7 +228,7 @@ public class LifeCycleManagerTest extends TestCase {
 
     public void testDeprecateObjects() throws JAXRException {
         try {
-            manager.deprecateObjects(new ArrayList());
+            manager.deprecateObjects(new ArrayList<Key>());
             fail();
         } catch (UnsupportedCapabilityException e) {
             // OK
@@ -236,7 +237,7 @@ public class LifeCycleManagerTest extends TestCase {
 
     public void testUnDeprecateObjects() throws JAXRException {
         try {
-            manager.unDeprecateObjects(new ArrayList());
+            manager.unDeprecateObjects(new ArrayList<Key>());
             fail();
         } catch (UnsupportedCapabilityException e) {
             // OK

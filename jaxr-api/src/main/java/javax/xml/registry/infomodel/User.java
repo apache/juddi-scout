@@ -51,7 +51,7 @@ public interface User extends RegistryObject {
 
     void setPostalAddresses(Collection addresses) throws JAXRException;
 
-    void setTelephoneNumbers(Collection phoneNumbers) throws JAXRException;
+    void setTelephoneNumbers(Collection<TelephoneNumber> phoneNumbers) throws JAXRException;
 
     void setType(String type) throws JAXRException;
 

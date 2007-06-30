@@ -28,9 +28,9 @@ import java.util.Collection;
  * @version $Revision$ $Date$
  */
 public interface BulkResponse extends JAXRResponse {
-    Collection getCollection() throws JAXRException;
+    Collection<? extends Object> getCollection() throws JAXRException;
 
-    Collection getExceptions() throws JAXRException;
+    Collection<Exception> getExceptions() throws JAXRException;
 
     boolean isPartialResponse() throws JAXRException;
 }

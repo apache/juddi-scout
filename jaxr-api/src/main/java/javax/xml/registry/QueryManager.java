@@ -24,6 +24,7 @@ package javax.xml.registry;
 
 import java.util.Collection;
 
+import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.RegistryObject;
 
 /**
@@ -36,9 +37,9 @@ public interface QueryManager {
 
     BulkResponse getRegistryObjects() throws JAXRException;
 
-    BulkResponse getRegistryObjects(Collection objectKeys) throws JAXRException;
+    BulkResponse getRegistryObjects(Collection<Key> objectKeys) throws JAXRException;
 
-    BulkResponse getRegistryObjects(Collection objectKeys, String objectTypes) throws JAXRException;
+    BulkResponse getRegistryObjects(Collection<Key> objectKeys, String objectTypes) throws JAXRException;
 
     BulkResponse getRegistryObjects(String objectTypes) throws JAXRException;
 

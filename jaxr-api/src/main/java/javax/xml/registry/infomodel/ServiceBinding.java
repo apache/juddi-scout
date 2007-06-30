@@ -44,7 +44,7 @@ public interface ServiceBinding extends RegistryObject, URIValidator {
 
     void removeSpecificationLink(SpecificationLink specificationLink) throws JAXRException;
 
-    void removeSpecificationLinks(Collection specificationLinks) throws JAXRException;
+    void removeSpecificationLinks(Collection<SpecificationLink> specificationLinks) throws JAXRException;
 
     void setAccessURI(String uri) throws JAXRException;
 

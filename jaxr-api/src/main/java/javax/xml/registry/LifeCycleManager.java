@@ -154,15 +154,15 @@ public interface LifeCycleManager {
 
     User createUser() throws JAXRException;
 
-    BulkResponse deleteObjects(Collection keys) throws JAXRException;
+    BulkResponse deleteObjects(Collection<Key> keys) throws JAXRException;
 
-    BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException;
+    BulkResponse deleteObjects(Collection<Key> keys, String objectType) throws JAXRException;
 
-    BulkResponse deprecateObjects(Collection keys) throws JAXRException;
+    BulkResponse deprecateObjects(Collection<Key> keys) throws JAXRException;
 
     RegistryService getRegistryService() throws JAXRException;
 
     BulkResponse saveObjects(Collection objects) throws JAXRException;
 
-    BulkResponse unDeprecateObjects(Collection keys) throws JAXRException;
+    BulkResponse unDeprecateObjects(Collection<Key> keys) throws JAXRException;
 }

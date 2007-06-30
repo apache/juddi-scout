@@ -25,6 +25,12 @@ package javax.xml.registry;
 import java.util.Collection;
 
 import javax.xml.registry.infomodel.Association;
+import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
 
 /**
  * @version $Revision$ $Date$
@@ -32,29 +38,29 @@ import javax.xml.registry.infomodel.Association;
 public interface BusinessLifeCycleManager extends LifeCycleManager {
     void confirmAssociation(Association assoc) throws JAXRException, InvalidRequestException;
 
-    BulkResponse deleteAssociations(Collection associationKeys) throws JAXRException;
+    BulkResponse deleteAssociations(Collection<Key> associationKeys) throws JAXRException;
 
-    BulkResponse deleteClassificationSchemes(Collection schemeKeys) throws JAXRException;
+    BulkResponse deleteClassificationSchemes(Collection<Key> schemeKeys) throws JAXRException;
 
-    BulkResponse deleteConcepts(Collection conceptKeys) throws JAXRException;
+    BulkResponse deleteConcepts(Collection<Key> conceptKeys) throws JAXRException;
 
-    BulkResponse deleteOrganizations(Collection organizationKeys) throws JAXRException;
+    BulkResponse deleteOrganizations(Collection<Key> organizationKeys) throws JAXRException;
 
-    BulkResponse deleteServiceBindings(Collection bindingKeys) throws JAXRException;
+    BulkResponse deleteServiceBindings(Collection<Key> bindingKeys) throws JAXRException;
 
-    BulkResponse deleteServices(Collection serviceKeys) throws JAXRException;
+    BulkResponse deleteServices(Collection<Key> serviceKeys) throws JAXRException;
 
-    BulkResponse saveAssociations(Collection associationKeys, boolean replace) throws JAXRException;
+    BulkResponse saveAssociations(Collection<Association> associations, boolean replace) throws JAXRException;
 
-    BulkResponse saveClassificationSchemes(Collection schemeKeys) throws JAXRException;
+    BulkResponse saveClassificationSchemes(Collection<ClassificationScheme> schemes) throws JAXRException;
 
-    BulkResponse saveConcepts(Collection conceptKeys) throws JAXRException;
+    BulkResponse saveConcepts(Collection<Concept> concepts) throws JAXRException;
 
-    BulkResponse saveOrganizations(Collection organizationKeys) throws JAXRException;
+    BulkResponse saveOrganizations(Collection<Organization> organizations) throws JAXRException;
 
-    BulkResponse saveServiceBindings(Collection bindingKeys) throws JAXRException;
+    BulkResponse saveServiceBindings(Collection<ServiceBinding> bindings) throws JAXRException;
 
-    BulkResponse saveServices(Collection serviceKeys) throws JAXRException;
+    BulkResponse saveServices(Collection<Service> services) throws JAXRException;
 
     void unConfirmAssociation(Association assoc) throws JAXRException, InvalidRequestException;
 }

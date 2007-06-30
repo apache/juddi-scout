@@ -44,9 +44,9 @@ public interface Organization extends RegistryObject {
 
     int getChildOrganizationCount() throws JAXRException;
 
-    Collection getChildOrganizations() throws JAXRException;
+    Collection<Organization> getChildOrganizations() throws JAXRException;
 
-    Collection getDescendantOrganizations() throws JAXRException;
+    Collection<Organization> getDescendantOrganizations() throws JAXRException;
 
     Organization getParentOrganization() throws JAXRException;
 
@@ -56,11 +56,11 @@ public interface Organization extends RegistryObject {
 
     Organization getRootOrganization() throws JAXRException;
 
-    Collection getServices() throws JAXRException;
+    Collection<Service> getServices() throws JAXRException;
 
-    Collection getTelephoneNumbers(String phoneType) throws JAXRException;
+    Collection<TelephoneNumber> getTelephoneNumbers(String phoneType) throws JAXRException;
 
-    Collection getUsers() throws JAXRException;
+    Collection<User> getUsers() throws JAXRException;
 
     void removeChildOrganization(Organization organization) throws JAXRException;
 
@@ -68,15 +68,15 @@ public interface Organization extends RegistryObject {
 
     void removeService(Service service) throws JAXRException;
 
-    void removeServices(Collection services) throws JAXRException;
+    void removeServices(Collection<Service> services) throws JAXRException;
 
     void removeUser(User user) throws JAXRException;
 
-    void removeUsers(Collection users) throws JAXRException;
+    void removeUsers(Collection<User> users) throws JAXRException;
 
     void setPostalAddress(PostalAddress address) throws JAXRException;
 
     void setPrimaryContact(User primaryContact) throws JAXRException;
 
-    void setTelephoneNumbers(Collection phoneNumbers) throws JAXRException;
+    void setTelephoneNumbers(Collection<TelephoneNumber> phoneNumbers) throws JAXRException;
 }

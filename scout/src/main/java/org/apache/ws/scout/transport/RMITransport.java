@@ -79,9 +79,9 @@ public class RMITransport implements Transport
     	//Looking up the object (i.e. Publish)
     	Object requestHandler = context.lookup(service);
     	//Loading up the stub
-    	Class clazz = Class.forName(className);
+    	Class<?> c = Class.forName(className);
     	//Getting a handle to method we want to call (i.e. publish.publish(Element element))
-    	Method method = clazz.getMethod(methodName, new Class[]{Element.class});
+    	Method method = c.getMethod(methodName, Element.class);
     	//Calling that method
     	Node node = (Node) method.invoke(requestHandler, request);
     	//The result is in the first element

@@ -57,9 +57,9 @@ public class LocalTransport implements Transport
     	String methodName = endpointURI.getFragment();
     	log.debug("Calling class=" + className);
     	log.debug("Method=" + methodName);
-    	Class clazz = Class.forName(className);
-    	Object requestHandler = clazz.newInstance();
-    	Method method = clazz.getMethod(methodName, new Class[]{Element.class});
+    	Class<?> c = Class.forName(className);
+    	Object requestHandler = c.newInstance();
+    	Method method = c.getMethod(methodName, Element.class);
     	Node node = (Node) method.invoke(requestHandler, request);
     	response = (Element) node.getFirstChild();
     }

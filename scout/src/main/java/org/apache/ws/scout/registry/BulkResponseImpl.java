@@ -34,8 +34,8 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
 {
     private boolean partialResponse = false;
 
-    private Collection exceptions = new ArrayList();
-    private HashSet collection = new HashSet();
+    private Collection<Exception> exceptions = new ArrayList<Exception>();
+    private HashSet<? extends Object> collection = new HashSet<Object>();
     /**
      * Creates a new instance of BulkResponseImpl
      */
@@ -43,7 +43,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
     {
     }
 
-    BulkResponseImpl(HashSet collection)
+    BulkResponseImpl(HashSet<? extends Object> collection)
     {
         this.collection = collection;
     }
@@ -51,7 +51,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
     /**
      * Get Collection of RegistryObjects *
      */
-    public Collection getCollection() throws JAXRException
+    public Collection<? extends Object> getCollection() throws JAXRException
     {
         return this.collection;
     }
@@ -69,7 +69,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
      * @return
      * @throws JAXRException
      */
-    public Collection getExceptions() throws JAXRException
+    public Collection<Exception> getExceptions() throws JAXRException
     {
         return (this.exceptions.size() == 0 ? null : exceptions);
     }
@@ -87,7 +87,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
         this.partialResponse = b;
     }
 
-    public void setCollection(HashSet coll) throws JAXRException
+    public void setCollection(HashSet<? extends Object> coll) throws JAXRException
     {
         this.collection = coll;
     }
@@ -97,7 +97,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
      *
      * @param exceptions New value of property exceptions.
      */
-    public void setExceptions(Collection exceptions)
+    public void setExceptions(Collection<Exception> exceptions)
     {
         this.exceptions = exceptions;
     }
