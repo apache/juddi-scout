@@ -131,12 +131,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     registryService.getMaxRows());
             BusinessInfo[] a = result.getBusinessInfos() != null ? result.getBusinessInfos().getBusinessInfoArray() : null;
 
-            HashSet orgs = null;
+            HashSet<Organization> orgs = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                orgs = new HashSet();
+                orgs = new HashSet<Organization>();
             }
             for (int i = 0; i < len; i++)
             {
@@ -168,19 +168,19 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     registry.getPublisherAssertions(auth.getAuthInfo());
             PublisherAssertion[] a = result.getPublisherAssertionArray();
 
-            HashSet col = null;
+            HashSet<Association> col = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                col = new HashSet();
+                col = new HashSet<Association>();
             }
             for (int i = 0; i < len; i++)
             {
                 PublisherAssertion pas = a[i];
                 String sourceKey = pas.getFromKey();
                 String targetKey = pas.getToKey();
-                Collection orgcol = new ArrayList();
+                Collection<Key> orgcol = new ArrayList<Key>();
                 orgcol.add(new KeyImpl(sourceKey));
                 orgcol.add(new KeyImpl(targetKey));
                 BulkResponse bl = getRegistryObjects(orgcol, LifeCycleManager.ORGANIZATION);
@@ -229,19 +229,19 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
             report = registry.getAssertionStatusReport(auth.getAuthInfo(),confirm);
             AssertionStatusItem[] a = report.getAssertionStatusItemArray();
-            HashSet col = null;
+            HashSet<Association> col = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                col = new HashSet();
+                col = new HashSet<Association>();
             }
             for (int i = 0; i < len; i++)
             {
                 AssertionStatusItem asi = a[i];
                 String sourceKey = asi.getFromKey();
                 String targetKey = asi.getToKey();
-                Collection orgcol = new ArrayList();
+                Collection<Key> orgcol = new ArrayList<Key>();
                 orgcol.add(new KeyImpl(sourceKey));
                 orgcol.add(new KeyImpl(targetKey));
                 BulkResponse bl = getRegistryObjects(orgcol, LifeCycleManager.ORGANIZATION);
@@ -486,7 +486,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     											  Collection externalLinks) throws JAXRException
 	{
 		//TODO: Handle this better
-        HashSet col = new HashSet();
+        HashSet<ClassificationScheme> col = new HashSet<ClassificationScheme>();
 		Iterator iter = namePatterns.iterator();
 		String name = "";
 		while(iter.hasNext())
@@ -515,7 +515,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                      Collection externalIdentifiers,
                                      Collection externalLinks) throws JAXRException
     {
-        HashSet col = new HashSet();
+        HashSet<Concept> col = new HashSet<Concept>();
 
         //Lets ask the uddi registry if it has the TModels
         IRegistry registry = registryService.getRegistry();
@@ -583,7 +583,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             if (l != null) {
 
                 BindingTemplate[] bindarr= l.getBindingTemplateArray();
-                HashSet col = new HashSet();
+                HashSet<ServiceBinding> col = new HashSet<ServiceBinding>();
 
                 for (int i=0; bindarr != null && i < bindarr.length; i++) {
                     BindingTemplate si = bindarr[i];
@@ -660,7 +660,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 ServiceInfo[] a = (serviceInfos != null ? serviceInfos.getServiceInfoArray() : null);
 
-                HashSet col = new HashSet();
+                HashSet<Service> col = new HashSet<Service>();
 
                 for (int i=0; a != null && i < a.length; i++) {
                     ServiceInfo si = (ServiceInfo) a[i];
@@ -809,7 +809,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             LifeCycleManager.ORGANIZATION,
             LifeCycleManager.SERVICE};
 
-        HashSet c = new HashSet();
+        HashSet<Object> c = new HashSet<Object>();
 
         for (int i = 0; i < types.length; i++) {
             try {
@@ -827,12 +827,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         return new BulkResponseImpl(c);
     }
 
-    public BulkResponse getRegistryObjects(Collection objectKeys) throws JAXRException
+    public BulkResponse getRegistryObjects(Collection<Key> objectKeys) throws JAXRException
     {
         throw new UnsupportedCapabilityException();
     }
 
-    public BulkResponse getRegistryObjects(Collection objectKeys, String objectType) throws JAXRException
+    public BulkResponse getRegistryObjects(Collection<Key> objectKeys, String objectType) throws JAXRException
     {
         IRegistry registry = registryService.getRegistry();
         //Convert into a vector of strings
@@ -845,7 +845,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             keys[currLoc] = key.getId();
             currLoc++;
         }
-        HashSet col = new HashSet();
+        HashSet<RegistryObject> col = new HashSet<RegistryObject>();
         LifeCycleManager lcm = registryService.getLifeCycleManagerImpl();
 
         if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
@@ -931,7 +931,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     public BulkResponse getRegistryObjects(String id) throws JAXRException
     {
         if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(id)) {
-            List a = new ArrayList();
+            List<String> a = new ArrayList<String>();
             a.add("%");
 
             BulkResponse br = findOrganizations(null, a, null, null, null, null);
@@ -939,7 +939,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             return br;
         }
         else if (LifeCycleManager.SERVICE.equalsIgnoreCase(id)) {
-            List a = new ArrayList();
+            List<String> a = new ArrayList<String>();
             a.add("%");
 
             BulkResponse br = this.findServices(null,null, a, null, null);

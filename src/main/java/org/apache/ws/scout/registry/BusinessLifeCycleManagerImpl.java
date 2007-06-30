@@ -94,7 +94,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
      * @return
      * @throws JAXRException
      */
-    public BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException {
+    public BulkResponse deleteObjects(Collection<Key> keys, String objectType) throws JAXRException {
         BulkResponse bulk = null;
 
         if (objectType == LifeCycleManager.ASSOCIATION) {
@@ -122,27 +122,27 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return bulk;
     }
 
-    public BulkResponse deleteAssociations(Collection associationKeys) throws JAXRException {
+    public BulkResponse deleteAssociations(Collection<Key> associationKeys) throws JAXRException {
         return this.deleteOperation(associationKeys, "DELETE_ASSOCIATION");
     }
 
-    public BulkResponse deleteClassificationSchemes(Collection schemeKeys) throws JAXRException {
+    public BulkResponse deleteClassificationSchemes(Collection<Key> schemeKeys) throws JAXRException {
         return this.deleteOperation(schemeKeys, "DELETE_CLASSIFICATIONSCHEME");
     }
 
-    public BulkResponse deleteConcepts(Collection conceptKeys) throws JAXRException {
+    public BulkResponse deleteConcepts(Collection<Key> conceptKeys) throws JAXRException {
         return this.deleteOperation(conceptKeys, "DELETE_CONCEPT");
     }
 
-    public BulkResponse deleteOrganizations(Collection orgkeys) throws JAXRException {
+    public BulkResponse deleteOrganizations(Collection<Key> orgkeys) throws JAXRException {
         return this.deleteOperation(orgkeys, "DELETE_ORG");
     }
 
-    public BulkResponse deleteServiceBindings(Collection bindingKeys) throws JAXRException {
+    public BulkResponse deleteServiceBindings(Collection<Key> bindingKeys) throws JAXRException {
         return this.deleteOperation(bindingKeys, "DELETE_SERVICEBINDING");
     }
 
-    public BulkResponse deleteServices(Collection serviceKeys) throws JAXRException {
+    public BulkResponse deleteServices(Collection<Key> serviceKeys) throws JAXRException {
         return this.deleteOperation(serviceKeys, "DELETE_SERVICE");
     }
 
@@ -170,15 +170,15 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
         Iterator iter = col.iterator();
 
-        HashSet suc = new HashSet();
-        Collection exc = new ArrayList();
+        HashSet<Object> suc = new HashSet<Object>();
+        Collection<Exception> exc = new ArrayList<Exception>();
 
         while (iter.hasNext()) {
             RegistryObject reg = (RegistryObject) iter.next();
 
             BulkResponse br = null;
 
-            Collection c = new ArrayList();
+            Collection<RegistryObject> c = new ArrayList<RegistryObject>();
             c.add(reg);
 
             if (reg instanceof javax.xml.registry.infomodel.Association) {
@@ -209,7 +209,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             }
 
             if (br.getExceptions() != null) {
-                suc.addAll(br.getExceptions());
+                exc.addAll(br.getExceptions());
             }
         }
 
@@ -231,8 +231,8 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         PublisherAssertion[] sarr = new PublisherAssertion[asso.size()];
 
-        HashSet coll = new HashSet();
-        Collection exceptions = new ArrayList();
+        HashSet<String> coll = new HashSet<String>();
+        Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = asso.iterator();
         int currLoc = 0;
@@ -278,8 +278,8 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         TModel[] entityarr = new TModel[schemes.size()];
 
-        HashSet coll = new HashSet();
-        Collection exceptions = new ArrayList();
+        HashSet<Key> coll = new HashSet<Key>();
+        Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = schemes.iterator();
         int currLoc = 0;
@@ -324,8 +324,8 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         TModel[] entityarr = new TModel[concepts.size()];
 
-        HashSet coll = new HashSet();
-        Collection exceptions = new ArrayList();
+        HashSet<Key> coll = new HashSet<Key>();
+        Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = concepts.iterator();
         int currLoc = 0;
@@ -370,8 +370,8 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BusinessEntity[] entityarr = new BusinessEntity[organizations.size()];
 
-        HashSet coll = new HashSet();
-        Collection exceptions = new ArrayList();
+        HashSet<Key> coll = new HashSet<Key>();
+        Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = organizations.iterator();
         int currLoc = 0;
@@ -415,8 +415,8 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BindingTemplate[] sbarr = new BindingTemplate[bindings.size()];
 
-        HashSet coll = new HashSet();
-        Collection exceptions = new ArrayList();
+        HashSet<Key> coll = new HashSet<Key>();
+        Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = bindings.iterator();
         int currLoc = 0;
@@ -456,8 +456,8 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BusinessService[] sarr = new BusinessService[services.size()];
 
-        HashSet coll = new HashSet();
-        Collection exceptions = new ArrayList();
+        HashSet<Key> coll = new HashSet<Key>();
+        Collection<Exception> exceptions = new ArrayList<Exception>();
 
 
         Iterator iter = services.iterator();
@@ -496,7 +496,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     public void confirmAssociation(Association assoc) throws JAXRException, InvalidRequestException {
        //Store it in the UDDI registry
-       HashSet col = new HashSet();
+       HashSet<Association> col = new HashSet<Association>();
        col.add(assoc);
        BulkResponse br = this.saveAssociations(col, true);
        if(br.getExceptions()!= null)
@@ -506,7 +506,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     public void unConfirmAssociation(Association assoc) throws JAXRException, InvalidRequestException {
        //TODO
        //Delete it from the UDDI registry
-       Collection col = new ArrayList();
+       Collection<Key> col = new ArrayList<Key>();
        col.add(assoc.getKey());
        BulkResponse br = this.deleteAssociations(col);
        if(br.getExceptions()!= null)
@@ -580,7 +580,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     private void clearPublisherAssertions( String authinfo,String[] orgkeys,IRegistry ireg)
     {
-       Vector pasvect  = null;
+       Vector<PublisherAssertion> pasvect  = null;
        PublisherAssertion[] pasarr  = null;
        try
        {
@@ -603,7 +603,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 pa.setKeyValue(keyr.getKeyValue());
                 if(pasvect == null) pasvect = new Vector(len);
                 pasvect.add(pa);*/
-                if(pasvect == null) pasvect = new Vector(len);
+                if(pasvect == null) pasvect = new Vector<PublisherAssertion>(len);
                 pasvect.add(this.getPublisherAssertion(asi));
            }
           report = ireg.getAssertionStatusReport(authinfo,"status:toKey_incomplete");
@@ -613,7 +613,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
           for (int i = 0; i < len; i++)
           {
                 AssertionStatusItem asi = (AssertionStatusItem) a[i];
-                if(pasvect == null) pasvect = new Vector(len);
+                if(pasvect == null) pasvect = new Vector<PublisherAssertion>(len);
                 pasvect.add(this.getPublisherAssertion(asi));
           }
 
@@ -624,7 +624,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
           for (int i = 0; i < len; i++)
           {
                 AssertionStatusItem asi = (AssertionStatusItem) a[i];
-                if(pasvect == null) pasvect = new Vector(len);
+                if(pasvect == null) pasvect = new Vector<PublisherAssertion>(len);
                 pasvect.add(this.getPublisherAssertion(asi));
           }
 
@@ -657,7 +657,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
 
 
-    protected BulkResponse deleteOperation(Collection keys, String op)
+    protected BulkResponse deleteOperation(Collection<Key> keys, String op)
             throws JAXRException {
         if(keys == null)
         throw new JAXRException("Keys provided to "+op+" are null");
@@ -667,8 +667,8 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         String[] keyarr = new String[keys.size()];
         Result[] keyResultArr;
 
-        HashSet coll = new HashSet();
-        Collection exceptions = new ArrayList();
+        HashSet<Key> coll = new HashSet<Key>();
+        Collection<Exception> exceptions = new ArrayList<Exception>();
 
         try {
             Iterator iter = keys.iterator();

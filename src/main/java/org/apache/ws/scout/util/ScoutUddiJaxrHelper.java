@@ -433,7 +433,7 @@ public class ScoutUddiJaxrHelper
     * @param lcm
     * @throws JAXRException
     */
-   public static Collection getExternalIdentifiers(IdentifierBag ibag, LifeCycleManager lcm) throws JAXRException {
+   public static Collection<ExternalIdentifier> getExternalIdentifiers(IdentifierBag ibag, LifeCycleManager lcm) throws JAXRException {
 	  Collection<ExternalIdentifier> extidentifiers = null;
       if (ibag != null) {
     	  extidentifiers = new ArrayList<ExternalIdentifier>();

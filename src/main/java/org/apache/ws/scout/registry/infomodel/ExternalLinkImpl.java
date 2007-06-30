@@ -34,7 +34,7 @@ public class ExternalLinkImpl extends RegistryObjectImpl
 {
     private String uri = new String();
     private boolean validateuri = false;
-    private Collection linkedObj = new ArrayList();
+    private Collection<RegistryObject> linkedObj = new ArrayList<RegistryObject>();
 
     /**
      * Creates a new instance of ExternalLinkImpl

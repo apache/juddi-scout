@@ -36,7 +36,7 @@ import javax.xml.registry.infomodel.SpecificationLink;
  */
 public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBinding
 {
-    private Collection links = null;
+    private Collection<SpecificationLink> links = null;
     private String accessuri = null;
     private Service service = null;
     private ServiceBinding targetbinding = null;
@@ -54,7 +54,7 @@ public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBin
 
     public void addSpecificationLink(SpecificationLink sl) throws JAXRException
     {
-        if(links == null) links = new ArrayList();
+        if(links == null) links = new ArrayList<SpecificationLink>();
         links.add(sl);
         ((SpecificationLinkImpl)sl).setServiceBinding(this);
     }
@@ -63,7 +63,7 @@ public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBin
     {
         try
         {
-            if(links == null) links = new ArrayList();
+            if(links == null) links = new ArrayList<SpecificationLink>();
             Iterator iter = col.iterator();
             while(iter.hasNext())
             {
@@ -97,13 +97,13 @@ public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBin
 
     public void removeSpecificationLink(SpecificationLink link) throws JAXRException
     {
-        if(links == null) links = new ArrayList();
+        if(links == null) links = new ArrayList<SpecificationLink>();
         links.remove(link);
     }
 
-    public void removeSpecificationLinks(Collection col) throws JAXRException
+    public void removeSpecificationLinks(Collection<SpecificationLink> col) throws JAXRException
     {
-        if(links == null) links = new ArrayList();
+        if(links == null) links = new ArrayList<SpecificationLink>();
         links.removeAll(col);
     }
 

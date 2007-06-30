@@ -37,7 +37,7 @@ public class ServiceImpl extends RegistryEntryImpl implements Service
 {
 
     private Organization org = null;
-    private Collection serviceBindings = new ArrayList();
+    private Collection<ServiceBinding> serviceBindings = new ArrayList<ServiceBinding>();
 
     /**
      * Creates a new instance of ServiceImpl

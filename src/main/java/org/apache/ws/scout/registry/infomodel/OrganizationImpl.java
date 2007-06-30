@@ -42,9 +42,9 @@ import javax.xml.registry.infomodel.User;
 public class OrganizationImpl extends RegistryObjectImpl implements Organization
 {
     private User primaryContact;
-    private Set users = new HashSet();
-    private Set telephoneNumbers = new HashSet();
-    private Collection services = new ArrayList();
+    private Set<User> users = new HashSet<User>();
+    private Set<TelephoneNumber> telephoneNumbers = new HashSet<TelephoneNumber>();
+    private Collection<Service> services = new ArrayList<Service>();
 
     public OrganizationImpl(LifeCycleManager lifeCycleManager)
     {
@@ -113,7 +113,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         }
     }
 
-    public Collection getUsers() throws JAXRException
+    public Collection<User> getUsers() throws JAXRException
     {
         return users;
     }
@@ -151,15 +151,15 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
 
     }
 
-    public Collection getTelephoneNumbers(String phoneType) throws JAXRException
+    public Collection<TelephoneNumber> getTelephoneNumbers(String phoneType) throws JAXRException
     {
-        Set filteredNumbers;
+        Set<TelephoneNumber> filteredNumbers;
         if (phoneType == null)
         {
             filteredNumbers = telephoneNumbers;
         } else
         {
-            filteredNumbers = new HashSet(telephoneNumbers.size());
+            filteredNumbers = new HashSet<TelephoneNumber>(telephoneNumbers.size());
             for (Iterator i = telephoneNumbers.iterator(); i.hasNext();)
             {
                 TelephoneNumber number = (TelephoneNumber) i.next();
@@ -172,10 +172,10 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         return filteredNumbers;
     }
 
-    public void setTelephoneNumbers(Collection collection) throws JAXRException
+    public void setTelephoneNumbers(Collection<TelephoneNumber> collection) throws JAXRException
     {
         // do this by hand to ensure all members are actually instances of TelephoneNumber
-        Set numbers = new HashSet(collection.size());
+        Set<TelephoneNumber> numbers = new HashSet<TelephoneNumber>(collection.size());
         for (Iterator i = collection.iterator(); i.hasNext();)
         {
             TelephoneNumber number = (TelephoneNumber) i.next();
@@ -207,7 +207,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         }
     }
 
-    public Collection getServices() throws JAXRException
+    public Collection<Service> getServices() throws JAXRException
     {
         return services;
     }
@@ -231,7 +231,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public Collection getDescendantOrganizations() throws JAXRException
+    public Collection<Organization> getDescendantOrganizations() throws JAXRException
     {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
@@ -256,7 +256,7 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
 
-    public Collection getChildOrganizations() throws JAXRException
+    public Collection<Organization> getChildOrganizations() throws JAXRException
     {
         throw new UnsupportedCapabilityException("Level 1 feature");
     }
