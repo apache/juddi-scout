@@ -20,7 +20,6 @@ import java.util.Properties;
 
 import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
-import javax.xml.registry.JAXRException;
 
 import junit.framework.TestCase;
 
@@ -36,7 +35,7 @@ public class BaseTestCase extends TestCase
     protected Connection connection = null;
 
     protected String userid = System.getProperty("uddi.test.uid") == null ? 
-    						"jbossesb" : 
+    						"jdoe" : 
     						System.getProperty("uddi.test.uid");
 
     protected String passwd = System.getProperty("uddi.test.pass") == null ? 
@@ -45,49 +44,53 @@ public class BaseTestCase extends TestCase
 
     public void setUp()
     {
-        //LOCAL Transport
-        final String INQUERY_URI      = "org.apache.juddi.registry.local.InquiryService#inquire";
-        final String PUBLISH_URI      = "org.apache.juddi.registry.local.PublishService#publish";
-        final String TRANSPORT_CLASS  = "org.apache.ws.scout.transport.LocalTransport";
-        
-        //RMI Transport
-        //final String INQUERY_URI      = "jnp://localhost:1099/InquiryService?org.apache.juddi.registry.rmi.Inquiry#inquire";
-        //final String PUBLISH_URI      = "jnp://localhost:1099/PublishService?org.apache.juddi.registry.rmi.Publish#publish";
-        //final String TRANSPORT_CLASS  = "org.apache.ws.scout.transport.RMITransport";
-        
-        //SOAP Transport
-        //final String INQUERY_URI      = "http://localhost:8080/juddi/inquiry";
-        //final String PUBLISH_URI      = "http://localhost:8080/juddi/publish";
-        //final String TRANSPORT_CLASS  = "org.apache.ws.scout.transport.AxisTransport";
-        
-        // Define connection configuration properties
-        // To query, you need only the query URL
-        Properties props = new Properties();
-        
-        props.setProperty("javax.xml.registry.queryManagerURL",
-        				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
-        				INQUERY_URI :
-        				System.getProperty("javax.xml.registry.queryManagerURL"));
-
-        props.setProperty("javax.xml.registry.lifeCycleManagerURL",
-        				System.getProperty("javax.xml.registry.lifeCycleManagerURL") == null ? 
-        				PUBLISH_URI :
-        				System.getProperty("javax.xml.registry.lifeCycleManagerURL"));
-
-        props.setProperty("javax.xml.registry.factoryClass",
-                "org.apache.ws.scout.registry.ConnectionFactoryImpl");
-        
-        
-        props.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
-        //System.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
-
+        System.out.println("************************************************************");
         try
         {
+            Properties scoutProperties = new Properties();
+            scoutProperties.load(getClass().getResourceAsStream("/scout.properties"));
+            
+            Properties juddiProperties = new Properties();
+            juddiProperties.load(getClass().getResourceAsStream("/juddi.properties"));
+            
+            final String INQUERY_URI      = scoutProperties.getProperty("inquery.uri");
+            final String PUBLISH_URI      = scoutProperties.getProperty("publish.uri");
+            final String TRANSPORT_CLASS  = scoutProperties.getProperty("transport.class");
+             
+            if (scoutProperties.getProperty("userid")!=null) {
+                userid = scoutProperties.getProperty("userid");
+            }
+            if (scoutProperties.getProperty("password")!=null) {
+                passwd = scoutProperties.getProperty("password");
+            }
+            
+            // Define connection configuration properties
+            // To query, you need only the query URL
+            Properties props = new Properties();
+            
+            props.setProperty("javax.xml.registry.queryManagerURL",
+            				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
+            				INQUERY_URI :
+            				System.getProperty("javax.xml.registry.queryManagerURL"));
+    
+            props.setProperty("javax.xml.registry.lifeCycleManagerURL",
+            				System.getProperty("javax.xml.registry.lifeCycleManagerURL") == null ? 
+            				PUBLISH_URI :
+            				System.getProperty("javax.xml.registry.lifeCycleManagerURL"));
+    
+            props.setProperty("javax.xml.registry.factoryClass",
+                    "org.apache.ws.scout.registry.ConnectionFactoryImpl");
+            
+            
+            props.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
+            //System.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
+
+       
             // Create the connection, passing it the configuration properties
             ConnectionFactory factory = ConnectionFactory.newInstance();
             factory.setProperties(props);
             connection = factory.createConnection();
-        } catch (JAXRException e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -99,7 +102,8 @@ public class BaseTestCase extends TestCase
         {
             if (connection != null)
                 connection.close();
-        } catch (JAXRException e)
+            
+        } catch (Exception e)
         {
 
         }
