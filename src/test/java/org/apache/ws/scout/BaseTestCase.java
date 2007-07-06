@@ -16,10 +16,14 @@
  */
 package org.apache.ws.scout;
 
+import java.net.PasswordAuthentication;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
+import javax.xml.registry.JAXRException;
 
 import junit.framework.TestCase;
 
@@ -106,6 +110,25 @@ public class BaseTestCase extends TestCase
         } catch (Exception e)
         {
 
+        }
+    }
+    
+    /**
+     * Does authentication with the uddi registry
+     */
+    public void login()
+    {
+        PasswordAuthentication passwdAuth = new PasswordAuthentication(userid,
+                passwd.toCharArray());
+        Set<PasswordAuthentication> creds = new HashSet<PasswordAuthentication>();
+        creds.add(passwdAuth);
+
+        try
+        {
+            connection.setCredentials(creds);
+        } catch (JAXRException e)
+        {
+            e.printStackTrace();
         }
     }
 
