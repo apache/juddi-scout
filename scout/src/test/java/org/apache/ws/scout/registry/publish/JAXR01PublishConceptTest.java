@@ -16,12 +16,9 @@
  */
 package org.apache.ws.scout.registry.publish;
 
-import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessLifeCycleManager;
@@ -131,25 +128,6 @@ public class JAXR01PublishConceptTest extends BaseTestCase
 
         Classification cl = blm.createClassification(udditmodel, "wsdl", "wsdl");
         return cl;
-    }
-
-    /**
-     * Does authentication with the uddi registry
-     */
-    private void login()
-    {
-        PasswordAuthentication passwdAuth = new PasswordAuthentication(userid,
-                passwd.toCharArray());
-        Set<PasswordAuthentication> creds = new HashSet<PasswordAuthentication>();
-        creds.add(passwdAuth);
-
-        try
-        {
-            connection.setCredentials(creds);
-        } catch (JAXRException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     private InternationalString getIString(String str)

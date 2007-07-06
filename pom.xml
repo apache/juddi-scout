@@ -217,14 +217,14 @@
   </modules>
   <repositories>
     <repository>
-      <id>maven2</id>
-      <name>Maven Central Development Repository</name>
-      <url>http://repo1.maven.org/maven2</url>
-    </repository>
-    <repository>
       <id>snapshot-apache</id>
       <name>Apache Snapshot repository</name>
       <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+    </repository>
+     <repository>
+      <id>maven2</id>
+      <name>Maven Central Development Repository</name>
+      <url>http://repo1.maven.org/maven2</url>
     </repository>
   </repositories>
   <pluginRepositories>
