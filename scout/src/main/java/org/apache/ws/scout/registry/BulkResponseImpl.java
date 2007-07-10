@@ -18,7 +18,7 @@ package org.apache.ws.scout.registry;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.JAXRException;
@@ -35,7 +35,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
     private boolean partialResponse = false;
 
     private Collection<Exception> exceptions = new ArrayList<Exception>();
-    private HashSet<? extends Object> collection = new HashSet<Object>();
+    private LinkedHashSet<? extends Object> collection = new LinkedHashSet<Object>();
     /**
      * Creates a new instance of BulkResponseImpl
      */
@@ -43,7 +43,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
     {
     }
 
-    BulkResponseImpl(HashSet<? extends Object> collection)
+    BulkResponseImpl(LinkedHashSet<? extends Object> collection)
     {
         this.collection = collection;
     }
@@ -87,7 +87,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
         this.partialResponse = b;
     }
 
-    public void setCollection(HashSet<? extends Object> coll) throws JAXRException
+    public void setCollection(LinkedHashSet<? extends Object> coll) throws JAXRException
     {
         this.collection = coll;
     }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -131,12 +132,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     registryService.getMaxRows());
             BusinessInfo[] a = result.getBusinessInfos() != null ? result.getBusinessInfos().getBusinessInfoArray() : null;
 
-            HashSet<Organization> orgs = null;
+            LinkedHashSet<Organization> orgs = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                orgs = new HashSet<Organization>();
+                orgs = new LinkedHashSet<Organization>();
             }
             for (int i = 0; i < len; i++)
             {
@@ -168,12 +169,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     registry.getPublisherAssertions(auth.getAuthInfo());
             PublisherAssertion[] a = result.getPublisherAssertionArray();
 
-            HashSet<Association> col = null;
+            LinkedHashSet<Association> col = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                col = new HashSet<Association>();
+                col = new LinkedHashSet<Association>();
             }
             for (int i = 0; i < len; i++)
             {
@@ -229,12 +230,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
             report = registry.getAssertionStatusReport(auth.getAuthInfo(),confirm);
             AssertionStatusItem[] a = report.getAssertionStatusItemArray();
-            HashSet<Association> col = null;
+            LinkedHashSet<Association> col = null;
             int len = 0;
             if (a != null)
             {
                 len = a.length;
-                col = new HashSet<Association>();
+                col = new LinkedHashSet<Association>();
             }
             for (int i = 0; i < len; i++)
             {
@@ -486,7 +487,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     											  Collection externalLinks) throws JAXRException
 	{
 		//TODO: Handle this better
-        HashSet<ClassificationScheme> col = new HashSet<ClassificationScheme>();
+        LinkedHashSet<ClassificationScheme> col = new LinkedHashSet<ClassificationScheme>();
 		Iterator iter = namePatterns.iterator();
 		String name = "";
 		while(iter.hasNext())
@@ -515,7 +516,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                      Collection externalIdentifiers,
                                      Collection externalLinks) throws JAXRException
     {
-        HashSet<Concept> col = new HashSet<Concept>();
+        LinkedHashSet<Concept> col = new LinkedHashSet<Concept>();
 
         //Lets ask the uddi registry if it has the TModels
         IRegistry registry = registryService.getRegistry();
@@ -583,7 +584,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             if (l != null) {
 
                 BindingTemplate[] bindarr= l.getBindingTemplateArray();
-                HashSet<ServiceBinding> col = new HashSet<ServiceBinding>();
+                LinkedHashSet<ServiceBinding> col = new LinkedHashSet<ServiceBinding>();
 
                 for (int i=0; bindarr != null && i < bindarr.length; i++) {
                     BindingTemplate si = bindarr[i];
@@ -660,7 +661,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 ServiceInfo[] a = (serviceInfos != null ? serviceInfos.getServiceInfoArray() : null);
 
-                HashSet<Service> col = new HashSet<Service>();
+                LinkedHashSet<Service> col = new LinkedHashSet<Service>();
 
                 for (int i=0; a != null && i < a.length; i++) {
                     ServiceInfo si = (ServiceInfo) a[i];
@@ -809,7 +810,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             LifeCycleManager.ORGANIZATION,
             LifeCycleManager.SERVICE};
 
-        HashSet<Object> c = new HashSet<Object>();
+        LinkedHashSet<Object> c = new LinkedHashSet<Object>();
 
         for (int i = 0; i < types.length; i++) {
             try {
@@ -845,7 +846,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             keys[currLoc] = key.getId();
             currLoc++;
         }
-        HashSet<RegistryObject> col = new HashSet<RegistryObject>();
+        LinkedHashSet<RegistryObject> col = new LinkedHashSet<RegistryObject>();
         LifeCycleManager lcm = registryService.getLifeCycleManagerImpl();
 
         if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType))
