@@ -18,6 +18,7 @@ package org.apache.ws.scout.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
@@ -98,8 +99,12 @@ public class ScoutUddiJaxrHelper
       Description desc = descarray != null && descarray.length > 0 ? descarray[0]: null;
 
       Organization org = new OrganizationImpl(lcm);
-      if(name != null ) org.setName(getIString(name, lcm));
-      if( desc != null) org.setDescription(getIString((String)desc.getStringValue(), lcm));
+      if(name != null ) {
+          org.setName(getIString(n.getLang(), name, lcm));
+      }
+      if( desc != null) {
+          org.setDescription(getIString(desc.getLang(), desc.getStringValue(), lcm));
+      }
       org.setKey(lcm.createKey(entity.getBusinessKey()));
 
       //Set Services also
@@ -176,8 +181,12 @@ public class ScoutUddiJaxrHelper
       Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
 
       Organization org = new OrganizationImpl(lcm);
-      if( name != null ) org.setName(getIString(name, lcm));
-      if( desc != null ) org.setDescription(getIString(desc.getStringValue(), lcm));
+      if( name != null ) {
+          org.setName(getIString(n.getLang(), name, lcm));
+      }
+      if( desc != null ) {
+          org.setDescription(getIString(desc.getLang(), desc.getStringValue(), lcm));
+      }
       org.setKey(lcm.createKey(entity.getBusinessKey()));
 
       //Set Services also
@@ -239,6 +248,12 @@ public class ScoutUddiJaxrHelper
       return org;
    }
 
+   private static InternationalString getIString(String lang, String str, LifeCycleManager blm)
+       throws JAXRException
+   {
+       return blm.createInternationalString(getLocale(lang), str);
+   }
+   
    public static InternationalString getIString(String str, LifeCycleManager blm)
            throws JAXRException
    {
@@ -263,12 +278,14 @@ public class ScoutUddiJaxrHelper
 
       if (n != null) {
     	  String name = n.getStringValue();
-      serve.setName(lcm.createInternationalString(name));
+    	  serve.setName(lcm.createInternationalString(getLocale(n.getLang()), name));
       }
 
       Description[] descarr = bs.getDescriptionArray();
       Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
-      if(desc != null ) serve.setDescription(lcm.createInternationalString(desc.getStringValue()));
+      if (desc != null ) {
+          serve.setDescription(lcm.createInternationalString(getLocale(desc.getLang()), desc.getStringValue()));
+      }
       
       //Populate the ServiceBindings for this Service
       BindingTemplates bts = bs.getBindingTemplates();
@@ -301,7 +318,7 @@ public class ScoutUddiJaxrHelper
 
       if (n != null) {
     	  String name = n.getStringValue();
-      service.setName(lcm.createInternationalString(name));
+    	  service.setName(lcm.createInternationalString(getLocale(n.getLang()), name));
       }
 
       return service;
@@ -347,10 +364,12 @@ public class ScoutUddiJaxrHelper
       
       if (tmodel != null) {
     	  concept.setKey(lcm.createKey(tmodel.getTModelKey()));
-    	  concept.setName(lcm.createInternationalString(tmodel.getName().getStringValue()));
+    	  concept.setName(lcm.createInternationalString(getLocale(tmodel.getName().getLang()), tmodel.getName().getStringValue()));
 
     	  Description desc = getDescription(tmodel);
-    	  if( desc != null ) concept.setDescription(lcm.createInternationalString(desc.getStringValue()));
+    	  if( desc != null ) {
+    	      concept.setDescription(lcm.createInternationalString(getLocale(desc.getLang()), desc.getStringValue()));
+    	  }
 
           concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lcm));
           concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lcm));
@@ -363,11 +382,11 @@ public class ScoutUddiJaxrHelper
    {
       Concept concept = new ConceptImpl(lcm);
       concept.setKey(lcm.createKey(tmodel.getTModelKey()));
-      concept.setName(lcm.createInternationalString(tmodel.getName().getStringValue()));
+      concept.setName(lcm.createInternationalString(getLocale(tmodel.getName().getLang()), tmodel.getName().getStringValue()));
 
       Description desc = getDescription(tmodel);
       if (desc != null) {
-          concept.setDescription(lcm.createInternationalString(desc.getStringValue()));
+          concept.setDescription(lcm.createInternationalString(getLocale(desc.getLang()), desc.getStringValue()));
       }
       
       concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lcm));
@@ -381,7 +400,7 @@ public class ScoutUddiJaxrHelper
    {
       Concept concept = new ConceptImpl(lcm);
       concept.setKey(lcm.createKey(tm.getTModelKey()));
-      concept.setName(lcm.createInternationalString(tm.getName().getStringValue()));
+      concept.setName(lcm.createInternationalString(getLocale(tm.getName().getLang()), tm.getName().getStringValue()));
 
       return concept;
    }
@@ -457,4 +476,13 @@ public class ScoutUddiJaxrHelper
       return extidentifiers;
    }
    
+   private static Locale getLocale(String lang) {
+       if (lang == null || lang.trim().length() == 0) {
+           return Locale.getDefault();
+       } else if (lang.equalsIgnoreCase(Locale.getDefault().getLanguage())) {
+           return Locale.getDefault();
+       } else {
+           return new Locale(lang);
+       } 
+   }
 }
