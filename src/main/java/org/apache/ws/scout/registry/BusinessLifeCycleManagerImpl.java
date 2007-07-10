@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Vector;
 
@@ -170,7 +171,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
         Iterator iter = col.iterator();
 
-        HashSet<Object> suc = new HashSet<Object>();
+        LinkedHashSet<Object> suc = new LinkedHashSet<Object>();
         Collection<Exception> exc = new ArrayList<Exception>();
 
         while (iter.hasNext()) {
@@ -231,7 +232,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         PublisherAssertion[] sarr = new PublisherAssertion[asso.size()];
 
-        HashSet<String> coll = new HashSet<String>();
+        LinkedHashSet<String> coll = new LinkedHashSet<String>();
         Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = asso.iterator();
@@ -278,7 +279,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         TModel[] entityarr = new TModel[schemes.size()];
 
-        HashSet<Key> coll = new HashSet<Key>();
+        LinkedHashSet<Key> coll = new LinkedHashSet<Key>();
         Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = schemes.iterator();
@@ -324,7 +325,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         TModel[] entityarr = new TModel[concepts.size()];
 
-        HashSet<Key> coll = new HashSet<Key>();
+        LinkedHashSet<Key> coll = new LinkedHashSet<Key>();
         Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = concepts.iterator();
@@ -370,7 +371,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BusinessEntity[] entityarr = new BusinessEntity[organizations.size()];
 
-        HashSet<Key> coll = new HashSet<Key>();
+        LinkedHashSet<Key> coll = new LinkedHashSet<Key>();
         Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = organizations.iterator();
@@ -415,7 +416,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BindingTemplate[] sbarr = new BindingTemplate[bindings.size()];
 
-        HashSet<Key> coll = new HashSet<Key>();
+        LinkedHashSet<Key> coll = new LinkedHashSet<Key>();
         Collection<Exception> exceptions = new ArrayList<Exception>();
 
         Iterator iter = bindings.iterator();
@@ -456,7 +457,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         BulkResponseImpl bulk = new BulkResponseImpl();
         BusinessService[] sarr = new BusinessService[services.size()];
 
-        HashSet<Key> coll = new HashSet<Key>();
+        LinkedHashSet<Key> coll = new LinkedHashSet<Key>();
         Collection<Exception> exceptions = new ArrayList<Exception>();
 
 
@@ -667,7 +668,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         String[] keyarr = new String[keys.size()];
         Result[] keyResultArr;
 
-        HashSet<Key> coll = new HashSet<Key>();
+        LinkedHashSet<Key> coll = new LinkedHashSet<Key>();
         Collection<Exception> exceptions = new ArrayList<Exception>();
 
         try {
