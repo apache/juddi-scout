@@ -18,7 +18,6 @@ package org.apache.ws.scout.util;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.xml.registry.JAXRException;
@@ -29,7 +28,9 @@ import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.EmailAddress;
 import javax.xml.registry.infomodel.ExternalIdentifier;
 import javax.xml.registry.infomodel.ExternalLink;
+import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.LocalizedString;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.PostalAddress;
 import javax.xml.registry.infomodel.RegistryObject;
@@ -172,16 +173,16 @@ public class ScoutJaxrUddiHelper {
 			if (svc != null && svc.getKey() != null && svc.getKey().getId() != null) {
               bt.setServiceKey(svc.getKey().getId());
            }
-
-			Description emptyDesc = bt.addNewDescription();
-
-			if (((RegistryObject) serve).getDescription() != null && 
-				((RegistryObject) serve).getDescription().getValue() != null) {
-
-				emptyDesc.setStringValue(((RegistryObject) serve)
-						.getDescription().getValue());
-
-			}
+			
+			InternationalString idesc = ((RegistryObject) serve).getDescription();
+            
+            if (idesc != null) {
+                for (LocalizedString locName : idesc.getLocalizedStrings()) {
+                    Description desc = bt.addNewDescription();
+                    desc.setStringValue(locName.getValue());
+                    desc.setLang(locName.getLocale().getLanguage());                
+                }
+            }
 
 			// SpecificationLink
            Collection slcol = serve.getSpecificationLinks();
@@ -286,24 +287,23 @@ public class ScoutJaxrUddiHelper {
 			Service serve) throws JAXRException {
 		BusinessService bs = BusinessService.Factory.newInstance();
 		try {
-			InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) serve)
-					.getName();
-            String name = iname.getValue();
-			// bs.setDefaultNameString( name,
-			// Locale.getDefault().getLanguage());
-			Name emptyName = bs.addNewName();
-			
-			if (name != null) emptyName.setStringValue(name);
-			emptyName.setLang(Locale.getDefault().getLanguage());
-
-			Description emptyDesc = bs.addNewDescription();
-			
-			if (((RegistryObject) serve).getDescription() != null && 
-				((RegistryObject) serve).getDescription().getValue() != null) {
-
-				emptyDesc.setStringValue(((RegistryObject) serve).getDescription()
-						.getValue());
+			InternationalString iname = ((RegistryObject) serve).getName();
+						
+			for (LocalizedString locName : iname.getLocalizedStrings()) {
+			    Name name = bs.addNewName();
+			    name.setStringValue(locName.getValue());
+			    name.setLang(locName.getLocale().getLanguage());                
 			}
+	         
+            InternationalString idesc = ((RegistryObject) serve).getDescription();
+    
+            if (idesc != null) {
+                for (LocalizedString locName : idesc.getLocalizedStrings()) {
+                    Description desc = bs.addNewDescription();
+                    desc.setStringValue(locName.getValue());
+                    desc.setLang(locName.getLocale().getLanguage());                
+                }
+            }
 
             Organization o = serve.getProvidingOrganization();
 
@@ -370,21 +370,22 @@ public class ScoutJaxrUddiHelper {
                 tm.setOperator(s.getName());
             }
 
-			InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) scheme)
-					.getName();
-            String name = iname.getValue();
-
-			Name emptyName = tm.addNewName();
-			
-			if (name != null) {
-				emptyName.setStringValue(name);
+			InternationalString iname = ((RegistryObject) scheme).getName();
+			 
+			for (LocalizedString locName : iname.getLocalizedStrings()) {
+			    Name name = tm.addNewName();
+			    name.setStringValue(locName.getValue());
+			    name.setLang(locName.getLocale().getLanguage());                
 			}
-			emptyName.setLang(Locale.getDefault().getLanguage());
-
-			Description emptyDesc = tm.addNewDescription();
+	         
+			InternationalString idesc = ((RegistryObject) scheme).getDescription();
 			
-			if (scheme.getDescription() != null && scheme.getDescription().getValue() != null) {
-				emptyDesc.setStringValue(scheme.getDescription().getValue());
+			if (idesc != null) {
+			    for (LocalizedString locName : idesc.getLocalizedStrings()) {
+			        Description desc = tm.addNewDescription();
+			        desc.setStringValue(locName.getValue());
+	                desc.setLang(locName.getLocale().getLanguage());                
+	            }
 			}
 
 			tm.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers()));
@@ -414,22 +415,23 @@ public class ScoutJaxrUddiHelper {
 			if (sl2 != null && sl2.getName() != null)
 				tm.setOperator(sl2.getName());
 
-			InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) scheme)
-					.getName();
-            String name = iname.getValue();
-
-			Name emptyName = tm.addNewName();
+			InternationalString iname = ((RegistryObject) scheme).getName();
 			
-			if (name != null) {
-				emptyName.setStringValue(name);
+			for (LocalizedString locName : iname.getLocalizedStrings()) {
+			    Name name = tm.addNewName();
+			    name.setStringValue(locName.getValue());
+			    name.setLang(locName.getLocale().getLanguage());			    
 			}
-			emptyName.setLang(Locale.getDefault().getLanguage());
-
-			Description emptyDesc = tm.addNewDescription();
 			
-			if (scheme.getDescription() != null && scheme.getDescription().getValue() != null) {
-				emptyDesc.setStringValue(scheme.getDescription().getValue());
-			}
+			InternationalString idesc = ((RegistryObject) scheme).getDescription();
+			
+            if (idesc != null) {
+                for (LocalizedString locName : idesc.getLocalizedStrings()) {
+                    Description desc = tm.addNewDescription();
+                    desc.setStringValue(locName.getValue());
+                    desc.setLang(locName.getLocale().getLanguage());
+                }
+            }
 
 			tm.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers()));
 			tm.setCategoryBag(getCategoryBagFromClassifications(scheme.getClassifications()));
@@ -454,21 +456,27 @@ public class ScoutJaxrUddiHelper {
 			if (key != null && key.getId() != null)
 				biz.setBusinessKey(key.getId());
 			// Lets get the Organization attributes at the top level
-            String language = Locale.getDefault().getLanguage();
-
-			Name emptyName = biz.addNewName();
 			
-			if (org.getName() != null && org.getName().getValue() != null) {
-				emptyName.setStringValue(org.getName().getValue());
-			}
-			emptyName.setLang(language);
-
-			Description emptyDesc = biz.addNewDescription();
+			InternationalString iname = org.getName();
 			
-			if (org.getDescription() != null && org.getDescription().getValue() != null) {
-				emptyDesc.setStringValue(org.getDescription().getValue());
+			if (iname != null) {    
+			    for (LocalizedString locName : iname.getLocalizedStrings()) {
+			        Name name = biz.addNewName();
+			        name.setStringValue(locName.getValue());
+			        name.setLang(locName.getLocale().getLanguage());                
+			    }
 			}
-
+			
+			InternationalString idesc = org.getDescription();
+			
+			if (idesc != null) {
+			    for (LocalizedString locName : idesc.getLocalizedStrings()) {
+			        Description desc = biz.addNewDescription();
+			        desc.setStringValue(locName.getValue());
+			        desc.setLang(locName.getLocale().getLanguage());                
+			    }
+			}
+			
 			if (org.getPrimaryContact() != null && 
 				org.getPrimaryContact().getPersonName()!= null &&
 				org.getPrimaryContact().getPersonName().getFullName() != null) {
