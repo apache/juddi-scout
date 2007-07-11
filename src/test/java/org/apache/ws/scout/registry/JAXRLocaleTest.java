@@ -153,12 +153,9 @@ public class JAXRLocaleTest extends BaseTestCase
 
         System.out.println(concept1.getName().getValue() + " " + concept1.getDescription().getValue());
 
-        /*
-         * XXXX: This does not work properly as Juddy does not store the xml:lang attribute
-         * in its data structure (or db) for a Concept. 
-         */
-         // assertEquals(concept.getName().getValue(locale),
-         //              concept1.getName().getValue(locale));         
+      
+        assertEquals(concept.getName().getValue(locale),
+                      concept1.getName().getValue(locale));         
 
         assertEquals(concept.getDescription().getValue(locale), 
                      concept1.getDescription().getValue(locale));
