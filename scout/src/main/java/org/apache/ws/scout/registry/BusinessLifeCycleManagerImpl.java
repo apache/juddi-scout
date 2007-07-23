@@ -679,12 +679,11 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 keyarr[currLoc] = key.getId();
                 currLoc++;
             }
-            //System.out.println("Method:" + op + ": ENlength=" + keyvect.size());
             // Save business
             DispositionReport bd = (DispositionReport) executeOperation(keyarr, op);
 
             keyResultArr = bd.getResultArray();
-            System.out.println("After deleting Business. Obtained vector size:" + keyResultArr != null ? keyResultArr.length : 0);
+            log.debug("After deleting Business. Obtained vector size:" + keyResultArr != null ? keyResultArr.length : 0);
             for (int i = 0; keyResultArr != null && i < keyResultArr.length; i++) {
                 Result result = (Result) keyResultArr[i];
                 int errno = result.getErrno();
