@@ -36,6 +36,7 @@ import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
+import javax.xml.registry.infomodel.LocalizedString;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Service;
@@ -974,6 +975,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     }
 
     static Name[] mapNamePatterns(Collection namePatterns)
+        throws JAXRException
     {
         if (namePatterns == null)
             return null;
@@ -981,9 +983,15 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         int currLoc = 0;
         for (Iterator i = namePatterns.iterator(); i.hasNext();)
         {
-            String pattern = (String) i.next();
+            Object obj = i.next();
             Name n = Name.Factory.newInstance();
-            n.setStringValue(pattern);
+            if (obj instanceof String) {
+                n.setStringValue((String)obj);
+            } else if (obj instanceof LocalizedString) {
+                LocalizedString ls = (LocalizedString)obj;
+                n.setStringValue(ls.getValue());
+                n.setLang(ls.getLocale().getLanguage());
+            }
             result[currLoc] = n;
             currLoc++;
         }
