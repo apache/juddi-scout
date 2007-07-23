@@ -48,6 +48,7 @@ import org.apache.ws.scout.uddi.AccessPoint;
 import org.apache.ws.scout.uddi.Address;
 import org.apache.ws.scout.uddi.AddressLine;
 import org.apache.ws.scout.uddi.BindingTemplate;
+import org.apache.ws.scout.uddi.BindingTemplates;
 import org.apache.ws.scout.uddi.BusinessEntity;
 import org.apache.ws.scout.uddi.BusinessService;
 import org.apache.ws.scout.uddi.BusinessServices;
@@ -243,7 +244,7 @@ public class ScoutJaxrUddiHelper {
 				// http://issues.apache.org/jira/browse/JUDDI-78
 				kr.setTModelKey("");
 			} else {
-            kr.setTModelKey(key.getId());
+                kr.setTModelKey(key.getId());
 			}
             kr.setKeyName("Concept");
 
@@ -330,7 +331,11 @@ public class ScoutJaxrUddiHelper {
 
 			bs.setCategoryBag(getCategoryBagFromClassifications(serve.getClassifications()));
 
-   		    // TODO: need to do ServiceBindings->BindingTemplates
+            //Add the ServiceBinding information
+            BindingTemplates bt = getBindingTemplates(serve.getServiceBindings());
+            if (bt != null) {
+                bs.setBindingTemplates(bt);
+            }
    		    
             log.debug("BusinessService=" + bs.toString());
 		} catch (Exception ud) {
@@ -813,5 +818,23 @@ public class ScoutJaxrUddiHelper {
 			throw new JAXRException("Apache JAXR Impl:", ud);
 		}
     }
-    
+
+    private static BindingTemplates getBindingTemplates(Collection serviceBindings)
+        throws JAXRException {
+        BindingTemplates bt = BindingTemplates.Factory.newInstance();
+        if(serviceBindings != null) {
+            Iterator iter = serviceBindings.iterator();
+            int currLoc = 0;
+            BindingTemplate[] bindingTemplateArray = new BindingTemplate[serviceBindings.size()];
+            while(iter.hasNext()) {
+                ServiceBinding sb = (ServiceBinding)iter.next();
+                bindingTemplateArray[currLoc] = getBindingTemplateFromJAXRSB(sb);
+                currLoc++;
+            }
+            if (bindingTemplateArray != null) {
+                bt.setBindingTemplateArray(bindingTemplateArray);
+            }
+        }
+        return bt; 
+    } 
 }
