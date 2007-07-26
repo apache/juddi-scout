@@ -17,6 +17,16 @@
           <td><strong>Description</strong></td>
         </tr>
 
+		<tr>
+          <td><a href="http://people.apache.org/repo/m1-ibiblio-rsync-repository/ws-scout/jars/scout-1.0rc1.jar">1.0rc1</a></td>
+          <td>26 July, 2007</td>
+          <td>Release Candidate #1 for Version 1.0.</td>
+        </tr>
+        <tr>
+          <td>0.7rc3</a></td>
+          <td>31 Dec, 2006</td>
+          <td>Release Candidate #3 for Version 0.7.</td>
+        </tr>
         <tr>
           <td><a href="http://people.apache.org/repo/m1-ibiblio-rsync-repository/ws-scout/jars/scout-0.7rc2.jar">0.7rc2</a></td>
           <td>18 Dec, 2006</td>

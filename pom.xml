@@ -4,7 +4,7 @@
   <artifactId>scout-parent</artifactId>
   <packaging>pom</packaging>
   <name>Scout</name>
-  <version>SNAPSHOT</version>
+  <version>1.0rc1</version>
   <description>Apache Scout is an implementation of the JSR 93 - JavaTM API for
 		XML Registries 1.0 (JAXR)</description>
   <url>http://ws.apache.org/scout/</url>
@@ -39,12 +39,6 @@
   </mailingLists>
   <developers>
     <developer>
-      <id>sviens</id>
-      <name>Steve Viens</name>
-      <email>sviens@apache.org</email>
-      <organization></organization>
-    </developer>
-    <developer>
       <id>anil</id>
       <name>Anil Saldhana</name>
       <email>anil@apache.org</email>
@@ -62,11 +56,49 @@
       <email>kstam@apache.org</email>
       <organization></organization>
     </developer>
+    <developer>
+      <id>jfaath</id>
+      <name>Jeff Faath</name>
+      <email>jfaath@apache.org</email>
+      <organization></organization>
+    </developer>
+    <developer>
+      <id>linsun</id>
+      <name>Lin Sun</name>
+      <email>linsun@apache.org</email>
+      <organization></organization>
+    </developer>
+    <developer>
+      <id>dbhole</id>
+      <name>Deepack Bhole</name>
+      <email>dbhole@apache.org</email>
+      <organization></organization>
+    </developer>
   </developers>
   <contributors>
     <contributor>
-      <name>Lin Sun</name>
-      <email></email>
+      <name>Steve Viens</name>
+      <email>sviens@apache.org</email>
+      <organization></organization>
+    </contributor>
+    <contributor>
+      <name>David Jencks</name>
+      <email>djencks@apache.org</email>
+      <organization></organization>
+    </contributor>
+    <contributor>
+      <name>Jeremy Boynes</name>
+      <email>jboynes@apache.org</email>
+      <organization></organization>
+    </contributor>
+    <contributor>
+      <name>Jarek Gawor</name>
+      <email>gawor@apache.org</email>
+      <organization></organization>
+    </contributor>
+    <contributor>
+      <name>Geir Magnusson Jr.</name>
+      <email>geirm@apache.org</email>
       <organization></organization>
     </contributor>
   </contributors>
@@ -127,7 +159,7 @@
       <activation>
         <property>
           <name>release</name>
-          <value></value>
+          <value>1.0</value>
         </property>
       </activation>
       <build>
@@ -174,7 +206,7 @@
       <activation>
         <property>
           <name>rc</name>
-          <value></value>
+          <value>1.0rc1</value>
         </property>
       </activation>
       <build>

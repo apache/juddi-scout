@@ -90,4 +90,61 @@ SUPPORT
   
 RELEASE NOTES
                           
-  Changes From 0.0.0 to 0.1.0
+  Release Notes - Scout - Version 1.0rc1
+
+** Bug
+    * [SCOUT-23] - Classification are not saved.
+    * [SCOUT-25] - FindBinding does not work + patch
+    * [SCOUT-26] - Removing a service does not remove the service + patch
+    * [SCOUT-28] - XmlBeans conversion compiles but is non-functional
+    * [SCOUT-29] - AuthTokenImpl.getAuthInfo() doesn't seem to work correctly
+    * [SCOUT-30] - Classifications are ignored when preforming finds.
+    * [SCOUT-31] - Fix scout maven 1 build issue so that the dependency jars can be downloaded automatically
+    * [SCOUT-32] - Fix NPE at getConcept
+    * [SCOUT-33] - Should throw exception when level 1 feature is accessed in RegistryEntryImpl.java
+    * [SCOUT-34] - DiscoveryURLs aren't constructed correctly when there is more than 1 discoveryURLs for a businessEntity
+    * [SCOUT-35] - Should use hashset for the collection in BulkResponseImpl to not allow duplicate 
+    * [SCOUT-36] - minor update to get scout maven 2 build pass the error in download juddi snapshot
+    * [SCOUT-40] - InternationalString is not handled correctly
+    * [SCOUT-41] - Results not returned in the given order
+    * [SCOUT-44] - port fixes for scout 8 to trunk
+    * [SCOUT-45] - port scout 19 to trunk
+    * [SCOUT-46] - port scout 10 to trunk
+
+** Improvement
+    * [SCOUT-9] - Separation of Apache Scout and jUDDI
+
+** New Feature
+    * [SCOUT-18] - Embedded mode execution
+
+** Task
+    * [SCOUT-27] - Update Tests with embedded juddi setup
+    * [SCOUT-37] - Cleanup code to get rid of warnings
+    * [SCOUT-38] - Produce website from the maven2 build
+    * [SCOUT-39] - Integrate all sample code in unittests
+    * [SCOUT-42] - apply fixes on 0.7 branches to the trunk
+
+
+Release Notes - Scout - Version v0.7
+
+** Bug
+    * [SCOUT-4] - Level 1 methods in PersonName must throw UnsupportedCapabilityException
+    * [SCOUT-6] - Null pointer exception when creating an association
+    * [SCOUT-7] - NullPointerException when a BusinessEntity does not have services
+    * [SCOUT-8] - Unable to use InternationalString in BusinessQueryManager.findOrganizations() (ClassCastException)
+    * [SCOUT-10] - Publish requests to JUDDI do not include ServiceBinding information.
+    * [SCOUT-15] - RegistryEntry should throw UnsupportedCapabilityException for level 0
+    * [SCOUT-19] - ServiceBinding.getSpecificationLinks should not return null
+
+** Improvement
+    * [SCOUT-11] - JAXR Classifications are not processed
+
+** Task
+    * [SCOUT-1] - Implement saveXXX Methods in BusinessLifeCycleManager
+    * [SCOUT-2] - Implement deleteXXX methods in BusinessLifeCycleManager
+    * [SCOUT-3] - Implement findXXX methods in BusinessQueryManager
+    * [SCOUT-5] - Predefined Enumerations
+    * [SCOUT-13] - Better Logging capabilities
+    * [SCOUT-16] - Maven2 migration
+
+  
