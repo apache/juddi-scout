@@ -46,14 +46,12 @@
         <menu name="Apache Scout">
             <item name="Welcome" href="http://ws.apache.org/scout/index.html"/>
             <item name="Get Scout">
-                <item name="Scout Releases" href="http://ws.apache.org/scout/scout/releases.html"/>
-                <item name="JAXR-API Releases" href="http://ws.apache.org/scout/jax-api/releases.html"/>
+                <item name="Releases" href="releases.html"/>
                 <item name="Source Code" href="source-repository.html"/>
             </item>
             <item name="Documentation">
                 <item name="Wiki" href="http://wiki.apache.org/ws/scout"/>
-                <item name="Scout Javadocs" href="http://ws.apache.org/scout/scout/apidocs/index.html"/>
-                <item name="JAXR-API Javadocs" href="http://ws.apache.org/scout/jax-api/apidocs/index.html"/>
+                <item name="Javadocs" href="apidocs/index.html"/>
             </item>
             <item name="Project Information">
                 <item name="Project Information" href="project-info.html"/>
