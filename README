@@ -63,14 +63,14 @@ BUILDING THE JUDDI JAXR PROVIDER
   are downloaded during the build. The quickest way to
   start is, in the root directory, to type
 
-  maven
+  mvn package
 
   This will build all of the modules and install them in
   your local maven repository.
 
   To clean up a build, use
 
-  maven multiproject:clean
+  mvn clean
 
 SUPPORT
 

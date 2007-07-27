@@ -4,7 +4,7 @@
   <artifactId>scout-parent</artifactId>
   <packaging>pom</packaging>
   <name>Scout</name>
-  <version>1.0rc1</version>
+  <version>SNAPSHOT</version>
   <description>Apache Scout is an implementation of the JSR 93 - JavaTM API for
 		XML Registries 1.0 (JAXR)</description>
   <url>http://ws.apache.org/scout/</url>
@@ -206,7 +206,7 @@
       <activation>
         <property>
           <name>rc</name>
-          <value>1.0rc1</value>
+          <value>SNAPSHOT</value>
         </property>
       </activation>
       <build>
