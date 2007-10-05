@@ -189,7 +189,7 @@ public class ScoutJaxrUddiHelper {
            Collection slcol = serve.getSpecificationLinks();
 			TModelInstanceDetails tid = TModelInstanceDetails.Factory
 					.newInstance();
-			if (slcol != null && slcol.isEmpty() != false) {
+			if (slcol != null && !slcol.isEmpty()) {
               Iterator iter = slcol.iterator();
 				while (iter.hasNext()) {
 					SpecificationLink slink = (SpecificationLink) iter.next();
