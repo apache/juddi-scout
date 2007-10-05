@@ -496,7 +496,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 			break;
 		}
 		
-		col.add(this.findClassificationSchemeByName(findQualifiers,name));
+        ClassificationScheme classificationScheme = findClassificationSchemeByName(findQualifiers,name);
+        if (classificationScheme!=null) {
+            col.add(classificationScheme);
+        }
 		return new BulkResponseImpl(col);
 	}
 
