@@ -162,8 +162,11 @@ public class ScoutJaxrUddiHelper {
 			if (sb != null) {
 				HostingRedirector red = HostingRedirector.Factory.newInstance();
                 Key key = sb.getKey();
-				if (key != null && key.getId() != null)
+				if (key != null && key.getId() != null) {
 					red.setBindingKey(key.getId());
+                } else {
+                    red.setBindingKey("");
+                }
                 bt.setHostingRedirector(red);
             }
 			// TODO:Need to look further at the mapping b/w BindingTemplate and
@@ -316,7 +319,8 @@ public class ScoutJaxrUddiHelper {
 
 				if (k != null && k.getId() != null) {
                     bs.setBusinessKey(k.getId());
-                }
+                } 
+                    
 			} else {
                 /*
                  * gmj - I *think* this is the right thing to do
@@ -327,9 +331,14 @@ public class ScoutJaxrUddiHelper {
 
 			if (serve.getKey() != null && serve.getKey().getId() != null) {
                 bs.setServiceKey(serve.getKey().getId());
+            } else {
+                bs.setServiceKey("");
             }
 
-			bs.setCategoryBag(getCategoryBagFromClassifications(serve.getClassifications()));
+            CategoryBag catBag = getCategoryBagFromClassifications(serve.getClassifications());
+            if (catBag!=null) {
+                bs.setCategoryBag(catBag);
+            }
 
             //Add the ServiceBinding information
             BindingTemplates bt = getBindingTemplates(serve.getServiceBindings());
@@ -393,8 +402,14 @@ public class ScoutJaxrUddiHelper {
 	            }
 			}
 
-			tm.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers()));
-			tm.setCategoryBag(getCategoryBagFromClassifications(scheme.getClassifications()));
+            IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers());
+            if (idBag!=null) {
+                tm.setIdentifierBag(idBag);
+            }
+            CategoryBag catBag = getCategoryBagFromClassifications(scheme.getClassifications());
+            if (catBag!=null) {
+                tm.setCategoryBag(catBag);
+            }
 			
 			// ToDO: overviewDoc
 		} catch (Exception ud) {
@@ -438,8 +453,14 @@ public class ScoutJaxrUddiHelper {
                 }
             }
 
-			tm.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers()));
-			tm.setCategoryBag(getCategoryBagFromClassifications(scheme.getClassifications()));
+            IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers());
+            if (idBag!=null) {
+                tm.setIdentifierBag(idBag);
+            }
+            CategoryBag catBag = getCategoryBagFromClassifications(scheme.getClassifications());
+            if (catBag!=null) {
+                tm.setCategoryBag(catBag);
+            }
 
 			// ToDO: overviewDoc
 
@@ -458,8 +479,11 @@ public class ScoutJaxrUddiHelper {
 		try {
 			// It may just be an update
             Key key = org.getKey();
-			if (key != null && key.getId() != null)
+			if (key != null && key.getId() != null) {
 				biz.setBusinessKey(key.getId());
+            } else {
+                biz.setBusinessKey("");
+            }
 			// Lets get the Organization attributes at the top level
 			
 			InternationalString iname = org.getName();
@@ -561,9 +585,10 @@ public class ScoutJaxrUddiHelper {
             }
 
 			bss.setBusinessServiceArray(barr);
-			cts.setContactArray(carr);
-            biz.setContacts(cts);
-
+            if (carr.length>0) {
+                cts.setContactArray(carr);
+                biz.setContacts(cts);
+            }
             biz.setBusinessServices(bss);
 
             // External Links
@@ -585,8 +610,14 @@ public class ScoutJaxrUddiHelper {
                 }
             }
 			
-		  biz.setIdentifierBag(getIdentifierBagFromExternalIdentifiers(org.getExternalIdentifiers()));
-		  biz.setCategoryBag(getCategoryBagFromClassifications(org.getClassifications()));
+          IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(org.getExternalIdentifiers());
+          if (idBag!=null) {
+              biz.setIdentifierBag(idBag);
+          }
+          CategoryBag catBag = getCategoryBagFromClassifications(org.getClassifications());
+          if (catBag!=null) {
+              biz.setCategoryBag(catBag);
+          }
 			
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
@@ -595,8 +626,6 @@ public class ScoutJaxrUddiHelper {
     }
 
     /**
-	 * TODO - should we really return new Contact() rather than null on null
-	 * input?
      *
      * Convert JAXR User Object to UDDI  Contact
      */
@@ -605,7 +634,7 @@ public class ScoutJaxrUddiHelper {
 		Contact ct = Contact.Factory.newInstance();
 
         if (user == null) {
-            return ct;
+            return null;
         }
 
 		Address[] addarr = new Address[0];
@@ -727,7 +756,7 @@ public class ScoutJaxrUddiHelper {
      */
 	public static CategoryBag getCategoryBagFromClassifications(Collection classifications) throws JAXRException {
     	try {
-			if (classifications == null)
+			if (classifications == null || classifications.size()==0)
 				return null;
     		
     		// Classifications
@@ -784,7 +813,7 @@ public class ScoutJaxrUddiHelper {
      */
 	public static IdentifierBag getIdentifierBagFromExternalIdentifiers(Collection identifiers) throws JAXRException {
     	try {
-			if (identifiers == null)
+			if (identifiers == null || identifiers.size()==0)
 				return null;
     		
     		// Identifiers
@@ -821,8 +850,9 @@ public class ScoutJaxrUddiHelper {
 
     private static BindingTemplates getBindingTemplates(Collection serviceBindings)
         throws JAXRException {
-        BindingTemplates bt = BindingTemplates.Factory.newInstance();
-        if(serviceBindings != null) {
+        BindingTemplates bt = null;
+        if(serviceBindings != null && serviceBindings.size() > 0) {
+            bt = BindingTemplates.Factory.newInstance();
             Iterator iter = serviceBindings.iterator();
             int currLoc = 0;
             BindingTemplate[] bindingTemplateArray = new BindingTemplate[serviceBindings.size()];
