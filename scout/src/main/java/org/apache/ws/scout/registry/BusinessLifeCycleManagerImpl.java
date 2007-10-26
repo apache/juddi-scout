@@ -447,7 +447,9 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             BindingTemplate bt = (BindingTemplate) sbarr[i];
             coll.add(new KeyImpl(bt.getBindingKey()));
         }
-        bulk.setCollection(coll);
+        if (coll.size()>0) {
+            bulk.setCollection(coll);
+        }
         bulk.setExceptions(exceptions);
 
         return bulk;
