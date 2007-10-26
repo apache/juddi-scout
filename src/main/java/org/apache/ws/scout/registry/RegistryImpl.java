@@ -264,7 +264,7 @@ public class RegistryImpl implements IRegistry {
 		Element request = doc.getDocumentElement();
 
 	    request.setAttribute("generic", this.getUddiVersion());
-	    request.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
+	    //request.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
 	    // A SOAP request is made and a SOAP response
 	    // is returned.
 
