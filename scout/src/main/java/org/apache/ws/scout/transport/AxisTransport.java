@@ -49,8 +49,10 @@ public class AxisTransport implements Transport
     Call call = null;
     Element response = null;
 
-    log.debug("\nRequest message:\n" + XMLUtils.ElementToString(request));
-    System.err.println(endpointURL.toString());
+    if (log.isDebugEnabled()) {
+        log.debug("\nRequest message:\n" + XMLUtils.ElementToString(request));
+        log.debug(endpointURL.toString());
+    }
 
     try {
       service = new Service();
@@ -80,7 +82,9 @@ public class AxisTransport implements Transport
       throw new RegistryException(ex);
     }
 
-    log.debug("\nResponse message:\n" + XMLUtils.ElementToString(response));
+    if (log.isDebugEnabled()) {
+        log.debug("\nResponse message:\n" + XMLUtils.ElementToString(response));
+    }
 
 
     return response;
