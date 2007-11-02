@@ -47,6 +47,7 @@ import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
 import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceImpl;
+import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
 import org.apache.ws.scout.uddi.AccessPoint;
 import org.apache.ws.scout.uddi.BindingTemplate;
@@ -61,13 +62,18 @@ import org.apache.ws.scout.uddi.Contacts;
 import org.apache.ws.scout.uddi.Description;
 import org.apache.ws.scout.uddi.DiscoveryURL;
 import org.apache.ws.scout.uddi.DiscoveryURLs;
+import org.apache.ws.scout.uddi.HostingRedirector;
 import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.InstanceDetails;
 import org.apache.ws.scout.uddi.KeyedReference;
 import org.apache.ws.scout.uddi.Name;
+import org.apache.ws.scout.uddi.OverviewDoc;
 import org.apache.ws.scout.uddi.ServiceInfo;
 import org.apache.ws.scout.uddi.TModel;
 import org.apache.ws.scout.uddi.TModelDetail;
 import org.apache.ws.scout.uddi.TModelInfo;
+import org.apache.ws.scout.uddi.TModelInstanceDetails;
+import org.apache.ws.scout.uddi.TModelInstanceInfo;
 
 /**
  * Helper class that does UDDI->Jaxr Mapping
@@ -327,32 +333,60 @@ public class ScoutUddiJaxrHelper
    public static ServiceBinding getServiceBinding(BindingTemplate bs, LifeCycleManager lcm)
            throws JAXRException
    {
-      ServiceBinding serve = new ServiceBindingImpl(lcm);
+      ServiceBinding serviceBinding = new ServiceBindingImpl(lcm);
 
       String keystr = bs.getServiceKey();
       if (keystr != null)
       {
          Service svc = new ServiceImpl(lcm);
          svc.setKey(lcm.createKey(keystr));
-         ((ServiceBindingImpl)serve).setService(svc);
+         ((ServiceBindingImpl)serviceBinding).setService(svc);
       }
       String bindingKey = bs.getBindingKey();
-      if(bindingKey != null) serve.setKey(new KeyImpl(bindingKey));
-      //TODO:Add more stuff
+      if(bindingKey != null) serviceBinding.setKey(new KeyImpl(bindingKey));
+     
       //Access URI
       AccessPoint access = bs.getAccessPoint();
-      //FIXME: accesspoint should have a getURL? 
-      if (access != null) serve.setAccessURI(access.getStringValue());
+      if (access != null) serviceBinding.setAccessURI(access.getStringValue());
 
       //Description
       Description[] da = bs.getDescriptionArray();
       if (da != null && da.length > 0)
       {
          Description des = da[0];
-         serve.setDescription(new InternationalStringImpl(des.getStringValue()));
+         serviceBinding.setDescription(new InternationalStringImpl(des.getStringValue()));
+      }
+      /**Section D.10 of JAXR 1.0 Specification */
+      
+      TModelInstanceDetails details = bs.getTModelInstanceDetails();
+      TModelInstanceInfo[] tmodelInstanceInfoArray = details.getTModelInstanceInfoArray();
+      for (int i = 0; tmodelInstanceInfoArray != null && i < tmodelInstanceInfoArray.length; i++)
+      {
+         TModelInstanceInfo info = (TModelInstanceInfo)tmodelInstanceInfoArray[i];
+         InstanceDetails idetails = info.getInstanceDetails(); 
+         Collection<ExternalLink> elinks = getExternalLinks(idetails.getOverviewDoc(),lcm);
+         SpecificationLinkImpl slink = new SpecificationLinkImpl(lcm);
+         slink.addExternalIdentifiers(elinks);
+         serviceBinding.addSpecificationLink(slink); 
+         
+         ConceptImpl c = new ConceptImpl(lcm);
+         c.setExternalLinks(elinks);
+         c.setKey(lcm.createKey(info.getTModelKey())); 
+         c.setName(lcm.createInternationalString(idetails.getInstanceParms()));
+         c.setValue(idetails.getInstanceParms());
+         
+         slink.setSpecificationObject(c);
+      }
+      
+      HostingRedirector hr = bs.getHostingRedirector();
+      if(hr != null)
+      {
+         ServiceBinding sb = lcm.createServiceBinding();
+         sb.setKey(new KeyImpl(hr.getBindingKey()));
+         serviceBinding.setTargetBinding(sb);
       }
 
-      return serve;
+      return serviceBinding;
    }
 
    public static Concept getConcept(TModelDetail tm, LifeCycleManager lcm)
@@ -443,6 +477,23 @@ public class ScoutUddiJaxrHelper
 		}
 	    return classifications;
 	}
+   
+   public static Collection<ExternalLink> getExternalLinks(OverviewDoc odoc , LifeCycleManager lcm)
+   throws JAXRException
+   {
+       ArrayList<ExternalLink> alist = new ArrayList<ExternalLink>(1);
+       if(odoc != null)
+       {
+           Description[] descVect = odoc.getDescriptionArray();
+           String desc = "";
+           if(descVect != null && descVect.length > 0) {
+             desc = ((Description)descVect[0]).getStringValue(); 
+           }
+           alist.add(lcm.createExternalLink(odoc.getOverviewURL(),desc));
+       }
+       
+       return alist;
+   }
    
    /**
     * External Identifiers
