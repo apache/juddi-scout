@@ -61,8 +61,10 @@ import org.apache.ws.scout.uddi.DiscoveryURLs;
 import org.apache.ws.scout.uddi.Email;
 import org.apache.ws.scout.uddi.HostingRedirector;
 import org.apache.ws.scout.uddi.IdentifierBag;
+import org.apache.ws.scout.uddi.InstanceDetails;
 import org.apache.ws.scout.uddi.KeyedReference;
 import org.apache.ws.scout.uddi.Name;
+import org.apache.ws.scout.uddi.OverviewDoc;
 import org.apache.ws.scout.uddi.Phone;
 import org.apache.ws.scout.uddi.PublisherAssertion;
 import org.apache.ws.scout.uddi.TModel;
@@ -76,9 +78,11 @@ import org.apache.xmlbeans.XmlObject;
  *
  * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
+ * @author <a href="mailto:kstam@apache.org">Kurt T Stam</a>
  */
-public class ScoutJaxrUddiHelper {
-	
+public class ScoutJaxrUddiHelper 
+{
+    private static final String UDDI_ORG_TYPES = "uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4";
 	private static Log log = LogFactory.getLog(ScoutJaxrUddiHelper.class);
     /**
      * Get UDDI Address given JAXR Postal Address
@@ -200,10 +204,30 @@ public class ScoutJaxrUddiHelper {
 					TModelInstanceInfo emptyTInfo = tid
 							.addNewTModelInstanceInfo();
 
-					if (slink.getSpecificationObject().getKey() != null && 
-						slink.getSpecificationObject().getKey().getId() != null) {
-						emptyTInfo.setTModelKey(slink.getSpecificationObject()
-								.getKey().getId());
+                    RegistryObject specificationObject = slink.getSpecificationObject();
+					if (specificationObject.getKey() != null && specificationObject.getKey().getId() != null) {
+						emptyTInfo.setTModelKey(specificationObject.getKey().getId());
+                        if (specificationObject.getDescription()!=null) {
+                            for (LocalizedString locDesc : specificationObject.getDescription().getLocalizedStrings()) {
+                                Description description = emptyTInfo.addNewDescription();
+                                description.setStringValue(locDesc.getValue());
+                                description.setLang(locDesc.getLocale().getLanguage());
+                            }
+                        }
+                        Collection<ExternalLink> externalLinks = slink.getExternalLinks();
+                        if (externalLinks!=null && externalLinks.size()>0) {
+                            for (ExternalLink link : externalLinks) {
+                                InstanceDetails ids = emptyTInfo.addNewInstanceDetails();
+                                if (link.getDescription()!=null) {
+                                    Description description = ids.addNewDescription();
+                                    description.setStringValue(link.getDescription().getValue());
+                                }
+                                if (link.getExternalURI()!=null) {
+                                    OverviewDoc overviewDoc = ids.addNewOverviewDoc();
+                                    overviewDoc.setOverviewURL(link.getExternalURI());
+                                }
+                            } 
+                        }
 					}
               }
               bt.setTModelInstanceDetails(tid);
@@ -452,6 +476,12 @@ public class ScoutJaxrUddiHelper {
                     desc.setLang(locName.getLocale().getLanguage());
                 }
             }
+//          External Links 
+            Collection externalLinks = scheme.getExternalLinks(); 
+            if(externalLinks != null && externalLinks.size() > 0)
+            {
+                tm.setOverviewDoc(getOverviewDocFromExternalLink((ExternalLink)externalLinks.iterator().next()));
+            }  
 
             IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers());
             if (idBag!=null) {
@@ -461,8 +491,6 @@ public class ScoutJaxrUddiHelper {
             if (catBag!=null) {
                 tm.setCategoryBag(catBag);
             }
-
-			// ToDO: overviewDoc
 
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
@@ -560,9 +588,6 @@ public class ScoutJaxrUddiHelper {
             }
 
             carr = new Contact[carrSize];
-
-            // TODO - remove this
-            log.debug("?Org has users=" + users.isEmpty());
 
             /*
              * first do primary, and then filter that out in the loop
@@ -739,7 +764,7 @@ public class ScoutJaxrUddiHelper {
 
        return uri;
    }
-
+    
 	/**
      * According to JAXR Javadoc, there are two types of classification, internal and external and they use the Classification, Concept,     
      * and ClassificationScheme objects.  It seems the only difference between internal and external (as related to UDDI) is that the
@@ -770,33 +795,43 @@ public class ScoutJaxrUddiHelper {
 					InternationalStringImpl iname = null;
 					String value = null;
 					ClassificationScheme scheme = classification.getClassificationScheme();
-					if (classification.isExternal()) {
-						iname = (InternationalStringImpl) ((RegistryObject) classification).getName();
-						value = classification.getValue();
-						scheme = classification.getClassificationScheme();
-					}
-					else {
-						Concept concept = classification.getConcept();
-						if (concept != null) {
-							iname = (InternationalStringImpl) ((RegistryObject) concept).getName();
-							value = concept.getValue();
-							scheme = concept.getClassificationScheme();
-						}
-					}
-	
-					String name = iname.getValue();
-					if (name != null)
-						keyr.setKeyName(name);
-	
-					if (value != null)
-						keyr.setKeyValue(value);
-					
-					if (scheme != null) {
-						Key key = scheme.getKey();
-						if (key != null && key.getId() != null)
-							keyr.setTModelKey(key.getId());
-					}
-				}
+                    if (scheme==null || (classification.isExternal() && classification.getConcept()==null)) {
+                        /*
+                        * JAXR 1.0 Specification: Section D6.4.4
+                        * Specification related tModels mapped from Concept may be automatically
+                        * categorized by the well-known uddi-org:types taxonomy in UDDI (with
+                        * tModelKey uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4) as follows:
+                        * The keyed reference is assigned a taxonomy value of specification.
+                        */
+                        keyr.setTModelKey(UDDI_ORG_TYPES);
+                        keyr.setKeyValue("specification"); 
+                    } else {
+    					if (classification.isExternal()) {
+                            iname = (InternationalStringImpl) ((RegistryObject) classification).getName();
+                            value = classification.getValue();
+    					} else {
+    						Concept concept = classification.getConcept();
+    						if (concept != null) {
+    							iname = (InternationalStringImpl) ((RegistryObject) concept).getName();
+    							value = concept.getValue();
+    							scheme = concept.getClassificationScheme();
+    						}
+    					}
+    	
+    					String name = iname.getValue();
+    					if (name != null)
+    						keyr.setKeyName(name);
+    	
+    					if (value != null)
+    						keyr.setKeyValue(value);
+    					
+    					if (scheme != null) {
+    						Key key = scheme.getKey();
+    						if (key != null && key.getId() != null)
+    							keyr.setTModelKey(key.getId());
+    					}
+    				}
+                }
 			}
 			return cbag;
     	} catch (Exception ud) {
@@ -847,6 +882,21 @@ public class ScoutJaxrUddiHelper {
 			throw new JAXRException("Apache JAXR Impl:", ud);
 		}
     }
+    
+    private static OverviewDoc getOverviewDocFromExternalLink(ExternalLink link)
+       throws JAXRException
+       {
+           OverviewDoc od = (OverviewDoc)(XmlObject.Factory.newInstance()).changeType(OverviewDoc.type);
+           String url = link.getExternalURI();
+           if(url != null)
+               od.setOverviewURL(url);
+           InternationalString extDesc = link.getDescription();
+           if(extDesc != null) {
+               Description description = od.addNewDescription();
+               description.setStringValue(extDesc.getValue());
+           }
+           return od;
+       }
 
     private static BindingTemplates getBindingTemplates(Collection serviceBindings)
         throws JAXRException {
