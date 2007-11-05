@@ -62,16 +62,6 @@ public class JAXR060RegistryTest extends BaseTestCase
     @Before
     public void setUp() {
         super.setUp();
-    }
-
-    @After
-    public void tearDown() {
-        super.tearDown();
-    }
-    
-    @Test
-    public void publishClassificationScheme()
-    {
         login();
         try
         {
@@ -87,12 +77,32 @@ public class JAXR060RegistryTest extends BaseTestCase
             fail(je.getMessage());
         }
     }
+
+    @After
+    public void tearDown() {
+        super.tearDown();
+        login();
+        try {
+            RegistryService rs = connection.getRegistryService();
+            bqm = rs.getBusinessQueryManager();
+            blm = rs.getBusinessLifeCycleManager();
+            Collection<String> findQualifiers = new ArrayList<String>();
+            findQualifiers.add(FindQualifier.AND_ALL_KEYS);
+            findQualifiers.add(FindQualifier.SORT_BY_NAME_DESC);
+            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:category");
+            Remover remover = new Remover(blm);
+            remover.removeClassificationScheme(cScheme);
+        } catch (JAXRException je) {
+            fail(je.getMessage());
+        }
+    }
    
 	/**
 	 * Tests the successful creation of the RED HAT/JBossESB Organization.
 	 */
-	@Test
-	public void publishOrganization() 
+	@SuppressWarnings("unchecked")
+    @Test
+	public void publishCheckAndDelete() 
 	{
         login();
         try
@@ -110,12 +120,7 @@ public class JAXR060RegistryTest extends BaseTestCase
 			je.printStackTrace();
 			assertTrue(false);
 		}
-	}
-	@SuppressWarnings("unchecked")
-    @Test
-	public void findOrganization() 
-	{
-        login();
+	    //find organization
         try
         {
             RegistryService rs = connection.getRegistryService();
@@ -136,16 +141,7 @@ public class JAXR060RegistryTest extends BaseTestCase
 		} catch (JAXRException je) {
 			fail(je.getMessage());
 		}
-	}
-	/**
-	 * Tests the successful registration of a Service.
-	 *
-	 */
-	@SuppressWarnings("unchecked")
-    @Test
-	public void publishService()
-	{
-        login();
+        //Publish a service
 		try {
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
@@ -171,12 +167,7 @@ public class JAXR060RegistryTest extends BaseTestCase
 		} catch (JAXRException je) {
 			fail(je.getMessage());
 		}
-	}
-    
-    @Test
-    public void findServicesByClassification()
-    {
-        login();
+	    //find Service
         try
         {
             RegistryService rs = connection.getRegistryService();
@@ -189,14 +180,8 @@ public class JAXR060RegistryTest extends BaseTestCase
         } catch (JAXRException je) {
             fail(je.getMessage());
         }
-    }
-     
-	@Test
-	public void publishServiceBinding()
-	{
-        login();
-        try
-        {
+        //publish serviceBinding
+        try {
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
             blm = rs.getBusinessLifeCycleManager();
@@ -233,16 +218,7 @@ public class JAXR060RegistryTest extends BaseTestCase
 		} catch (JAXRException re) {
 			fail(re.getMessage());
 		}
-	}
-	/**
-	 * Queries the newly added information
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unchecked")
-    @Test
-	public void findServicesForAnOrganization()
-    {
-        login();
+        //find all services for this organization
         try
         {
             RegistryService rs = connection.getRegistryService();
@@ -275,12 +251,7 @@ public class JAXR060RegistryTest extends BaseTestCase
 	    } catch (Exception je) {
 	    	fail(je.getMessage());
 		}
-    }
-    
-    @Test
-    public void deleteService()
-    {
-        login();
+        //delete the service
         try
         {
             RegistryService rs = connection.getRegistryService();
@@ -294,12 +265,7 @@ public class JAXR060RegistryTest extends BaseTestCase
         } catch (JAXRException je) {
             fail(je.getMessage());
         }
-    }
-    @SuppressWarnings("unchecked")
-    @Test
-    public void deleteOrganization()
-    {
-        login();
+        //delete the organization
         try
         {
             RegistryService rs = connection.getRegistryService();
@@ -315,27 +281,7 @@ public class JAXR060RegistryTest extends BaseTestCase
         }
     }
     
-    @Test
-    public void deleteClassificationScheme()
-    {
-        login();
-        try {
-            RegistryService rs = connection.getRegistryService();
-            bqm = rs.getBusinessQueryManager();
-            blm = rs.getBusinessLifeCycleManager();
-            Collection<String> findQualifiers = new ArrayList<String>();
-            findQualifiers.add(FindQualifier.AND_ALL_KEYS);
-            findQualifiers.add(FindQualifier.SORT_BY_NAME_DESC);
-            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:category");
-            Remover remover = new Remover(blm);
-            remover.removeClassificationScheme(cScheme);
-        } catch (JAXRException je) {
-            fail(je.getMessage());
-        }
-    }
-	
-   
-	
+  
 
 	public static junit.framework.Test suite() {
 		return new JUnit4TestAdapter(JAXR060RegistryTest.class);
