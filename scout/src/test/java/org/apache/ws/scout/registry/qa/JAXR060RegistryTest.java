@@ -57,7 +57,7 @@ import org.junit.Test;
  * @author kstam
  *
  */
-public class JAXR60RegistryTest extends BaseTestCase
+public class JAXR060RegistryTest extends BaseTestCase
 {
     @Before
     public void setUp() {
@@ -338,7 +338,7 @@ public class JAXR60RegistryTest extends BaseTestCase
 	
 
 	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(JAXR60RegistryTest.class);
+		return new JUnit4TestAdapter(JAXR060RegistryTest.class);
 	}
 
 }
