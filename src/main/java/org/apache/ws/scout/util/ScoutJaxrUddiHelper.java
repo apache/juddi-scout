@@ -269,7 +269,7 @@ public class ScoutJaxrUddiHelper
 				// TODO: This setting to "" should not be needed at all.
 				// However, a bug in jUDDI needs it to be there. See:
 				// http://issues.apache.org/jira/browse/JUDDI-78
-				kr.setTModelKey("");
+				//kr.setTModelKey("");
 			} else {
                 kr.setTModelKey(key.getId());
 			}
