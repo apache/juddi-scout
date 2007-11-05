@@ -47,6 +47,8 @@ import javax.xml.registry.infomodel.ServiceBinding;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.uddi.AssertionStatusItem;
 import org.apache.ws.scout.uddi.AssertionStatusReport;
@@ -228,45 +230,48 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     }
 
 
-    public BulkResponse saveAssociations(Collection asso, boolean replace) throws JAXRException {    //TODO
+    public BulkResponse saveAssociations(Collection associations, boolean replace) throws JAXRException {
         BulkResponseImpl bulk = new BulkResponseImpl();
-        PublisherAssertion[] sarr = new PublisherAssertion[asso.size()];
+        PublisherAssertion[] sarr = new PublisherAssertion[associations.size()];
 
-        LinkedHashSet<String> coll = new LinkedHashSet<String>();
+        Collection<Key> coll = new ArrayList<Key>();
         Collection<Exception> exceptions = new ArrayList<Exception>();
 
-        Iterator iter = asso.iterator();
+        Iterator iter = associations.iterator();
         int currLoc = 0;
         while (iter.hasNext()) {
-            try {
-                PublisherAssertion pa = ScoutJaxrUddiHelper.getPubAssertionFromJAXRAssociation((Association) iter.next());
+            
+                Association association = (Association) iter.next();
+                association.getSourceObject();
+                PublisherAssertion pa = ScoutJaxrUddiHelper.getPubAssertionFromJAXRAssociation(association);
                 sarr[currLoc] = pa;
                 currLoc++;
-            }
-            catch (ClassCastException ce) {
-                throw new UnexpectedObjectException();
-            }
-        }
-        // Save PublisherAssertion
-        PublisherAssertions bd = null;
-        try {
-            bd = (PublisherAssertions) executeOperation(sarr, "SAVE_ASSOCIATION");
-        }
-        catch (RegistryException e) {
-            exceptions.add(new SaveException(e));
-            bulk.setExceptions(exceptions);
-            bulk.setStatus(JAXRResponse.STATUS_FAILURE);
-            return bulk;
-        }
-        if(bd != null)
-        {
-        	PublisherAssertion[] keyarr = bd.getPublisherAssertionArray();
-        	for (int i = 0; keyarr != null && i < keyarr.length; i++) {
-        		PublisherAssertion result = (PublisherAssertion) keyarr[i];
-               KeyedReference kr = result.getKeyedReference();
-               coll.add(kr.getTModelKey()); //TODO:Verify This
-
-           }
+            
+                // Save PublisherAssertion
+                PublisherAssertions bd = null;
+                try {
+                    bd = (PublisherAssertions) executeOperation(sarr, "SAVE_ASSOCIATION");
+                }
+                catch (RegistryException e) {
+                    exceptions.add(new SaveException(e));
+                    bulk.setExceptions(exceptions);
+                    bulk.setStatus(JAXRResponse.STATUS_FAILURE);
+                    return bulk;
+                }
+                if(bd != null)
+                {
+                	PublisherAssertion[] keyarr = bd.getPublisherAssertionArray();
+                	for (int i = 0; keyarr != null && i < keyarr.length; i++) {
+                		PublisherAssertion result = (PublisherAssertion) keyarr[i];
+                        KeyedReference keyr = result.getKeyedReference();
+                        Concept c = new ConceptImpl(getRegistryService().getBusinessLifeCycleManager());
+                        c.setName(new InternationalStringImpl(keyr.getKeyName()));
+                        c.setKey( new KeyImpl(keyr.getTModelKey()) );
+                        c.setValue(keyr.getKeyValue());
+                        association.setAssociationType(c);
+                        coll.add(association.getKey());
+                   }
+                }
         }
         bulk.setCollection(coll);
         bulk.setExceptions(exceptions);

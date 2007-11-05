@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.JAXRException;
@@ -222,9 +223,40 @@ public class BusinessLifeCyleManagerlTest extends BaseTestCase
         try {
             RegistryService rs = connection.getRegistryService();
             blm = rs.getBusinessLifeCycleManager();
-            Collection<Association> associations = new ArrayList<Association>();
-            //Association association = blm.createAssociation(targetObject, Association.);
+            bqm = rs.getBusinessQueryManager();
+            Creator creator = new Creator(blm);
             
+            System.out.println("\nCreating temporary organizations...\n");
+            Organization sOrg = creator.createOrganization("sourceOrg");
+            Organization tOrg = creator.createOrganization("targetOrg");
+            Collection<Organization> organizations = new ArrayList<Organization>();
+            organizations.add(sOrg);
+            organizations.add(tOrg);
+            BulkResponse br = blm.saveOrganizations(organizations);
+            assertEquals(BulkResponse.STATUS_SUCCESS, br.getStatus());
+            //setting the keys on the organizations
+            Collection<Key> keys = (Collection<Key>) br.getCollection();
+            Iterator<Key> iterator = keys.iterator();
+            sOrg.setKey(iterator.next());
+            tOrg.setKey(iterator.next());
+            //creating the RelatedTo Association between these two organizations
+            Concept type = bqm.findConceptByPath("AssociationType/RelatedTo");
+            Association association = blm.createAssociation(tOrg, type);
+            sOrg.addAssociation(association);
+            ArrayList<Association> associations = new ArrayList<Association>();
+            associations.add(association);
+            //save associations
+            BulkResponse br2 = blm.saveAssociations(associations, true);
+            assertEquals(BulkResponse.STATUS_SUCCESS, br2.getStatus());
+            
+            //delete association
+            BulkResponse br3 = blm.deleteAssociations((Collection<Key>)br2.getCollection());
+            assertEquals(BulkResponse.STATUS_SUCCESS, br3.getStatus());
+            
+            //delete organizations
+            BulkResponse br4 = blm.deleteOrganizations((Collection<Key>)br.getCollection());
+            assertEquals(BulkResponse.STATUS_SUCCESS, br4.getStatus());
+           
         } catch (JAXRException je) {
             fail(je.getMessage());
         }

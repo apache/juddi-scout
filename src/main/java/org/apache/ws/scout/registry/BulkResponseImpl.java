@@ -35,7 +35,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
     private boolean partialResponse = false;
 
     private Collection<Exception> exceptions = new ArrayList<Exception>();
-    private LinkedHashSet<? extends Object> collection = new LinkedHashSet<Object>();
+    private Collection<? extends Object> collection = new ArrayList<Object>();
     /**
      * Creates a new instance of BulkResponseImpl
      */
@@ -87,7 +87,7 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
         this.partialResponse = b;
     }
 
-    public void setCollection(LinkedHashSet<? extends Object> coll) throws JAXRException
+    public void setCollection(Collection<? extends Object> coll) throws JAXRException
     {
         this.collection = coll;
     }

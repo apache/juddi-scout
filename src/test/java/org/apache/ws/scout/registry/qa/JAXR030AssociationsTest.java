@@ -102,17 +102,13 @@ public class JAXR030AssociationsTest extends BaseTestCase {
             organizations.add(org1);
             organizations.add(org2);
             blm.saveOrganizations(organizations);
-            
-
+           
 			System.out.println("\nSearching for newly created organizations...\n");
 			ArrayList<Organization> orgs = findTempOrgs();
-
 			sOrg = orgs.get(0);
 			tOrg = orgs.get(1);
 
 			System.out.println("\nCreating association...\n");
-            
-            //TODO this does not actually succeed!
 			createAssociation(sOrg, tOrg);
 
 			// All created ... now try to delete.
