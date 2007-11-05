@@ -10,10 +10,14 @@ import javax.xml.registry.BulkResponse;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.JAXRResponse;
 import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.ClassificationScheme;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
+import javax.xml.registry.infomodel.ServiceBinding;
 
 import junit.framework.JUnit4TestAdapter;
 
@@ -134,6 +138,100 @@ public class BusinessLifeCyleManagerlTest extends BaseTestCase
             fail(je.getMessage());
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void saveDeleteServiceBindings() 
+    {
+        login();
+       
+        try {
+            RegistryService rs = connection.getRegistryService();
+            blm = rs.getBusinessLifeCycleManager();
+            Creator creator = new Creator(blm);
+            Collection<Organization> orgs = new ArrayList<Organization>();
+            Organization organization = creator.createOrganization(this.getClass().getName());
+            orgs.add(organization);
+//          save the Organization
+            BulkResponse br = blm.saveOrganizations(orgs);
+            assertEquals(JAXRResponse.STATUS_SUCCESS, br.getStatus());
+            organization.setKey((Key)br.getCollection().iterator().next());
+            
+            Service service = creator.createService(this.getClass().getName());
+            ArrayList<Service> services = new ArrayList<Service>();
+            organization.addService(service);
+            services.add(service);
+            //save service
+            BulkResponse br2 = blm.saveServices(services);
+            assertEquals(BulkResponse.STATUS_SUCCESS, br2.getStatus());
+            
+            service.setKey((Key)br2.getCollection().iterator().next());
+            
+            //save serviceBinding
+            ServiceBinding serviceBinding = creator.createServiceBinding();
+            service.addServiceBinding(serviceBinding);
+            ArrayList<ServiceBinding> serviceBindings = new ArrayList<ServiceBinding>();
+            serviceBindings.add(serviceBinding);
+            BulkResponse br5 = blm.saveServiceBindings(serviceBindings);
+            assertEquals(BulkResponse.STATUS_SUCCESS, br5.getStatus());
+            
+            //remove serviceBindings
+            BulkResponse br6 = blm.deleteServiceBindings((Collection<Key>)br5.getCollection());
+            assertEquals(BulkResponse.STATUS_SUCCESS, br6.getStatus());
+            
+            //remove service
+            BulkResponse br3 = blm.deleteServices((Collection<Key>)br2.getCollection());
+            assertEquals(BulkResponse.STATUS_SUCCESS, br3.getStatus());
+            //remove organization
+            BulkResponse br4 = blm.deleteOrganizations((Collection<Key>)br.getCollection());
+            assertEquals(JAXRResponse.STATUS_SUCCESS, br4.getStatus());
+        } catch (JAXRException je) {
+            fail(je.getMessage());
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void saveDeleteConcepts() 
+    {
+        login();
+        try {
+            RegistryService rs = connection.getRegistryService();
+            blm = rs.getBusinessLifeCycleManager();
+            Collection<Concept> concepts = new ArrayList<Concept>();
+            Concept concept = blm.createConcept(null, "TestConcept", "");
+            InternationalString is = blm.createInternationalString("This is the concept for Apache Scout Test");
+            concept.setDescription(is);
+            concepts.add(concept);
+
+            BulkResponse br = blm.saveConcepts(concepts);
+            assertEquals(BulkResponse.STATUS_SUCCESS, br.getStatus());
+            
+            BulkResponse br2 = blm.deleteConcepts((Collection<Key>)br.getCollection());
+            assertEquals(BulkResponse.STATUS_SUCCESS, br2.getStatus());
+        } catch (JAXRException je) {
+            fail(je.getMessage());
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void saveDeleteAssociations() 
+    {
+        login();
+        try {
+            RegistryService rs = connection.getRegistryService();
+            blm = rs.getBusinessLifeCycleManager();
+            Collection<Association> associations = new ArrayList<Association>();
+            //Association association = blm.createAssociation(targetObject, Association.);
+            
+        } catch (JAXRException je) {
+            fail(je.getMessage());
+        }
+    }
+    
+    
+        
         
             
             
@@ -141,15 +239,7 @@ public class BusinessLifeCyleManagerlTest extends BaseTestCase
     
 //    BulkResponse deleteAssociations(Collection<Key> associationKeys) throws JAXRException;
 //
-//    BulkResponse deleteConcepts(Collection<Key> conceptKeys) throws JAXRException;
-//
-//    BulkResponse deleteServiceBindings(Collection<Key> bindingKeys) throws JAXRException;
-//
 //    BulkResponse saveAssociations(Collection<Association> associations, boolean replace) throws JAXRException;
-//
-//    BulkResponse saveConcepts(Collection<Concept> concepts) throws JAXRException;  
-//
-//    BulkResponse saveServiceBindings(Collection<ServiceBinding> bindings) throws JAXRException;
 //
 //    void unConfirmAssociation(Association assoc) throws JAXRException, InvalidRequestException;
     
