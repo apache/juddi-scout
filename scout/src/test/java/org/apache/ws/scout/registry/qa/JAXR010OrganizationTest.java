@@ -79,7 +79,7 @@ public class JAXR010OrganizationTest extends BaseTestCase
             Creator creator = new Creator(blm);
             
             Collection<ClassificationScheme> schemes = new ArrayList<ClassificationScheme>();
-            ClassificationScheme classificationScheme = creator.createClassificationScheme();
+            ClassificationScheme classificationScheme = creator.createClassificationScheme(this.getClass().getName());
             schemes.add(classificationScheme);
             
             BulkResponse bulkResponse = blm.saveClassificationSchemes(schemes);
@@ -101,17 +101,20 @@ public class JAXR010OrganizationTest extends BaseTestCase
         {
             RegistryService rs = connection.getRegistryService();
             blm = rs.getBusinessLifeCycleManager();
+            bqm = rs.getBusinessQueryManager();
             Creator creator = new Creator(blm);
+            Finder finder = new Finder(bqm);
             
             Collection<Organization> orgs = new ArrayList<Organization>();
             Organization organization = creator.createOrganization(this.getClass().getName());
 //          Add a Service
-            Service service = creator.createService();
+            Service service = creator.createService(this.getClass().getName());
             ServiceBinding serviceBinding = creator.createServiceBinding();
             service.addServiceBinding(serviceBinding);
             organization.addService(service);
             //Add a classification
-            Classification classification = creator.createClassification();
+            ClassificationScheme cs = finder.findClassificationSchemeByName(this.getClass().getName());
+            Classification classification = creator.createClassification(cs);
             organization.addClassification(classification);
             
             orgs.add(organization);
@@ -151,6 +154,7 @@ public class JAXR010OrganizationTest extends BaseTestCase
     @Test
     public void queryOrganization()
     {
+        login();
         try
         {
             // Get registry service and business query manager
@@ -213,6 +217,7 @@ public class JAXR010OrganizationTest extends BaseTestCase
     @Test
     public void deleteClassificationScheme()
     {
+        login();
         try {
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
