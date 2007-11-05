@@ -36,7 +36,6 @@ import javax.xml.registry.JAXRResponse;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.infomodel.Classification;
 import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
@@ -58,7 +57,7 @@ import org.junit.Test;
  * @author kstam
  *
  */
-public class JAXRRegistryUnitTest extends BaseTestCase
+public class JAXR60RegistryTest extends BaseTestCase
 {
     @Before
     public void setUp() {
@@ -339,7 +338,7 @@ public class JAXRRegistryUnitTest extends BaseTestCase
 	
 
 	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(JAXRRegistryUnitTest.class);
+		return new JUnit4TestAdapter(JAXR60RegistryTest.class);
 	}
 
 }
