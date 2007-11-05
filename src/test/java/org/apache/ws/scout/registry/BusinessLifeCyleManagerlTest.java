@@ -262,19 +262,6 @@ public class BusinessLifeCyleManagerlTest extends BaseTestCase
         }
     }
     
-    
-        
-        
-            
-            
-    //TODO cover these methods
-    
-//    BulkResponse deleteAssociations(Collection<Key> associationKeys) throws JAXRException;
-//
-//    BulkResponse saveAssociations(Collection<Association> associations, boolean replace) throws JAXRException;
-//
-//    void unConfirmAssociation(Association assoc) throws JAXRException, InvalidRequestException;
-    
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(BusinessLifeCyleManagerlTest.class);
     }
