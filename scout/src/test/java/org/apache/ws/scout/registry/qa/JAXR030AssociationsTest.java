@@ -17,6 +17,7 @@
 package org.apache.ws.scout.registry.qa;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +62,7 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 
 	private BusinessQueryManager bqm = null;
 
-	String associationType = "/AssociationType/RelatedTo";
+	String associationType = "AssociationType/RelatedTo";
 	private static String tempSrcOrgName = "Apache Source Org -- APACHE SCOUT TEST";
 	private static String tempTgtOrgName = "Apache Target Org -- APACHE SCOUT TEST";
 
@@ -173,10 +174,12 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 
 		if (associations == null) {
 			System.out.println("\n-- Matched 0 orgs");
+            fail("Expected 1 association");
 
 		} else {
 			System.out.println("\n-- Matched " + associations.size()
 					+ " associations --\n");
+            assertEquals(1,associations.size());
 
 			// then step through them
 			for (Iterator conceptIter = associations.iterator(); conceptIter
@@ -206,6 +209,7 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 		keys.add(key);
 		BulkResponse response = blm.deleteAssociations(keys);
 
+        assertEquals(BulkResponse.STATUS_SUCCESS, response.getStatus());
 		Collection exceptions = response.getExceptions();
 		if (exceptions == null) {
 			Collection retKeys = response.getCollection();
