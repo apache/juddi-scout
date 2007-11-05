@@ -84,6 +84,25 @@ public class Finder
         
         return response.getCollection();
     }
+    
+    public ClassificationScheme findClassificationSchemeByName(String queryStr) throws JAXRException {
+        // Define find qualifiers and name patterns
+        Collection<String> findQualifiers = new ArrayList<String>();
+        findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
+        Collection<String> namePatterns = new ArrayList<String>();
+        namePatterns.add("%" + queryStr + "%");
+        
+        // Find based upon qualifier type and values
+        System.out.println("\n-- searching the registry --\n");
+        BulkResponse response =
+            bqm.findClassificationSchemes(findQualifiers,
+                    namePatterns,
+                    null,
+                    null);
+        
+        return (ClassificationScheme) response.getCollection().iterator().next();
+    }
+    
     /**
      * Search a service, by matching the name and the classification.
      * 

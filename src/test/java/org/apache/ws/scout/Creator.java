@@ -89,9 +89,9 @@ public class Creator {
      * @return JAXR Service
      * @throws JAXRException
      */
-    public Service createService() throws JAXRException
+    public Service createService(String name) throws JAXRException
     {
-        Service service = blm.createService(getIString("JAXRTestService"));
+        Service service = blm.createService(getIString(name));
         service.setDescription(getIString("Test Services of UDDI Registry"));
         return service;
     }
@@ -115,12 +115,10 @@ public class Creator {
      * @return JAXR ClassificationScheme
      * @throws JAXRException
      */
-    public ClassificationScheme createClassificationScheme() throws JAXRException
+    public ClassificationScheme createClassificationScheme(String name) throws JAXRException
     {
-        ClassificationScheme cs = blm.createClassificationScheme(getIString("apache-org:scout"),
+        ClassificationScheme cs = blm.createClassificationScheme(getIString(name),
                 getIString(""));
-        //Key cKey = blm.createKey("uuid:C0B9FE13-324F-413D-5A5B-2004DB8E5CC2");
-        //cs.setKey(cKey);
         return cs;
     }
     /**
@@ -130,9 +128,8 @@ public class Creator {
      * @return
      * @throws JAXRException
      */
-    public Classification createClassification() throws JAXRException
+    public Classification createClassification(ClassificationScheme classificationScheme) throws JAXRException
     {
-        ClassificationScheme classificationScheme = createClassificationScheme();
         Classification classification = blm.createClassification(classificationScheme,
                 "Java Api for Xml Registries Services","1234");
         return classification;
