@@ -59,7 +59,7 @@ import org.junit.Test;
  * 
  * @since Sep 27, 2005
  */
-public class JAXR020PublishConceptTest extends BaseTestCase
+public class JAXR020ConceptTest extends BaseTestCase
 {
     private static String CONCEPT_NAME = "Apache Scout Concept -- APACHE SCOUT TEST";
     
@@ -88,7 +88,6 @@ public class JAXR020PublishConceptTest extends BaseTestCase
             Concept concept = blm.createConcept(null, CONCEPT_NAME, "");
             InternationalString is = blm.createInternationalString("This is the concept for Apache Scout Test");
             concept.setDescription(is);
-
 
             //Lets provide a link to juddi registry
             ExternalLink wslink =
@@ -205,7 +204,7 @@ public class JAXR020PublishConceptTest extends BaseTestCase
     }
     
     public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(JAXR020PublishConceptTest.class);
+        return new JUnit4TestAdapter(JAXR020ConceptTest.class);
     }
 
 }

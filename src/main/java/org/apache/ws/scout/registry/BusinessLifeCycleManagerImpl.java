@@ -253,7 +253,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             bd = (PublisherAssertions) executeOperation(sarr, "SAVE_ASSOCIATION");
         }
         catch (RegistryException e) {
-            exceptions.add(new SaveException(e.getLocalizedMessage()));
+            exceptions.add(new SaveException(e));
             bulk.setExceptions(exceptions);
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
             return bulk;
