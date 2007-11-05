@@ -16,25 +16,38 @@
  */
 package org.apache.ws.scout.registry;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import javax.xml.registry.CapabilityProfile;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnsupportedCapabilityException;
 
-import junit.framework.TestCase;
+import junit.framework.JUnit4TestAdapter;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @version $Revision$ $Date$
  */
-public class RegistryServiceTest extends TestCase {
+public class RegistryServiceTest {
     private RegistryService registry;
 
+    @Before
+    public void setUp() throws Exception {
+        registry = new RegistryServiceImpl(null, null, -1);
+    }
+    
+    @Test
     public void testCapabilityProfile() throws JAXRException {
         CapabilityProfile profile = registry.getCapabilityProfile();
         assertNotNull(profile);
         assertEquals(0, profile.getCapabilityLevel());
     }
 
+    @Test
     public void testDeclarativeQueryManager() throws JAXRException {
         try {
             registry.getDeclarativeQueryManager();
@@ -42,9 +55,10 @@ public class RegistryServiceTest extends TestCase {
             // ok
         }
     }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        registry = new RegistryServiceImpl(null, null, -1);
+    
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(RegistryServiceTest.class);
     }
+
+   
 }

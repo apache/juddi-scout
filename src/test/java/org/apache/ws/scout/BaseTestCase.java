@@ -21,11 +21,11 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.JAXRException;
-
-import junit.framework.TestCase;
 
 /**
  * Test to check Jaxr Publish
@@ -34,18 +34,21 @@ import junit.framework.TestCase;
  * @author <mailto:kurt.stam@jboss.com>Kurt Stam
  * @since Sept 21, 2006
  */
-public class BaseTestCase extends TestCase
+public class BaseTestCase
 {
-    protected Connection connection = null;
+    protected Connection connection;
+    protected BusinessLifeCycleManager blm;
+    protected BusinessQueryManager bqm;
 
-    protected String userid = System.getProperty("uddi.test.uid") == null ? 
-    						"jdoe" : 
-    						System.getProperty("uddi.test.uid");
+    //Set some default values
+    protected String userid = System.getProperty("uddi.test.uid")  == null ? "jdoe"     : System.getProperty("uddi.test.uid");
+    protected String passwd = System.getProperty("uddi.test.pass") == null ? "password" : System.getProperty("uddi.test.pass");
+    protected int maxRows   = 100;
 
-    protected String passwd = System.getProperty("uddi.test.pass") == null ? 
-							"password" : 
-							System.getProperty("uddi.test.pass");
-
+    /**
+     * Reads scout properties, and creates a connection using these properties.
+     *
+     */
     public void setUp()
     {
         System.out.println("************************************************************");
@@ -76,19 +79,15 @@ public class BaseTestCase extends TestCase
             				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
             				INQUERY_URI :
             				System.getProperty("javax.xml.registry.queryManagerURL"));
-    
             props.setProperty("javax.xml.registry.lifeCycleManagerURL",
             				System.getProperty("javax.xml.registry.lifeCycleManagerURL") == null ? 
             				PUBLISH_URI :
             				System.getProperty("javax.xml.registry.lifeCycleManagerURL"));
-    
-            props.setProperty("javax.xml.registry.factoryClass",
-                    "org.apache.ws.scout.registry.ConnectionFactoryImpl");
-            
-            
+            props.setProperty("javax.xml.registry.factoryFactoryClass",
+                    "org.apache.ws.scout.? it isregistry.ConnectionFactoryImpl");
             props.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
-            //System.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
-
+            props.setProperty("javax.xml.registry.uddi.maxRows", String.valueOf(maxRows));
+       
        
             // Create the connection, passing it the configuration properties
             ConnectionFactory factory = ConnectionFactory.newInstance();
@@ -99,7 +98,10 @@ public class BaseTestCase extends TestCase
             e.printStackTrace();
         }
     }
-
+    /**
+     * Closes down the connection to the registry.
+     *
+     */
     public void tearDown()
     {
         try
@@ -131,5 +133,7 @@ public class BaseTestCase extends TestCase
             e.printStackTrace();
         }
     }
+    
+   
 
 }

@@ -14,7 +14,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.ws.scout.registry.publish;
+package org.apache.ws.scout.registry.qa;
+
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,13 +27,21 @@ import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.JAXRResponse;
 import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.ExternalLink;
 import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.SpecificationLink;
+
+import junit.framework.JUnit4TestAdapter;
 
 import org.apache.ws.scout.BaseTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
 Tests Publish, Delete (and indirectly, find) for service bindings.
@@ -48,20 +58,19 @@ Tests Publish, Delete (and indirectly, find) for service bindings.
  *
  * @since Sep 27, 2005
  */
-public class JAXRPublishAndDeleteServiceBindingTest extends BaseTestCase
+public class JAXR050ServiceBindingTest extends BaseTestCase
 {
-
-	private BusinessLifeCycleManager blm = null;
     
     String serviceBindingName = "Apache JAXR Service Binding -- APACHE SCOUT TEST";
     String serviceName = "Apache JAXR Service -- APACHE SCOUT TEST";
 	String tempOrgName = "Apache JAXR Service Org -- APACHE SCOUT TEST";
 
+    @Before
     public void setUp()
     {
        super.setUp();
     }
-
+    @After
     public void tearDown()
     {
         super.tearDown();
@@ -75,7 +84,7 @@ public class JAXRPublishAndDeleteServiceBindingTest extends BaseTestCase
 	 * uses getMethods() to gather test methods, and getMethods() does not
 	 * guarantee order.
 	 */
-
+    @Test
     public void testPublishFindAndDeleteServiceBinding()
     {
         login();
@@ -110,11 +119,6 @@ public class JAXRPublishAndDeleteServiceBindingTest extends BaseTestCase
         }
     }
 
-    private InternationalString getIString(String str)
-            throws JAXRException
-    {
-        return blm.createInternationalString(str);
-    }
 
     private Key createServiceBinding(Service tmpSvc) throws JAXRException {
     	Key key = null;
@@ -122,7 +126,20 @@ public class JAXRPublishAndDeleteServiceBindingTest extends BaseTestCase
         serviceBinding.setName(getIString(serviceBindingName));
         serviceBinding.setDescription(getIString("UDDI service binding"));
         tmpSvc.addServiceBinding(serviceBinding);
-
+        
+        SpecificationLink specLink = blm.createSpecificationLink();
+        ExternalLink externalLink = blm.createExternalLink("http://localhost:8080/jmx-console", "Scout test");
+        Collection<ExternalLink> externalLinks = new ArrayList<ExternalLink>();
+        externalLinks.add(externalLink);
+        specLink.setExternalLinks(externalLinks);
+        
+        RegistryService rs = connection.getRegistryService();
+        bqm = rs.getBusinessQueryManager();
+        Concept concept = (Concept)bqm.getRegistryObject("uuid:AD61DE98-4DB8-31B2-A299-A2373DC97212",BusinessLifeCycleManager.CONCEPT);
+        specLink.setSpecificationObject(concept);
+        
+        serviceBinding.addSpecificationLink(specLink);
+        
         ArrayList<ServiceBinding> serviceBindings = new ArrayList<ServiceBinding>();
         serviceBindings.add(serviceBinding);
 
@@ -288,5 +305,15 @@ public class JAXRPublishAndDeleteServiceBindingTest extends BaseTestCase
     			System.out.println("Organization with ID=" + id + " was deleted");
     		}
     	}
+    }
+    
+    private InternationalString getIString(String str)
+    throws JAXRException
+    {
+        return blm.createInternationalString(str);
+    }
+    
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(JAXR050ServiceBindingTest.class);
     }
 }

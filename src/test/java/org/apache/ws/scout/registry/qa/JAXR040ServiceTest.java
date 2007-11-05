@@ -14,14 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.ws.scout.registry.publish;
+package org.apache.ws.scout.registry.qa;
+
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.xml.registry.BulkResponse;
-import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.FindQualifier;
 import javax.xml.registry.JAXRException;
@@ -32,7 +33,12 @@ import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
 
+import junit.framework.JUnit4TestAdapter;
+
 import org.apache.ws.scout.BaseTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests Publish, Delete (and indirectly, find) for service bindings.
@@ -49,20 +55,20 @@ import org.apache.ws.scout.BaseTestCase;
  *
  * @since Sep 27, 2005
  */
-public class JAXRPublishAndDeleteServiceTest extends BaseTestCase
+public class JAXR040ServiceTest extends BaseTestCase
 {
-
-	private BusinessLifeCycleManager blm = null;
     private BusinessQueryManager bqm = null;
     
     String serviceName = "Apache JAXR Service -- APACHE SCOUT TEST";
 	String tempOrgName = "Apache JAXR Service Org -- APACHE SCOUT TEST";
 
+    @Before
     public void setUp()
     {
     	super.setUp();
     }
 
+    @After
     public void tearDown()
     {
         super.tearDown();
@@ -76,6 +82,7 @@ public class JAXRPublishAndDeleteServiceTest extends BaseTestCase
 	 * uses getMethods() to gather test methods, and getMethods() does not
 	 * guarantee order.
 	 */
+    @Test
     public void testPublishFindAndDeleteService()
     {
         login();
@@ -103,11 +110,6 @@ public class JAXRPublishAndDeleteServiceTest extends BaseTestCase
         }
     }
 
-    private InternationalString getIString(String str)
-            throws JAXRException
-    {
-        return blm.createInternationalString(str);
-    }
     
     private void createService(Organization org) throws JAXRException {
         Service service = blm.createService(getIString(serviceName));
@@ -257,5 +259,15 @@ public class JAXRPublishAndDeleteServiceTest extends BaseTestCase
     			System.out.println("Organization with ID=" + id + " was deleted");
     		}
     	}
+    }
+    
+    private InternationalString getIString(String str)
+    throws JAXRException
+    {
+        return blm.createInternationalString(str);
+    }
+    
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(JAXR040ServiceTest.class);
     }
 }

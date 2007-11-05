@@ -14,14 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.ws.scout.registry.publish;
+package org.apache.ws.scout.registry.qa;
+
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.xml.registry.BulkResponse;
-import javax.xml.registry.BusinessLifeCycleManager;
 import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.FindQualifier;
 import javax.xml.registry.JAXRException;
@@ -29,12 +30,17 @@ import javax.xml.registry.JAXRResponse;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.Concept;
-import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.RegistryObject;
 
+import junit.framework.JUnit4TestAdapter;
+
 import org.apache.ws.scout.BaseTestCase;
+import org.apache.ws.scout.Creator;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -51,21 +57,22 @@ import org.apache.ws.scout.BaseTestCase;
  * 
  * @since Sep 27, 2005
  */
-public class JAXRPublishAndDeleteAssociationsTest extends BaseTestCase {
+public class JAXR030AssociationsTest extends BaseTestCase {
 
-	private BusinessLifeCycleManager blm = null;
 	private BusinessQueryManager bqm = null;
 
 	String associationType = "/AssociationType/RelatedTo";
-	String tempSrcOrgName = "Apache Source Org -- APACHE SCOUT TEST";
-	String tempTgtOrgName = "Apache Target Org -- APACHE SCOUT TEST";
+	private static String tempSrcOrgName = "Apache Source Org -- APACHE SCOUT TEST";
+	private static String tempTgtOrgName = "Apache Target Org -- APACHE SCOUT TEST";
 
 	Organization sOrg, tOrg;
 
+    @Before
 	public void setUp() {
 		super.setUp();
 	}
 
+    @After
 	public void tearDown() {
 		super.tearDown();
 	}
@@ -78,25 +85,33 @@ public class JAXRPublishAndDeleteAssociationsTest extends BaseTestCase {
 	 * uses getMethods() to gather test methods, and getMethods() does not
 	 * guarantee order.
 	 */
-
+    @Test
 	public void testPublishFindAndDeleteAssociation() {
 		login();
 		try {
 			RegistryService rs = connection.getRegistryService();
 			bqm = rs.getBusinessQueryManager();
 			blm = rs.getBusinessLifeCycleManager();
+            Creator creator = new Creator(blm);
 
-			System.out.println("\nCreating temporary organization...\n");
-			createTempOrgs();
+			System.out.println("\nCreating temporary organizations...\n");
+            Organization org1 = creator.createOrganization(tempSrcOrgName);
+            Organization org2 = creator.createOrganization(tempTgtOrgName);
+            Collection<Organization> organizations = new ArrayList<Organization>();
+            organizations.add(org1);
+            organizations.add(org2);
+            blm.saveOrganizations(organizations);
+            
 
-			System.out
-					.println("\nSearching for newly created organizations...\n");
+			System.out.println("\nSearching for newly created organizations...\n");
 			ArrayList<Organization> orgs = findTempOrgs();
 
 			sOrg = orgs.get(0);
 			tOrg = orgs.get(1);
 
 			System.out.println("\nCreating association...\n");
+            
+            //TODO this does not actually succeed!
 			createAssociation(sOrg, tOrg);
 
 			// All created ... now try to delete.
@@ -109,11 +124,7 @@ public class JAXRPublishAndDeleteAssociationsTest extends BaseTestCase {
 
 		}
 	}
-
-	private InternationalString getIString(String str) throws JAXRException {
-		return blm.createInternationalString(str);
-	}
-
+    
 	private void createAssociation(Organization sOrg, Organization tOrg)
 			throws JAXRException {
 
@@ -139,8 +150,8 @@ public class JAXRPublishAndDeleteAssociationsTest extends BaseTestCase {
 			while (iter.hasNext()) {
 				Exception e = (Exception) iter.next();
 				System.err.println(e.toString());
-				deleteTempOrgs();
 			}
+            deleteTempOrgs();
 		}
 	}
 
@@ -205,42 +216,6 @@ public class JAXRPublishAndDeleteAssociationsTest extends BaseTestCase {
 				id = orgKey.getId();
 				System.out
 						.println("Association with ID=" + id + " was deleted");
-			}
-		}
-	}
-
-	private void createTempOrgs() throws JAXRException {
-
-		Key orgKey = null;
-		Organization sOrg = blm.createOrganization(getIString(tempSrcOrgName));
-		Organization tOrg = blm.createOrganization(getIString(tempTgtOrgName));
-		sOrg
-				.setDescription(getIString("Temporary source organization to test saveAssociations()"));
-		tOrg
-				.setDescription(getIString("Temporary target organization to test saveAssociations()"));
-
-		Collection<Organization> orgs = new ArrayList<Organization>();
-		orgs.add(sOrg);
-		orgs.add(tOrg);
-		BulkResponse br = blm.saveOrganizations(orgs);
-
-		if (br.getStatus() == JAXRResponse.STATUS_SUCCESS) {
-			Iterator iter = br.getCollection().iterator();
-
-			while (iter.hasNext()) {
-				orgKey = (Key) iter.next();
-				System.out.println("Temporary Organization Created with id="
-						+ orgKey.getId());
-			}
-		} else {
-			System.err.println("JAXRExceptions "
-					+ "occurred during creation of temporary organization:");
-
-			Iterator iter = br.getCollection().iterator();
-
-			while (iter.hasNext()) {
-				Exception e = (Exception) iter.next();
-				System.err.println(e.toString());
 			}
 		}
 	}
@@ -347,4 +322,8 @@ public class JAXRPublishAndDeleteAssociationsTest extends BaseTestCase {
 		}
 		return "";
 	}
+    
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(JAXR030AssociationsTest.class);
+    }
 }
