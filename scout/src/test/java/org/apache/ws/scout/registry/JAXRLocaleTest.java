@@ -16,6 +16,9 @@
  */
 package org.apache.ws.scout.registry;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,7 +37,12 @@ import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
 
+import junit.framework.JUnit4TestAdapter;
+
 import org.apache.ws.scout.BaseTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  */
@@ -42,16 +50,19 @@ public class JAXRLocaleTest extends BaseTestCase
 {
     private BusinessLifeCycleManager blm = null;
 
+    @Before
     public void setUp()
     {
        super.setUp();
     }
 
+    @After
     public void tearDown()
     {
         super.tearDown();
     }
 
+    @Test
     public void testPublishOrganizationAndService() throws Exception {
         login();
 
@@ -121,6 +132,14 @@ public class JAXRLocaleTest extends BaseTestCase
         assertEquals(service.getDescription().getValue(locale), 
                      service1.getDescription().getValue(locale));
         
+        //Cleanup
+        Collection<Key> serviceKeys = new ArrayList<Key>();
+        serviceKeys.add(key);
+        blm.deleteServices(serviceKeys);
+        
+        Collection<Key> orgKeys = new ArrayList<Key>();
+        orgKeys.add(organization1.getKey());
+        blm.deleteOrganizations(orgKeys); 
     }
     
     public void testPublishConcept() throws Exception {
@@ -159,6 +178,11 @@ public class JAXRLocaleTest extends BaseTestCase
 
         assertEquals(concept.getDescription().getValue(locale), 
                      concept1.getDescription().getValue(locale));
+        
+        //cleanup
+        Collection<Key> conceptKeys = new ArrayList<Key>();
+        conceptKeys.add(concept1.getKey());
+        blm.deleteOrganizations(conceptKeys);
     }
 
     private void checkResponse(BulkResponse br) throws JAXRException {
@@ -191,6 +215,10 @@ public class JAXRLocaleTest extends BaseTestCase
             throws JAXRException
     {
         return blm.createInternationalString(locale, str);
+    }
+    
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(JAXRLocaleTest.class);
     }
 
 }

@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 /**
  *  Tests the BusinessLifecycleManagerImpl class
  */
-public class BusinessQueryManagerImplTest extends TestCase {
+public class BusinessQueryManagerTest extends TestCase {
 
     public void testFindClassificationSchemeByName() throws JAXRException {
 
