@@ -668,8 +668,8 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 for (int i=0; a != null && i < a.length; i++) {
                     ServiceInfo si = (ServiceInfo) a[i];
-                    col.add(ScoutUddiJaxrHelper.getService(si,
-                            registryService.getBusinessLifeCycleManager()));
+					Service srv = (Service) getRegistryObject(si.getServiceKey(), LifeCycleManager.SERVICE);
+                    col.add(srv);
                 }
 
                 blkRes.setCollection(col);
