@@ -18,6 +18,7 @@ package org.apache.ws.scout.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.xml.registry.JAXRException;
@@ -26,30 +27,38 @@ import javax.xml.registry.infomodel.Association;
 import javax.xml.registry.infomodel.Classification;
 import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
+import javax.xml.registry.infomodel.EmailAddress;
 import javax.xml.registry.infomodel.ExternalIdentifier;
 import javax.xml.registry.infomodel.ExternalLink;
 import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Organization;
+import javax.xml.registry.infomodel.PostalAddress;
 import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
 
 import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
+import org.apache.ws.scout.registry.infomodel.EmailAddressImpl;
 import org.apache.ws.scout.registry.infomodel.ExternalIdentifierImpl;
 import org.apache.ws.scout.registry.infomodel.ExternalLinkImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
 import org.apache.ws.scout.registry.infomodel.PersonNameImpl;
+import org.apache.ws.scout.registry.infomodel.PostalAddressImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
+import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
 import org.apache.ws.scout.uddi.AccessPoint;
+import org.apache.ws.scout.uddi.Address;
+import org.apache.ws.scout.uddi.AddressLine;
 import org.apache.ws.scout.uddi.BindingTemplate;
 import org.apache.ws.scout.uddi.BindingTemplates;
 import org.apache.ws.scout.uddi.BusinessDetail;
@@ -62,12 +71,14 @@ import org.apache.ws.scout.uddi.Contacts;
 import org.apache.ws.scout.uddi.Description;
 import org.apache.ws.scout.uddi.DiscoveryURL;
 import org.apache.ws.scout.uddi.DiscoveryURLs;
+import org.apache.ws.scout.uddi.Email;
 import org.apache.ws.scout.uddi.HostingRedirector;
 import org.apache.ws.scout.uddi.IdentifierBag;
 import org.apache.ws.scout.uddi.InstanceDetails;
 import org.apache.ws.scout.uddi.KeyedReference;
 import org.apache.ws.scout.uddi.Name;
 import org.apache.ws.scout.uddi.OverviewDoc;
+import org.apache.ws.scout.uddi.Phone;
 import org.apache.ws.scout.uddi.ServiceInfo;
 import org.apache.ws.scout.uddi.TModel;
 import org.apache.ws.scout.uddi.TModelDetail;
@@ -141,7 +152,6 @@ public class ScoutUddiJaxrHelper
          User user = new UserImpl(null);
          String pname = contact.getPersonName();
          user.setPersonName(new PersonNameImpl(pname));
-
          if (i == 0)
          {
             org.setPrimaryContact(user);
@@ -223,7 +233,33 @@ public class ScoutUddiJaxrHelper
          String pname = contact.getPersonName();
          user.setType(contact.getUseType());
          user.setPersonName(new PersonNameImpl(pname));
+         
 
+         Email[] emails = (Email[]) contact.getEmailArray();
+         ArrayList<EmailAddress> tempEmails = new ArrayList<EmailAddress>();
+         for (int x = 0; x < emails.length; x++) {
+        	 tempEmails.add(new EmailAddressImpl(emails[x].getStringValue(), null));
+         }
+         user.setEmailAddresses(tempEmails);
+         
+         Address[] addresses = (Address[]) contact.getAddressArray();
+         ArrayList<PostalAddress> tempAddresses = new ArrayList<PostalAddress>();
+         for (int x = 0; x < addresses.length; x++) {
+        	 AddressLine[] alines = addresses[x].getAddressLineArray();
+        	 PostalAddress pa = getPostalAddress(alines);
+        	 tempAddresses.add(pa);
+         }
+         user.setPostalAddresses(tempAddresses);
+         Phone[] phones = contact.getPhoneArray();
+         ArrayList<TelephoneNumber> tempPhones = new ArrayList<TelephoneNumber>();
+         for (int x = 0; x < phones.length; x++) {
+        	 TelephoneNumberImpl tni = new TelephoneNumberImpl();
+        	 tni.setType(phones[x].getUseType());
+        	 tni.setNumber(phones[x].getStringValue());
+        	 tempPhones.add(tni);
+         }
+         user.setTelephoneNumbers(tempPhones);
+         
          if (i == 0)
          {
             org.setPrimaryContact(user);
@@ -254,6 +290,40 @@ public class ScoutUddiJaxrHelper
       return org;
    }
 
+   private static PostalAddress getPostalAddress(AddressLine[] al) throws JAXRException {
+	   PostalAddress pa = new PostalAddressImpl();
+	   HashMap<String, String> hm = new HashMap<String, String>();
+	   for (int y = 0; y < al.length; y++) {
+		   hm.put(al[y].getKeyName(), al[y].getKeyValue());
+	   }        	 
+	   
+	   if (hm.containsKey("STREET_NUMBER")) {
+		   pa.setStreetNumber(hm.get("STREET_NUMBER"));
+	   }
+
+	   if (hm.containsKey("STREET")) {
+		   pa.setStreet(hm.get("STREET"));
+	   }
+	   
+	   if (hm.containsKey("CITY")) {
+		   pa.setCity(hm.get("CITY"));
+	   }
+	   
+	   if (hm.containsKey("COUNTRY")) {
+		   pa.setCountry(hm.get("COUNTRY"));
+	   }
+	
+	   if (hm.containsKey("POSTALCODE")) {
+		   pa.setPostalCode(hm.get("POSTALCODE"));
+	   }
+	   
+	   if (hm.containsKey("STATE")) {
+		   pa.setStateOrProvince(hm.get("STATE"));
+	   }
+	   
+	   return pa;
+   }
+   
    private static InternationalString getIString(String lang, String str, LifeCycleManager blm)
        throws JAXRException
    {
