@@ -68,7 +68,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
             blm = rs.getBusinessLifeCycleManager();
-            ClassificationScheme cScheme = blm.createClassificationScheme("org.jboss.soa.esb.:category", "JBossESB Classification Scheme");
+            ClassificationScheme cScheme = blm.createClassificationScheme("org.jboss.soa.esb.:testcategory", "JBossESB Classification Scheme");
             ArrayList<ClassificationScheme> cSchemes = new ArrayList<ClassificationScheme>();
             cSchemes.add(cScheme);
             BulkResponse br = blm.saveClassificationSchemes(cSchemes);
@@ -89,7 +89,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             Collection<String> findQualifiers = new ArrayList<String>();
             findQualifiers.add(FindQualifier.AND_ALL_KEYS);
             findQualifiers.add(FindQualifier.SORT_BY_NAME_DESC);
-            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:category");
+            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:testcategory");
             Remover remover = new Remover(blm);
             remover.removeClassificationScheme(cScheme);
         } catch (JAXRException je) {
@@ -156,7 +156,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             Collection<String> findQualifiers = new ArrayList<String>();
             findQualifiers.add(FindQualifier.AND_ALL_KEYS);
             findQualifiers.add(FindQualifier.SORT_BY_NAME_DESC);
-            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:category");
+            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:testcategory");
             Classification classification = blm.createClassification(cScheme, "category", "registry");
             service.addClassification(classification);
             organization.addService(service);
@@ -200,7 +200,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             Collection<String> findQualifiers = new ArrayList<String>();
             findQualifiers.add(FindQualifier.AND_ALL_KEYS);
             findQualifiers.add(FindQualifier.SORT_BY_NAME_DESC);
-            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:category");
+            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:testcategory");
             Classification classification = blm.createClassification(cScheme, "category", "registry");
             service.addClassification(classification);
            

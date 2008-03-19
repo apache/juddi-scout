@@ -125,7 +125,7 @@ public class Finder
         findQualifiers.add(FindQualifier.AND_ALL_KEYS);
         findQualifiers.add(FindQualifier.EXACT_NAME_MATCH);
         findQualifiers.add(FindQualifier.SORT_BY_NAME_DESC);
-        ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:category");
+        ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:testcategory");
         Collection<Classification> classifications = new ArrayList<Classification>();
         Classification classification = 
             blm.createClassification( 
