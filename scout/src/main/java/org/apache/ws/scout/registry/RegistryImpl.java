@@ -654,7 +654,9 @@ public class RegistryImpl implements IRegistry {
 
 		if (tModelBag != null) {
 			request.setTModelBag(tModelBag);
-		}
+		} else {
+			request.setTModelBag(TModelBag.Factory.newInstance());
+ 		}
 
 		if (findQualifiers != null) {
 			request.setFindQualifiers(findQualifiers);
