@@ -151,8 +151,12 @@ public class ScoutJaxrUddiHelper
 	public static BindingTemplate getBindingTemplateFromJAXRSB(
 			ServiceBinding serve) throws JAXRException {
 		BindingTemplate bt = BindingTemplate.Factory.newInstance();
-		if (serve.getKey() != null && serve.getKey().getId() != null)
+		if (serve.getKey() != null && serve.getKey().getId() != null) {
 			bt.setBindingKey(serve.getKey().getId());
+		} else {
+			bt.setBindingKey("");
+		}
+	
 		try {
 			// Set Access URI
             String accessuri = serve.getAccessURI();
