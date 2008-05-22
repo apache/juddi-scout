@@ -240,7 +240,7 @@ public class BusinessLifeCyleManagerlTest extends BaseTestCase
             sOrg.setKey(iterator.next());
             tOrg.setKey(iterator.next());
             //creating the RelatedTo Association between these two organizations
-            Concept type = bqm.findConceptByPath("AssociationType/RelatedTo");
+            Concept type = bqm.findConceptByPath("/AssociationType/RelatedTo");
             Association association = blm.createAssociation(tOrg, type);
             sOrg.addAssociation(association);
             ArrayList<Association> associations = new ArrayList<Association>();
@@ -259,6 +259,7 @@ public class BusinessLifeCyleManagerlTest extends BaseTestCase
            
         } catch (JAXRException je) {
             fail(je.getMessage());
+	    je.printStackTrace();
         }
     }
     
