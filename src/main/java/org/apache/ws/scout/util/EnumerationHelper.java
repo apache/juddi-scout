@@ -43,7 +43,9 @@ import org.apache.ws.scout.registry.infomodel.KeyImpl;
 public class EnumerationHelper
 {
     private static Log log = LogFactory.getLog(EnumerationHelper.class);
-    
+   
+
+    private final static String UDDI_ORG_TYPES		      = "C1ACF26D-9672-4404-9D70-39B756E62AB4"; 
     private final static String OBJECT_TYPE                   = "ObjectType";
     private final static String ASSOCIATION_TYPE              = "AssociationType";
     private final static String URL_TYPE                      = "URLType";
@@ -117,7 +119,7 @@ public class EnumerationHelper
     private static  Concept createConcept(String firstToken, String secondToken)
             throws JAXRException, IllegalArgumentException
     {
-        if (!TYPES_LIST.contains(firstToken)) throw new IllegalArgumentException("Exspected the path to " +
+        if (!TYPES_LIST.contains(firstToken)) throw new IllegalArgumentException("Expected the path to " +
                 "start with one of " + TYPES);
         
         //get the predefined classificationscheme
@@ -126,13 +128,13 @@ public class EnumerationHelper
         cs.setKey(new KeyImpl(firstToken));
 
         ArrayList<String> conceptStrings = typesMap.get(firstToken);
-        if (!conceptStrings.contains(secondToken)) throw new IllegalArgumentException("Exspected the path to " +
+        if (!conceptStrings.contains(secondToken)) throw new IllegalArgumentException("Expected the path to " +
                 "end with one of " + conceptStrings.toArray());
                 
         Concept concept = new ConceptImpl(null);
         concept.setName(new InternationalStringImpl(secondToken.toLowerCase()));
         concept.setValue(secondToken);
-        concept.setKey(new KeyImpl(firstToken + "/" + secondToken));
+        concept.setKey(new KeyImpl(UDDI_ORG_TYPES));
         ((ConceptImpl)concept).setScheme(((ClassificationSchemeImpl)cs));
         return concept;
     }
