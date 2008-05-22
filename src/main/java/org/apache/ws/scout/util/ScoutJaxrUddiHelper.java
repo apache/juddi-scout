@@ -391,9 +391,10 @@ public class ScoutJaxrUddiHelper
 
             Key k = scheme.getKey();
 
-			if (k != null && k.getId() != null) {
+            if (k != null && k.getId() != null) {
                 tm.setTModelKey(k.getId());
-
+            } else {
+                tm.setTModelKey("");
             }
 
             /*
