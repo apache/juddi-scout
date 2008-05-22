@@ -234,8 +234,8 @@ public class ScoutJaxrUddiHelper
                         }
 					}
               }
-              bt.setTModelInstanceDetails(tid);
             }
+			bt.setTModelInstanceDetails(tid);
 			log.debug("BindingTemplate=" + bt.toString());
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
