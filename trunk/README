@@ -1,0 +1,150 @@
+-- THIS DOCUMENT IS A WORK IN PROGRESS --
+
+Welcome to the Apache Scout Project!
+
+INTRODUCTION
+
+  While this effort can be considered a project in and of
+  itself it will have a dependency on the jUDDI Registry
+  project.  This dependency is covered in the "RELATIONSHIP 
+  WITH THE jUDDI PROJECT" section below.
+
+
+PROJECT GOALS
+
+  The purpose of the JAXR specification is to give Java/J2EE 
+  developers a common standard API to access various web 
+  services registries. This is simiar in function to the way 
+  the JDBC API provides a common API for accessing different 
+  database products.
+
+  The JAXR specification describes two types of providers 
+  each offerring different levels of support for interacting 
+  with the two popular registry specifications in use today,
+  UDDI and ebXML.
+  
+  A type 0 providers will offer support for accessing UDDI 
+  registries and type 1 providers support access to both UDDI 
+  AND ebXML registries. The goal of this project is to 
+  implement a type 0 provider.
+
+
+RELATIONSHIP TO THE JUDDI REGISTRY PROJECT
+
+  As described in the PROJECT GOALS section above, the 
+  JAXR specification indicates that a type 0 provider is 
+  used to support interaction with UDDI registries. 
+  
+  A large portion of the development effort for this 
+  project will center around building a bridge between 
+  the standard JAXR API interface (jaxr.jar) and a UDDI 
+  client library such as UDDI4j.
+  
+  This is where the depenedency on jUDDI comes into play. 
+  It's a little known fact that jUDDI is not only a UDDI 
+  Registry but can also act as a UDDI client. 
+  
+  Since the jUDDI Registry must have the ability to recieve 
+  SOAP requests, deserialize them into Java objects and 
+  then serialize and return SOAP responses we realized
+  that we could leverage this existing functionality to
+  quickly produce a UDDI client which we did.
+  
+  A significant side-benefit of using the jUDDI client
+  in our JAXR provider is that any issues or bugs 
+  discovered and fixed while using the jUDDI Proxy will 
+  directly improve the quality of the jUDDI Registry.
+  
+
+BUILDING THE JUDDI JAXR PROVIDER
+
+  Apache Scout is a maven project that is built using the
+  multiproject plugin. All dependencies are included or
+  are downloaded during the build. The quickest way to
+  start is, in the root directory, to type
+
+  mvn package
+
+  This will build all of the modules and install them in
+  your local maven repository.
+
+  To clean up a build, use
+
+  mvn clean
+
+SUPPORT
+
+  You'll find documentation for this project in the docs/ 
+  directory.
+
+  Also, read the RELEASE NOTES below in for details on the 
+  current release.
+
+  Thanks from the Scout development team for downloading 
+  the package; help us make it better by sending comments 
+  to scout-dev@ws.apache.org. Subscribe to this list by 
+  sending a message to the following email address:
+  
+    scout-dev-subscribe@ws.apache.org
+  
+  
+RELEASE NOTES
+                          
+  Release Notes - Scout - Version 1.0rc1
+
+** Bug
+    * [SCOUT-23] - Classification are not saved.
+    * [SCOUT-25] - FindBinding does not work + patch
+    * [SCOUT-26] - Removing a service does not remove the service + patch
+    * [SCOUT-28] - XmlBeans conversion compiles but is non-functional
+    * [SCOUT-29] - AuthTokenImpl.getAuthInfo() doesn't seem to work correctly
+    * [SCOUT-30] - Classifications are ignored when preforming finds.
+    * [SCOUT-31] - Fix scout maven 1 build issue so that the dependency jars can be downloaded automatically
+    * [SCOUT-32] - Fix NPE at getConcept
+    * [SCOUT-33] - Should throw exception when level 1 feature is accessed in RegistryEntryImpl.java
+    * [SCOUT-34] - DiscoveryURLs aren't constructed correctly when there is more than 1 discoveryURLs for a businessEntity
+    * [SCOUT-35] - Should use hashset for the collection in BulkResponseImpl to not allow duplicate 
+    * [SCOUT-36] - minor update to get scout maven 2 build pass the error in download juddi snapshot
+    * [SCOUT-40] - InternationalString is not handled correctly
+    * [SCOUT-41] - Results not returned in the given order
+    * [SCOUT-44] - port fixes for scout 8 to trunk
+    * [SCOUT-45] - port scout 19 to trunk
+    * [SCOUT-46] - port scout 10 to trunk
+
+** Improvement
+    * [SCOUT-9] - Separation of Apache Scout and jUDDI
+
+** New Feature
+    * [SCOUT-18] - Embedded mode execution
+
+** Task
+    * [SCOUT-27] - Update Tests with embedded juddi setup
+    * [SCOUT-37] - Cleanup code to get rid of warnings
+    * [SCOUT-38] - Produce website from the maven2 build
+    * [SCOUT-39] - Integrate all sample code in unittests
+    * [SCOUT-42] - apply fixes on 0.7 branches to the trunk
+
+
+Release Notes - Scout - Version v0.7
+
+** Bug
+    * [SCOUT-4] - Level 1 methods in PersonName must throw UnsupportedCapabilityException
+    * [SCOUT-6] - Null pointer exception when creating an association
+    * [SCOUT-7] - NullPointerException when a BusinessEntity does not have services
+    * [SCOUT-8] - Unable to use InternationalString in BusinessQueryManager.findOrganizations() (ClassCastException)
+    * [SCOUT-10] - Publish requests to JUDDI do not include ServiceBinding information.
+    * [SCOUT-15] - RegistryEntry should throw UnsupportedCapabilityException for level 0
+    * [SCOUT-19] - ServiceBinding.getSpecificationLinks should not return null
+
+** Improvement
+    * [SCOUT-11] - JAXR Classifications are not processed
+
+** Task
+    * [SCOUT-1] - Implement saveXXX Methods in BusinessLifeCycleManager
+    * [SCOUT-2] - Implement deleteXXX methods in BusinessLifeCycleManager
+    * [SCOUT-3] - Implement findXXX methods in BusinessQueryManager
+    * [SCOUT-5] - Predefined Enumerations
+    * [SCOUT-13] - Better Logging capabilities
+    * [SCOUT-16] - Maven2 migration
+
+  
