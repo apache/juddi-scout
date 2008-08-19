@@ -5,7 +5,7 @@
   <artifactId>scout-parent</artifactId>
   <packaging>pom</packaging>
   <name>Scout</name>
-  <version>SNAPSHOT</version>
+  <version>1.0rc2</version>
   <description>Apache Scout is an implementation of the JSR 93 - JavaTM API for
 		XML Registries 1.0 (JAXR)</description>
   <url>http://ws.apache.org/scout/</url>
@@ -70,11 +70,11 @@
       <organization></organization>
     </developer>
     <developer>
-      <id>dbhole</id>
-      <name>Deepack Bhole</name>
-      <email>dbhole@apache.org</email>
-      <organization></organization>
-    </developer>
+       <id>tcunning</id>
+       <name>Tom Cunningham</name>
+       <email>tcunning@apache.org</email>
+       <organization></organization>
+     </developer>
   </developers>
   <contributors>
     <contributor>
@@ -100,6 +100,11 @@
     <contributor>
       <name>Geir Magnusson Jr.</name>
       <email>geirm@apache.org</email>
+      <organization></organization>
+    </contributor>
+    <contributor>
+      <name>Deepack Bhole</name>
+      <email>dbhole@apache.org</email>
       <organization></organization>
     </contributor>
   </contributors>
