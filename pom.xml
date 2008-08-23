@@ -70,13 +70,19 @@
       <organization></organization>
     </developer>
     <developer>
-      <id>dbhole</id>
-      <name>Deepack Bhole</name>
-      <email>dbhole@apache.org</email>
+      <id>tcunning</id>
+      <name>Tom Cunningham</name>
+      <email>tcunning@apache.org</email>
       <organization></organization>
     </developer>
   </developers>
   <contributors>
+    <contributor>
+      <id>dbhole</id>
+      <name>Deepack Bhole</name>
+      <email>dbhole@apache.org</email>
+      <organization></organization>
+    </contributor>
     <contributor>
       <name>Steve Viens</name>
       <email>sviens@apache.org</email>
