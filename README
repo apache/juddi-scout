@@ -89,6 +89,22 @@ SUPPORT
   
   
 RELEASE NOTES
+
+  Release Notes - Scout - Version 1.0rc2
+** Bug
+    * [SCOUT-47] - tmodel_instance_info row not created
+    * [SCOUT-48] - ServiceBinding objects do not have their SpecificationLink objects saved in UDDI.
+    * [SCOUT-50] - Classifications array should be of size 0 if none are found
+    * [SCOUT-52] - Refactor the unittests to make it easier to write and maintain them
+    * [SCOUT-53] - Code to create associations is missing.
+    * [SCOUT-54] - When querying for organizations (JAXR), the email, phone number, and postal address collections of the primary contact are empty although there is data in them
+    * [SCOUT-56] - Service descriptions and corresponding service bindings are not returned when querying by service	
+    * [SCOUT-63] - Set TModelInstanceDetails in getBindingTemplateFromJAXRSB even if slcol is null or empty
+
+** Improvement
+
+** New Feature
+    * [SCOUT-51] - Test scout against other UDDIs (besides just jUDDI)
                           
   Release Notes - Scout - Version 1.0rc1
 
