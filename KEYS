@@ -26,10 +26,12 @@ eixaaKDXtFy0pOB1L9AE1T6mwwGbGT6TfldtIr810bTMUEohIWrM1aIrQVT0RMAQ
 vqUAn2qE/xPloxPBFN0XdZeTBdf5DOgQAJ4/7DX2/YlQ3iM4ymO22FuBhKhuDQ==
 =R+XP
 -----END PGP PUBLIC KEY BLOCK-----
--------------------------------
 pub   1024D/9242E99E 2008-08-27 [expires: 2009-08-27]
 uid                  Kurt T Stam (Apache Developer) <kstam@apache.org>
+sig 3        9242E99E 2008-08-27  Kurt T Stam (Apache Developer) <kstam@apache.org>
 sub   2048g/16A1F7D9 2008-08-27 [expires: 2009-08-27]
+sig          9242E99E 2008-08-27  Kurt T Stam (Apache Developer) <kstam@apache.org>
+
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.8 (Darwin)
 
