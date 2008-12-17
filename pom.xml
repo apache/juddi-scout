@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>org.apache.ws.scout</groupId>
 			<artifactId>jaxr-api</artifactId>
-			<version>SNAPSHOT</version>
+			<version>1.0.SNAPSHOT</version>
 		</dependency>
 
 		<!-- external JARs -->
@@ -81,7 +81,7 @@
 									classgendir="${compiled.classes.dir}"
 									srcgendir="${schema.generated.src.dir}"
 									classpathref="maven.runtime.classpath">
-									<fileset dir="${basedir}/../etc/"
+									<fileset dir="src/main/resources"
 										includes="uddi_v2.xsd,uddi_v2.xsdconfig" />
 								</xmlbean>
 							</tasks>
