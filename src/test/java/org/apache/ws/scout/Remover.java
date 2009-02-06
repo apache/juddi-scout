@@ -77,7 +77,7 @@ public class Remover extends BaseTestCase
 
         Collection<Key> keys = new ArrayList<Key>();
         keys.add(key);
-        BulkResponse response = blm.deleteConcepts(keys);
+        BulkResponse response = blm.deleteClassificationSchemes(keys);
         
         Collection exceptions = response.getExceptions();
         if (exceptions == null) {
@@ -129,7 +129,7 @@ public class Remover extends BaseTestCase
 
         Collection<Key> keys = new ArrayList<Key>();
         keys.add(key);
-        BulkResponse response = blm.deleteConcepts(keys);
+        BulkResponse response = blm.deleteServices(keys);
         
         Collection exceptions = response.getExceptions();
         if (exceptions == null) {
@@ -155,7 +155,7 @@ public class Remover extends BaseTestCase
 
         Collection<Key> keys = new ArrayList<Key>();
         keys.add(key);
-        BulkResponse response = blm.deleteConcepts(keys);
+        BulkResponse response = blm.deleteServiceBindings(keys);
         
         Collection exceptions = response.getExceptions();
         if (exceptions == null) {
