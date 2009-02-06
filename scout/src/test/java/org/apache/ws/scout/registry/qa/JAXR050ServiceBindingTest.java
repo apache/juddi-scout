@@ -110,8 +110,6 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
             deleteTempOrg(tmpOrgKey);
             // No find service binding.. search by name is not currently supported. 
             
-            deleteServiceBinding(sbKey);
-            
         } catch (JAXRException e)
         {
             e.printStackTrace();
