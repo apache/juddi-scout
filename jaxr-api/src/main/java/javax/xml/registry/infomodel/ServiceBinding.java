@@ -32,13 +32,13 @@ import javax.xml.registry.JAXRException;
 public interface ServiceBinding extends RegistryObject, URIValidator {
     void addSpecificationLink(SpecificationLink specificationLink) throws JAXRException;
 
-    void addSpecificationLinks(Collection specificationLinks) throws JAXRException;
+    void addSpecificationLinks(Collection<SpecificationLink> specificationLinks) throws JAXRException;
 
     String getAccessURI() throws JAXRException;
 
     Service getService() throws JAXRException;
 
-    Collection getSpecificationLinks() throws JAXRException;
+    Collection<SpecificationLink> getSpecificationLinks() throws JAXRException;
 
     ServiceBinding getTargetBinding() throws JAXRException;
 

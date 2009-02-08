@@ -197,11 +197,11 @@ public class ScoutJaxrUddiHelper
             }
 
 			// SpecificationLink
-           Collection slcol = serve.getSpecificationLinks();
+           Collection<SpecificationLink> slcol = serve.getSpecificationLinks();
 			TModelInstanceDetails tid = TModelInstanceDetails.Factory
 					.newInstance();
 			if (slcol != null && !slcol.isEmpty()) {
-              Iterator iter = slcol.iterator();
+              Iterator<SpecificationLink> iter = slcol.iterator();
 				while (iter.hasNext()) {
 					SpecificationLink slink = (SpecificationLink) iter.next();
 
@@ -482,7 +482,7 @@ public class ScoutJaxrUddiHelper
                 }
             }
 //          External Links 
-            Collection externalLinks = scheme.getExternalLinks(); 
+            Collection<ExternalLink> externalLinks = scheme.getExternalLinks(); 
             if(externalLinks != null && externalLinks.size() > 0)
             {
                 tm.setOverviewDoc(getOverviewDocFromExternalLink((ExternalLink)externalLinks.iterator().next()));
@@ -547,12 +547,12 @@ public class ScoutJaxrUddiHelper
 						.getFullName());
 			}
 
-            Collection s = org.getServices();
+            Collection<Service> s = org.getServices();
             log.debug("?Org has services=" + s.isEmpty());
 
 			barr = new BusinessService[s.size()];
 
-            Iterator iter = s.iterator();
+            Iterator<Service> iter = s.iterator();
 			int barrPos = 0;
 			while (iter.hasNext()) {
 				BusinessService bs = ScoutJaxrUddiHelper
@@ -572,7 +572,7 @@ public class ScoutJaxrUddiHelper
 			Contact[] carr = new Contact[0];
 
             User primaryContact = org.getPrimaryContact();
-            Collection users = org.getUsers();
+            Collection<User> users = org.getUsers();
 
             // Expand array to necessary size only (xmlbeans does not like
             // null items in cases like this)
@@ -584,7 +584,7 @@ public class ScoutJaxrUddiHelper
             }
 
             // TODO: Clean this up and make it more efficient
-            Iterator it = users.iterator();
+            Iterator<User> it = users.iterator();
             while (it.hasNext()) {
                 User u = (User) it.next();
                 if (u != primaryContact) {
@@ -622,7 +622,7 @@ public class ScoutJaxrUddiHelper
             biz.setBusinessServices(bss);
 
             // External Links
-            Iterator exiter = org.getExternalLinks().iterator();
+            Iterator<ExternalLink> exiter = org.getExternalLinks().iterator();
             DiscoveryURLs emptyDUs = null;
             boolean first = true;
             while (exiter.hasNext()) {
@@ -680,11 +680,11 @@ public class ScoutJaxrUddiHelper
             ct.setUseType(user.getType());
 			}
 			// Postal Address
-            Collection postc = user.getPostalAddresses();
+            Collection<PostalAddress> postc = user.getPostalAddresses();
 
 			addarr = new Address[postc.size()];
 
-            Iterator iterator = postc.iterator();
+            Iterator<PostalAddress> iterator = postc.iterator();
 			int addarrPos = 0;
 			while (iterator.hasNext()) {
                 PostalAddress post = (PostalAddress) iterator.next();

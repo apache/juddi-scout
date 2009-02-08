@@ -39,6 +39,7 @@ import javax.xml.registry.infomodel.SpecificationLink;
 import junit.framework.JUnit4TestAdapter;
 
 import org.apache.ws.scout.BaseTestCase;
+import org.apache.ws.scout.Finder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,6 +93,8 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
         {
             RegistryService rs = connection.getRegistryService();
             blm = rs.getBusinessLifeCycleManager();
+            bqm = rs.getBusinessQueryManager();
+            Finder finder = new Finder(bqm);
 
             System.out.println("\nCreating temporary organization...\n");
             Organization tmpOrg = createTempOrg();
@@ -103,6 +106,10 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
             
             System.out.println("\nCreating service binding...\n");
             Key sbKey = createServiceBinding(tmpSvc);
+            
+            //find serviceBinding
+            Collection<ServiceBinding> serviceBindings2 = finder.findServiceBindings(tmpSvcKey );
+            ServiceBinding serviceBinding2 = serviceBindings2.iterator().next();
             
             // All created ... now try to delete.
             deleteServiceBinding(sbKey);

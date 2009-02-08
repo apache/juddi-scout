@@ -31,25 +31,25 @@ import javax.xml.registry.JAXRException;
  * @version $Revision$ $Date$
  */
 public interface User extends RegistryObject {
-    Collection getEmailAddresses() throws JAXRException;
+    Collection<EmailAddress> getEmailAddresses() throws JAXRException;
 
     Organization getOrganization() throws JAXRException;
 
     PersonName getPersonName() throws JAXRException;
 
-    Collection getPostalAddresses() throws JAXRException;
+    Collection<PostalAddress> getPostalAddresses() throws JAXRException;
 
-    Collection getTelephoneNumbers(String phoneType) throws JAXRException;
+    Collection<TelephoneNumber> getTelephoneNumbers(String phoneType) throws JAXRException;
 
     String getType() throws JAXRException;
 
     URL getUrl() throws JAXRException;
 
-    void setEmailAddresses(Collection addresses) throws JAXRException;
+    void setEmailAddresses(Collection<EmailAddress> addresses) throws JAXRException;
 
     void setPersonName(PersonName personName) throws JAXRException;
 
-    void setPostalAddresses(Collection addresses) throws JAXRException;
+    void setPostalAddresses(Collection<PostalAddress> addresses) throws JAXRException;
 
     void setTelephoneNumbers(Collection<TelephoneNumber> phoneNumbers) throws JAXRException;
 
