@@ -434,19 +434,21 @@ public class ScoutUddiJaxrHelper
       for (int i = 0; tmodelInstanceInfoArray != null && i < tmodelInstanceInfoArray.length; i++)
       {
          TModelInstanceInfo info = (TModelInstanceInfo)tmodelInstanceInfoArray[i];
-         InstanceDetails idetails = info.getInstanceDetails();
-         Collection<ExternalLink> elinks = getExternalLinks(idetails.getOverviewDoc(),lcm);
-         SpecificationLink slink = new SpecificationLinkImpl(lcm);
-         slink.addExternalLinks(elinks);
-         serviceBinding.addSpecificationLink(slink); 
-         
-         ConceptImpl c = new ConceptImpl(lcm);
-         c.setExternalLinks(elinks);
-         c.setKey(lcm.createKey(info.getTModelKey())); 
-         c.setName(lcm.createInternationalString(idetails.getInstanceParms()));
-         c.setValue(idetails.getInstanceParms());
-         
-         slink.setSpecificationObject(c);
+         if (info!=null && info.getInstanceDetails()!=null) {
+	         InstanceDetails idetails = info.getInstanceDetails();
+	         Collection<ExternalLink> elinks = getExternalLinks(idetails.getOverviewDoc(),lcm);
+	         SpecificationLink slink = new SpecificationLinkImpl(lcm);
+	         slink.addExternalLinks(elinks);
+	         serviceBinding.addSpecificationLink(slink); 
+	         
+	         ConceptImpl c = new ConceptImpl(lcm);
+	         c.setExternalLinks(elinks);
+	         c.setKey(lcm.createKey(info.getTModelKey())); 
+	         c.setName(lcm.createInternationalString(idetails.getInstanceParms()));
+	         c.setValue(idetails.getInstanceParms());
+	         
+	         slink.setSpecificationObject(c);
+         }
       }
       
       HostingRedirector hr = bs.getHostingRedirector();
