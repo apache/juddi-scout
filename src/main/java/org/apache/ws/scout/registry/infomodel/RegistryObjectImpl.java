@@ -203,7 +203,7 @@ public class RegistryObjectImpl extends ExtensibleObjectImpl implements Registry
         ((ExternalIdentifierImpl) externalIdentifier).setRegistryObject(this);
     }
 
-    public void addExternalIdentifiers(Collection collection)
+    public void addExternalIdentifiers(Collection<ExternalIdentifier> collection)
     {
         if (collection!=null) {
             for (Iterator i = collection.iterator(); i.hasNext();)

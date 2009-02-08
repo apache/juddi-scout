@@ -36,6 +36,7 @@ import javax.xml.registry.infomodel.PostalAddress;
 import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.SpecificationLink;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
 
@@ -433,10 +434,10 @@ public class ScoutUddiJaxrHelper
       for (int i = 0; tmodelInstanceInfoArray != null && i < tmodelInstanceInfoArray.length; i++)
       {
          TModelInstanceInfo info = (TModelInstanceInfo)tmodelInstanceInfoArray[i];
-         InstanceDetails idetails = info.getInstanceDetails(); 
+         InstanceDetails idetails = info.getInstanceDetails();
          Collection<ExternalLink> elinks = getExternalLinks(idetails.getOverviewDoc(),lcm);
-         SpecificationLinkImpl slink = new SpecificationLinkImpl(lcm);
-         slink.addExternalIdentifiers(elinks);
+         SpecificationLink slink = new SpecificationLinkImpl(lcm);
+         slink.addExternalLinks(elinks);
          serviceBinding.addSpecificationLink(slink); 
          
          ConceptImpl c = new ConceptImpl(lcm);
