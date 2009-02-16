@@ -16,6 +16,7 @@
  */
 package org.apache.ws.scout.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -68,6 +69,7 @@ import org.apache.ws.scout.uddi.OverviewDoc;
 import org.apache.ws.scout.uddi.Phone;
 import org.apache.ws.scout.uddi.PublisherAssertion;
 import org.apache.ws.scout.uddi.TModel;
+import org.apache.ws.scout.uddi.TModelBag;
 import org.apache.ws.scout.uddi.TModelInstanceDetails;
 import org.apache.ws.scout.uddi.TModelInstanceInfo;
 import org.apache.ws.scout.uddi.URLType;
@@ -843,6 +845,31 @@ public class ScoutJaxrUddiHelper
 			throw new JAXRException("Apache JAXR Impl:", ud);
 		}
     }
+
+	public static TModelBag getTModelBagFromSpecifications(Collection specifications) throws JAXRException {
+    	try {
+			if (specifications == null || specifications.size()==0)
+				return null;
+    		
+    		// Classifications
+			TModelBag tbag = TModelBag.Factory.newInstance();
+			Iterator speciter = specifications.iterator();
+			while (speciter.hasNext()) {
+				SpecificationLink specification = (SpecificationLink) speciter.next();
+				if (specification.getSpecificationObject() != null) {
+					RegistryObject ro = specification.getSpecificationObject();
+					if (ro.getKey() != null) {
+						Key key = ro.getKey();
+						tbag.addTModelKey(key.toString());
+					}
+				}
+			}
+			return tbag;
+    	} catch (Exception ud) {
+			throw new JAXRException("Apache JAXR Impl:", ud);
+		}
+    }
+
 	
 	/**
      * Adds the objects identifiers from JAXR's external identifier collection
