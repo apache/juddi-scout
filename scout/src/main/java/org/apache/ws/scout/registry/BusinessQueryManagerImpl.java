@@ -578,7 +578,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
  
             BindingDetail l = iRegistry.findBinding(serviceKey.getId(),
                     ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
-            		null,
+            		ScoutJaxrUddiHelper.getTModelBagFromSpecifications(specifications),
             		juddiFindQualifiers,registryService.getMaxRows());
 
             /*
