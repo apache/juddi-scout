@@ -697,7 +697,11 @@ public class RegistryImpl implements IRegistry {
 
 		if (tModelBag != null) {
 			request.setTModelBag(tModelBag);
-		}
+		} else {
+			TModelBag tmb = TModelBag.Factory.newInstance();
+			tmb.setTModelKeyArray(new String[1]);
+			request.setTModelBag(tmb);
+ 		}
 
 		if (findQualifiers != null) {
 			request.setFindQualifiers(findQualifiers);
@@ -1032,7 +1036,7 @@ public class RegistryImpl implements IRegistry {
 		if (bindingArray != null) {
 			request.setBindingTemplateArray(bindingArray);
 		}
-
+		
         BindingDetail bd;
         XmlObject o = execute(doc, this.getPublishURI()).changeType(
                 BindingDetailDocument.type);
