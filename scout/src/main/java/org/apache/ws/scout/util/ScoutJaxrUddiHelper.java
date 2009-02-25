@@ -178,6 +178,10 @@ public class ScoutJaxrUddiHelper
                     red.setBindingKey("");
                 }
                 bt.setHostingRedirector(red);
+            } else {
+            	if (bt.getAccessPoint() == null) {
+            		bt.setAccessPoint(AccessPoint.Factory.newInstance());
+            	}
             }
 			// TODO:Need to look further at the mapping b/w BindingTemplate and
 			// Jaxr ServiceBinding
