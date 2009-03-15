@@ -696,9 +696,14 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		if (tModelBag != null) {
+			if (tModelBag.getTModelKeyArray().length == 0) {
+				tModelBag.setTModelKeyArray(new String[1]);
+			}
 			request.setTModelBag(tModelBag);
 		} else {
-			request.setTModelBag(TModelBag.Factory.newInstance());
+			TModelBag tmb = TModelBag.Factory.newInstance();
+			tmb.setTModelKeyArray(new String[1]);
+			request.setTModelBag(tmb);
 		}
 
 		if (findQualifiers != null) {

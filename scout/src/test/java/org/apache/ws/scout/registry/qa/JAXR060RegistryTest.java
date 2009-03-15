@@ -209,12 +209,14 @@ public class JAXR060RegistryTest extends BaseTestCase
             BulkResponse br2  = blm.saveServiceBindings(serviceBindings); //Save one more
             assertEquals(BulkResponse.STATUS_SUCCESS, br2.getStatus());
            
-            //Delete one binding
+            //Delete one binding            
             Collection<ServiceBinding> serviceBindings2 = finder.findServiceBindings(service.getKey());
-            ServiceBinding serviceBinding2 = serviceBindings2.iterator().next();
-            Remover remover = new Remover(blm);
-            remover.removeServiceBinding(serviceBinding2);
-            
+            if ((serviceBindings2 != null) && (serviceBindings2.iterator() != null) 
+            		&& (serviceBindings2.iterator().hasNext())) {
+            	ServiceBinding serviceBinding2 = serviceBindings2.iterator().next();
+            	Remover remover = new Remover(blm);
+            	remover.removeServiceBinding(serviceBinding2);
+            }
 		} catch (JAXRException re) {
 			fail(re.getMessage());
 		}
