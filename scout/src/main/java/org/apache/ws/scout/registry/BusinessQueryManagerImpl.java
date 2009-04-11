@@ -48,6 +48,7 @@ import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
+import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.uddi.AssertionStatusItem;
 import org.apache.ws.scout.uddi.AssertionStatusReport;
 import org.apache.ws.scout.uddi.AuthToken;
@@ -780,19 +781,8 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     protected Service getServiceFromBusinessService(BusinessService bs, LifeCycleManager lcm)
         throws JAXRException {
 
-        Service service  = ScoutUddiJaxrHelper.getService(bs, lcm);
-
-        /*
-         * now get the Organization if we can
-         */
-
-        String busKey = bs.getBusinessKey();
-
-        if (busKey != null) {
-            Organization o = (Organization) getRegistryObject(busKey,
-                    LifeCycleManager.ORGANIZATION);
-            service.setProvidingOrganization(o);
-        }
+        ServiceImpl service  = (ServiceImpl) ScoutUddiJaxrHelper.getService(bs, lcm);
+        service.setSubmittingOrganizationKey(bs.getBusinessKey());
 
         return service;
     }
@@ -914,7 +904,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     for (int i=0; a != null && i < a.length; i++) {
 
                         Service service = getServiceFromBusinessService(a[i], lcm);
-
+                        
                         col.add(service);
                     }
                 }
