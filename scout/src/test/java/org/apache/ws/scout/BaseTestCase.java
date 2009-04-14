@@ -77,6 +77,13 @@ public class BaseTestCase
                 passwd = scoutProperties.getProperty("password");
             }
             
+            if (scoutProperties.getProperty("userid2")!=null) {
+                userid = scoutProperties.getProperty("userid2");
+            }
+            if (scoutProperties.getProperty("password2")!=null) {
+                passwd = scoutProperties.getProperty("password2");
+            }
+            
             // Define connection configuration properties
             // To query, you need only the query URL
             Properties props = new Properties();
@@ -159,6 +166,4 @@ public class BaseTestCase
             e.printStackTrace();
         }
     }
-   
-
 }
