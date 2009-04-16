@@ -57,6 +57,7 @@ import org.apache.ws.scout.uddi.BindingTemplate;
 import org.apache.ws.scout.uddi.BusinessDetail;
 import org.apache.ws.scout.uddi.BusinessEntity;
 import org.apache.ws.scout.uddi.BusinessInfo;
+import org.apache.ws.scout.uddi.BusinessInfos;
 import org.apache.ws.scout.uddi.BusinessList;
 import org.apache.ws.scout.uddi.BusinessService;
 import org.apache.ws.scout.uddi.FindQualifiers;
@@ -64,6 +65,7 @@ import org.apache.ws.scout.uddi.KeyedReference;
 import org.apache.ws.scout.uddi.Name;
 import org.apache.ws.scout.uddi.PublisherAssertion;
 import org.apache.ws.scout.uddi.PublisherAssertions;
+import org.apache.ws.scout.uddi.RegisteredInfo;
 import org.apache.ws.scout.uddi.ServiceDetail;
 import org.apache.ws.scout.uddi.ServiceInfo;
 import org.apache.ws.scout.uddi.ServiceInfos;
@@ -718,8 +720,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
-        else if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType)) {
-
+        else if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType)) {        	
             try
             {
                 BusinessDetail orgdetail = registry.getBusinessDetail(id);
@@ -729,6 +730,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 e.printStackTrace();
                 throw new JAXRException(e.getLocalizedMessage());
             }
+
         }
         else if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType)) {
 
@@ -861,18 +863,27 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         }
         else if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(objectType))
         {
-            //Get the Organization from the uddi registry
+        	ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
+            AuthToken auth = this.getAuthToken(con,registry);
+        	
             try
             {
-                BusinessDetail orgdetail = registry.getBusinessDetail(keys);
-                BusinessEntity[] bizarr = orgdetail.getBusinessEntityArray();
-                for (int i = 0; bizarr != null && i < bizarr.length; i++)
-                {
-                    col.add(ScoutUddiJaxrHelper.getOrganization(bizarr[i], lcm));
-                }
-            } catch (RegistryException e)
-            {
-                throw new JAXRException(e.getLocalizedMessage());
+            	RegisteredInfo ri = registry.getRegisteredInfo(auth.getAuthInfo());
+            	BusinessInfos infos = null;
+            	BusinessInfo[] biarr = null;
+            	
+            	if (ri != null) infos = ri.getBusinessInfos();
+            	if (infos != null) biarr = infos.getBusinessInfoArray();
+            	            	
+            	for (int i = 0; i < biarr.length; i++) {
+            		BusinessInfo info = biarr[i];
+            		BusinessDetail detail = registry.getBusinessDetail(info.getBusinessKey());
+
+                    col.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
+            	}
+            } catch (RegistryException e) {
+                    e.printStackTrace();
+                    throw new JAXRException(e.getLocalizedMessage());
             }
         }
         else if (LifeCycleManager.CONCEPT.equalsIgnoreCase(objectType))
@@ -925,12 +936,37 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     public BulkResponse getRegistryObjects(String id) throws JAXRException
     {
         if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(id)) {
-            List<String> a = new ArrayList<String>();
-            a.add("%");
+            IRegistry registry = registryService.getRegistry();
 
-            BulkResponse br = findOrganizations(null, a, null, null, null, null);
+        	ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
+            AuthToken auth = this.getAuthToken(con,registry);
 
-            return br;
+            BulkResponse br = null;
+    		LinkedHashSet<Organization> orgs = null;
+            
+            try
+            {
+            	RegisteredInfo ri = registry.getRegisteredInfo(auth.getAuthInfo());
+            	BusinessInfos infos = null;
+            	BusinessInfo[] biarr = null;
+            	
+            	if (ri != null) infos = ri.getBusinessInfos();
+            	if (infos != null) biarr = infos.getBusinessInfoArray();
+            	
+            	if (biarr != null) {
+                    orgs = new LinkedHashSet<Organization>();
+            	}
+            	
+            	for (int i = 0; i < biarr.length; i++) {
+            		BusinessInfo info = biarr[i];
+            		BusinessDetail detail = registry.getBusinessDetail(info.getBusinessKey());
+
+                    orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
+            	}
+            } catch (RegistryException re) {
+            	throw new JAXRException(re);
+            }
+            return new BulkResponseImpl(orgs);
         }
         else if (LifeCycleManager.SERVICE.equalsIgnoreCase(id)) {
             List<String> a = new ArrayList<String>();

@@ -63,6 +63,7 @@ public class BusinessQueryManager2Test extends BaseTestCase {
         super.tearDown();
     }
 	
+    @Test
 	public void testGetRegistryObjects() {
         login();
         try {

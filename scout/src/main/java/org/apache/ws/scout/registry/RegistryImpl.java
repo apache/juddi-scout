@@ -70,6 +70,8 @@ import org.apache.ws.scout.uddi.GetBusinessDetail;
 import org.apache.ws.scout.uddi.GetBusinessDetailDocument;
 import org.apache.ws.scout.uddi.GetPublisherAssertions;
 import org.apache.ws.scout.uddi.GetPublisherAssertionsDocument;
+import org.apache.ws.scout.uddi.GetRegisteredInfo;
+import org.apache.ws.scout.uddi.GetRegisteredInfoDocument;
 import org.apache.ws.scout.uddi.GetServiceDetail;
 import org.apache.ws.scout.uddi.GetServiceDetailDocument;
 import org.apache.ws.scout.uddi.GetTModelDetail;
@@ -79,6 +81,8 @@ import org.apache.ws.scout.uddi.Name;
 import org.apache.ws.scout.uddi.PublisherAssertion;
 import org.apache.ws.scout.uddi.PublisherAssertions;
 import org.apache.ws.scout.uddi.PublisherAssertionsDocument;
+import org.apache.ws.scout.uddi.RegisteredInfo;
+import org.apache.ws.scout.uddi.RegisteredInfoDocument;
 import org.apache.ws.scout.uddi.SaveBinding;
 import org.apache.ws.scout.uddi.SaveBindingDocument;
 import org.apache.ws.scout.uddi.SaveBusiness;
@@ -919,6 +923,27 @@ public class RegistryImpl implements IRegistry {
         return pa;
 	}
 
+	/**
+	 * @exception RegistryException;
+	 */
+	public RegisteredInfo getRegisteredInfo(String authInfo)
+			throws RegistryException {
+		GetRegisteredInfoDocument doc = GetRegisteredInfoDocument.Factory
+				.newInstance();
+		GetRegisteredInfo request = doc.addNewGetRegisteredInfo();
+
+		if (authInfo != null) {
+			request.setAuthInfo(authInfo);
+		}
+
+        RegisteredInfo ri;
+        XmlObject o = execute(doc, this.getPublishURI()).changeType(
+                RegisteredInfoDocument.type);
+        ri = ((RegisteredInfoDocument) o).getRegisteredInfo();
+
+        return ri;
+	}
+	
 	/**
 	 * "Used to get full details for a particular registered businessService.
 	 * Returns a serviceDetail message."

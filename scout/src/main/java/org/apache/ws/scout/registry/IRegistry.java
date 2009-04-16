@@ -34,6 +34,7 @@ import org.apache.ws.scout.uddi.IdentifierBag;
 import org.apache.ws.scout.uddi.Name;
 import org.apache.ws.scout.uddi.PublisherAssertion;
 import org.apache.ws.scout.uddi.PublisherAssertions;
+import org.apache.ws.scout.uddi.RegisteredInfo;
 import org.apache.ws.scout.uddi.ServiceDetail;
 import org.apache.ws.scout.uddi.ServiceList;
 import org.apache.ws.scout.uddi.TModel;
@@ -68,7 +69,7 @@ public interface IRegistry {
 	/**
 	 * @return Returns the publishURL.
 	 */
-	URI getPublishURI();
+	URI getPublishURI();	
 	
 	/**
 	 * @param publishURL The publishURL to set.
@@ -221,6 +222,12 @@ public interface IRegistry {
 	   */
 	  PublisherAssertions getPublisherAssertions(String authInfo)
 	    throws RegistryException;
+	  
+	  /**
+	   * @exception RegistryException;
+	   */
+	  RegisteredInfo getRegisteredInfo(String authInfo)
+	  	throws RegistryException;
 	  
 	  /**
 	   * "Used to locate one or more tModel information structures. Returns a
