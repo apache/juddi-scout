@@ -144,19 +144,6 @@
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <attach>true</attach>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <profiles>
