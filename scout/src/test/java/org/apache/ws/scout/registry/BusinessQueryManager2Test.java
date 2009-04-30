@@ -78,7 +78,7 @@ public class BusinessQueryManager2Test extends BaseTestCase {
 		}
 	}
 	
-    @Test
+    //@Test
 	public void testFindCallerAssociations() {
         BulkResponse br = null;
     	try {
@@ -97,7 +97,7 @@ public class BusinessQueryManager2Test extends BaseTestCase {
             String orgOne = "Organization One";
             String orgTwo = "Organization Two";
             Organization source = blm.createOrganization(blm.createInternationalString(orgOne));
-            Organization target = blm2.createOrganization(blm.createInternationalString(orgTwo));
+            Organization target = blm2.createOrganization(blm2.createInternationalString(orgTwo));
 	            
 			Collection orgs = new ArrayList();
 			orgs.add(source);
@@ -119,7 +119,7 @@ public class BusinessQueryManager2Test extends BaseTestCase {
 			assertNotNull("Source Org", queried.getName().getValue());
             
 			Collection orgstwo = new ArrayList();
-			orgs.add(target);
+			orgstwo.add(target);
             br = blm2.saveOrganizations(orgstwo);
             if (br.getExceptions() != null)
 			{
