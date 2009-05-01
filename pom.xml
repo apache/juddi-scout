@@ -5,7 +5,7 @@
   <artifactId>scout-parent</artifactId>
   <packaging>pom</packaging>
   <name>Scout</name>
-  <version>1.0.SNAPSHOT</version>
+  <version>1.0</version>
   <description>Apache Scout is an implementation of the JSR 93 - JavaTM API for
 		XML Registries 1.0 (JAXR)</description>
   <url>http://ws.apache.org/scout/</url>
@@ -157,6 +157,19 @@
       </activation>
       <build>
         <plugins>
+	        <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-gpg-plugin</artifactId>
+	        <executions>
+	          <execution>
+	            <id>sign-artifacts</id>
+	            <phase>verify</phase>
+	            <goals>
+	              <goal>sign</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	      </plugin>
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <executions>
