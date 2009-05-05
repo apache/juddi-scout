@@ -5,7 +5,7 @@
   <artifactId>scout-parent</artifactId>
   <packaging>pom</packaging>
   <name>Scout</name>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <description>Apache Scout is an implementation of the JSR 93 - JavaTM API for
 		XML Registries 1.0 (JAXR)</description>
   <url>http://ws.apache.org/scout/</url>
@@ -144,6 +144,15 @@
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <attach>true</attach>
+        </configuration>
+      </plugin>
+      
     </plugins>
   </build>
   <profiles>
@@ -204,6 +213,19 @@
               <tagBase>http://svn.apache.org/repos/asf/webservices/scout/tags/</tagBase>
             </configuration>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
         </plugins>
       </build>
     </profile>
@@ -212,7 +234,7 @@
       <activation>
         <property>
           <name>rc</name>
-          <value>1.0rc2</value>
+          <value>1.1rc1</value>
         </property>
       </activation>
       <build>
