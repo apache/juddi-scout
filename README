@@ -88,7 +88,29 @@ SUPPORT
     scout-dev-subscribe@ws.apache.org
   
   
-RELEASE NOTES
+Release Notes - Scout - Version 1.0
+
+Bug
+
+    * [SCOUT-21] - can't configure transport class property using the properties in the factory
+    * [SCOUT-22] - ServiceBindings are not populated when quering for a organization or service
+    * [SCOUT-55] - Scout ignores ownership of registry objects when querying with BusinessQueryManager.getRegistryObjects(LifeCycleManager.ORGANIZATION)
+    * [SCOUT-61] - ScoutJaxrUddiHelper returns BindingTemplate without AccessPoint/HostingRedirector
+    * [SCOUT-64] - Missing / moved DOAP file
+    * [SCOUT-67] - ClassCastException in BusinessQueryManager.getRegistryObject(...,LifeCycleManager.SERVICE)
+    * [SCOUT-68] - java.lang.NullPointerException in ScoutUddiJaxrHelper.getServiceBinding(ScoutUddiJaxrHelper.java:437)
+    * [SCOUT-70] - JAXR060 throws stack traces
+    * [SCOUT-71] - TModelBag a required element in findBinding
+    * [SCOUT-75] - Need lazy loading of Organization from ServiceImpl
+
+Improvement
+
+    * [SCOUT-57] - BusinessQueryManagerTest only tests one of the methods of BusinessQueryManager
+
+New Feature
+
+    * [SCOUT-20] - Enabling RMI access to jUDDI
+
 
   Release Notes - Scout - Version 1.0rc2
 ** Bug

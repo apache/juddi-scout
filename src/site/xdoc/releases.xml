@@ -16,6 +16,12 @@
           <td><strong>Date</strong></td>
           <td><strong>Description</strong></td>
         </tr>
+        <tr>
+          <td><a href="http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/ws/scout/scout/1.0/scout-1.0.jar">scout-1.0</a><br/>
+              <a href="http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/ws/scout/jaxr-api/1.0/jaxr-api-1.0.jar">jaxr-api-1.0</a></td>
+          <td>5 May, 2009</td>
+          <td>Version 1.0</td>
+        </tr>
 		<tr>
           <td><a href="http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/ws/scout/scout/1.0rc2/scout-1.0rc2.jar">scout-1.0rc2</a><br/>
               <a href="http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/ws/scout/jaxr-api/1.0rc2/jaxr-api-1.0rc2.jar">jaxr-api-1.0rc2</a></td>
