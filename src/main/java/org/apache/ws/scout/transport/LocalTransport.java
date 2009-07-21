@@ -86,8 +86,7 @@ public class LocalTransport implements Transport
         Document document = parser.parse(request);
         Element element = document.getDocumentElement();
         response= XMLUtils.convertNodeToXMLString(send(element, endpointURI));
-    } catch (Exception ex) {
-    	ex.printStackTrace();
+    } catch (Exception ex) { 
     	throw new RegistryException(ex);
     }
     log.debug("\nResponse message:\n" + response);

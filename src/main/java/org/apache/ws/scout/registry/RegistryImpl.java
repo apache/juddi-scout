@@ -169,7 +169,7 @@ public class RegistryImpl implements IRegistry {
 			else
 				this.setAdminURI(new URI(DEFAULT_ADMIN_ENDPOINT));
 		} catch (URISyntaxException muex) {
-			muex.printStackTrace();
+			throw new RuntimeException(muex);
 		}
 
 		String secProvider = props.getProperty(SECURITY_PROVIDER_PROPERTY_NAME);
@@ -1107,14 +1107,14 @@ public class RegistryImpl implements IRegistry {
 			// instruct class loader to load the TransportFactory
 			transportClass = getClassForName(className);
 		} catch (ClassNotFoundException cnfex) {
-			cnfex.printStackTrace();
+			throw new RuntimeException(cnfex);
 		}
 
 		try {
 			// try to instantiate the TransportFactory
 			transport = (Transport) transportClass.newInstance();
-		} catch (java.lang.Exception ex) {
-			ex.printStackTrace();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 
 		return transport;

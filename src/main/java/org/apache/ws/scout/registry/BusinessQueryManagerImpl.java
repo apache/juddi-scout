@@ -892,8 +892,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 }
 
             } catch (RegistryException e)
-            {
-                e.printStackTrace();
+            { 
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
