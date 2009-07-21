@@ -68,8 +68,6 @@ public class AxisTransport implements Transport
     }
     catch (AxisFault fault) {
 
-      fault.printStackTrace();
-
       try {
         Message msg = call.getResponseMessage();
         response = msg.getSOAPEnvelope().getFirstBody().getAsDOM();
@@ -112,8 +110,6 @@ public class AxisTransport implements Transport
       response = ((SOAPBodyElement)result.elementAt(0)).getAsString();
     }
     catch (AxisFault fault) {
-
-      fault.printStackTrace();
 
       try {
         Message msg = call.getResponseMessage();
