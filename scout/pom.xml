@@ -6,11 +6,10 @@
 	<parent>
 		<groupId>org.apache.ws.scout</groupId>
 		<artifactId>scout-parent</artifactId>
-		<version>1.0.SNAPSHOT</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>scout</artifactId>
 	<name>Scout Implementation</name>
-	<version>SNAPSHOT</version>
 	<description>
 		Apache Scout is an implementation of the JSR 93 - JavaTM API for
 		XML Registries 1.0 (JAXR)
@@ -23,6 +22,12 @@
 		</dependency>
 
 		<!-- external JARs -->
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.1.9</version>
+		</dependency>
+                
 
 	</dependencies>
 	<build>
@@ -47,50 +52,6 @@
 						<include>**/*Test.java</include>
 					</includes>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.1</version>
-				<executions>
-					<execution>
-						<id>gen-ts</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<tasks>
-								<property name="schema.output.base.dir"
-									value="target/schema" />
-								<property
-									name="schema.generated.src.dir"
-									value="${schema.output.base.dir}/src" />
-								<property name="compiled.classes.dir"
-									value="target/classes" />
-
-								<mkdir dir="${schema.output.base.dir}" />
-								<mkdir
-									dir="${schema.generated.src.dir}" />
-								<mkdir dir="${compiled.classes.dir}" />
-
-								<echo>
-									Generating xmlbeans from schema
-								</echo>
-								<taskdef name="xmlbean"
-									classname="org.apache.xmlbeans.impl.tool.XMLBean"
-									classpathref="maven.runtime.classpath" />
-								<xmlbean
-									classgendir="${compiled.classes.dir}"
-									srcgendir="${schema.generated.src.dir}"
-									classpathref="maven.runtime.classpath">
-									<fileset dir="src/main/resources"
-										includes="uddi_v2.xsd,uddi_v2.xsdconfig" />
-								</xmlbean>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

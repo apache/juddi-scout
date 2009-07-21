@@ -15,10 +15,11 @@
  */
 package org.apache.ws.scout.registry;
 
-import org.apache.ws.scout.uddi.DispositionReport;
-import org.apache.ws.scout.uddi.DispositionReportDocument;
-import org.apache.ws.scout.uddi.ErrInfo;
-import org.apache.ws.scout.uddi.Result;
+import org.apache.ws.scout.model.uddi.v2.DispositionReport;
+import org.apache.ws.scout.model.uddi.v2.ErrInfo;
+import org.apache.ws.scout.model.uddi.v2.ObjectFactory;
+import org.apache.ws.scout.model.uddi.v2.Result;
+ 
 
 /**
  * Thrown to indicate that a UDDI Exception was encountered.
@@ -75,6 +76,8 @@ public class RegistryException extends Exception
 
   // UDDI DispositionReport
   private DispositionReport dispReport;
+  
+  private ObjectFactory objectFactory = new ObjectFactory();
 
   /**
    * Constructs a RegistryException instance.
@@ -149,14 +152,14 @@ public class RegistryException extends Exception
     
     setFaultString(getMessage());
     
-    Result r = Result.Factory.newInstance();
-    ErrInfo ei = ErrInfo.Factory.newInstance();
+    Result r = this.objectFactory.createResult();
+    ErrInfo ei = this.objectFactory.createErrInfo();
 
     if (errCode != null) {
     	ei.setErrCode(errCode);
     }
 
-    ei.setStringValue(getMessage());
+    ei.setValue(getMessage());
 
    	r.setErrno(errno);
 
@@ -250,15 +253,15 @@ public class RegistryException extends Exception
   public void addResult(Result result)
   {
     if (this.dispReport==null) {
-  	  DispositionReportDocument doc = DispositionReportDocument.Factory.newInstance();
-      this.dispReport = doc.addNewDispositionReport();
+      this.dispReport = this.objectFactory.createDispositionReport();
     }
 
-    Result r = this.dispReport.addNewResult();
+    Result jaxbResult = this.objectFactory.createResult();
+    this.dispReport.getResult().add(jaxbResult);
     
-    if (result.getErrInfo() != null) r.setErrInfo(result.getErrInfo());
-    if (result.getKeyType() != null) r.setKeyType(result.getKeyType());
-    r.setErrno(result.getErrno());
+    if (result.getErrInfo() != null) jaxbResult.setErrInfo(result.getErrInfo());
+    if (result.getKeyType() != null) jaxbResult.setKeyType(result.getKeyType());
+    jaxbResult.setErrno(result.getErrno());
   }
 
   /**

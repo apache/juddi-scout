@@ -19,6 +19,7 @@ package org.apache.ws.scout.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import javax.xml.registry.JAXRException;
@@ -40,6 +41,35 @@ import javax.xml.registry.infomodel.SpecificationLink;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
 
+import org.apache.ws.scout.model.uddi.v2.AccessPoint;
+import org.apache.ws.scout.model.uddi.v2.Address;
+import org.apache.ws.scout.model.uddi.v2.AddressLine;
+import org.apache.ws.scout.model.uddi.v2.BindingTemplate;
+import org.apache.ws.scout.model.uddi.v2.BindingTemplates;
+import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
+import org.apache.ws.scout.model.uddi.v2.BusinessEntity;
+import org.apache.ws.scout.model.uddi.v2.BusinessService;
+import org.apache.ws.scout.model.uddi.v2.BusinessServices;
+import org.apache.ws.scout.model.uddi.v2.CategoryBag;
+import org.apache.ws.scout.model.uddi.v2.Contact;
+import org.apache.ws.scout.model.uddi.v2.Contacts;
+import org.apache.ws.scout.model.uddi.v2.Description;
+import org.apache.ws.scout.model.uddi.v2.DiscoveryURL;
+import org.apache.ws.scout.model.uddi.v2.DiscoveryURLs;
+import org.apache.ws.scout.model.uddi.v2.Email;
+import org.apache.ws.scout.model.uddi.v2.HostingRedirector;
+import org.apache.ws.scout.model.uddi.v2.IdentifierBag;
+import org.apache.ws.scout.model.uddi.v2.InstanceDetails;
+import org.apache.ws.scout.model.uddi.v2.KeyedReference;
+import org.apache.ws.scout.model.uddi.v2.Name;
+import org.apache.ws.scout.model.uddi.v2.OverviewDoc;
+import org.apache.ws.scout.model.uddi.v2.Phone;
+import org.apache.ws.scout.model.uddi.v2.ServiceInfo;
+import org.apache.ws.scout.model.uddi.v2.TModel;
+import org.apache.ws.scout.model.uddi.v2.TModelDetail;
+import org.apache.ws.scout.model.uddi.v2.TModelInfo;
+import org.apache.ws.scout.model.uddi.v2.TModelInstanceDetails;
+import org.apache.ws.scout.model.uddi.v2.TModelInstanceInfo;
 import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
@@ -57,35 +87,6 @@ import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
 import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
-import org.apache.ws.scout.uddi.AccessPoint;
-import org.apache.ws.scout.uddi.Address;
-import org.apache.ws.scout.uddi.AddressLine;
-import org.apache.ws.scout.uddi.BindingTemplate;
-import org.apache.ws.scout.uddi.BindingTemplates;
-import org.apache.ws.scout.uddi.BusinessDetail;
-import org.apache.ws.scout.uddi.BusinessEntity;
-import org.apache.ws.scout.uddi.BusinessService;
-import org.apache.ws.scout.uddi.BusinessServices;
-import org.apache.ws.scout.uddi.CategoryBag;
-import org.apache.ws.scout.uddi.Contact;
-import org.apache.ws.scout.uddi.Contacts;
-import org.apache.ws.scout.uddi.Description;
-import org.apache.ws.scout.uddi.DiscoveryURL;
-import org.apache.ws.scout.uddi.DiscoveryURLs;
-import org.apache.ws.scout.uddi.Email;
-import org.apache.ws.scout.uddi.HostingRedirector;
-import org.apache.ws.scout.uddi.IdentifierBag;
-import org.apache.ws.scout.uddi.InstanceDetails;
-import org.apache.ws.scout.uddi.KeyedReference;
-import org.apache.ws.scout.uddi.Name;
-import org.apache.ws.scout.uddi.OverviewDoc;
-import org.apache.ws.scout.uddi.Phone;
-import org.apache.ws.scout.uddi.ServiceInfo;
-import org.apache.ws.scout.uddi.TModel;
-import org.apache.ws.scout.uddi.TModelDetail;
-import org.apache.ws.scout.uddi.TModelInfo;
-import org.apache.ws.scout.uddi.TModelInstanceDetails;
-import org.apache.ws.scout.uddi.TModelInstanceInfo;
 
 /**
  * Helper class that does UDDI->Jaxr Mapping
@@ -106,32 +107,47 @@ public class ScoutUddiJaxrHelper
       return asso;
    }
 
-   public static Organization getOrganization(BusinessEntity entity,
-                                              LifeCycleManager lcm)
+   public static Organization getOrganization(BusinessEntity businessEntity,
+                                              LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      Name[] namearray = entity.getNameArray();
+      List<Name> namesList = businessEntity.getName();
+
+      Name[] namearray = new Name[namesList.size()];
+      namesList.toArray(namearray);
+      
       Name n = namearray != null && namearray.length > 0 ? namearray[0] : null;
-      String name = n != null ? n.getStringValue() : null;
-      Description[] descarray = entity.getDescriptionArray();
+      String name = n != null ? n.getValue() : null;
+      
+      
+      List<Description> descriptionList = businessEntity.getDescription();
+      Description[] descarray = new Description[descriptionList.size()];
+      descriptionList.toArray(descarray);
+      
       Description desc = descarray != null && descarray.length > 0 ? descarray[0]: null;
 
-      Organization org = new OrganizationImpl(lcm);
+      Organization org = new OrganizationImpl(lifeCycleManager);
       if(name != null ) {
-          org.setName(getIString(n.getLang(), name, lcm));
+          org.setName(getIString(n.getLang(), name, lifeCycleManager));
       }
       if( desc != null) {
-          org.setDescription(getIString(desc.getLang(), desc.getStringValue(), lcm));
+          org.setDescription(getIString(desc.getLang(), desc.getValue(), lifeCycleManager));
       }
-      org.setKey(lcm.createKey(entity.getBusinessKey()));
+      org.setKey(lifeCycleManager.createKey(businessEntity.getBusinessKey()));
 
       //Set Services also
-      BusinessServices services = entity.getBusinessServices();
-      BusinessService[] sarr = services != null ? services.getBusinessServiceArray() : null;
-      for (int i = 0; sarr != null && i < sarr.length; i++)
+      BusinessServices services = businessEntity.getBusinessServices();
+      if(services != null)
       {
-         BusinessService s = (BusinessService)sarr[i];
-         org.addService(getService(s, lcm));
+          List<BusinessService> bizServiceList = services.getBusinessService();
+          BusinessService[] sarr = new BusinessService[bizServiceList.size()];
+          bizServiceList.toArray(sarr);
+          
+          for (int i = 0; sarr != null && i < sarr.length; i++)
+          {
+             BusinessService s = (BusinessService)sarr[i];
+             org.addService(getService(s, lifeCycleManager));
+          } 
       }
 
       /*
@@ -144,75 +160,95 @@ public class ScoutUddiJaxrHelper
        *  depend on that behavior
        */
 
-      Contacts contacts = entity.getContacts();
-      Contact[] carr = contacts != null ? contacts.getContactArray() : null;
-
-      for (int i = 0; carr != null && i < carr.length; i++)
+      Contacts contacts = businessEntity.getContacts();
+      if(contacts != null)
       {
-         Contact contact = (Contact)carr[i];
-         User user = new UserImpl(null);
-         String pname = contact.getPersonName();
-         user.setPersonName(new PersonNameImpl(pname));
-         if (i == 0)
-         {
-            org.setPrimaryContact(user);
-         }
-         else
-         {
-            org.addUser(user);
-         }
+    	  List<Contact> contactList = contacts.getContact();
+    	  Contact[] carr = new Contact[contactList.size()];
+    	  contactList.toArray(carr);
+    	  for (int i = 0; carr != null && i < carr.length; i++)
+          {
+             Contact contact = (Contact)carr[i];
+             User user = new UserImpl(null);
+             String pname = contact.getPersonName();
+             user.setPersonName(new PersonNameImpl(pname));
+             if (i == 0)
+             {
+                org.setPrimaryContact(user);
+             }
+             else
+             {
+                org.addUser(user);
+             }
+          }
       }
-
+       
       //External Links
-      DiscoveryURLs durls = entity.getDiscoveryURLs();
+      DiscoveryURLs durls = businessEntity.getDiscoveryURLs();
       if (durls != null)
       {
-         DiscoveryURL[] darr = durls.getDiscoveryURLArray();
+    	 List<DiscoveryURL> discoveryURL_List = durls.getDiscoveryURL();
+         DiscoveryURL[] darr = new DiscoveryURL[discoveryURL_List.size()];
+         discoveryURL_List.toArray(darr);
+         
          for (int j = 0; darr != null && j < darr.length; j++)
          {
             DiscoveryURL durl = (DiscoveryURL)darr[j];
-            ExternalLink link = new ExternalLinkImpl(lcm);
-            link.setExternalURI(durl.getStringValue());
+            ExternalLink link = new ExternalLinkImpl(lifeCycleManager);
+            link.setExternalURI(durl.getValue());
             org.addExternalLink(link);
          }
       }
 
-      org.addExternalIdentifiers(getExternalIdentifiers(entity.getIdentifierBag(), lcm));
-      org.addClassifications(getClassifications(entity.getCategoryBag(), lcm));
+      org.addExternalIdentifiers(getExternalIdentifiers(businessEntity.getIdentifierBag(), lifeCycleManager));
+      org.addClassifications(getClassifications(businessEntity.getCategoryBag(), lifeCycleManager));
       
       return org;
    }
 
 
    public static Organization getOrganization(BusinessDetail bizdetail,
-                                              LifeCycleManager lcm)
+                                              LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      BusinessEntity[] bz = bizdetail.getBusinessEntityArray();
+	  List<BusinessEntity> bizEntityList = bizdetail.getBusinessEntity();
+      BusinessEntity[] bz = new BusinessEntity[bizEntityList.size()];
+      bizEntityList.toArray(bz);
 
       BusinessEntity entity = bz[0];
-      Name[] namearr = entity.getNameArray();
+      List<Name> nameList = entity.getName();
+      Name[] namearr = new Name[nameList.size()];
+      nameList.toArray(namearr);
+      
       Name n = namearr != null && namearr.length > 0 ? namearr[0] : null;
-      String name = n != null ? n.getStringValue(): null;
-      Description[] descarr = entity.getDescriptionArray();
+      String name = n != null ? n.getValue(): null;
+      
+      List<Description> descriptionList = entity.getDescription();
+      Description[] descarr = new Description[descriptionList.size()];
+      descriptionList.toArray(descarr);
+      
       Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
 
-      Organization org = new OrganizationImpl(lcm);
+      Organization org = new OrganizationImpl(lifeCycleManager);
       if( name != null ) {
-          org.setName(getIString(n.getLang(), name, lcm));
+          org.setName(getIString(n.getLang(), name, lifeCycleManager));
       }
       if( desc != null ) {
-          org.setDescription(getIString(desc.getLang(), desc.getStringValue(), lcm));
+          org.setDescription(getIString(desc.getLang(), desc.getValue(), lifeCycleManager));
       }
-      org.setKey(lcm.createKey(entity.getBusinessKey()));
+      org.setKey(lifeCycleManager.createKey(entity.getBusinessKey()));
 
       //Set Services also
       BusinessServices services = entity.getBusinessServices();
-      BusinessService[] sarr = services != null ? services.getBusinessServiceArray() : null;
+      
+      List<BusinessService> bizServiceList = services.getBusinessService();
+      BusinessService[] sarr = new BusinessService[bizServiceList.size()];
+      bizServiceList.toArray(sarr);
+      
       for (int i = 0; sarr != null && i < sarr.length; i++)
       {
          BusinessService s = (BusinessService)sarr[i];
-         org.addService(getService(s, lcm));
+         org.addService(getService(s, lifeCycleManager));
          
       }
 
@@ -226,7 +262,10 @@ public class ScoutUddiJaxrHelper
        *  depend on that behavior
        */
       Contacts contacts = entity.getContacts();
-      Contact[] carr = contacts != null ? contacts.getContactArray():null;
+      List<Contact> contactList = contacts.getContact();
+      Contact[] carr = new Contact[contactList.size()];
+      contactList.toArray(carr);
+      
       for (int i = 0; carr != null && i < carr.length; i++)
       {
          Contact contact = carr[i];
@@ -235,28 +274,40 @@ public class ScoutUddiJaxrHelper
          user.setType(contact.getUseType());
          user.setPersonName(new PersonNameImpl(pname));
          
-
-         Email[] emails = (Email[]) contact.getEmailArray();
+         List<Email> emailList = contact.getEmail();
+         Email[] emails = new Email[emailList.size()];
+         emailList.toArray(emails);
+         
          ArrayList<EmailAddress> tempEmails = new ArrayList<EmailAddress>();
          for (int x = 0; x < emails.length; x++) {
-        	 tempEmails.add(new EmailAddressImpl(emails[x].getStringValue(), null));
+        	 tempEmails.add(new EmailAddressImpl(emails[x].getValue(), null));
          }
          user.setEmailAddresses(tempEmails);
          
-         Address[] addresses = (Address[]) contact.getAddressArray();
+         List<Address> addressList = contact.getAddress();
+         Address[] addresses = new Address[addressList.size()];
+         addressList.toArray(addresses);
+         
          ArrayList<PostalAddress> tempAddresses = new ArrayList<PostalAddress>();
          for (int x = 0; x < addresses.length; x++) {
-        	 AddressLine[] alines = addresses[x].getAddressLineArray();
+        	 ArrayList<AddressLine> addressLineList = new ArrayList<AddressLine>(addresses[x].getAddressLine());
+        	 AddressLine[] alines = new AddressLine[addressLineList.size()];
+        	 addressLineList.toArray(alines);
+        	 
         	 PostalAddress pa = getPostalAddress(alines);
         	 tempAddresses.add(pa);
          }
          user.setPostalAddresses(tempAddresses);
-         Phone[] phones = contact.getPhoneArray();
+         
+         List<Phone> phoneList = contact.getPhone();
+         Phone[] phones = new Phone[phoneList.size()];
+         phoneList.toArray(phones);
+         
          ArrayList<TelephoneNumber> tempPhones = new ArrayList<TelephoneNumber>();
          for (int x = 0; x < phones.length; x++) {
         	 TelephoneNumberImpl tni = new TelephoneNumberImpl();
         	 tni.setType(phones[x].getUseType());
-        	 tni.setNumber(phones[x].getStringValue());
+        	 tni.setNumber(phones[x].getValue());
         	 tempPhones.add(tni);
          }
          user.setTelephoneNumbers(tempPhones);
@@ -275,27 +326,30 @@ public class ScoutUddiJaxrHelper
       DiscoveryURLs durls = entity.getDiscoveryURLs();
       if (durls != null)
       {
-         DiscoveryURL[] darr = durls.getDiscoveryURLArray();
+    	 List<DiscoveryURL> discoveryURL_List = durls.getDiscoveryURL();
+         DiscoveryURL[] darr = new DiscoveryURL[discoveryURL_List.size()];
+         discoveryURL_List.toArray(darr);
+         
          for (int j = 0; darr != null && j < darr.length; j++)
          {
             DiscoveryURL durl = darr[j];
-            ExternalLink link = new ExternalLinkImpl(lcm);
-            link.setExternalURI(durl.getStringValue());
+            ExternalLink link = new ExternalLinkImpl(lifeCycleManager);
+            link.setExternalURI(durl.getValue());
             org.addExternalLink(link);
          }
       }
 
-      org.addExternalIdentifiers(getExternalIdentifiers(entity.getIdentifierBag(), lcm));
-      org.addClassifications(getClassifications(entity.getCategoryBag(), lcm));
+      org.addExternalIdentifiers(getExternalIdentifiers(entity.getIdentifierBag(), lifeCycleManager));
+      org.addClassifications(getClassifications(entity.getCategoryBag(), lifeCycleManager));
       
       return org;
    }
 
-   private static PostalAddress getPostalAddress(AddressLine[] al) throws JAXRException {
+   private static PostalAddress getPostalAddress(AddressLine[] addressLineArr) throws JAXRException {
 	   PostalAddress pa = new PostalAddressImpl();
 	   HashMap<String, String> hm = new HashMap<String, String>();
-	   for (int y = 0; y < al.length; y++) {
-		   hm.put(al[y].getKeyName(), al[y].getKeyValue());
+	   for (int y = 0; y < addressLineArr.length; y++) {
+		   hm.put(addressLineArr[y].getKeyName(), addressLineArr[y].getKeyValue());
 	   }        	 
 	   
 	   if (hm.containsKey("STREET_NUMBER")) {
@@ -325,136 +379,144 @@ public class ScoutUddiJaxrHelper
 	   return pa;
    }
    
-   private static InternationalString getIString(String lang, String str, LifeCycleManager blm)
+   private static InternationalString getIString(String lang, String str, LifeCycleManager lifeCycleManager)
        throws JAXRException
    {
-       return blm.createInternationalString(getLocale(lang), str);
+       return lifeCycleManager.createInternationalString(getLocale(lang), str);
    }
    
-   public static InternationalString getIString(String str, LifeCycleManager blm)
+   public static InternationalString getIString(String str, LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      return blm.createInternationalString(str);
+      return lifeCycleManager.createInternationalString(str);
    }
 
-   public static Service getService(BusinessService bs, LifeCycleManager lcm)
+   public static Service getService(BusinessService businessService, LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      Service serve = new ServiceImpl(lcm);
+      Service serve = new ServiceImpl(lifeCycleManager);
 
-      String keystr = bs.getServiceKey();
+      String keystr = businessService.getServiceKey();
 
       if (keystr != null)
       {
-         serve.setKey(lcm.createKey(keystr));
+         serve.setKey(lifeCycleManager.createKey(keystr));
       }
 
-      Name[] namearr = bs.getNameArray();
+      Name[] namearr = getNameArray(businessService.getName());
 
       Name n = namearr != null && namearr.length > 0 ? namearr[0] : null;
 
       if (n != null) {
-    	  String name = n.getStringValue();
-    	  serve.setName(lcm.createInternationalString(getLocale(n.getLang()), name));
+    	  String name = n.getValue();
+    	  serve.setName(lifeCycleManager.createInternationalString(getLocale(n.getLang()), name));
       }
 
-      Description[] descarr = bs.getDescriptionArray();
+      Description[] descarr = getDescriptionArray(businessService.getDescription());
       Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
       if (desc != null ) {
-          serve.setDescription(lcm.createInternationalString(getLocale(desc.getLang()), desc.getStringValue()));
+          serve.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), desc.getValue()));
       }
       
       //Populate the ServiceBindings for this Service
-      BindingTemplates bts = bs.getBindingTemplates();
-      BindingTemplate[] btarr = bts != null ? bts.getBindingTemplateArray() : null;
+      BindingTemplates bts = businessService.getBindingTemplates();
+      List<BindingTemplate> bindingTemplateList = bts.getBindingTemplate();
+      
+      BindingTemplate[] btarr = bts != null ? new BindingTemplate[bindingTemplateList.size()] : null;
+      if(btarr != null)
+    	  bindingTemplateList.toArray(btarr);
+      
       for (int i = 0; btarr != null && i < btarr.length; i++)
       {
     	  BindingTemplate bindingTemplate = (BindingTemplate)btarr[i];
-          serve.addServiceBinding(getServiceBinding(bindingTemplate, lcm));
+          serve.addServiceBinding(getServiceBinding(bindingTemplate, lifeCycleManager));
       }
       
-      serve.addClassifications(getClassifications(bs.getCategoryBag(), lcm));
+      serve.addClassifications(getClassifications(businessService.getCategoryBag(), lifeCycleManager));
       
       return serve;
    }
 
-   public static Service getService(ServiceInfo si, LifeCycleManager lcm)
+   public static Service getService(ServiceInfo serviceInfo, LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      Service service = new ServiceImpl(lcm);
+      Service service = new ServiceImpl(lifeCycleManager);
 
-      String keystr = si.getServiceKey();
+      String keystr = serviceInfo.getServiceKey();
 
       if (keystr != null)
       {
-         service.setKey(lcm.createKey(keystr));
+         service.setKey(lifeCycleManager.createKey(keystr));
       }
 
-      Name[] namearr = si.getNameArray();
+      Name[] namearr = getNameArray(serviceInfo.getName());
       Name n = namearr != null && namearr.length > 0 ? namearr[0] : null;
 
       if (n != null) {
-    	  String name = n.getStringValue();
-    	  service.setName(lcm.createInternationalString(getLocale(n.getLang()), name));
+    	  String name = n.getValue();
+    	  service.setName(lifeCycleManager.createInternationalString(getLocale(n.getLang()), name));
       }
 
       return service;
    }
 
-   public static ServiceBinding getServiceBinding(BindingTemplate bs, LifeCycleManager lcm)
+   public static ServiceBinding getServiceBinding(BindingTemplate businessTemplate, LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      ServiceBinding serviceBinding = new ServiceBindingImpl(lcm);
+      ServiceBinding serviceBinding = new ServiceBindingImpl(lifeCycleManager);
 
-      String keystr = bs.getServiceKey();
+      String keystr = businessTemplate.getServiceKey();
       if (keystr != null)
       {
-         Service svc = new ServiceImpl(lcm);
-         svc.setKey(lcm.createKey(keystr));
+         Service svc = new ServiceImpl(lifeCycleManager);
+         svc.setKey(lifeCycleManager.createKey(keystr));
          ((ServiceBindingImpl)serviceBinding).setService(svc);
       }
-      String bindingKey = bs.getBindingKey();
+      String bindingKey = businessTemplate.getBindingKey();
       if(bindingKey != null) serviceBinding.setKey(new KeyImpl(bindingKey));
      
       //Access URI
-      AccessPoint access = bs.getAccessPoint();
-      if (access != null) serviceBinding.setAccessURI(access.getStringValue());
+      AccessPoint access = businessTemplate.getAccessPoint();
+      if (access != null) serviceBinding.setAccessURI(access.getValue());
 
       //Description
-      Description[] da = bs.getDescriptionArray();
+      Description[] da = getDescriptionArray(businessTemplate.getDescription());
       if (da != null && da.length > 0)
       {
          Description des = da[0];
-         serviceBinding.setDescription(new InternationalStringImpl(des.getStringValue()));
+         serviceBinding.setDescription(new InternationalStringImpl(des.getValue()));
       }
       /**Section D.10 of JAXR 1.0 Specification */
       
-      TModelInstanceDetails details = bs.getTModelInstanceDetails();
-      TModelInstanceInfo[] tmodelInstanceInfoArray = details.getTModelInstanceInfoArray();
+      TModelInstanceDetails details = businessTemplate.getTModelInstanceDetails();
+      List<TModelInstanceInfo> tmodelInstanceInfoList = details.getTModelInstanceInfo();
+      TModelInstanceInfo[] tmodelInstanceInfoArray = new TModelInstanceInfo[tmodelInstanceInfoList.size()];
+      tmodelInstanceInfoList.toArray(tmodelInstanceInfoArray);
+      
       for (int i = 0; tmodelInstanceInfoArray != null && i < tmodelInstanceInfoArray.length; i++)
       {
          TModelInstanceInfo info = (TModelInstanceInfo)tmodelInstanceInfoArray[i];
          if (info!=null && info.getInstanceDetails()!=null) {
 	         InstanceDetails idetails = info.getInstanceDetails();
-	         Collection<ExternalLink> elinks = getExternalLinks(idetails.getOverviewDoc(),lcm);
-	         SpecificationLink slink = new SpecificationLinkImpl(lcm);
+	         Collection<ExternalLink> elinks = getExternalLinks(idetails.getOverviewDoc(),lifeCycleManager);
+	         SpecificationLink slink = new SpecificationLinkImpl(lifeCycleManager);
 	         slink.addExternalLinks(elinks);
 	         serviceBinding.addSpecificationLink(slink); 
 	         
-	         ConceptImpl c = new ConceptImpl(lcm);
+	         ConceptImpl c = new ConceptImpl(lifeCycleManager);
 	         c.setExternalLinks(elinks);
-	         c.setKey(lcm.createKey(info.getTModelKey())); 
-	         c.setName(lcm.createInternationalString(idetails.getInstanceParms()));
+	         c.setKey(lifeCycleManager.createKey(info.getTModelKey())); 
+	         c.setName(lifeCycleManager.createInternationalString(idetails.getInstanceParms()));
 	         c.setValue(idetails.getInstanceParms());
 	         
 	         slink.setSpecificationObject(c);
          }
       }
       
-      HostingRedirector hr = bs.getHostingRedirector();
+      HostingRedirector hr = businessTemplate.getHostingRedirector();
       if(hr != null)
       {
-         ServiceBinding sb = lcm.createServiceBinding();
+         ServiceBinding sb = lifeCycleManager.createServiceBinding();
          sb.setKey(new KeyImpl(hr.getBindingKey()));
          serviceBinding.setTargetBinding(sb);
       }
@@ -462,59 +524,68 @@ public class ScoutUddiJaxrHelper
       return serviceBinding;
    }
 
-   public static Concept getConcept(TModelDetail tm, LifeCycleManager lcm)
+   public static Concept getConcept(TModelDetail tModelDetail, LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      Concept concept = new ConceptImpl(lcm);
-      TModel[] tc = tm.getTModelArray();
+      Concept concept = new ConceptImpl(lifeCycleManager);
+      List<TModel> tmodelList = tModelDetail.getTModel();
+      
+      TModel[] tc = new TModel[tmodelList.size()];
+      tmodelList.toArray(tc);
+      
       TModel tmodel = tc != null && tc.length > 0 ? tc[0] : null;
       
       if (tmodel != null) {
-    	  concept.setKey(lcm.createKey(tmodel.getTModelKey()));
-    	  concept.setName(lcm.createInternationalString(getLocale(tmodel.getName().getLang()), tmodel.getName().getStringValue()));
+    	  concept.setKey(lifeCycleManager.createKey(tmodel.getTModelKey()));
+    	  concept.setName(lifeCycleManager.createInternationalString(getLocale(tmodel.getName().getLang()),
+    			  tmodel.getName().getValue()));
 
     	  Description desc = getDescription(tmodel);
     	  if( desc != null ) {
-    	      concept.setDescription(lcm.createInternationalString(getLocale(desc.getLang()), desc.getStringValue()));
+    	      concept.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), 
+    	    		  desc.getValue()));
     	  }
 
-          concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lcm));
-          concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lcm));
+          concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lifeCycleManager));
+          concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lifeCycleManager));
       }
       return concept;
    }
 
-   public static Concept getConcept(TModel tmodel, LifeCycleManager lcm)
+   public static Concept getConcept(TModel tmodel, LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      Concept concept = new ConceptImpl(lcm);
-      concept.setKey(lcm.createKey(tmodel.getTModelKey()));
-      concept.setName(lcm.createInternationalString(getLocale(tmodel.getName().getLang()), tmodel.getName().getStringValue()));
+      Concept concept = new ConceptImpl(lifeCycleManager);
+      concept.setKey(lifeCycleManager.createKey(tmodel.getTModelKey()));
+      concept.setName(lifeCycleManager.createInternationalString(getLocale(tmodel.getName().getLang()),
+    		  tmodel.getName().getValue()));
 
       Description desc = getDescription(tmodel);
       if (desc != null) {
-          concept.setDescription(lcm.createInternationalString(getLocale(desc.getLang()), desc.getStringValue()));
+          concept.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), 
+        		  desc.getValue()));
       }
       
-      concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lcm));
-      concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lcm));
+      concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lifeCycleManager));
+      concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lifeCycleManager));
 
       return concept;
    }
 
-   public static Concept getConcept(TModelInfo tm, LifeCycleManager lcm)
+   public static Concept getConcept(TModelInfo tModelInfo, LifeCycleManager lifeCycleManager)
            throws JAXRException
    {
-      Concept concept = new ConceptImpl(lcm);
-      concept.setKey(lcm.createKey(tm.getTModelKey()));
-      concept.setName(lcm.createInternationalString(getLocale(tm.getName().getLang()), tm.getName().getStringValue()));
+      Concept concept = new ConceptImpl(lifeCycleManager);
+      concept.setKey(lifeCycleManager.createKey(tModelInfo.getTModelKey()));
+      concept.setName(lifeCycleManager.createInternationalString(getLocale(tModelInfo.getName().getLang()), 
+    		  tModelInfo.getName().getValue()));
 
       return concept;
    }
 
    private static Description getDescription( TModel tmodel )
    {
-      Description[] descarr = tmodel.getDescriptionArray();
+      Description[] descarr = getDescriptionArray(tmodel.getDescription());
       Description desc = descarr != null && descarr.length > 0 ? descarr[0] : null;
       return desc;
    }
@@ -522,26 +593,31 @@ public class ScoutUddiJaxrHelper
    /**
     * Classifications - going to assume all are external since UDDI does not use "Concepts".
     * 
-    * @param cbag
+    * @param categoryBag
     * @param destinationObj
-    * @param lcm
+    * @param lifeCycleManager
     * @throws JAXRException
     */
-   public static Collection getClassifications(CategoryBag cbag, LifeCycleManager lcm) throws JAXRException {
+   public static Collection getClassifications(CategoryBag categoryBag, LifeCycleManager lifeCycleManager) 
+   throws JAXRException {
 	   Collection<Classification> classifications = null;
-	   if (cbag != null) {
+	   if (categoryBag != null) {
 		    classifications = new ArrayList<Classification>();
-			KeyedReference[] keyrarr = cbag.getKeyedReferenceArray();
+		    
+		    List<KeyedReference> keyedReferenceList = categoryBag.getKeyedReference();
+			KeyedReference[] keyrarr = new KeyedReference[keyedReferenceList.size()];
+			keyedReferenceList.toArray(keyrarr);
+			
 			for (int i = 0; keyrarr != null && i < keyrarr.length; i++)
 			{
 				KeyedReference keyr = (KeyedReference)keyrarr[i];
-				Classification classification = new ClassificationImpl(lcm);
+				Classification classification = new ClassificationImpl(lifeCycleManager);
 				classification.setValue(keyr.getKeyValue());
 				classification.setName(new InternationalStringImpl(keyr.getKeyName()));
 				 
 				String tmodelKey = keyr.getTModelKey();
 				if (tmodelKey != null) {
-					ClassificationScheme scheme = new ClassificationSchemeImpl(lcm);
+					ClassificationScheme scheme = new ClassificationSchemeImpl(lifeCycleManager);
 					scheme.setKey(new KeyImpl(tmodelKey));
 					classification.setClassificationScheme(scheme);
 				}
@@ -551,18 +627,18 @@ public class ScoutUddiJaxrHelper
 	    return classifications;
 	}
    
-   public static Collection<ExternalLink> getExternalLinks(OverviewDoc odoc , LifeCycleManager lcm)
+   public static Collection<ExternalLink> getExternalLinks(OverviewDoc overviewDoc , LifeCycleManager lifeCycleManager)
    throws JAXRException
    {
        ArrayList<ExternalLink> alist = new ArrayList<ExternalLink>(1);
-       if(odoc != null)
+       if(overviewDoc != null)
        {
-           Description[] descVect = odoc.getDescriptionArray();
+           Description[] descVect = getDescriptionArray(overviewDoc.getDescription());
            String desc = "";
            if(descVect != null && descVect.length > 0) {
-             desc = ((Description)descVect[0]).getStringValue(); 
+             desc = ((Description)descVect[0]).getValue(); 
            }
-           alist.add(lcm.createExternalLink(odoc.getOverviewURL(),desc));
+           alist.add(lifeCycleManager.createExternalLink(overviewDoc.getOverviewURL(),desc));
        }
        
        return alist;
@@ -571,26 +647,31 @@ public class ScoutUddiJaxrHelper
    /**
     * External Identifiers
     * 
-    * @param ibag
+    * @param identifierBag
     * @param destinationObj
-    * @param lcm
+    * @param lifeCycleManager
     * @throws JAXRException
     */
-   public static Collection<ExternalIdentifier> getExternalIdentifiers(IdentifierBag ibag, LifeCycleManager lcm) throws JAXRException {
+   public static Collection<ExternalIdentifier> getExternalIdentifiers(IdentifierBag identifierBag, LifeCycleManager lifeCycleManager) 
+   throws JAXRException {
 	  Collection<ExternalIdentifier> extidentifiers = null;
-      if (ibag != null) {
+      if (identifierBag != null) {
     	  extidentifiers = new ArrayList<ExternalIdentifier>();
-          KeyedReference[] keyrarr = ibag.getKeyedReferenceArray();
+    	  
+    	  List<KeyedReference> keyedReferenceList = identifierBag.getKeyedReference();
+          KeyedReference[] keyrarr = new KeyedReference[keyedReferenceList.size()];
+          keyedReferenceList.toArray(keyrarr);
+          
           for (int i = 0; keyrarr != null && i < keyrarr.length; i++)
           {
              KeyedReference keyr = (KeyedReference)keyrarr[i];
-             ExternalIdentifier extId = new ExternalIdentifierImpl(lcm);
+             ExternalIdentifier extId = new ExternalIdentifierImpl(lifeCycleManager);
              extId.setValue(keyr.getKeyValue());
              extId.setName(new InternationalStringImpl(keyr.getKeyName()));
              
              String tmodelKey = keyr.getTModelKey();
              if (tmodelKey != null) {
-            	 ClassificationScheme scheme = new ClassificationSchemeImpl(lcm);
+            	 ClassificationScheme scheme = new ClassificationSchemeImpl(lifeCycleManager);
             	 scheme.setKey(new KeyImpl(tmodelKey));
             	 extId.setIdentificationScheme(scheme);
              }
@@ -608,5 +689,19 @@ public class ScoutUddiJaxrHelper
        } else {
            return new Locale(lang);
        } 
+   }
+   
+   private static Name[] getNameArray(List<Name> nameList)
+   {
+	   Name[] namearr = new Name[nameList.size()];
+	   nameList.toArray(namearr);
+	   return namearr;
+   }
+   
+   private static Description[] getDescriptionArray(List<Description> descList)
+   {
+	   Description[] descarr = new Description[descList.size()];
+	   descList.toArray(descarr);
+	   return descarr;
    }
 }

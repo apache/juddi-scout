@@ -16,7 +16,7 @@
  */
 package org.apache.ws.scout.util;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -44,36 +44,36 @@ import javax.xml.registry.infomodel.User;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.scout.model.uddi.v2.AccessPoint;
+import org.apache.ws.scout.model.uddi.v2.Address;
+import org.apache.ws.scout.model.uddi.v2.AddressLine;
+import org.apache.ws.scout.model.uddi.v2.BindingTemplate;
+import org.apache.ws.scout.model.uddi.v2.BindingTemplates;
+import org.apache.ws.scout.model.uddi.v2.BusinessEntity;
+import org.apache.ws.scout.model.uddi.v2.BusinessService;
+import org.apache.ws.scout.model.uddi.v2.BusinessServices;
+import org.apache.ws.scout.model.uddi.v2.CategoryBag;
+import org.apache.ws.scout.model.uddi.v2.Contact;
+import org.apache.ws.scout.model.uddi.v2.Contacts;
+import org.apache.ws.scout.model.uddi.v2.Description;
+import org.apache.ws.scout.model.uddi.v2.DiscoveryURL;
+import org.apache.ws.scout.model.uddi.v2.DiscoveryURLs;
+import org.apache.ws.scout.model.uddi.v2.Email;
+import org.apache.ws.scout.model.uddi.v2.HostingRedirector;
+import org.apache.ws.scout.model.uddi.v2.IdentifierBag;
+import org.apache.ws.scout.model.uddi.v2.InstanceDetails;
+import org.apache.ws.scout.model.uddi.v2.KeyedReference;
+import org.apache.ws.scout.model.uddi.v2.Name;
+import org.apache.ws.scout.model.uddi.v2.ObjectFactory;
+import org.apache.ws.scout.model.uddi.v2.OverviewDoc;
+import org.apache.ws.scout.model.uddi.v2.Phone;
+import org.apache.ws.scout.model.uddi.v2.PublisherAssertion;
+import org.apache.ws.scout.model.uddi.v2.TModel;
+import org.apache.ws.scout.model.uddi.v2.TModelBag;
+import org.apache.ws.scout.model.uddi.v2.TModelInstanceDetails;
+import org.apache.ws.scout.model.uddi.v2.TModelInstanceInfo;
+import org.apache.ws.scout.model.uddi.v2.URLType;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
-import org.apache.ws.scout.uddi.AccessPoint;
-import org.apache.ws.scout.uddi.Address;
-import org.apache.ws.scout.uddi.AddressLine;
-import org.apache.ws.scout.uddi.BindingTemplate;
-import org.apache.ws.scout.uddi.BindingTemplates;
-import org.apache.ws.scout.uddi.BusinessEntity;
-import org.apache.ws.scout.uddi.BusinessService;
-import org.apache.ws.scout.uddi.BusinessServices;
-import org.apache.ws.scout.uddi.CategoryBag;
-import org.apache.ws.scout.uddi.Contact;
-import org.apache.ws.scout.uddi.Contacts;
-import org.apache.ws.scout.uddi.Description;
-import org.apache.ws.scout.uddi.DiscoveryURL;
-import org.apache.ws.scout.uddi.DiscoveryURLs;
-import org.apache.ws.scout.uddi.Email;
-import org.apache.ws.scout.uddi.HostingRedirector;
-import org.apache.ws.scout.uddi.IdentifierBag;
-import org.apache.ws.scout.uddi.InstanceDetails;
-import org.apache.ws.scout.uddi.KeyedReference;
-import org.apache.ws.scout.uddi.Name;
-import org.apache.ws.scout.uddi.OverviewDoc;
-import org.apache.ws.scout.uddi.Phone;
-import org.apache.ws.scout.uddi.PublisherAssertion;
-import org.apache.ws.scout.uddi.TModel;
-import org.apache.ws.scout.uddi.TModelBag;
-import org.apache.ws.scout.uddi.TModelInstanceDetails;
-import org.apache.ws.scout.uddi.TModelInstanceInfo;
-import org.apache.ws.scout.uddi.URLType;
-import org.apache.xmlbeans.XmlObject;
 
 /**
  * Helper class that does Jaxr->UDDI Mapping
@@ -86,52 +86,54 @@ public class ScoutJaxrUddiHelper
 {
     private static final String UDDI_ORG_TYPES = "uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4";
 	private static Log log = LogFactory.getLog(ScoutJaxrUddiHelper.class);
+	private static ObjectFactory objectFactory = new ObjectFactory();
+	
     /**
      * Get UDDI Address given JAXR Postal Address
      */
-	public static Address getAddress(PostalAddress post) throws JAXRException {
-		Address address = Address.Factory.newInstance();
+	public static Address getAddress(PostalAddress postalAddress) throws JAXRException {
+		Address address = objectFactory.createAddress();
 
 		AddressLine[] addarr = new AddressLine[6];
 
-        String stnum = post.getStreetNumber();
-        String st = post.getStreet();
-        String city = post.getCity();
-        String country = post.getCountry();
-        String code = post.getPostalCode();
-        String state = post.getStateOrProvince();
+        String stnum = postalAddress.getStreetNumber();
+        String st = postalAddress.getStreet();
+        String city = postalAddress.getCity();
+        String country = postalAddress.getCountry();
+        String code = postalAddress.getPostalCode();
+        String state = postalAddress.getStateOrProvince();
 
-		AddressLine stnumAL = AddressLine.Factory.newInstance();
+		AddressLine stnumAL = objectFactory.createAddressLine();
         stnumAL.setKeyName("STREET_NUMBER");
 		if (stnum != null) {
         stnumAL.setKeyValue(stnum);
 		}
 
-		AddressLine stAL = AddressLine.Factory.newInstance();
+		AddressLine stAL = objectFactory.createAddressLine();
         stAL.setKeyName("STREET");
 		if (st != null) {
         stAL.setKeyValue(st);
 		}
 
-		AddressLine cityAL = AddressLine.Factory.newInstance();
+		AddressLine cityAL = objectFactory.createAddressLine();
         cityAL.setKeyName("CITY");
 		if (city != null) {
         cityAL.setKeyValue(city);
 		}
 
-		AddressLine countryAL = AddressLine.Factory.newInstance();
+		AddressLine countryAL = objectFactory.createAddressLine();
         countryAL.setKeyName("COUNTRY");
 		if (country != null) {
         countryAL.setKeyValue(country);
 		}
 
-		AddressLine codeAL = AddressLine.Factory.newInstance();
+		AddressLine codeAL = objectFactory.createAddressLine();
         codeAL.setKeyName("POSTALCODE");
 		if (code != null) {
         codeAL.setKeyValue(code);
 		}
 
-		AddressLine stateAL = AddressLine.Factory.newInstance();
+		AddressLine stateAL = objectFactory.createAddressLine();
         stateAL.setKeyName("STATE");
 		if (state != null) {
         stateAL.setKeyValue(state);
@@ -145,32 +147,32 @@ public class ScoutJaxrUddiHelper
 		addarr[4] = codeAL;
 		addarr[5] = stateAL;
 
-		address.setAddressLineArray(addarr);
+		address.getAddressLine().addAll(Arrays.asList(addarr));
 
         return address;
     }
 
 	public static BindingTemplate getBindingTemplateFromJAXRSB(
-			ServiceBinding serve) throws JAXRException {
-		BindingTemplate bt = BindingTemplate.Factory.newInstance();
-		if (serve.getKey() != null && serve.getKey().getId() != null) {
-			bt.setBindingKey(serve.getKey().getId());
+			ServiceBinding serviceBinding) throws JAXRException {
+		BindingTemplate bt = objectFactory.createBindingTemplate();
+		if (serviceBinding.getKey() != null && serviceBinding.getKey().getId() != null) {
+			bt.setBindingKey(serviceBinding.getKey().getId());
 		} else {
 			bt.setBindingKey("");
 		}
 	
 		try {
 			// Set Access URI
-            String accessuri = serve.getAccessURI();
+            String accessuri = serviceBinding.getAccessURI();
 			if (accessuri != null) {
-				AccessPoint ap = AccessPoint.Factory.newInstance();
-                ap.setURLType(getURLType(accessuri));
-				ap.setStringValue(accessuri);
-                bt.setAccessPoint(ap);
+				AccessPoint accessPoint = objectFactory.createAccessPoint();
+                accessPoint.setURLType(getURLType(accessuri));
+				accessPoint.setValue(accessuri);
+                bt.setAccessPoint(accessPoint);
             }
-            ServiceBinding sb = serve.getTargetBinding();
+            ServiceBinding sb = serviceBinding.getTargetBinding();
 			if (sb != null) {
-				HostingRedirector red = HostingRedirector.Factory.newInstance();
+				HostingRedirector red = objectFactory.createHostingRedirector();
                 Key key = sb.getKey();
 				if (key != null && key.getId() != null) {
 					red.setBindingKey(key.getId());
@@ -178,58 +180,66 @@ public class ScoutJaxrUddiHelper
                     red.setBindingKey("");
                 }
                 bt.setHostingRedirector(red);
+            } else {
+            	if (bt.getAccessPoint() == null) {
+            		bt.setAccessPoint(objectFactory.createAccessPoint());
+            	}
             }
 			// TODO:Need to look further at the mapping b/w BindingTemplate and
 			// Jaxr ServiceBinding
 
 			// Get Service information
-           Service svc = serve.getService();
+           Service svc = serviceBinding.getService();
 			if (svc != null && svc.getKey() != null && svc.getKey().getId() != null) {
               bt.setServiceKey(svc.getKey().getId());
            }
 			
-			InternationalString idesc = ((RegistryObject) serve).getDescription();
+			InternationalString idesc = ((RegistryObject) serviceBinding).getDescription();
             
             if (idesc != null) {
                 for (LocalizedString locName : idesc.getLocalizedStrings()) {
-                    Description desc = bt.addNewDescription();
-                    desc.setStringValue(locName.getValue());
+                    Description desc = objectFactory.createDescription();
+                    bt.getDescription().add(desc);
+                    desc.setValue(locName.getValue());
                     desc.setLang(locName.getLocale().getLanguage());                
                 }
             }
 
 			// SpecificationLink
-           Collection<SpecificationLink> slcol = serve.getSpecificationLinks();
-			TModelInstanceDetails tid = TModelInstanceDetails.Factory
-					.newInstance();
+           Collection<SpecificationLink> slcol = serviceBinding.getSpecificationLinks();
+			TModelInstanceDetails tid = objectFactory.createTModelInstanceDetails();
 			if (slcol != null && !slcol.isEmpty()) {
               Iterator<SpecificationLink> iter = slcol.iterator();
 				while (iter.hasNext()) {
 					SpecificationLink slink = (SpecificationLink) iter.next();
 
-					TModelInstanceInfo emptyTInfo = tid
-							.addNewTModelInstanceInfo();
+					TModelInstanceInfo emptyTInfo = objectFactory.createTModelInstanceInfo();
+					tid.getTModelInstanceInfo().add(emptyTInfo);
 
                     RegistryObject specificationObject = slink.getSpecificationObject();
 					if (specificationObject.getKey() != null && specificationObject.getKey().getId() != null) {
 						emptyTInfo.setTModelKey(specificationObject.getKey().getId());
                         if (specificationObject.getDescription()!=null) {
                             for (LocalizedString locDesc : specificationObject.getDescription().getLocalizedStrings()) {
-                                Description description = emptyTInfo.addNewDescription();
-                                description.setStringValue(locDesc.getValue());
+                                Description description = objectFactory.createDescription();
+                                emptyTInfo.getDescription().add(description);
+                                description.setValue(locDesc.getValue());
                                 description.setLang(locDesc.getLocale().getLanguage());
                             }
                         }
                         Collection<ExternalLink> externalLinks = slink.getExternalLinks();
                         if (externalLinks!=null && externalLinks.size()>0) {
                             for (ExternalLink link : externalLinks) {
-                                InstanceDetails ids = emptyTInfo.addNewInstanceDetails();
+                                InstanceDetails ids = objectFactory.createInstanceDetails();
+                                emptyTInfo.setInstanceDetails(ids);
                                 if (link.getDescription()!=null) {
-                                    Description description = ids.addNewDescription();
-                                    description.setStringValue(link.getDescription().getValue());
+                                    Description description = objectFactory.createDescription();
+                                    ids.getDescription().add(description);
+                                    description.setValue(link.getDescription().getValue());
                                 }
                                 if (link.getExternalURI()!=null) {
-                                    OverviewDoc overviewDoc = ids.addNewOverviewDoc();
+                                    OverviewDoc overviewDoc = objectFactory.createOverviewDoc();
+                                    ids.setOverviewDoc(overviewDoc);
                                     overviewDoc.setOverviewURL(link.getExternalURI());
                                 }
                             } 
@@ -246,21 +256,21 @@ public class ScoutJaxrUddiHelper
     }
 
 	public static PublisherAssertion getPubAssertionFromJAXRAssociation(
-			Association assc) throws JAXRException {
-		PublisherAssertion pa = PublisherAssertion.Factory.newInstance();
+			Association association) throws JAXRException {
+		PublisherAssertion pa = objectFactory.createPublisherAssertion();
 		try {
-			if (assc.getSourceObject().getKey() != null && 
-				assc.getSourceObject().getKey().getId() != null) {
-            pa.setFromKey(assc.getSourceObject().getKey().getId());
+			if (association.getSourceObject().getKey() != null && 
+				association.getSourceObject().getKey().getId() != null) {
+            pa.setFromKey(association.getSourceObject().getKey().getId());
 			}
 			
-			if (assc.getTargetObject().getKey() != null &&
-				assc.getTargetObject().getKey().getId() != null) {
-            pa.setToKey(assc.getTargetObject().getKey().getId());
+			if (association.getTargetObject().getKey() != null &&
+				association.getTargetObject().getKey().getId() != null) {
+            pa.setToKey(association.getTargetObject().getKey().getId());
 			}
-            Concept c = assc.getAssociationType();
+            Concept c = association.getAssociationType();
             String v = c.getValue();
-			KeyedReference kr = KeyedReference.Factory.newInstance();
+			KeyedReference kr = objectFactory.createKeyedReference();
             Key key = c.getKey();
 			if (key == null) {
 				// TODO:Need to check this. If the concept is a predefined
@@ -294,13 +304,13 @@ public class ScoutJaxrUddiHelper
 
 	public static PublisherAssertion getPubAssertionFromJAXRAssociationKey(
 			String key) throws JAXRException {
-		PublisherAssertion pa = PublisherAssertion.Factory.newInstance();
+		PublisherAssertion pa = objectFactory.createPublisherAssertion();
 		try {
 			StringTokenizer token = new StringTokenizer(key, ":");
 			if (token.hasMoreTokens()) {
                pa.setFromKey(getToken(token.nextToken()));
                pa.setToKey(getToken(token.nextToken()));
-				KeyedReference kr = KeyedReference.Factory.newInstance();
+				KeyedReference kr = objectFactory.createKeyedReference();
 				// Sometimes the Key is UUID:something
                String str = getToken(token.nextToken());
 				if ("UUID".equals(str))
@@ -318,28 +328,30 @@ public class ScoutJaxrUddiHelper
     }
 
 	public static BusinessService getBusinessServiceFromJAXRService(
-			Service serve) throws JAXRException {
-		BusinessService bs = BusinessService.Factory.newInstance();
+			Service service) throws JAXRException {
+		BusinessService bs = objectFactory.createBusinessService();
 		try {
-			InternationalString iname = ((RegistryObject) serve).getName();
+			InternationalString iname = ((RegistryObject) service).getName();
 						
 			for (LocalizedString locName : iname.getLocalizedStrings()) {
-			    Name name = bs.addNewName();
-			    name.setStringValue(locName.getValue());
+			    Name name = objectFactory.createName();
+			    bs.getName().add(name);
+			    name.setValue(locName.getValue());
 			    name.setLang(locName.getLocale().getLanguage());                
 			}
 	         
-            InternationalString idesc = ((RegistryObject) serve).getDescription();
+            InternationalString idesc = ((RegistryObject) service).getDescription();
     
             if (idesc != null) {
                 for (LocalizedString locName : idesc.getLocalizedStrings()) {
-                    Description desc = bs.addNewDescription();
-                    desc.setStringValue(locName.getValue());
+                    Description desc = objectFactory.createDescription();
+                    bs.getDescription().add(desc);
+                    desc.setValue(locName.getValue());
                     desc.setLang(locName.getLocale().getLanguage());                
                 }
             }
 
-            Organization o = serve.getProvidingOrganization();
+            Organization o = service.getProvidingOrganization();
 
             /*
              * there may not always be a key...
@@ -359,19 +371,19 @@ public class ScoutJaxrUddiHelper
 						"Service has no associated organization");
             }
 
-			if (serve.getKey() != null && serve.getKey().getId() != null) {
-                bs.setServiceKey(serve.getKey().getId());
+			if (service.getKey() != null && service.getKey().getId() != null) {
+                bs.setServiceKey(service.getKey().getId());
             } else {
                 bs.setServiceKey("");
             }
 
-            CategoryBag catBag = getCategoryBagFromClassifications(serve.getClassifications());
+            CategoryBag catBag = getCategoryBagFromClassifications(service.getClassifications());
             if (catBag!=null) {
                 bs.setCategoryBag(catBag);
             }
 
             //Add the ServiceBinding information
-            BindingTemplates bt = getBindingTemplates(serve.getServiceBindings());
+            BindingTemplates bt = getBindingTemplates(service.getServiceBindings());
             if (bt != null) {
                 bs.setBindingTemplates(bt);
             }
@@ -384,14 +396,14 @@ public class ScoutJaxrUddiHelper
     }
 
 	public static TModel getTModelFromJAXRClassificationScheme(
-			ClassificationScheme scheme) throws JAXRException {
-		TModel tm = TModel.Factory.newInstance();
+			ClassificationScheme classificationScheme) throws JAXRException {
+		TModel tm = objectFactory.createTModel();
 		try {
             /*
              * a fresh scheme might not have a key
              */
 
-            Key k = scheme.getKey();
+            Key k = classificationScheme.getKey();
 
             if (k != null && k.getId() != null) {
                 tm.setTModelKey(k.getId());
@@ -403,41 +415,43 @@ public class ScoutJaxrUddiHelper
              * There's no reason to believe these are here either
              */
 
-            Slot s = scheme.getSlot("authorizedName");
+            Slot s = classificationScheme.getSlot("authorizedName");
 
 			if (s != null && s.getName() != null) {
                 tm.setAuthorizedName(s.getName());
             }
 
-            s = scheme.getSlot("operator");
+            s = classificationScheme.getSlot("operator");
 
 			if (s != null && s.getName() != null) {
                 tm.setOperator(s.getName());
             }
 
-			InternationalString iname = ((RegistryObject) scheme).getName();
+			InternationalString iname = ((RegistryObject) classificationScheme).getName();
 			 
 			for (LocalizedString locName : iname.getLocalizedStrings()) {
-			    Name name = tm.addNewName();
-			    name.setStringValue(locName.getValue());
+			    Name name = objectFactory.createName();
+			    tm.setName(name);
+			    name.setValue(locName.getValue());
 			    name.setLang(locName.getLocale().getLanguage());                
 			}
 	         
-			InternationalString idesc = ((RegistryObject) scheme).getDescription();
+			InternationalString idesc = ((RegistryObject) classificationScheme).getDescription();
 			
 			if (idesc != null) {
 			    for (LocalizedString locName : idesc.getLocalizedStrings()) {
-			        Description desc = tm.addNewDescription();
-			        desc.setStringValue(locName.getValue());
+			        Description desc = objectFactory.createDescription();
+			        tm.getDescription().add(desc);
+			        desc.setValue(locName.getValue());
 	                desc.setLang(locName.getLocale().getLanguage());                
 	            }
 			}
 
-            IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers());
+            IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(classificationScheme.getExternalIdentifiers());
             if (idBag!=null) {
                 tm.setIdentifierBag(idBag);
             }
-            CategoryBag catBag = getCategoryBagFromClassifications(scheme.getClassifications());
+            CategoryBag catBag = getCategoryBagFromClassifications(classificationScheme.getClassifications());
             if (catBag!=null) {
                 tm.setCategoryBag(catBag);
             }
@@ -449,52 +463,54 @@ public class ScoutJaxrUddiHelper
         return tm;
     }
 
-    public static TModel getTModelFromJAXRConcept(Concept scheme)
+    public static TModel getTModelFromJAXRConcept(Concept concept)
 			throws JAXRException {
-    	TModel tm = TModel.Factory.newInstance();
-		if (scheme == null)
+    	TModel tm = objectFactory.createTModel();
+		if (concept == null)
 			return null;
 		try {
-            Key key = scheme.getKey();
+            Key key = concept.getKey();
 			if (key != null && key.getId() != null)
 				tm.setTModelKey(key.getId());
-            Slot sl1 = scheme.getSlot("authorizedName");
+            Slot sl1 = concept.getSlot("authorizedName");
 			if (sl1 != null && sl1.getName() != null)
 				tm.setAuthorizedName(sl1.getName());
 
-            Slot sl2 = scheme.getSlot("operator");
+            Slot sl2 = concept.getSlot("operator");
 			if (sl2 != null && sl2.getName() != null)
 				tm.setOperator(sl2.getName());
 
-			InternationalString iname = ((RegistryObject) scheme).getName();
+			InternationalString iname = ((RegistryObject) concept).getName();
 			
 			for (LocalizedString locName : iname.getLocalizedStrings()) {
-			    Name name = tm.addNewName();
-			    name.setStringValue(locName.getValue());
+			    Name name = objectFactory.createName();
+			    tm.setName(name);
+			    name.setValue(locName.getValue());
 			    name.setLang(locName.getLocale().getLanguage());			    
 			}
 			
-			InternationalString idesc = ((RegistryObject) scheme).getDescription();
+			InternationalString idesc = ((RegistryObject) concept).getDescription();
 			
             if (idesc != null) {
                 for (LocalizedString locName : idesc.getLocalizedStrings()) {
-                    Description desc = tm.addNewDescription();
-                    desc.setStringValue(locName.getValue());
+                    Description desc = objectFactory.createDescription();
+                    tm.getDescription().add(desc);
+                    desc.setValue(locName.getValue());
                     desc.setLang(locName.getLocale().getLanguage());
                 }
             }
 //          External Links 
-            Collection<ExternalLink> externalLinks = scheme.getExternalLinks(); 
+            Collection<ExternalLink> externalLinks = concept.getExternalLinks(); 
             if(externalLinks != null && externalLinks.size() > 0)
             {
                 tm.setOverviewDoc(getOverviewDocFromExternalLink((ExternalLink)externalLinks.iterator().next()));
             }  
 
-            IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(scheme.getExternalIdentifiers());
+            IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(concept.getExternalIdentifiers());
             if (idBag!=null) {
                 tm.setIdentifierBag(idBag);
             }
-            CategoryBag catBag = getCategoryBagFromClassifications(scheme.getClassifications());
+            CategoryBag catBag = getCategoryBagFromClassifications(concept.getClassifications());
             if (catBag!=null) {
                 tm.setCategoryBag(catBag);
             }
@@ -505,15 +521,15 @@ public class ScoutJaxrUddiHelper
         return tm;
     }
     
-    public static BusinessEntity getBusinessEntityFromJAXROrg(Organization org)
+    public static BusinessEntity getBusinessEntityFromJAXROrg(Organization organization)
 			throws JAXRException {
-		BusinessEntity biz = BusinessEntity.Factory.newInstance();
-		BusinessServices bss = BusinessServices.Factory.newInstance();
+		BusinessEntity biz = objectFactory.createBusinessEntity();
+		BusinessServices bss = objectFactory.createBusinessServices();
 		BusinessService[] barr = new BusinessService[0];
 
 		try {
 			// It may just be an update
-            Key key = org.getKey();
+            Key key = organization.getKey();
 			if (key != null && key.getId() != null) {
 				biz.setBusinessKey(key.getId());
             } else {
@@ -521,35 +537,37 @@ public class ScoutJaxrUddiHelper
             }
 			// Lets get the Organization attributes at the top level
 			
-			InternationalString iname = org.getName();
+			InternationalString iname = organization.getName();
 			
 			if (iname != null) {    
 			    for (LocalizedString locName : iname.getLocalizedStrings()) {
-			        Name name = biz.addNewName();
-			        name.setStringValue(locName.getValue());
+			        Name name = objectFactory.createName();
+			        biz.getName().add(name);
+			        name.setValue(locName.getValue());
 			        name.setLang(locName.getLocale().getLanguage());                
 			    }
 			}
 			
-			InternationalString idesc = org.getDescription();
+			InternationalString idesc = organization.getDescription();
 			
 			if (idesc != null) {
 			    for (LocalizedString locName : idesc.getLocalizedStrings()) {
-			        Description desc = biz.addNewDescription();
-			        desc.setStringValue(locName.getValue());
+			        Description desc = objectFactory.createDescription();
+			        biz.getDescription().add(desc);
+			        desc.setValue(locName.getValue());
 			        desc.setLang(locName.getLocale().getLanguage());                
 			    }
 			}
 			
-			if (org.getPrimaryContact() != null && 
-				org.getPrimaryContact().getPersonName()!= null &&
-				org.getPrimaryContact().getPersonName().getFullName() != null) {
+			if (organization.getPrimaryContact() != null && 
+				organization.getPrimaryContact().getPersonName()!= null &&
+				organization.getPrimaryContact().getPersonName().getFullName() != null) {
 
-				biz.setAuthorizedName(org.getPrimaryContact().getPersonName()
+				biz.setAuthorizedName(organization.getPrimaryContact().getPersonName()
 						.getFullName());
 			}
 
-            Collection<Service> s = org.getServices();
+            Collection<Service> s = organization.getServices();
             log.debug("?Org has services=" + s.isEmpty());
 
 			barr = new BusinessService[s.size()];
@@ -570,11 +588,11 @@ public class ScoutJaxrUddiHelper
              * that the first UDDI user is the primary contact
              */
 
-			Contacts cts = Contacts.Factory.newInstance();
+			Contacts cts = objectFactory.createContacts();
 			Contact[] carr = new Contact[0];
 
-            User primaryContact = org.getPrimaryContact();
-            Collection<User> users = org.getUsers();
+            User primaryContact = organization.getPrimaryContact();
+            Collection<User> users = organization.getUsers();
 
             // Expand array to necessary size only (xmlbeans does not like
             // null items in cases like this)
@@ -616,37 +634,39 @@ public class ScoutJaxrUddiHelper
                 }
             }
 
-			bss.setBusinessServiceArray(barr);
+			bss.getBusinessService().addAll(Arrays.asList(barr));
             if (carr.length>0) {
-                cts.setContactArray(carr);
+                cts.getContact().addAll(Arrays.asList(carr));
                 biz.setContacts(cts);
             }
             biz.setBusinessServices(bss);
 
             // External Links
-            Iterator<ExternalLink> exiter = org.getExternalLinks().iterator();
+            Iterator<ExternalLink> exiter = organization.getExternalLinks().iterator();
             DiscoveryURLs emptyDUs = null;
             boolean first = true;
             while (exiter.hasNext()) {
                 ExternalLink link = (ExternalLink) exiter.next();
                 /** Note: jUDDI adds its own discoverURL as the businessEntity* */
                 if (first) {
-                    emptyDUs = biz.addNewDiscoveryURLs();
+                    emptyDUs = objectFactory.createDiscoveryURLs();
+                    biz.setDiscoveryURLs(emptyDUs);
                     first = false;
                 }
-                DiscoveryURL emptyDU = emptyDUs.addNewDiscoveryURL();
+                DiscoveryURL emptyDU = objectFactory.createDiscoveryURL();
+                emptyDUs.getDiscoveryURL().add(emptyDU);
                 emptyDU.setUseType("businessEntityExt");
 				
                 if (link.getExternalURI() != null) {
-                    emptyDU.setStringValue(link.getExternalURI());
+                    emptyDU.setValue(link.getExternalURI());
                 }
             }
 			
-          IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(org.getExternalIdentifiers());
+          IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(organization.getExternalIdentifiers());
           if (idBag!=null) {
               biz.setIdentifierBag(idBag);
           }
-          CategoryBag catBag = getCategoryBagFromClassifications(org.getClassifications());
+          CategoryBag catBag = getCategoryBagFromClassifications(organization.getClassifications());
           if (catBag!=null) {
               biz.setCategoryBag(catBag);
           }
@@ -663,8 +683,7 @@ public class ScoutJaxrUddiHelper
      */
     public static Contact getContactFromJAXRUser(User user)
 			throws JAXRException {
-		Contact ct = Contact.Factory.newInstance();
-
+		Contact ct = objectFactory.createContact();
         if (user == null) {
             return null;
         }
@@ -702,16 +721,16 @@ public class ScoutJaxrUddiHelper
 			int phonearrPos = 0;
 			while (it.hasNext()) {
                 TelephoneNumber t = (TelephoneNumber) it.next();
-				Phone phone = Phone.Factory.newInstance();
+				Phone phone = objectFactory.createPhone();
                 String str = t.getNumber();
                 log.debug("Telephone=" + str);
 				
 				// FIXME: If phone number is null, should the phone 
 				// not be set at all, or set to empty string?
 				if (str != null) {
-					phone.setStringValue(str);
+					phone.setValue(str);
 				} else {
-					phone.setStringValue("");
+					phone.setValue("");
 				}
 
 				phonearr[phonearrPos] = phone;
@@ -727,10 +746,10 @@ public class ScoutJaxrUddiHelper
 			int emailarrPos = 0;
 			while (iter.hasNext()) {
                 EmailAddress ea = (EmailAddress) iter.next();
-				Email email = Email.Factory.newInstance();
+				Email email = objectFactory.createEmail();
 				
 				if (ea.getAddress() != null) {
-					email.setStringValue(ea.getAddress());
+					email.setValue(ea.getAddress());
 				}
 				// email.setText( ea.getAddress() );
 				
@@ -741,9 +760,9 @@ public class ScoutJaxrUddiHelper
 				emailarr[emailarrPos] = email;
 				emailarrPos++;
 			}
-			ct.setAddressArray(addarr);
-			ct.setPhoneArray(phonearr);
-			ct.setEmailArray(emailarr);
+			ct.getAddress().addAll(Arrays.asList(addarr));
+			ct.getPhone().addAll(Arrays.asList(phonearr));
+			ct.getEmail().addAll(Arrays.asList(emailarr));
 		} catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
@@ -757,9 +776,9 @@ public class ScoutJaxrUddiHelper
       return tokenstr;
    }
 
-	private static URLType.Enum getURLType(String accessuri) {
+	private static URLType getURLType(String accessuri) {
        String acc = accessuri.toLowerCase();
-		URLType.Enum uri = URLType.OTHER;
+		URLType uri = URLType.OTHER;
 		if (acc.startsWith("http:"))
 			uri = URLType.HTTP;
 		else if (acc.startsWith("https:"))
@@ -792,12 +811,13 @@ public class ScoutJaxrUddiHelper
 				return null;
     		
     		// Classifications
-			CategoryBag cbag = (CategoryBag)(XmlObject.Factory.newInstance()).changeType(CategoryBag.type);
+			CategoryBag cbag = objectFactory.createCategoryBag();
 			Iterator classiter = classifications.iterator();
 			while (classiter.hasNext()) {
 				Classification classification = (Classification) classiter.next();
 				if (classification != null ) {
-					KeyedReference keyr = cbag.addNewKeyedReference();
+					KeyedReference keyr = objectFactory.createKeyedReference();
+					cbag.getKeyedReference().add(keyr);
 	
 					InternationalStringImpl iname = null;
 					String value = null;
@@ -852,7 +872,7 @@ public class ScoutJaxrUddiHelper
 				return null;
     		
     		// Classifications
-			TModelBag tbag = TModelBag.Factory.newInstance();
+			TModelBag tbag = objectFactory.createTModelBag();
 			Iterator speciter = specifications.iterator();
 			while (speciter.hasNext()) {
 				SpecificationLink specification = (SpecificationLink) speciter.next();
@@ -860,7 +880,7 @@ public class ScoutJaxrUddiHelper
 					RegistryObject ro = specification.getSpecificationObject();
 					if (ro.getKey() != null) {
 						Key key = ro.getKey();
-						tbag.addTModelKey(key.toString());
+						tbag.getTModelKey().add(key.toString());
 					}
 				}
 			}
@@ -884,12 +904,13 @@ public class ScoutJaxrUddiHelper
 				return null;
     		
     		// Identifiers
-			IdentifierBag ibag = (IdentifierBag)(XmlObject.Factory.newInstance()).changeType(IdentifierBag.type);
+			IdentifierBag ibag = objectFactory.createIdentifierBag();
 			Iterator iditer = identifiers.iterator();
 			while (iditer.hasNext()) {
 				ExternalIdentifier extid = (ExternalIdentifier) iditer.next();
 				if (extid != null ) {
-					KeyedReference keyr = ibag.addNewKeyedReference();
+					KeyedReference keyr = objectFactory.createKeyedReference();
+					ibag.getKeyedReference().add(keyr);
 	
 					InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) extid).getName();
 					String value = extid.getValue();
@@ -918,14 +939,15 @@ public class ScoutJaxrUddiHelper
     private static OverviewDoc getOverviewDocFromExternalLink(ExternalLink link)
        throws JAXRException
        {
-           OverviewDoc od = (OverviewDoc)(XmlObject.Factory.newInstance()).changeType(OverviewDoc.type);
+           OverviewDoc od = objectFactory.createOverviewDoc();
            String url = link.getExternalURI();
            if(url != null)
                od.setOverviewURL(url);
            InternationalString extDesc = link.getDescription();
            if(extDesc != null) {
-               Description description = od.addNewDescription();
-               description.setStringValue(extDesc.getValue());
+               Description description = objectFactory.createDescription();
+               od.getDescription().add(description);
+               description.setValue(extDesc.getValue());
            }
            return od;
        }
@@ -934,7 +956,7 @@ public class ScoutJaxrUddiHelper
         throws JAXRException {
         BindingTemplates bt = null;
         if(serviceBindings != null && serviceBindings.size() > 0) {
-            bt = BindingTemplates.Factory.newInstance();
+            bt = objectFactory.createBindingTemplates();
             Iterator iter = serviceBindings.iterator();
             int currLoc = 0;
             BindingTemplate[] bindingTemplateArray = new BindingTemplate[serviceBindings.size()];
@@ -944,7 +966,7 @@ public class ScoutJaxrUddiHelper
                 currLoc++;
             }
             if (bindingTemplateArray != null) {
-                bt.setBindingTemplateArray(bindingTemplateArray);
+                bt.getBindingTemplate().addAll(Arrays.asList(bindingTemplateArray));
             }
         }
         return bt; 
