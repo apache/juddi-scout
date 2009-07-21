@@ -37,12 +37,18 @@ import javax.xml.registry.JAXRException;
 public class BaseTestCase
 {
     protected Connection connection;
+    protected Connection connection2;
+    
     protected BusinessLifeCycleManager blm;
     protected BusinessQueryManager bqm;
 
     //Set some default values
     protected String userid = System.getProperty("uddi.test.uid")  == null ? "jdoe"     : System.getProperty("uddi.test.uid");
     protected String passwd = System.getProperty("uddi.test.pass") == null ? "password" : System.getProperty("uddi.test.pass");
+    
+    protected String userid2 = System.getProperty("uddi.test.uid2")  == null ? "jdoe2"     : System.getProperty("uddi.test.uid2");
+    protected String passwd2 = System.getProperty("uddi.test.pass2") == null ? "password2" : System.getProperty("uddi.test.pass2");
+    
     protected int maxRows   = 100;
 
     /**
@@ -71,6 +77,13 @@ public class BaseTestCase
                 passwd = scoutProperties.getProperty("password");
             }
             
+            if (scoutProperties.getProperty("userid2")!=null) {
+                userid = scoutProperties.getProperty("userid2");
+            }
+            if (scoutProperties.getProperty("password2")!=null) {
+                passwd = scoutProperties.getProperty("password2");
+            }
+            
             // Define connection configuration properties
             // To query, you need only the query URL
             Properties props = new Properties();
@@ -93,6 +106,7 @@ public class BaseTestCase
             ConnectionFactory factory = ConnectionFactory.newInstance();
             factory.setProperties(props);
             connection = factory.createConnection();
+            connection2 = factory.createConnection();
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -134,6 +148,22 @@ public class BaseTestCase
         }
     }
     
-   
+    /**
+     * Does authentication with the uddi registry
+     */
+    public void loginSecondUser()
+    {
+        PasswordAuthentication passwdAuth = new PasswordAuthentication(userid2,
+                passwd2.toCharArray());
+        Set<PasswordAuthentication> creds = new HashSet<PasswordAuthentication>();
+        creds.add(passwdAuth);
 
+        try
+        {
+            connection2.setCredentials(creds);
+        } catch (JAXRException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

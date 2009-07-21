@@ -15,93 +15,69 @@
  */
 package org.apache.ws.scout.registry;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Properties;
 
-import javax.xml.namespace.QName;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.ws.scout.model.uddi.v2.AssertionStatusReport;
+import org.apache.ws.scout.model.uddi.v2.AuthToken;
+import org.apache.ws.scout.model.uddi.v2.BindingDetail;
+import org.apache.ws.scout.model.uddi.v2.BindingTemplate;
+import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
+import org.apache.ws.scout.model.uddi.v2.BusinessEntity;
+import org.apache.ws.scout.model.uddi.v2.BusinessList;
+import org.apache.ws.scout.model.uddi.v2.BusinessService;
+import org.apache.ws.scout.model.uddi.v2.CategoryBag;
+import org.apache.ws.scout.model.uddi.v2.DeleteBinding;
+import org.apache.ws.scout.model.uddi.v2.DeleteBusiness;
+import org.apache.ws.scout.model.uddi.v2.DeletePublisherAssertions;
+import org.apache.ws.scout.model.uddi.v2.DeleteService;
+import org.apache.ws.scout.model.uddi.v2.DeleteTModel;
+import org.apache.ws.scout.model.uddi.v2.DiscoveryURLs;
+import org.apache.ws.scout.model.uddi.v2.DispositionReport;
+import org.apache.ws.scout.model.uddi.v2.FindBinding;
+import org.apache.ws.scout.model.uddi.v2.FindBusiness;
+import org.apache.ws.scout.model.uddi.v2.FindQualifiers;
+import org.apache.ws.scout.model.uddi.v2.FindService;
+import org.apache.ws.scout.model.uddi.v2.FindTModel;
+import org.apache.ws.scout.model.uddi.v2.GetAssertionStatusReport;
+import org.apache.ws.scout.model.uddi.v2.GetAuthToken;
+import org.apache.ws.scout.model.uddi.v2.GetBusinessDetail;
+import org.apache.ws.scout.model.uddi.v2.GetPublisherAssertions;
+import org.apache.ws.scout.model.uddi.v2.GetRegisteredInfo;
+import org.apache.ws.scout.model.uddi.v2.GetServiceDetail;
+import org.apache.ws.scout.model.uddi.v2.GetTModelDetail;
+import org.apache.ws.scout.model.uddi.v2.IdentifierBag;
+import org.apache.ws.scout.model.uddi.v2.Name;
+import org.apache.ws.scout.model.uddi.v2.ObjectFactory;
+import org.apache.ws.scout.model.uddi.v2.PublisherAssertion;
+import org.apache.ws.scout.model.uddi.v2.PublisherAssertions;
+import org.apache.ws.scout.model.uddi.v2.RegisteredInfo;
+import org.apache.ws.scout.model.uddi.v2.SaveBinding;
+import org.apache.ws.scout.model.uddi.v2.SaveBusiness;
+import org.apache.ws.scout.model.uddi.v2.SaveService;
+import org.apache.ws.scout.model.uddi.v2.SaveTModel;
+import org.apache.ws.scout.model.uddi.v2.ServiceDetail;
+import org.apache.ws.scout.model.uddi.v2.ServiceList;
+import org.apache.ws.scout.model.uddi.v2.SetPublisherAssertions;
+import org.apache.ws.scout.model.uddi.v2.TModel;
+import org.apache.ws.scout.model.uddi.v2.TModelBag;
+import org.apache.ws.scout.model.uddi.v2.TModelDetail;
+import org.apache.ws.scout.model.uddi.v2.TModelList;
 import org.apache.ws.scout.transport.Transport;
-import org.apache.ws.scout.uddi.AssertionStatusReport;
-import org.apache.ws.scout.uddi.AssertionStatusReportDocument;
-import org.apache.ws.scout.uddi.AuthToken;
-import org.apache.ws.scout.uddi.AuthTokenDocument;
-import org.apache.ws.scout.uddi.BindingDetail;
-import org.apache.ws.scout.uddi.BindingDetailDocument;
-import org.apache.ws.scout.uddi.BindingTemplate;
-import org.apache.ws.scout.uddi.BusinessDetail;
-import org.apache.ws.scout.uddi.BusinessDetailDocument;
-import org.apache.ws.scout.uddi.BusinessEntity;
-import org.apache.ws.scout.uddi.BusinessList;
-import org.apache.ws.scout.uddi.BusinessListDocument;
-import org.apache.ws.scout.uddi.BusinessService;
-import org.apache.ws.scout.uddi.CategoryBag;
-import org.apache.ws.scout.uddi.DeleteBinding;
-import org.apache.ws.scout.uddi.DeleteBindingDocument;
-import org.apache.ws.scout.uddi.DeleteBusiness;
-import org.apache.ws.scout.uddi.DeleteBusinessDocument;
-import org.apache.ws.scout.uddi.DeletePublisherAssertions;
-import org.apache.ws.scout.uddi.DeletePublisherAssertionsDocument;
-import org.apache.ws.scout.uddi.DeleteService;
-import org.apache.ws.scout.uddi.DeleteServiceDocument;
-import org.apache.ws.scout.uddi.DeleteTModel;
-import org.apache.ws.scout.uddi.DeleteTModelDocument;
-import org.apache.ws.scout.uddi.DiscoveryURLs;
-import org.apache.ws.scout.uddi.DispositionReport;
-import org.apache.ws.scout.uddi.DispositionReportDocument;
-import org.apache.ws.scout.uddi.FindBinding;
-import org.apache.ws.scout.uddi.FindBindingDocument;
-import org.apache.ws.scout.uddi.FindBusiness;
-import org.apache.ws.scout.uddi.FindBusinessDocument;
-import org.apache.ws.scout.uddi.FindQualifiers;
-import org.apache.ws.scout.uddi.FindService;
-import org.apache.ws.scout.uddi.FindServiceDocument;
-import org.apache.ws.scout.uddi.FindTModel;
-import org.apache.ws.scout.uddi.FindTModelDocument;
-import org.apache.ws.scout.uddi.GetAssertionStatusReport;
-import org.apache.ws.scout.uddi.GetAssertionStatusReportDocument;
-import org.apache.ws.scout.uddi.GetAuthToken;
-import org.apache.ws.scout.uddi.GetAuthTokenDocument;
-import org.apache.ws.scout.uddi.GetBusinessDetail;
-import org.apache.ws.scout.uddi.GetBusinessDetailDocument;
-import org.apache.ws.scout.uddi.GetPublisherAssertions;
-import org.apache.ws.scout.uddi.GetPublisherAssertionsDocument;
-import org.apache.ws.scout.uddi.GetServiceDetail;
-import org.apache.ws.scout.uddi.GetServiceDetailDocument;
-import org.apache.ws.scout.uddi.GetTModelDetail;
-import org.apache.ws.scout.uddi.GetTModelDetailDocument;
-import org.apache.ws.scout.uddi.IdentifierBag;
-import org.apache.ws.scout.uddi.Name;
-import org.apache.ws.scout.uddi.PublisherAssertion;
-import org.apache.ws.scout.uddi.PublisherAssertions;
-import org.apache.ws.scout.uddi.PublisherAssertionsDocument;
-import org.apache.ws.scout.uddi.SaveBinding;
-import org.apache.ws.scout.uddi.SaveBindingDocument;
-import org.apache.ws.scout.uddi.SaveBusiness;
-import org.apache.ws.scout.uddi.SaveBusinessDocument;
-import org.apache.ws.scout.uddi.SaveService;
-import org.apache.ws.scout.uddi.SaveServiceDocument;
-import org.apache.ws.scout.uddi.SaveTModel;
-import org.apache.ws.scout.uddi.SaveTModelDocument;
-import org.apache.ws.scout.uddi.ServiceDetail;
-import org.apache.ws.scout.uddi.ServiceDetailDocument;
-import org.apache.ws.scout.uddi.ServiceList;
-import org.apache.ws.scout.uddi.ServiceListDocument;
-import org.apache.ws.scout.uddi.SetPublisherAssertions;
-import org.apache.ws.scout.uddi.SetPublisherAssertionsDocument;
-import org.apache.ws.scout.uddi.TModel;
-import org.apache.ws.scout.uddi.TModelBag;
-import org.apache.ws.scout.uddi.TModelDetail;
-import org.apache.ws.scout.uddi.TModelDetailDocument;
-import org.apache.ws.scout.uddi.TModelList;
-import org.apache.ws.scout.uddi.TModelListDocument;
-import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -149,6 +125,11 @@ public class RegistryImpl implements IRegistry {
 	private String protocolHandler;
 	private String uddiVersion;
 	private String uddiNamespace;
+	
+	private ObjectFactory objectFactory = new ObjectFactory();
+	
+	private Marshaller marshaller = null;
+	private Unmarshaller unmarshaller = null;
 
 	/**
 	 * Creates a new instance of RegistryImpl.
@@ -220,6 +201,17 @@ public class RegistryImpl implements IRegistry {
 			this.setTransport(this.getTransport(transClass));
 		else
 			this.setTransport(this.getTransport(DEFAULT_TRANSPORT_CLASS));
+		
+		try
+		{
+			JAXBContext context = JAXBContext.newInstance(new Class[] {ObjectFactory.class});
+			this.marshaller = context.createMarshaller();
+			this.unmarshaller = context.createUnmarshaller(); 
+		}
+		catch(JAXBException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -245,20 +237,25 @@ public class RegistryImpl implements IRegistry {
 	/**
 	 * 
 	 */
-	public XmlObject execute(XmlObject uddiRequest, URI endPointURI)
+	public JAXBElement<?> execute(JAXBElement<?> uddiRequest, URI endPointURI)
 			throws RegistryException {
 
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
         Document doc;
         try {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder= docBuilderFactory.newDocumentBuilder();
-            doc = docBuilder.parse(uddiRequest.newInputStream());
+            this.marshaller.marshal(uddiRequest, baos);
+            doc = docBuilder.parse(new ByteArrayInputStream(baos.toByteArray()));
         } catch (SAXException saxe) {
             throw (new RegistryException(saxe));
         } catch (ParserConfigurationException pce) {
             throw (new RegistryException(pce));
         } catch (IOException ioe) {
+            throw (new RegistryException(ioe));
+        } catch (JAXBException ioe) {
             throw (new RegistryException(ioe));
         }
 		Element request = doc.getDocumentElement();
@@ -292,27 +289,10 @@ public class RegistryImpl implements IRegistry {
         // Fault. If it is a SOAP Fault then throw it
         // immediately.
 
-        XmlObject uddiResponse = null;
+        JAXBElement<?> uddiResponse = null;
 	    try {
-	        uddiResponse = XmlObject.Factory.parse(response);
-            XmlCursor cursor = uddiResponse.newCursor();
-            cursor.toNextToken();
-            //set the namespace if it is empty here.  This is needed for the find_element_user to work.
-            if ("".equals(cursor.getName().getNamespaceURI())) {
-                cursor.setName(new QName(this.getUddiNamespace(), cursor.getName().getLocalPart()));
-                //there seems to have a bug in setName and it will set the next Start with xmlns="".
-                //The workaround is to set it to uddiNamespace when it is empty.
-                while (cursor.hasNextToken()) {
-                    cursor.toNextToken();
-                    if (cursor.isStart()) {
-                        if ("".equals(cursor.getName().getNamespaceURI())) {
-                            cursor.setName(new QName(this.getUddiNamespace(), cursor.getName().getLocalPart()));
-                        }
-                    }
-                }
-                cursor.dispose();
-            }
-	    } catch (XmlException xmle) {
+	        uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(response);
+	    } catch (JAXBException xmle) {
 	        throw (new RegistryException(xmle));
 	    }
 
@@ -342,24 +322,19 @@ public class RegistryImpl implements IRegistry {
 				nodeList = ((Element) nodeList.item(0))
 						.getElementsByTagName("dispositionReport");
 				if (nodeList.getLength() > 0) {
-					XmlObject dispRptObj = null;
+					JAXBElement<DispositionReport> dispRptObj = null;
 					try {
-						dispRptObj = XmlObject.Factory.parse((Element) nodeList
+						dispRptObj = (JAXBElement<DispositionReport>) unmarshaller.unmarshal((Element) nodeList
 								.item(0));
-					} catch (XmlException xmle) {
+					} catch (JAXBException xmle) {
 						throw (new RegistryException(xmle));
 					}
-                    XmlObject o = dispRptObj.changeType(DispositionReportDocument.type);
-                    dispRpt = ((DispositionReportDocument) o).getDispositionReport();
+                    dispRpt = dispRptObj.getValue();
                 }
 			}
 
 			RegistryException e = new RegistryException(fCode, fString, fActor, dispRpt);
-			
-			// FIXME: This should be removed after testing!
-			System.err.println("SOAP message:");
-			System.err.println(uddiResponse.xmlText());
-			
+		
 			// Create RegistryException instance and return
 			throw e;
 		}
@@ -495,21 +470,19 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public DispositionReport deleteBinding(String authInfo,
 			String[] bindingKeyArray) throws RegistryException {
-		DeleteBindingDocument doc = DeleteBindingDocument.Factory.newInstance();
-		DeleteBinding request = doc.addNewDeleteBinding();
+		DeleteBinding request = this.objectFactory.createDeleteBinding();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (bindingKeyArray != null) {
-			request.setBindingKeyArray(bindingKeyArray);
+			request.getBindingKey().addAll(Arrays.asList(bindingKeyArray));
 		}
 
         DispositionReport dr;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                DispositionReportDocument.type);
-        dr = ((DispositionReportDocument) o).getDispositionReport();
+        JAXBElement<?> o = execute(this.objectFactory.createDeleteBinding(request), this.getPublishURI());
+        dr = (DispositionReport) o.getValue();;
 
         return dr;
 	}
@@ -521,22 +494,19 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public DispositionReport deleteBusiness(String authInfo,
 			String[] businessKeyArray) throws RegistryException {
-		DeleteBusinessDocument doc = DeleteBusinessDocument.Factory
-				.newInstance();
-		DeleteBusiness request = doc.addNewDeleteBusiness();
-
+		DeleteBusiness request = this.objectFactory.createDeleteBusiness();
+		
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (businessKeyArray != null) {
-			request.setBusinessKeyArray(businessKeyArray);
+			request.getBusinessKey().addAll(Arrays.asList(businessKeyArray));
 		}
 
         DispositionReport dr;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                DispositionReportDocument.type);
-        dr = ((DispositionReportDocument) o).getDispositionReport();
+        JAXBElement<?> o = execute(this.objectFactory.createDeleteBusiness(request), this.getPublishURI());
+        dr = (DispositionReport) o.getValue();
 
         return dr;
 	}
@@ -546,23 +516,20 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public DispositionReport deletePublisherAssertions(String authInfo,
 			PublisherAssertion[] assertionArray) throws RegistryException {
-		DeletePublisherAssertionsDocument doc = DeletePublisherAssertionsDocument.Factory
-				.newInstance();
-		DeletePublisherAssertions request = doc
-				.addNewDeletePublisherAssertions();
+		DeletePublisherAssertions request = this.objectFactory.createDeletePublisherAssertions();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (assertionArray != null) {
-			request.setPublisherAssertionArray(assertionArray);
+			request.getPublisherAssertion().addAll(Arrays.asList(assertionArray));
 		}
 
         DispositionReport dr;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                DispositionReportDocument.type);
-        dr = ((DispositionReportDocument) o).getDispositionReport();
+        JAXBElement<?> o = execute(this.objectFactory.createDeletePublisherAssertions(request), 
+        		this.getPublishURI());
+        dr = (DispositionReport) o.getValue();
 
         return dr;
 	}
@@ -575,21 +542,20 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public DispositionReport deleteService(String authInfo,
 			String[] serviceKeyArray) throws RegistryException {
-		DeleteServiceDocument doc = DeleteServiceDocument.Factory.newInstance();
-		DeleteService request = doc.addNewDeleteService();
-
+		DeleteService request = this.objectFactory.createDeleteService();
+		
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (serviceKeyArray != null) {
-			request.setServiceKeyArray(serviceKeyArray);
+			request.getServiceKey().addAll(Arrays.asList(serviceKeyArray));
 		}
 
         DispositionReport dr;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                DispositionReportDocument.type);
-        dr = ((DispositionReportDocument) o).getDispositionReport();
+        JAXBElement<?> o = execute(this.objectFactory.createDeleteService(request), 
+        		this.getPublishURI());
+        dr = (DispositionReport) o.getValue();
 
         return dr;
 	}
@@ -603,21 +569,20 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public DispositionReport deleteTModel(String authInfo,
 			String[] tModelKeyArray) throws RegistryException {
-		DeleteTModelDocument doc = DeleteTModelDocument.Factory.newInstance();
-		DeleteTModel request = doc.addNewDeleteTModel();
+		DeleteTModel request = this.objectFactory.createDeleteTModel();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (tModelKeyArray != null) {
-			request.setTModelKeyArray(tModelKeyArray);
+			request.getTModelKey().addAll(Arrays.asList(tModelKeyArray));
 		}
 
         DispositionReport dr;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                DispositionReportDocument.type);
-        dr = ((DispositionReportDocument) o).getDispositionReport();
+        JAXBElement<?> o = execute(this.objectFactory.createDeleteTModel(request), 
+        		this.getPublishURI());
+        dr = (DispositionReport) o.getValue();
 
         return dr;
 	}
@@ -633,11 +598,10 @@ public class RegistryImpl implements IRegistry {
 			CategoryBag categoryBag, TModelBag tModelBag,
 			FindQualifiers findQualifiers, int maxRows)
 			throws RegistryException {
-		FindBusinessDocument doc = FindBusinessDocument.Factory.newInstance();
-		FindBusiness request = doc.addNewFindBusiness();
+		FindBusiness request = this.objectFactory.createFindBusiness();
 
 		if (nameArray != null) {
-			request.setNameArray(nameArray);
+			request.getName().addAll(Arrays.asList(nameArray));
 		}
 
 		if (discoveryURLs != null) {
@@ -655,7 +619,7 @@ public class RegistryImpl implements IRegistry {
 		if (tModelBag != null) {
 			request.setTModelBag(tModelBag);
 		} else {
-			request.setTModelBag(TModelBag.Factory.newInstance());
+			request.setTModelBag(this.objectFactory.createTModelBag());
  		}
 
 		if (findQualifiers != null) {
@@ -665,9 +629,9 @@ public class RegistryImpl implements IRegistry {
 		request.setMaxRows(maxRows);
 
         BusinessList bl;
-        XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-                BusinessListDocument.type);
-        bl = ((BusinessListDocument) o).getBusinessList();
+        JAXBElement<?> o = execute(this.objectFactory.createFindBusiness(request),
+        		this.getInquiryURI());
+        bl = (BusinessList) o.getValue();
 
         return bl;
 	}
@@ -688,8 +652,7 @@ public class RegistryImpl implements IRegistry {
 		// parameter value is always null anyways -- but this may change
 		// in the future.
 
-		FindBindingDocument doc = FindBindingDocument.Factory.newInstance();
-		FindBinding request = doc.addNewFindBinding();
+		FindBinding request = this.objectFactory.createFindBinding();
 
 		if (serviceKey != null) {
 			request.setServiceKey(serviceKey);
@@ -698,10 +661,9 @@ public class RegistryImpl implements IRegistry {
 		if (tModelBag != null) {
 			request.setTModelBag(tModelBag);
 		} else {
-			TModelBag tmb = TModelBag.Factory.newInstance();
-			tmb.setTModelKeyArray(new String[1]);
+			TModelBag tmb = this.objectFactory.createTModelBag(); 
 			request.setTModelBag(tmb);
- 		}
+		}
 
 		if (findQualifiers != null) {
 			request.setFindQualifiers(findQualifiers);
@@ -709,9 +671,9 @@ public class RegistryImpl implements IRegistry {
 		request.setMaxRows(maxRows);
 
         BindingDetail bd;
-        XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-                BindingDetailDocument.type);
-        bd = ((BindingDetailDocument) o).getBindingDetail();
+        JAXBElement<?> o = execute(this.objectFactory.createFindBinding(request), 
+        		this.getInquiryURI());
+        bd = (BindingDetail) o.getValue();
 
         return bd;
 	}
@@ -728,15 +690,14 @@ public class RegistryImpl implements IRegistry {
 			CategoryBag categoryBag, TModelBag tModelBag,
 			FindQualifiers findQualifiers, int maxRows)
 			throws RegistryException {
-		FindServiceDocument doc = FindServiceDocument.Factory.newInstance();
-		FindService request = doc.addNewFindService();
+		FindService request = this.objectFactory.createFindService();
 
 		if (businessKey != null) {
 			request.setBusinessKey(businessKey);
 		}
 
 		if (nameArray != null) {
-			request.setNameArray(nameArray);
+			request.getName().addAll(Arrays.asList(nameArray));
 		}
 
 		if (categoryBag != null) {
@@ -754,9 +715,9 @@ public class RegistryImpl implements IRegistry {
 		request.setMaxRows(maxRows);
 
         ServiceList sl;
-        XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-                ServiceListDocument.type);
-        sl = ((ServiceListDocument) o).getServiceList();
+        JAXBElement<?> o = execute(this.objectFactory.createFindService(request), 
+        		this.getInquiryURI());
+        sl = (ServiceList) o.getValue();
 
         return sl;
 	}
@@ -770,16 +731,15 @@ public class RegistryImpl implements IRegistry {
 	public TModelList findTModel(String name, CategoryBag categoryBag,
 			IdentifierBag identifierBag, FindQualifiers findQualifiers,
 			int maxRows) throws RegistryException {
-		FindTModelDocument doc = FindTModelDocument.Factory.newInstance();
-		FindTModel request = doc.addNewFindTModel();
+		FindTModel request = this.objectFactory.createFindTModel();
 
-		Name n = Name.Factory.newInstance();
+		Name jaxbName = this.objectFactory.createName();
 
 		if (name != null) {
-			n.setStringValue(name);
+			jaxbName.setValue(name);
 		}
 
-		request.setName(n);
+		request.setName(jaxbName);
 
 		if (categoryBag != null) {
 			request.setCategoryBag(categoryBag);
@@ -796,9 +756,9 @@ public class RegistryImpl implements IRegistry {
 		request.setMaxRows(maxRows);
 
         TModelList tml;
-        XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-                TModelListDocument.type);
-        tml = ((TModelListDocument) o).getTModelList();
+        JAXBElement<?> o = execute(this.objectFactory.createFindTModel(request), 
+        		this.getInquiryURI());
+        tml = (TModelList) o.getValue();
 
         return tml;
 	}
@@ -808,9 +768,7 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public AssertionStatusReport getAssertionStatusReport(String authInfo,
 			String completionStatus) throws RegistryException {
-		GetAssertionStatusReportDocument doc = GetAssertionStatusReportDocument.Factory
-				.newInstance();
-		GetAssertionStatusReport request = doc.addNewGetAssertionStatusReport();
+		GetAssertionStatusReport request = this.objectFactory.createGetAssertionStatusReport();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
@@ -821,9 +779,9 @@ public class RegistryImpl implements IRegistry {
 		}
 
         AssertionStatusReport asr;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                AssertionStatusReportDocument.type);
-        asr = ((AssertionStatusReportDocument) o).getAssertionStatusReport();
+        JAXBElement<?> o = execute(this.objectFactory.createGetAssertionStatusReport(request), 
+        		this.getPublishURI());
+        asr = (AssertionStatusReport) o.getValue();
 
         return asr;
 	}
@@ -838,8 +796,7 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public AuthToken getAuthToken(String userID, String cred)
 			throws RegistryException {
-		GetAuthTokenDocument doc = GetAuthTokenDocument.Factory.newInstance();
-		GetAuthToken request = doc.addNewGetAuthToken();
+		GetAuthToken request = this.objectFactory.createGetAuthToken();
 
 		if (userID != null) {
 			request.setUserID(userID);
@@ -850,9 +807,9 @@ public class RegistryImpl implements IRegistry {
 		}
 
         AuthToken at;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                AuthTokenDocument.type);
-        at = ((AuthTokenDocument) o).getAuthToken();
+        JAXBElement<?> o = execute(this.objectFactory.createGetAuthToken(request), 
+        		this.getPublishURI());
+        at = (AuthToken) o.getValue();
 
         return at;
 	}
@@ -879,19 +836,16 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public BusinessDetail getBusinessDetail(String[] businessKeyArray)
 			throws RegistryException {
-		GetBusinessDetailDocument doc = GetBusinessDetailDocument.Factory
-				.newInstance();
-		GetBusinessDetail request = doc.addNewGetBusinessDetail();
+		GetBusinessDetail request = this.objectFactory.createGetBusinessDetail();
 
 		if (businessKeyArray != null) {
-			request.setBusinessKeyArray(businessKeyArray);
+			request.getBusinessKey().addAll(Arrays.asList(businessKeyArray));
 		}
 
         BusinessDetail bd;
-        XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-                BusinessDetailDocument.type);
-        bd = ((BusinessDetailDocument) o).getBusinessDetail();
-
+        JAXBElement<?> o = execute(this.objectFactory.createGetBusinessDetail(request), 
+        		this.getInquiryURI());
+        bd = (BusinessDetail) o.getValue(); 
         return bd;
 	}
 
@@ -900,22 +854,39 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public PublisherAssertions getPublisherAssertions(String authInfo)
 			throws RegistryException {
-		GetPublisherAssertionsDocument doc = GetPublisherAssertionsDocument.Factory
-				.newInstance();
-		GetPublisherAssertions request = doc.addNewGetPublisherAssertions();
+		GetPublisherAssertions request = this.objectFactory.createGetPublisherAssertions();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
         PublisherAssertions pa;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                PublisherAssertionsDocument.type);
-        pa = ((PublisherAssertionsDocument) o).getPublisherAssertions();
+        JAXBElement<?> o = execute(this.objectFactory.createGetPublisherAssertions(request),
+        		this.getPublishURI());
+        pa = (PublisherAssertions) o.getValue();
 
         return pa;
 	}
 
+	/**
+	 * @exception RegistryException;
+	 */
+	public RegisteredInfo getRegisteredInfo(String authInfo)
+			throws RegistryException {
+		GetRegisteredInfo request = this.objectFactory.createGetRegisteredInfo();
+
+		if (authInfo != null) {
+			request.setAuthInfo(authInfo);
+		}
+
+        RegisteredInfo ri;
+        JAXBElement<?> o = execute(this.objectFactory.createGetRegisteredInfo(request), 
+        		this.getPublishURI());
+        ri = (RegisteredInfo) o.getValue();
+
+        return ri;
+	}
+	
 	/**
 	 * "Used to get full details for a particular registered businessService.
 	 * Returns a serviceDetail message."
@@ -938,18 +909,16 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public ServiceDetail getServiceDetail(String[] serviceKeyArray)
 			throws RegistryException {
-		GetServiceDetailDocument doc = GetServiceDetailDocument.Factory
-				.newInstance();
-		GetServiceDetail request = doc.addNewGetServiceDetail();
+		GetServiceDetail request = this.objectFactory.createGetServiceDetail();
 
 		if (serviceKeyArray != null) {
-			request.setServiceKeyArray(serviceKeyArray);
+			request.getServiceKey().addAll(Arrays.asList(serviceKeyArray));
 		}
 
         ServiceDetail sd;
-        XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-                ServiceDetailDocument.type);
-        sd = ((ServiceDetailDocument) o).getServiceDetail();
+        JAXBElement<?> o = execute(this.objectFactory.createGetServiceDetail(request), 
+        		this.getInquiryURI());
+        sd = (ServiceDetail) o.getValue();
 
         return sd;
 	}
@@ -976,18 +945,16 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public TModelDetail getTModelDetail(String[] tModelKeyArray)
 			throws RegistryException {
-		GetTModelDetailDocument doc = GetTModelDetailDocument.Factory
-				.newInstance();
-		GetTModelDetail request = doc.addNewGetTModelDetail();
+		GetTModelDetail request = this.objectFactory.createGetTModelDetail();
 
 		if (tModelKeyArray != null) {
-			request.setTModelKeyArray(tModelKeyArray);
+			request.getTModelKey().addAll(Arrays.asList(tModelKeyArray));
 		}
 
         TModelDetail tmd;
-        XmlObject o = execute(doc, this.getInquiryURI()).changeType(
-                TModelDetailDocument.type);
-        tmd = ((TModelDetailDocument) o).getTModelDetail();
+        JAXBElement<?> o = execute(this.objectFactory.createGetTModelDetail(request), 
+        		this.getInquiryURI());
+        tmd = (TModelDetail) o.getValue();
 
         return tmd;
 	}
@@ -997,22 +964,20 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public PublisherAssertions setPublisherAssertions(String authInfo,
 			PublisherAssertion[] assertionArray) throws RegistryException {
-		SetPublisherAssertionsDocument doc = SetPublisherAssertionsDocument.Factory
-				.newInstance();
-		SetPublisherAssertions request = doc.addNewSetPublisherAssertions();
+		SetPublisherAssertions request = this.objectFactory.createSetPublisherAssertions();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (assertionArray != null) {
-			request.setPublisherAssertionArray(assertionArray);
+			request.getPublisherAssertion().addAll(Arrays.asList(assertionArray));
 		}
 
         PublisherAssertions pa;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                PublisherAssertionsDocument.type);
-        pa = ((PublisherAssertionsDocument) o).getPublisherAssertions();
+        JAXBElement<?> o = execute(this.objectFactory.createSetPublisherAssertions(request), 
+        		this.getPublishURI());
+        pa = (PublisherAssertions) o.getValue();
 
         return pa;
 	}
@@ -1026,21 +991,20 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public BindingDetail saveBinding(String authInfo,
 			BindingTemplate[] bindingArray) throws RegistryException {
-		SaveBindingDocument doc = SaveBindingDocument.Factory.newInstance();
-		SaveBinding request = doc.addNewSaveBinding();
+		SaveBinding request = this.objectFactory.createSaveBinding();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (bindingArray != null) {
-			request.setBindingTemplateArray(bindingArray);
+			request.getBindingTemplate().addAll(Arrays.asList(bindingArray));
 		}
 		
         BindingDetail bd;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                BindingDetailDocument.type);
-        bd = ((BindingDetailDocument) o).getBindingDetail();
+        JAXBElement<?> o = execute(this.objectFactory.createSaveBinding(request), 
+        		this.getPublishURI());
+        bd = (BindingDetail) o.getValue();
 
         return bd;
 	}
@@ -1055,21 +1019,20 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public BusinessDetail saveBusiness(String authInfo,
 			BusinessEntity[] businessArray) throws RegistryException {
-		SaveBusinessDocument doc = SaveBusinessDocument.Factory.newInstance();
-		SaveBusiness request = doc.addNewSaveBusiness();
+		SaveBusiness request = this.objectFactory.createSaveBusiness();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (businessArray != null) {
-			request.setBusinessEntityArray(businessArray);
+			request.getBusinessEntity().addAll(Arrays.asList(businessArray));
 		}
 
         BusinessDetail bd;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                BusinessDetailDocument.type);
-        bd = ((BusinessDetailDocument) o).getBusinessDetail();
+        JAXBElement<?> o = execute(this.objectFactory.createSaveBusiness(request), 
+        		this.getPublishURI());
+        bd = (BusinessDetail) o.getValue();
 
         return bd;
 	}
@@ -1082,21 +1045,20 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public ServiceDetail saveService(String authInfo,
 			BusinessService[] serviceArray) throws RegistryException {
-		SaveServiceDocument doc = SaveServiceDocument.Factory.newInstance();
-		SaveService request = doc.addNewSaveService();
+		SaveService request = this.objectFactory.createSaveService();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (serviceArray != null) {
-			request.setBusinessServiceArray(serviceArray);
+			request.getBusinessService().addAll(Arrays.asList(serviceArray));
 		}
 
         ServiceDetail sd;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                ServiceDetailDocument.type);
-        sd = ((ServiceDetailDocument) o).getServiceDetail();
+        JAXBElement<?> o = execute(this.objectFactory.createSaveService(request), 
+        		this.getPublishURI());
+        sd = (ServiceDetail) o.getValue();
 
         return sd;
 	}
@@ -1108,22 +1070,20 @@ public class RegistryImpl implements IRegistry {
 	 */
 	public TModelDetail saveTModel(String authInfo, TModel[] tModelArray)
 			throws RegistryException {
-		SaveTModelDocument doc = SaveTModelDocument.Factory.newInstance();
-		SaveTModel request = doc.addNewSaveTModel();
+		SaveTModel request = this.objectFactory.createSaveTModel();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
 		if (tModelArray != null) {
-			request.setTModelArray(tModelArray);
+			request.getTModel().addAll(Arrays.asList(tModelArray));
 		}
 
         TModelDetail tmd;
-        XmlObject o = execute(doc, this.getPublishURI()).changeType(
-                TModelDetailDocument.type);
-        tmd = ((TModelDetailDocument) o).getTModelDetail();
-
+        JAXBElement<?> o = execute(this.objectFactory.createSaveTModel(request), 
+        		this.getPublishURI());
+        tmd = (TModelDetail) o.getValue();
         return tmd;
 	}
 
@@ -1186,7 +1146,7 @@ public class RegistryImpl implements IRegistry {
 			try {
 				clazz = Class.forName(name, true, scl);
 			} catch (Exception e) {
-				e.printStackTrace();
+		          throw new RuntimeException(e);
 			}
 		}
 

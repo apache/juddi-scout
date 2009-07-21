@@ -125,7 +125,7 @@ public class AssociationImpl extends RegistryObjectImpl implements Association
       }
       catch (JAXRException e)
       {
-         e.printStackTrace();
+        throw new RuntimeException(e);
       }
 
       if(id != null) key = new KeyImpl(id);

@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -47,28 +48,28 @@ import javax.xml.registry.infomodel.ServiceBinding;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.scout.model.uddi.v2.AssertionStatusItem;
+import org.apache.ws.scout.model.uddi.v2.AssertionStatusReport;
+import org.apache.ws.scout.model.uddi.v2.AuthToken;
+import org.apache.ws.scout.model.uddi.v2.BindingDetail;
+import org.apache.ws.scout.model.uddi.v2.BindingTemplate;
+import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
+import org.apache.ws.scout.model.uddi.v2.BusinessEntity;
+import org.apache.ws.scout.model.uddi.v2.BusinessService;
+import org.apache.ws.scout.model.uddi.v2.DispositionReport;
+import org.apache.ws.scout.model.uddi.v2.ErrInfo;
+import org.apache.ws.scout.model.uddi.v2.KeyedReference;
+import org.apache.ws.scout.model.uddi.v2.ObjectFactory;
+import org.apache.ws.scout.model.uddi.v2.PublisherAssertion;
+import org.apache.ws.scout.model.uddi.v2.PublisherAssertions;
+import org.apache.ws.scout.model.uddi.v2.Result;
+import org.apache.ws.scout.model.uddi.v2.ServiceDetail;
+import org.apache.ws.scout.model.uddi.v2.TModel;
+import org.apache.ws.scout.model.uddi.v2.TModelDetail;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
-import org.apache.ws.scout.uddi.AssertionStatusItem;
-import org.apache.ws.scout.uddi.AssertionStatusReport;
-import org.apache.ws.scout.uddi.AuthToken;
-import org.apache.ws.scout.uddi.BindingDetail;
-import org.apache.ws.scout.uddi.BindingTemplate;
-import org.apache.ws.scout.uddi.BusinessDetail;
-import org.apache.ws.scout.uddi.BusinessEntity;
-import org.apache.ws.scout.uddi.BusinessService;
-import org.apache.ws.scout.uddi.DispositionReport;
-import org.apache.ws.scout.uddi.ErrInfo;
-import org.apache.ws.scout.uddi.KeyedReference;
-import org.apache.ws.scout.uddi.PublisherAssertion;
-import org.apache.ws.scout.uddi.PublisherAssertions;
-import org.apache.ws.scout.uddi.Result;
-import org.apache.ws.scout.uddi.ServiceDetail;
-import org.apache.ws.scout.uddi.TModel;
-import org.apache.ws.scout.uddi.TModelDetail;
 import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
-import org.apache.xmlbeans.XmlObject;
 
 /**
  * Implements JAXR BusinessLifeCycleManager Interface.
@@ -83,9 +84,13 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 	
     private static final long serialVersionUID = 1L;
     private Log log = LogFactory.getLog(this.getClass());
+    
+    private transient ObjectFactory objectFactory = new ObjectFactory();
 	
     public BusinessLifeCycleManagerImpl(RegistryService registry) {
         super(registry);
+        if(objectFactory == null)
+        	objectFactory = new ObjectFactory();
     }
 
     /**
@@ -260,7 +265,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 }
                 if(bd != null)
                 {
-                	PublisherAssertion[] keyarr = bd.getPublisherAssertionArray();
+                	List<PublisherAssertion> publisherAssertionList = bd.getPublisherAssertion();
+                	PublisherAssertion[] keyarr = new PublisherAssertion[publisherAssertionList.size()];
+                	publisherAssertionList.toArray(keyarr);
+                	
                 	for (int i = 0; keyarr != null && i < keyarr.length; i++) {
                 		PublisherAssertion result = (PublisherAssertion) keyarr[i];
                         KeyedReference keyr = result.getKeyedReference();
@@ -312,7 +320,9 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        entityarr = td.getTModelArray();
+        List<TModel> tmodelList = td.getTModel();
+        entityarr = new TModel[tmodelList.size()];
+        tmodelList.toArray(entityarr); 
         log.debug("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             TModel tm = (TModel) entityarr[i];
@@ -358,7 +368,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        entityarr = td.getTModelArray();
+        List<TModel> tmodelList = td.getTModel();
+        entityarr = new TModel[tmodelList.size()];
+        tmodelList.toArray(entityarr);
+        
         log.debug("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             TModel tm = (TModel) entityarr[i];
@@ -404,7 +417,11 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        entityarr = bd.getBusinessEntityArray();
+        List<BusinessEntity> bizEntityList = bd.getBusinessEntity();
+        
+        entityarr = new BusinessEntity[bizEntityList.size()];
+        bizEntityList.toArray(entityarr);
+        
         log.debug("After Saving Business. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             BusinessEntity entity = (BusinessEntity) entityarr[i];
@@ -447,7 +464,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        sbarr = bd.getBindingTemplateArray();
+        List<BindingTemplate> bindingTemplateList = bd.getBindingTemplate();
+        sbarr = new BindingTemplate[bindingTemplateList.size()];
+        bindingTemplateList.toArray(sbarr);
+        
         for (int i = 0; sbarr != null && i < sbarr.length; i++) {
             BindingTemplate bt = (BindingTemplate) sbarr[i];
             coll.add(new KeyImpl(bt.getBindingKey()));
@@ -491,7 +511,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             return bulk;
         }
 
-        sarr = sd.getBusinessServiceArray();
+        List<BusinessService> bizServiceList = sd.getBusinessService();
+        sarr = new BusinessService[bizServiceList.size()];
+        bizServiceList.toArray(sarr);
+        
         for (int i = 0; sarr != null && i < sarr.length; i++) {
             BusinessService entity = (BusinessService) sarr[i];
             coll.add(new KeyImpl(entity.getServiceKey()));
@@ -522,7 +545,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     }
 
     //Protected Methods
-    protected XmlObject executeOperation(Object dataarray, String op)
+    protected Object executeOperation(Object dataarray, String op)
             throws RegistryException, JAXRException {
         if (registry == null) {
             throw new IllegalStateException("No registry");
@@ -536,7 +559,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             throw new IllegalStateException("No auth token returned");
         }
 
-        XmlObject regobj;
+        Object regobj;
         if(op.equalsIgnoreCase("SAVE_ASSOCIATION"))
         {
             regobj = ireg.setPublisherAssertions(token.getAuthInfo(), (PublisherAssertion[]) dataarray);
@@ -593,12 +616,14 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
        try
        {
           AssertionStatusReport report = ireg.getAssertionStatusReport(authinfo,"status:complete");
-          AssertionStatusItem[] a = report.getAssertionStatusItemArray();
+          List<AssertionStatusItem> assertionStatusItemList = report.getAssertionStatusItem();
+          AssertionStatusItem[] assertionStatusItemArr = 
+        	  new AssertionStatusItem[assertionStatusItemList.size()];
 
-          int len = a != null? a.length : 0;
+          int len = assertionStatusItemArr != null? assertionStatusItemArr.length : 0;
           for (int i = 0; i < len; i++)
           {
-                AssertionStatusItem asi = a[i];
+                AssertionStatusItem asi = assertionStatusItemArr[i];
                /* String sourceKey = asi.getFromKey();
                 String targetKey = asi.getToKey();
                 PublisherAssertion pa = new PublisherAssertion();
@@ -615,23 +640,23 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 pasvect.add(this.getPublisherAssertion(asi));
            }
           report = ireg.getAssertionStatusReport(authinfo,"status:toKey_incomplete");
-          a = report.getAssertionStatusItemArray();
+          assertionStatusItemArr = report.getAssertionStatusItem().toArray(assertionStatusItemArr);
 
-          len = a != null? a.length : 0;
+          len = assertionStatusItemArr != null? assertionStatusItemArr.length : 0;
           for (int i = 0; i < len; i++)
           {
-                AssertionStatusItem asi = (AssertionStatusItem) a[i];
+                AssertionStatusItem asi = (AssertionStatusItem) assertionStatusItemArr[i];
                 if(pasvect == null) pasvect = new Vector<PublisherAssertion>(len);
                 pasvect.add(this.getPublisherAssertion(asi));
           }
 
           report = ireg.getAssertionStatusReport(authinfo,"status:fromKey_incomplete");
-          a = report.getAssertionStatusItemArray();
+          assertionStatusItemArr = report.getAssertionStatusItem().toArray(assertionStatusItemArr);
 
-          len = a != null? a.length : 0;
+          len = assertionStatusItemArr != null? assertionStatusItemArr.length : 0;
           for (int i = 0; i < len; i++)
           {
-                AssertionStatusItem asi = (AssertionStatusItem) a[i];
+                AssertionStatusItem asi = (AssertionStatusItem) assertionStatusItemArr[i];
                 if(pasvect == null) pasvect = new Vector<PublisherAssertion>(len);
                 pasvect.add(this.getPublisherAssertion(asi));
           }
@@ -648,7 +673,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
        }
        catch (RegistryException e)
        {
-          e.printStackTrace();
+          throw new RuntimeException(e);
        }
 
           if(pasarr != null && pasarr.length > 0)
@@ -657,8 +682,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 ireg.deletePublisherAssertions(authinfo, pasarr);
              }
              catch (RegistryException e)
-             {
-                e.printStackTrace();
+             { 
                 //IGNORE
              }
        }
@@ -688,8 +712,10 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             }
             // Save business
             DispositionReport bd = (DispositionReport) executeOperation(keyarr, op);
-
-            keyResultArr = bd.getResultArray();
+            List<Result> resultList = bd.getResult();
+            keyResultArr = new Result[resultList.size()];
+            resultList.toArray(keyResultArr); 
+            
             log.debug("After deleting Business. Obtained vector size:" + keyResultArr != null ? keyResultArr.length : 0);
             for (int i = 0; keyResultArr != null && i < keyResultArr.length; i++) {
                 Result result = (Result) keyResultArr[i];
@@ -699,7 +725,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 }
                 else {
                     ErrInfo errinfo = result.getErrInfo();
-                    DeleteException de = new DeleteException(errinfo.getErrCode() + ":" + errinfo.getStringValue());
+                    DeleteException de = new DeleteException(errinfo.getErrCode() + ":" + errinfo.getValue());
                     bulk.setStatus(JAXRResponse.STATUS_FAILURE);
                     exceptions.add(de);
                 }
@@ -744,11 +770,11 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         String username = "", pwd = "";
         if (creds != null) {
         	Iterator it = creds.iterator();
-        while (it.hasNext()) {
-            PasswordAuthentication pass = (PasswordAuthentication) it.next();
-            username = pass.getUserName();
-            pwd = new String(pass.getPassword());
-        }
+        	while (it.hasNext()) {
+        		PasswordAuthentication pass = (PasswordAuthentication) it.next();
+        		username = pass.getUserName();
+        		pwd = new String(pass.getPassword());
+        	}
         }
 
         AuthToken token = null;
@@ -756,8 +782,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             token = ireg.getAuthToken(username, pwd);
         }
         catch (Exception e)
-        {
-            e.printStackTrace();
+        { 
             throw new JAXRException(e);
         }
         return token;
@@ -765,27 +790,31 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     private PublisherAssertion getPublisherAssertion(AssertionStatusItem asi)
     {
-        String sourceKey = asi.getFromKey();
-        String targetKey = asi.getToKey();
-        PublisherAssertion pa = PublisherAssertion.Factory.newInstance();
+    	PublisherAssertion pa = this.objectFactory.createPublisherAssertion();
         
-        if (sourceKey != null) {
-        pa.setFromKey(sourceKey);
-        }
+    	if(asi != null)
+    	{
+            String sourceKey = asi.getFromKey();
+            String targetKey = asi.getToKey();
         
-        if (targetKey != null) {
-        pa.setToKey(targetKey);
-        }
-        
-        KeyedReference keyr = asi.getKeyedReference();
-        
-        if (keyr != null) {
-        pa.setKeyedReference(keyr);
-        }
-        //pa.setTModelKey(keyr.getTModelKey());
-        //pa.setKeyName(keyr.getKeyName());
-        //pa.setKeyValue(keyr.getKeyValue()); // -CBC- These are redundant?
-        return pa;
+            if (sourceKey != null) {
+            pa.setFromKey(sourceKey);
+            }
+            
+            if (targetKey != null) {
+            pa.setToKey(targetKey);
+            }
+            
+            KeyedReference keyr = asi.getKeyedReference();
+            
+            if (keyr != null) {
+            pa.setKeyedReference(keyr);
+            }
+            //pa.setTModelKey(keyr.getTModelKey());
+            //pa.setKeyName(keyr.getKeyName());
+            //pa.setKeyValue(keyr.getKeyValue()); // -CBC- These are redundant?
+    		
+    	}return pa;
     }
 
 }

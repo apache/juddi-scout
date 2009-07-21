@@ -20,9 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.xml.registry.BusinessQueryManager;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
+import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnexpectedObjectException;
+import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
@@ -38,7 +41,8 @@ public class ServiceImpl extends RegistryEntryImpl implements Service
 
     private Organization org = null;
     private Collection<ServiceBinding> serviceBindings = new ArrayList<ServiceBinding>();
-
+    private String orgKey = null;
+    
     /**
      * Creates a new instance of ServiceImpl
      */
@@ -72,7 +76,18 @@ public class ServiceImpl extends RegistryEntryImpl implements Service
     public Organization getProvidingOrganization()
             throws JAXRException
     {
-        if (org == null) return super.getSubmittingOrganization();
+        if (org == null) {
+        	if (super.getSubmittingOrganization() != null) {
+        		return super.getSubmittingOrganization();
+        	} else {
+        		RegistryService rs = super.getLifeCycleManager().getRegistryService();
+        		BusinessQueryManager bqm = rs.getBusinessQueryManager();
+                Organization o = (Organization) bqm.getRegistryObject(orgKey,
+                        LifeCycleManager.ORGANIZATION);
+                setProvidingOrganization(o);	
+                return o;
+        	}
+        }
         return org;
     }
 
@@ -98,4 +113,12 @@ public class ServiceImpl extends RegistryEntryImpl implements Service
     {
         this.org = organization;
     }
+    
+    public void setSubmittingOrganizationKey(String key) {
+    	orgKey = key;
+    }
+    
+    public String getSubmittingOrganizationKey() {
+    	return orgKey;
+    }   
 }

@@ -51,6 +51,11 @@ import javax.xml.registry.infomodel.SpecificationLink;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
 
+import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
+import org.apache.ws.scout.model.uddi.v2.BusinessInfo;
+import org.apache.ws.scout.model.uddi.v2.Description;
+import org.apache.ws.scout.model.uddi.v2.Name;
+import org.apache.ws.scout.model.uddi.v2.ServiceInfo;
 import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
@@ -70,11 +75,6 @@ import org.apache.ws.scout.registry.infomodel.SlotImpl;
 import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
 import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
-import org.apache.ws.scout.uddi.BusinessDetail;
-import org.apache.ws.scout.uddi.BusinessInfo;
-import org.apache.ws.scout.uddi.Description;
-import org.apache.ws.scout.uddi.Name;
-import org.apache.ws.scout.uddi.ServiceInfo;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
 /**
@@ -449,23 +449,25 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
         throw new UnsupportedCapabilityException();
     }
 
-    Organization createOrganization(BusinessInfo info) throws JAXRException {
-        String key = info.getBusinessKey();
-        Name[] names = info.getNameArray();
-        Description[] descriptions = info.getDescriptionArray();
-        ServiceInfo[] serviceInfos = info.getServiceInfos().getServiceInfoArray();
+    Organization createOrganization(BusinessInfo bizInfo) throws JAXRException {
+        String key = bizInfo.getBusinessKey();
+        List<Name> names = bizInfo.getName(); 
+        
+        List<Description> descriptions = bizInfo.getDescription();
+        List<ServiceInfo> serviceInfos = bizInfo.getServiceInfos().getServiceInfo();
+        
         OrganizationImpl org = new OrganizationImpl(this);
         org.setKey(createKey(key));
-        if (names != null && names.length > 0) {
-            org.setName(createInternationalString(((Name) names[0]).getStringValue()));
+        if (names != null && names.size() > 0) {
+            org.setName(createInternationalString(names.get(0).getValue()));
         }
-        if (descriptions != null && descriptions.length > 0) {
-            org.setDescription(createInternationalString(((Description) descriptions[0]).getStringValue()));
+        if (descriptions != null && descriptions.size() > 0) {
+            org.setDescription(createInternationalString(descriptions.get(0).getValue()));
         }
-        if (serviceInfos != null && serviceInfos.length > 0) {
-            List<Service> services = new ArrayList<Service>(serviceInfos.length);
-            for (int i = 0; i < serviceInfos.length; i++) {
-                ServiceInfo serviceInfo = (ServiceInfo) serviceInfos[i];
+        if (serviceInfos != null && serviceInfos.size() > 0) {
+            List<Service> services = new ArrayList<Service>(serviceInfos.size());
+            for (int i = 0; i < serviceInfos.size(); i++) {
+                ServiceInfo serviceInfo = serviceInfos.get(i);
                 services.add(createService(serviceInfo));
             }
             org.addServices(services);
@@ -474,17 +476,17 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
         return org;
     }
 
-    Organization createOrganization(BusinessDetail detail) throws JAXRException {
-        return ScoutUddiJaxrHelper.getOrganization(detail, this);
+    Organization createOrganization(BusinessDetail bizDetail) throws JAXRException {
+        return ScoutUddiJaxrHelper.getOrganization(bizDetail, this);
     }
 
-    Service createService(ServiceInfo info) throws JAXRException {
-        String key = info.getServiceKey();
-        Name[] names = info.getNameArray();
+    Service createService(ServiceInfo serviceInfo) throws JAXRException {
+        String key = serviceInfo.getServiceKey();
+        List<Name> names = serviceInfo.getName();
         ServiceImpl service = new ServiceImpl(this);
         service.setKey(createKey(key));
-        if (names != null && names.length > 0) {
-            service.setName(createInternationalString(names[0].getStringValue()));
+        if (names != null && names.size() > 0) {
+            service.setName(createInternationalString(names.get(0).getValue()));
         }
         return service;
     }
