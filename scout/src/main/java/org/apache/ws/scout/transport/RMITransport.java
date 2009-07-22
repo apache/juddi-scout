@@ -66,9 +66,9 @@ public class RMITransport implements Transport
     	Properties env    = new Properties();
     	//It be a lot nicer if this is configured through properties, but for now
     	//I'd like to keep the changes localized, so this seems pretty reasonable.
-    	String factoryInitial = System.getProperty("java.naming.factory.initial");
+    	String factoryInitial = SecurityActions.getProperty("java.naming.factory.initial");
         if (factoryInitial==null) factoryInitial = "org.jnp.interfaces.NamingContextFactory";
-        String factoryURLPkgs = System.getProperty("java.naming.factory.url.pkgs");
+        String factoryURLPkgs = SecurityActions.getProperty("java.naming.factory.url.pkgs");
         if (factoryURLPkgs==null) factoryURLPkgs = "org.jboss.naming";
         env.setProperty("java.naming.factory.initial", factoryInitial);
         env.setProperty("java.naming.factory.url.pkgs", factoryURLPkgs);
