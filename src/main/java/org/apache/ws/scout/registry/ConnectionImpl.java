@@ -52,7 +52,7 @@ public class ConnectionImpl implements Connection, Serializable
         if (transportClass!=null) {
     		prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transportClass);
     	} else {
-    		String transport = System.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
+    		String transport = SecurityActions.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
     		if (transport != null) {
     			prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transport);
     		}

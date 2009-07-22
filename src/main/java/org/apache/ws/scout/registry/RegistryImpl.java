@@ -20,6 +20,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -1133,7 +1136,13 @@ public class RegistryImpl implements IRegistry {
 
 		try {
 			// log.info("Using the Context ClassLoader");
-			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+			ClassLoader ccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() 
+		    {
+				public ClassLoader run() {
+					return Thread.currentThread().getContextClassLoader();
+		        }
+			});
+			
 			clazz = Class.forName(name, true, ccl);
 		} catch (Exception e) {
 			 //log.warn("Failed to load the class " + name + " with context
@@ -1141,7 +1150,12 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		if (null == clazz) {
-			ClassLoader scl = ClassLoader.getSystemClassLoader();
+			ClassLoader scl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+			{ 
+				public ClassLoader run() {
+					return ClassLoader.getSystemClassLoader();
+				}
+			});
 
 			try {
 				clazz = Class.forName(name, true, scl);
