@@ -81,6 +81,7 @@ import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
  * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  * @author <a href="mailto:kstam@apache.org">Kurt T Stam</a>
+ * @author <a href="mailto:tcunning@apache.org">Tom Cunningham</a>
  */
 public class ScoutJaxrUddiHelper 
 {
@@ -875,13 +876,19 @@ public class ScoutJaxrUddiHelper
 			TModelBag tbag = objectFactory.createTModelBag();
 			Iterator speciter = specifications.iterator();
 			while (speciter.hasNext()) {
-				SpecificationLink specification = (SpecificationLink) speciter.next();
-				if (specification.getSpecificationObject() != null) {
-					RegistryObject ro = specification.getSpecificationObject();
-					if (ro.getKey() != null) {
-						Key key = ro.getKey();
-						tbag.getTModelKey().add(key.toString());
+				RegistryObject registryobject = (RegistryObject) speciter.next();
+				if (registryobject instanceof SpecificationLink) {
+					SpecificationLink specificationlink = (SpecificationLink) registryobject;
+					if (specificationlink.getSpecificationObject() != null) {
+						RegistryObject ro = specificationlink.getSpecificationObject();
+						if (ro.getKey() != null) {
+							Key key = ro.getKey();
+							tbag.getTModelKey().add(key.toString());
+						}
 					}
+				} else {
+					// ebXML case - the RegistryObject is an ExtrinsicObject
+					// Not implemented
 				}
 			}
 			return tbag;

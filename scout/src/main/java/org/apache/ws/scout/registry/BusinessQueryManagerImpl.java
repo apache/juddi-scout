@@ -83,6 +83,7 @@ import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
  * Implements the JAXR BusinessQueryManager Interface
  * For futher details, look into the JAXR API Javadoc.
  *
+ * @author <a href="mailto:tcunning@apache.org">Tom Cunningham</a>
  * @author <a href="mailto:anil@apache.org">Anil Saldhana</a>
  * @author <a href="mailto:jboynes@apache.org">Jeremy Boynes</a>
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
