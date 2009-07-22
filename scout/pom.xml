@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.apache.ws.scout</groupId>
 		<artifactId>scout-parent</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.1-rc1</version>
 	</parent>
 	<artifactId>scout</artifactId>
 	<name>Scout Implementation</name>

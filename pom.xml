@@ -5,7 +5,7 @@
   <artifactId>scout-parent</artifactId>
   <packaging>pom</packaging>
   <name>Scout</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1-rc1</version>
   <description>Apache Scout is an implementation of the JSR 93 - JavaTM API for
 		XML Registries 1.0 (JAXR)</description>
   <url>http://ws.apache.org/scout/</url>
@@ -395,11 +395,6 @@
   </reporting>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>xmlbeans</groupId>
-        <artifactId>xbean</artifactId>
-        <version>2.2.0</version>
-      </dependency>
       <dependency>
         <groupId>stax</groupId>
         <artifactId>stax-api</artifactId>
