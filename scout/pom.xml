@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.apache.ws.scout</groupId>
 			<artifactId>jaxr-api</artifactId>
-			<version>1.0.SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 
 		<!-- external JARs -->
