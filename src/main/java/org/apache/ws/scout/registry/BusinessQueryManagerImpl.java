@@ -458,26 +458,20 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 {
                     //We are looking for one exact match, so getting upto 3 records is fine
                     TModelList list = registry.findTModel(namePatterns, null, null, juddiFindQualifiers, 3);
-                    TModelInfos infos = null;
-                    TModelInfo[] tmarr = null;
-                    if (list != null) infos = list.getTModelInfos();
-                    if (infos != null) 
-                    {
-                    	List<TModelInfo> tmodelInfoList = infos.getTModelInfo();
-                    	tmarr = new TModelInfo[tmodelInfoList.size()];
-                    	tmodelInfoList.toArray(tmarr);
-                    }
-                    	
-                    	
-                    if (tmarr != null && tmarr.length > 0)
-                    {
-                        /*if (tmarr.length > 1)
-                            throw new InvalidRequestException("Multiple matches found:" + tmarr.length);
-*/
-                        TModelInfo info = tmarr[0];
-                        scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
-                        scheme.setName(new InternationalStringImpl(info.getName().getValue()));
-                        scheme.setKey(new KeyImpl(info.getTModelKey()));
+                    if (list != null) {
+                        TModelInfos infos = list.getTModelInfos();
+                        if (infos != null) {
+                            List<TModelInfo> tmodelInfoList = infos.getTModelInfo();
+                            if (tmodelInfoList.size() > 1) {
+                                throw new InvalidRequestException("Multiple matches found:" + tmodelInfoList.size());
+                            }
+                            if (tmodelInfoList.size() ==1) {
+                                TModelInfo info = tmodelInfoList.get(0);
+                                scheme = new ClassificationSchemeImpl(registryService.getLifeCycleManagerImpl());
+                                scheme.setName(new InternationalStringImpl(info.getName().getValue()));
+                                scheme.setKey(new KeyImpl(info.getTModelKey()));
+                            }
+                        }
                     }
 
                 } catch (RegistryException e)
@@ -561,24 +555,16 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                         ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
                         ScoutJaxrUddiHelper.getIdentifierBagFromExternalIdentifiers(externalIdentifiers), 
                 		juddiFindQualifiers, 10);
-                TModelInfos infos = null;
-                TModelInfo[] tmarr = null;
-                if (list != null) infos = list.getTModelInfos();
-                if (infos != null)
-                {
-                	List<TModelInfo> tmodelInfoList = infos.getTModelInfo();
-                	tmarr = new TModelInfo[tmodelInfoList.size()];
-                	tmodelInfoList.toArray(tmarr);
+               
+                if (list != null && list.getTModelInfos()!=null) {
+                	List<TModelInfo> tmodelInfoList = list.getTModelInfos().getTModelInfo();
+                	if (tmodelInfoList!=null) {
+                		for (TModelInfo info: tmodelInfoList) {
+                            col.add(ScoutUddiJaxrHelper.getConcept(info, this.registryService.getBusinessLifeCycleManager()));
+						}
+                	}
                 }
-                	
-                for (int i = 0; tmarr != null && i < tmarr.length; i++)
-                {
-                    TModelInfo info = tmarr[i];
-                    col.add(ScoutUddiJaxrHelper.getConcept(info, this.registryService.getBusinessLifeCycleManager()));
-                }
-
-            } catch (RegistryException e)
-            { 
+            } catch (RegistryException e) { 
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -694,23 +680,15 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             if (serviceList != null) {
 
                 ServiceInfos serviceInfos = serviceList.getServiceInfos();
-                ServiceInfo[] serviceInfoArr = null;
-                
-                if(serviceInfos != null)
-                {
-                	List<ServiceInfo> serviceInfoList = serviceInfos.getServiceInfo();
-                	serviceInfoArr = new ServiceInfo[serviceInfoList.size()];
-                	serviceInfoList.toArray(serviceInfoArr);
-                }
-
                 LinkedHashSet<Service> col = new LinkedHashSet<Service>();
-
-                for (int i=0; serviceInfoArr != null && i < serviceInfoArr.length; i++) {
-                    ServiceInfo si = (ServiceInfo) serviceInfoArr[i];
-					Service srv = (Service) getRegistryObject(si.getServiceKey(), LifeCycleManager.SERVICE);
-                    col.add(srv);
+                
+                if(serviceInfos != null && serviceInfos.getServiceInfo()!=null) {
+                	for (ServiceInfo si : serviceInfos.getServiceInfo()) {
+                		Service srv = (Service) getRegistryObject(si.getServiceKey(), LifeCycleManager.SERVICE);
+                        col.add(srv);
+					}
+                	
                 }
-
                 blkRes.setCollection(col);
             }
         }
@@ -779,21 +757,12 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         else if (LifeCycleManager.SERVICE.equalsIgnoreCase(objectType)) {
 
             try {
-
-               
                 ServiceDetail sd = registry.getServiceDetail(id);
-
-                if (sd != null) {
-
-                	List<BusinessService> businessServiceList = sd.getBusinessService();
-                    BusinessService[] businessServiceArr = new BusinessService[businessServiceList.size()];
-                    businessServiceList.toArray(businessServiceArr);
-
-                    if (businessServiceArr != null && businessServiceArr.length != 0) {
-                        Service service = getServiceFromBusinessService(businessServiceArr[0], lcm);
-
-                        return service;
-                    }
+                if (sd != null && sd.getBusinessService()!=null) {
+                    for (BusinessService businessService : sd.getBusinessService()) {
+                    	Service service = getServiceFromBusinessService(businessService, lcm);
+                    	return service;
+					}
                 }
             }
             catch (RegistryException e) {
@@ -868,10 +837,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         //Convert into a vector of strings
         String[] keys = new String[objectKeys.size()];
         int currLoc = 0;
-        Iterator iter = objectKeys.iterator();
-        while(iter.hasNext())
-        {
-            Key key = (Key)iter.next();
+        for (Key key : objectKeys) {
             keys[currLoc] = key.getId();
             currLoc++;
         }
@@ -884,12 +850,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             {
                 TModelDetail tmodeldetail = registry.getTModelDetail(keys);
                 List<TModel> tmodelList = tmodeldetail.getTModel();
-                TModel[] tmarray = new TModel[tmodelList.size()];
-                tmodelList.toArray(tmarray);
-                
-                for (int i = 0; tmarray != null && i < tmarray.length; i++)
+
+                for (TModel tModel: tmodelList)
                 {
-                    col.add(ScoutUddiJaxrHelper.getConcept(tmarray[i], lcm));
+                    col.add(ScoutUddiJaxrHelper.getConcept(tModel, lcm));
                 }
 
             } catch (RegistryException e)
@@ -905,24 +869,17 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try
             {
             	RegisteredInfo ri = registry.getRegisteredInfo(auth.getAuthInfo());
-            	BusinessInfos infos = null;
-            	BusinessInfo[] biarr = null;
-            	
-            	if (ri != null) infos = ri.getBusinessInfos();
-            	if (infos != null) 
-                {
-            		List<BusinessInfo> bizInfoList = infos.getBusinessInfo();
-            		biarr = new BusinessInfo[bizInfoList.size()];
-            		bizInfoList.toArray(biarr);
-            	}
-            	            	
-            	for (int i = 0; i < biarr.length; i++) {
-            		BusinessInfo info = biarr[i];
-            		BusinessDetail detail = registry.getBusinessDetail(info.getBusinessKey());
-
-                    col.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
-            	}
-            } catch (RegistryException e) { 
+                if (ri != null) {
+                    BusinessInfos infos = ri.getBusinessInfos();
+                    if (infos != null) {
+                        List<BusinessInfo> bizInfoList = infos.getBusinessInfo();
+                        for (BusinessInfo businessInfo: bizInfoList) {
+                            BusinessDetail detail = registry.getBusinessDetail(businessInfo.getBusinessKey());
+                            col.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
+                        }
+                    }
+                }
+            } catch (RegistryException e) {
                     throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -931,11 +888,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try {
                 TModelDetail tmodeldetail = registry.getTModelDetail(keys);
                 List<TModel> tmodelList = tmodeldetail.getTModel();
-                TModel[] tmarr = new TModel[tmodelList.size()];
-                
-                for (int i = 0; tmarr != null && i < tmarr.length; i++)
+
+                for (TModel tmodel: tmodelList)
                 {
-                    col.add(ScoutUddiJaxrHelper.getConcept(tmarr[i], lcm));
+                    col.add(ScoutUddiJaxrHelper.getConcept(tmodel, lcm));
                 }
 
             }
@@ -951,12 +907,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 if (serviceDetail != null) {
                     List<BusinessService> bizServiceList = serviceDetail.getBusinessService();
-                    BusinessService[] bizServiceArr = new BusinessService[bizServiceList.size()];
-                    bizServiceList.toArray(bizServiceArr);
 
-                    for (int i=0; bizServiceArr != null && i < bizServiceArr.length; i++) {
+                    for (BusinessService businessService: bizServiceList) {
 
-                        Service service = getServiceFromBusinessService(bizServiceArr[i], lcm);
+                        Service service = getServiceFromBusinessService(businessService, lcm);
                         
                         col.add(service);
                     }
@@ -979,37 +933,21 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     {
         if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(id)) {
             IRegistry registry = registryService.getRegistry();
-
         	ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
             AuthToken auth = this.getAuthToken(con,registry);
-
-            BulkResponse br = null;
     		LinkedHashSet<Organization> orgs = null;
-            
             try
             {
             	RegisteredInfo ri = registry.getRegisteredInfo(auth.getAuthInfo());
-            	BusinessInfos infos = null;
-            	BusinessInfo[] biarr = null;
-            	
-            	if (ri != null) infos = ri.getBusinessInfos();
-            	if (infos != null)
-                {
-            		List<BusinessInfo> bizInfoList = infos.getBusinessInfo();
-            		biarr = new BusinessInfo[bizInfoList.size()];
-            		bizInfoList.toArray(biarr);
+            	if (ri != null && ri.getBusinessInfos()!=null) {
+            		List<BusinessInfo> bizInfoList = ri.getBusinessInfos().getBusinessInfo();
+            		orgs = new LinkedHashSet<Organization>();
+            		for (BusinessInfo businessInfo : bizInfoList) {
+            			BusinessDetail detail = registry.getBusinessDetail(businessInfo.getBusinessKey());
+                        orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
+					}
             	}
             	
-            	if (biarr != null) {
-                    orgs = new LinkedHashSet<Organization>();
-            	}
-            	
-            	for (int i = 0; i < biarr.length; i++) {
-            		BusinessInfo info = biarr[i];
-            		BusinessDetail detail = registry.getBusinessDetail(info.getBusinessKey());
-
-                    orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
-            	}
             } catch (RegistryException re) {
             	throw new JAXRException(re);
             }
