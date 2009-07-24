@@ -63,10 +63,10 @@ public class Creator {
         org.setPrimaryContact(user);
         PersonName personName = blm.createPersonName("John AXel Rose");
         TelephoneNumber telephoneNumber = blm.createTelephoneNumber();
-        telephoneNumber.setNumber("111-222-333");
+        telephoneNumber.setNumber("111-222-3333");
         telephoneNumber.setType(null);
         PostalAddress address = blm.createPostalAddress("1",
-            "UDDI Drive", "Apache Town","OS", "USA", "00000-1111", "");
+            "Uddi Drive", "Apache Town","CA", "USA", "00000-1111", "");
         
         Collection<PostalAddress> postalAddresses = new ArrayList<PostalAddress>();
         postalAddresses.add(address);

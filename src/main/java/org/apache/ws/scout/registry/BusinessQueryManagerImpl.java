@@ -138,27 +138,17 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             
             BusinessInfo[] bizInfoArr =null;
             BusinessInfos bizInfos = result.getBusinessInfos();
+            LinkedHashSet<Organization> orgs = new LinkedHashSet<Organization>();
             if(bizInfos != null)
             {
             	List<BusinessInfo> bizInfoList = bizInfos.getBusinessInfo();
+            	for (BusinessInfo businessInfo : bizInfoList) {
+                    //Now get the details on the individual biz
+                    BusinessDetail detail = registry.getBusinessDetail(businessInfo.getBusinessKey());
+                    orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
+				}
             	bizInfoArr = new BusinessInfo[bizInfoList.size()];
             	bizInfoList.toArray(bizInfoArr);
-            }
-            
-            LinkedHashSet<Organization> orgs = null;
-            int len = 0;
-            if (bizInfoArr != null)
-            {
-                len = bizInfoArr.length;
-                orgs = new LinkedHashSet<Organization>();
-            }
-            for (int i = 0; i < len; i++)
-            {
-                BusinessInfo info = bizInfoArr[i];
-                //Now get the details on the individual biz
-                BusinessDetail detail = registry.getBusinessDetail(info.getBusinessKey());
-
-                orgs.add(registryService.getLifeCycleManagerImpl().createOrganization(detail));
             }
             return new BulkResponseImpl(orgs);
         } catch (RegistryException e)
@@ -181,19 +171,8 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             PublisherAssertions result =
                     registry.getPublisherAssertions(auth.getAuthInfo());
             List<PublisherAssertion> publisherAssertionList = result.getPublisherAssertion();
-            PublisherAssertion[] publisherAssertionArr = new PublisherAssertion[publisherAssertionList.size()];
-            publisherAssertionList.toArray(publisherAssertionArr);
-            
-            LinkedHashSet<Association> col = null;
-            int len = 0;
-            if (publisherAssertionArr != null)
-            {
-                len = publisherAssertionArr.length;
-                col = new LinkedHashSet<Association>();
-            }
-            for (int i = 0; i < len; i++)
-            {
-                PublisherAssertion pas = publisherAssertionArr[i];
+            LinkedHashSet<Association> col = new LinkedHashSet<Association>();
+            for (PublisherAssertion pas : publisherAssertionList) {
                 String sourceKey = pas.getFromKey();
                 String targetKey = pas.getToKey();
                 Collection<Key> orgcol = new ArrayList<Key>();
@@ -239,7 +218,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             else
               if(!caller  && other  )
                         confirm = Constants.COMPLETION_STATUS_FROMKEY_INCOMPLETE;
-           else
+            else
                  if(caller  && !other   )
                         confirm = Constants.COMPLETION_STATUS_TOKEY_INCOMPLETE;
 
@@ -247,19 +226,8 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             
             
             List<AssertionStatusItem> assertionStatusItemList = report.getAssertionStatusItem();
-            AssertionStatusItem[] assertionStatusItemArr = new AssertionStatusItem[assertionStatusItemList.size()];
-            assertionStatusItemList.toArray(assertionStatusItemArr);
-            
-            LinkedHashSet<Association> col = null;
-            int len = 0;
-            if (assertionStatusItemArr != null)
-            {
-                len = assertionStatusItemArr.length;
-                col = new LinkedHashSet<Association>();
-            }
-            for (int i = 0; i < len; i++)
-            {
-                AssertionStatusItem asi = assertionStatusItemArr[i];
+            LinkedHashSet<Association> col = new LinkedHashSet<Association>();
+            for (AssertionStatusItem asi : assertionStatusItemList) {
                 String sourceKey = asi.getFromKey();
                 String targetKey = asi.getToKey();
                 Collection<Key> orgcol = new ArrayList<Key>();
