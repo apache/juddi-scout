@@ -82,6 +82,7 @@ public class ServiceImpl extends RegistryEntryImpl implements Service
         	} else {
         		RegistryService rs = super.getLifeCycleManager().getRegistryService();
         		BusinessQueryManager bqm = rs.getBusinessQueryManager();
+        		if (orgKey==null) return null;
                 Organization o = (Organization) bqm.getRegistryObject(orgKey,
                         LifeCycleManager.ORGANIZATION);
                 setProvidingOrganization(o);	
