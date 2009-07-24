@@ -364,7 +364,7 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
         return slot;
     }
 
-    public Slot createSlot(String name, Collection<String> values, String slotType) throws JAXRException {
+    public Slot createSlot(String name, Collection values, String slotType) throws JAXRException {
         Slot slot = (Slot) this.createObject(LifeCycleManager.SLOT);
         slot.setName(name);
         slot.setValues(values);
@@ -409,7 +409,7 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
      * @return
      * @throws JAXRException
      */
-    public abstract BulkResponse deleteObjects(Collection<Key> keys, String objectType) throws JAXRException;
+    public abstract BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException;
 
 
     /*************************************************************************
@@ -437,15 +437,15 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
         throw new UnsupportedCapabilityException();
     }
 
-    public BulkResponse deprecateObjects(Collection<Key> keys) throws JAXRException {
+    public BulkResponse deprecateObjects(Collection keys) throws JAXRException {
         throw new UnsupportedCapabilityException();
     }
 
-    public BulkResponse unDeprecateObjects(Collection<Key> keys) throws JAXRException {
+    public BulkResponse unDeprecateObjects(Collection keys) throws JAXRException {
         throw new UnsupportedCapabilityException();
     }
 
-    public BulkResponse deleteObjects(Collection<Key> keys) throws JAXRException {
+    public BulkResponse deleteObjects(Collection keys) throws JAXRException {
         throw new UnsupportedCapabilityException();
     }
 

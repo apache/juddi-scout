@@ -58,7 +58,7 @@ public class ClassificationSchemeImpl
         childConcepts.add(concept);
     }
 
-    public void addChildConcepts(Collection<Concept> collection)
+    public void addChildConcepts(Collection collection)
             throws JAXRException
     {
         childConcepts.addAll(collection);

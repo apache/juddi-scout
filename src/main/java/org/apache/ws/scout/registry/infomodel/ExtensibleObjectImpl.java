@@ -41,9 +41,8 @@ public class ExtensibleObjectImpl implements ExtensibleObject
 
     public void addSlots(Collection slots) throws JAXRException
     {
-        for (Iterator i = slots.iterator(); i.hasNext();)
-        {
-            addSlot((Slot) i.next());
+        for (Object slot : slots) {
+            addSlot((Slot) slot);
         }
     }
 
@@ -62,7 +61,7 @@ public class ExtensibleObjectImpl implements ExtensibleObject
         slots.remove(slotName);
     }
 
-    public void removeSlots(Collection<String> slotNames)
+    public void removeSlots(Collection slotNames)
     {
         slots.keySet().removeAll(slotNames);
     }

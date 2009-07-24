@@ -172,14 +172,12 @@ public class OrganizationImpl extends RegistryObjectImpl implements Organization
         return filteredNumbers;
     }
 
-    public void setTelephoneNumbers(Collection<TelephoneNumber> collection) throws JAXRException
+    public void setTelephoneNumbers(Collection collection) throws JAXRException
     {
         // do this by hand to ensure all members are actually instances of TelephoneNumber
         Set<TelephoneNumber> numbers = new HashSet<TelephoneNumber>(collection.size());
-        for (Iterator i = collection.iterator(); i.hasNext();)
-        {
-            TelephoneNumber number = (TelephoneNumber) i.next();
-            numbers.add(number);
+        for (Object number : collection) {
+            numbers.add((TelephoneNumber) number);
         }
         this.telephoneNumbers = numbers;
     }

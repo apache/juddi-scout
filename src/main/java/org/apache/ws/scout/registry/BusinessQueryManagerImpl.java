@@ -794,18 +794,18 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         return new BulkResponseImpl(c);
     }
 
-    public BulkResponse getRegistryObjects(Collection<Key> objectKeys) throws JAXRException
+    public BulkResponse getRegistryObjects(Collection objectKeys) throws JAXRException
     {
         throw new UnsupportedCapabilityException();
     }
 
-    public BulkResponse getRegistryObjects(Collection<Key> objectKeys, String objectType) throws JAXRException
+    public BulkResponse getRegistryObjects(Collection objectKeys, String objectType) throws JAXRException
     {
         IRegistry registry = registryService.getRegistry();
         //Convert into a vector of strings
         String[] keys = new String[objectKeys.size()];
         int currLoc = 0;
-        for (Key key : objectKeys) {
+        for (Key key : (Collection<Key>) objectKeys) {
             keys[currLoc] = key.getId();
             currLoc++;
         }

@@ -56,21 +56,18 @@ public class ConceptImpl extends RegistryObjectImpl implements Concept
         ((ConceptImpl)concept).setParentconcept(this);
     }
 
-    public void addChildConcepts(Collection<Concept> collection)
+    public void addChildConcepts(Collection collection)
     {
-        Iterator iter = collection.iterator();
-        while(iter.hasNext())
-        {
-            Concept c = (Concept)iter.next();
-            ((ConceptImpl)c).setParentconcept(this);
-            childconcepts.add(c);
+        for (Object c : collection) {
+            ((ConceptImpl) c).setParentconcept(this);
+            childconcepts.add((Concept) c);
         }
 
     }
 
     public int getChildConceptCount()
     {
-        return this.childconcepts.size();
+        return this.childconcepts.size();                                                                                                           
     }
 
     public Collection<Concept> getChildrenConcepts()

@@ -16,10 +16,7 @@
  */
 package org.apache.ws.scout.util;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.infomodel.Association;
@@ -195,16 +192,9 @@ public class ScoutJaxrUddiHelper
               bt.setServiceKey(svc.getKey().getId());
            }
 			
-			InternationalString idesc = ((RegistryObject) serviceBinding).getDescription();
+			InternationalString idesc = serviceBinding.getDescription();
             
-            if (idesc != null) {
-                for (LocalizedString locName : idesc.getLocalizedStrings()) {
-                    Description desc = objectFactory.createDescription();
-                    bt.getDescription().add(desc);
-                    desc.setValue(locName.getValue());
-                    desc.setLang(locName.getLocale().getLanguage());                
-                }
-            }
+            addDescriptions(bt.getDescription(), idesc);
 
 			// SpecificationLink
            Collection<SpecificationLink> slcol = serviceBinding.getSpecificationLinks();
@@ -221,7 +211,8 @@ public class ScoutJaxrUddiHelper
 					if (specificationObject.getKey() != null && specificationObject.getKey().getId() != null) {
 						emptyTInfo.setTModelKey(specificationObject.getKey().getId());
                         if (specificationObject.getDescription()!=null) {
-                            for (LocalizedString locDesc : specificationObject.getDescription().getLocalizedStrings()) {
+                            for (Object o : specificationObject.getDescription().getLocalizedStrings()) {
+                                LocalizedString locDesc = (LocalizedString) o;
                                 Description description = objectFactory.createDescription();
                                 emptyTInfo.getDescription().add(description);
                                 description.setValue(locDesc.getValue());
@@ -332,25 +323,13 @@ public class ScoutJaxrUddiHelper
 			Service service) throws JAXRException {
 		BusinessService bs = objectFactory.createBusinessService();
 		try {
-			InternationalString iname = ((RegistryObject) service).getName();
+			InternationalString iname = service.getName();
 						
-			for (LocalizedString locName : iname.getLocalizedStrings()) {
-			    Name name = objectFactory.createName();
-			    bs.getName().add(name);
-			    name.setValue(locName.getValue());
-			    name.setLang(locName.getLocale().getLanguage());                
-			}
+			addNames(bs.getName(), iname);
 	         
-            InternationalString idesc = ((RegistryObject) service).getDescription();
+            InternationalString idesc = service.getDescription();
     
-            if (idesc != null) {
-                for (LocalizedString locName : idesc.getLocalizedStrings()) {
-                    Description desc = objectFactory.createDescription();
-                    bs.getDescription().add(desc);
-                    desc.setValue(locName.getValue());
-                    desc.setLang(locName.getLocale().getLanguage());                
-                }
-            }
+           addDescriptions(bs.getDescription(), idesc);
 
             Organization o = service.getProvidingOrganization();
 
@@ -428,25 +407,13 @@ public class ScoutJaxrUddiHelper
                 tm.setOperator(s.getName());
             }
 
-			InternationalString iname = ((RegistryObject) classificationScheme).getName();
+			InternationalString iname = classificationScheme.getName();
 			 
-			for (LocalizedString locName : iname.getLocalizedStrings()) {
-			    Name name = objectFactory.createName();
-			    tm.setName(name);
-			    name.setValue(locName.getValue());
-			    name.setLang(locName.getLocale().getLanguage());                
-			}
-	         
-			InternationalString idesc = ((RegistryObject) classificationScheme).getDescription();
+            tm.setName(getFirstName(iname));
+
+			InternationalString idesc = classificationScheme.getDescription();
 			
-			if (idesc != null) {
-			    for (LocalizedString locName : idesc.getLocalizedStrings()) {
-			        Description desc = objectFactory.createDescription();
-			        tm.getDescription().add(desc);
-			        desc.setValue(locName.getValue());
-	                desc.setLang(locName.getLocale().getLanguage());                
-	            }
-			}
+		    addDescriptions(tm.getDescription(), idesc);
 
             IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(classificationScheme.getExternalIdentifiers());
             if (idBag!=null) {
@@ -481,26 +448,15 @@ public class ScoutJaxrUddiHelper
 			if (sl2 != null && sl2.getName() != null)
 				tm.setOperator(sl2.getName());
 
-			InternationalString iname = ((RegistryObject) concept).getName();
+			InternationalString iname = concept.getName();
+
+            tm.setName(getFirstName(iname));
+
+            InternationalString idesc = concept.getDescription();
 			
-			for (LocalizedString locName : iname.getLocalizedStrings()) {
-			    Name name = objectFactory.createName();
-			    tm.setName(name);
-			    name.setValue(locName.getValue());
-			    name.setLang(locName.getLocale().getLanguage());			    
-			}
-			
-			InternationalString idesc = ((RegistryObject) concept).getDescription();
-			
-            if (idesc != null) {
-                for (LocalizedString locName : idesc.getLocalizedStrings()) {
-                    Description desc = objectFactory.createDescription();
-                    tm.getDescription().add(desc);
-                    desc.setValue(locName.getValue());
-                    desc.setLang(locName.getLocale().getLanguage());
-                }
-            }
-//          External Links 
+            addDescriptions(tm.getDescription(), idesc);
+
+//          External Links
             Collection<ExternalLink> externalLinks = concept.getExternalLinks(); 
             if(externalLinks != null && externalLinks.size() > 0)
             {
@@ -521,7 +477,39 @@ public class ScoutJaxrUddiHelper
         }
         return tm;
     }
-    
+
+    private static void addDescriptions(List<Description> descripions, InternationalString idesc) throws JAXRException {
+        if (idesc != null) {
+            for (Object o : idesc.getLocalizedStrings()) {
+                LocalizedString locName = (LocalizedString) o;
+                Description desc = objectFactory.createDescription();
+                descripions.add(desc);
+                desc.setValue(locName.getValue());
+                desc.setLang(locName.getLocale().getLanguage());
+            }
+        }
+    }
+
+    private static Name getFirstName(InternationalString iname) throws JAXRException {
+        for (Object o : iname.getLocalizedStrings()) {
+            LocalizedString locName = (LocalizedString) o;
+            Name name = objectFactory.createName();
+            name.setValue(locName.getValue());
+            name.setLang(locName.getLocale().getLanguage());
+            return name;
+        }
+        return null;
+    }
+    private static void addNames(List<Name> names, InternationalString iname) throws JAXRException {
+        for (Object o : iname.getLocalizedStrings()) {
+            LocalizedString locName = (LocalizedString) o;
+            Name name = objectFactory.createName();
+            name.setValue(locName.getValue());
+            name.setLang(locName.getLocale().getLanguage());
+            names.add(name);
+        }
+    }
+
     public static BusinessEntity getBusinessEntityFromJAXROrg(Organization organization)
 			throws JAXRException {
 		BusinessEntity biz = objectFactory.createBusinessEntity();
@@ -540,26 +528,14 @@ public class ScoutJaxrUddiHelper
 			
 			InternationalString iname = organization.getName();
 			
-			if (iname != null) {    
-			    for (LocalizedString locName : iname.getLocalizedStrings()) {
-			        Name name = objectFactory.createName();
-			        biz.getName().add(name);
-			        name.setValue(locName.getValue());
-			        name.setLang(locName.getLocale().getLanguage());                
-			    }
+			if (iname != null) {
+                addNames(biz.getName(), iname);
 			}
 			
 			InternationalString idesc = organization.getDescription();
 			
-			if (idesc != null) {
-			    for (LocalizedString locName : idesc.getLocalizedStrings()) {
-			        Description desc = objectFactory.createDescription();
-			        biz.getDescription().add(desc);
-			        desc.setValue(locName.getValue());
-			        desc.setLang(locName.getLocale().getLanguage());                
-			    }
-			}
-			
+            addDescriptions(biz.getDescription(), idesc);
+
 			if (organization.getPrimaryContact() != null && 
 				organization.getPrimaryContact().getPersonName()!= null &&
 				organization.getPrimaryContact().getPersonName().getFullName() != null) {
@@ -802,8 +778,7 @@ public class ScoutJaxrUddiHelper
      * These KeyedReferences optionally refer to a tModel that identifies the type of category (translates to the ClassificationScheme key).  If
      * this is set and the tModel doesn't exist in the UDDI registry, then an invalid key error will occur when trying to save the object.
      * 
-     * @param regObj
-     * @param destinationObj
+     * @param classifications classifications to turn into categories
      * @throws JAXRException
      */
 	public static CategoryBag getCategoryBagFromClassifications(Collection classifications) throws JAXRException {
@@ -901,8 +876,7 @@ public class ScoutJaxrUddiHelper
 	/**
      * Adds the objects identifiers from JAXR's external identifier collection
      * 
-     * @param identifiers
-     * @param ibag
+     * @param identifiers external identifiers to turn into identifiers
      * @throws JAXRException
      */
 	public static IdentifierBag getIdentifierBagFromExternalIdentifiers(Collection identifiers) throws JAXRException {
@@ -977,5 +951,5 @@ public class ScoutJaxrUddiHelper
             }
         }
         return bt; 
-    } 
+    }
 }

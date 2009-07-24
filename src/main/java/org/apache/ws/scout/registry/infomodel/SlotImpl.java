@@ -66,7 +66,7 @@ public class SlotImpl implements Slot
         slotType = s;
     }
 
-    public void setValues(Collection<String> collection) throws JAXRException
+    public void setValues(Collection collection) throws JAXRException
     {
         if (collection == null)
         {

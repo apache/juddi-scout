@@ -102,7 +102,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
      * @return
      * @throws JAXRException
      */
-    public BulkResponse deleteObjects(Collection<Key> keys, String objectType) throws JAXRException {
+    public BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException {
         BulkResponse bulk = null;
 
         if (objectType == LifeCycleManager.ASSOCIATION) {
@@ -130,27 +130,27 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return bulk;
     }
 
-    public BulkResponse deleteAssociations(Collection<Key> associationKeys) throws JAXRException {
+    public BulkResponse deleteAssociations(Collection associationKeys) throws JAXRException {
         return this.deleteOperation(associationKeys, "DELETE_ASSOCIATION");
     }
 
-    public BulkResponse deleteClassificationSchemes(Collection<Key> schemeKeys) throws JAXRException {
+    public BulkResponse deleteClassificationSchemes(Collection schemeKeys) throws JAXRException {
         return this.deleteOperation(schemeKeys, "DELETE_CLASSIFICATIONSCHEME");
     }
 
-    public BulkResponse deleteConcepts(Collection<Key> conceptKeys) throws JAXRException {
+    public BulkResponse deleteConcepts(Collection conceptKeys) throws JAXRException {
         return this.deleteOperation(conceptKeys, "DELETE_CONCEPT");
     }
 
-    public BulkResponse deleteOrganizations(Collection<Key> orgkeys) throws JAXRException {
+    public BulkResponse deleteOrganizations(Collection orgkeys) throws JAXRException {
         return this.deleteOperation(orgkeys, "DELETE_ORG");
     }
 
-    public BulkResponse deleteServiceBindings(Collection<Key> bindingKeys) throws JAXRException {
+    public BulkResponse deleteServiceBindings(Collection bindingKeys) throws JAXRException {
         return this.deleteOperation(bindingKeys, "DELETE_SERVICEBINDING");
     }
 
-    public BulkResponse deleteServices(Collection<Key> serviceKeys) throws JAXRException {
+    public BulkResponse deleteServices(Collection serviceKeys) throws JAXRException {
         return this.deleteOperation(serviceKeys, "DELETE_SERVICE");
     }
 

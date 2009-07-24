@@ -98,7 +98,7 @@ public class ServiceBindingImpl extends RegistryObjectImpl implements ServiceBin
         links.remove(link);
     }
 
-    public void removeSpecificationLinks(Collection<SpecificationLink> col) throws JAXRException
+    public void removeSpecificationLinks(Collection col) throws JAXRException
     {
         links.removeAll(col);
     }
