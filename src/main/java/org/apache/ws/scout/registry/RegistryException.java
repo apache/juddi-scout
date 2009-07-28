@@ -124,7 +124,11 @@ public class RegistryException extends Exception
 
   /**
    * Constructs a RegistryException instance.
-   * @param ex the original exception
+   * 
+   * @param fCode
+   * @param fString
+   * @param fActor
+   * @param dispRpt
    */
   public RegistryException(String fCode,String fString,String fActor,DispositionReport dispRpt)
   {

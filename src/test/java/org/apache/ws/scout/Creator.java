@@ -125,7 +125,7 @@ public class Creator {
      * Creates a Classficiation for the default dummy classificationScheme.
      * 
      * @param classificationScheme
-     * @return
+     * @return JAXR Classification
      * @throws JAXRException
      */
     public Classification createClassification(ClassificationScheme classificationScheme) throws JAXRException

@@ -524,10 +524,9 @@ public class ScoutUddiJaxrHelper
 
    /**
     * Classifications - going to assume all are external since UDDI does not use "Concepts".
-    * 
     * @param categoryBag
-    * @param destinationObj
     * @param lifeCycleManager
+    * @return Collection Classifications
     * @throws JAXRException
     */
    public static Collection getClassifications(CategoryBag categoryBag, LifeCycleManager lifeCycleManager) 
@@ -570,13 +569,13 @@ public class ScoutUddiJaxrHelper
    
    /**
     * External Identifiers
-    * 
     * @param identifierBag
-    * @param destinationObj
     * @param lifeCycleManager
+    * @return Collection ExternalIdentifier
     * @throws JAXRException
     */
-   public static Collection<ExternalIdentifier> getExternalIdentifiers(IdentifierBag identifierBag, LifeCycleManager lifeCycleManager) 
+   
+   public static Collection getExternalIdentifiers(IdentifierBag identifierBag, LifeCycleManager lifeCycleManager) 
    throws JAXRException {
 	  Collection<ExternalIdentifier> extidentifiers = null;
       if (identifierBag != null) {

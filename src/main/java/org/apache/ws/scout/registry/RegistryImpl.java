@@ -220,7 +220,7 @@ public class RegistryImpl implements IRegistry {
 	/**
 	 * 
 	 * @param uddiRequest
-	 * @return
+	 * @return String
 	 * @throws RegistryException
 	 */
 	public String execute(String uddiRequest, String urltype)

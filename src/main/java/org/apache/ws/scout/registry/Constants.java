@@ -57,7 +57,7 @@ public class Constants {
 	 * tModel defines the UNSPSC (United Nations Standard Products and Services
 	 * Code System) version 3.1 product taxonomy. <B>This taxonomy has been
 	 * superceeded by the Universal Standard Products and Services
-	 * Classification (see {@link #UNSPSC_73_TMODEL_KEY}) taxonomy.
+	 * Classification (see {@link #TMODEL_UNSPSC_73_TMODEL_KEY}) taxonomy.
 	 */
 	public static final String TMODEL_UNSPSC_TMODEL_KEY = "UUID:DB77450D-9FA8-45D4-A7BC-04411D14E384";
 

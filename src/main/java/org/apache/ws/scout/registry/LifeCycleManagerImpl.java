@@ -406,7 +406,7 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
      *
      * @param keys
      * @param objectType
-     * @return
+     * @return BulkResponse
      * @throws JAXRException
      */
     public abstract BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException;
@@ -418,7 +418,7 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
 
     /**
      * @param repositoryItem
-     * @return
+     * @return ExtrinsicObject
      * @throws JAXRException
      */
     public ExtrinsicObject createExtrinsicObject(DataHandler repositoryItem) throws JAXRException {

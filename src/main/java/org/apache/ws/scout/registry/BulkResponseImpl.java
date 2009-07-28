@@ -66,10 +66,10 @@ public class BulkResponseImpl extends JAXRResponseImpl implements BulkResponse
      *
      * So my interpretation is return null if result avail, and empty collection otherwise
      *
-     * @return
+     * @return Collection Exceptions
      * @throws JAXRException
      */
-    public Collection<Exception> getExceptions() throws JAXRException
+    public Collection getExceptions() throws JAXRException
     {
         return (this.exceptions.size() == 0 ? null : exceptions);
     }

@@ -99,7 +99,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
      *
      * @param keys
      * @param objectType
-     * @return
+     * @return BulkResponse object
      * @throws JAXRException
      */
     public BulkResponse deleteObjects(Collection keys, String objectType) throws JAXRException {

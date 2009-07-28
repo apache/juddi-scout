@@ -113,7 +113,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
      * @param specifications
      * @param externalIdentifiers
      * @param externalLinks
-     * @return
+     * @return BulkResponse
      * @throws JAXRException
      */
     public BulkResponse findOrganizations(Collection findQualifiers,
@@ -266,7 +266,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
      *
      * @param findQualifiers
      * @param namePatterns
-     * @return
+     * @return ClassificationScheme
      * @throws JAXRException
      */
     public ClassificationScheme findClassificationSchemeByName(Collection findQualifiers,
@@ -610,7 +610,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
      * @param namePatterns
      * @param classifications
      * @param specificationa
-     * @return
+     * @return BulkResponse
      * @throws JAXRException
      */
     public BulkResponse findServices(Key orgKey, Collection findQualifiers,
@@ -767,7 +767,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
      *  TODO - need to figure out what the set are.  This is just to get some
      *  basic functionality
      *
-     * @return
+     * @return BulkResponse
      * @throws JAXRException
      */
     public BulkResponse getRegistryObjects() throws JAXRException

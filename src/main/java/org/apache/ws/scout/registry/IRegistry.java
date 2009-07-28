@@ -40,7 +40,7 @@ public interface IRegistry {
 	URI getInquiryURI();
 	
 	/**
-	 * @param inquiryURL The inquiryURL to set.
+	 * @param uri The inquiry uri to set.
 	 */
 	void setInquiryURI(URI uri);
 	
@@ -50,7 +50,7 @@ public interface IRegistry {
 	URI getPublishURI();	
 	
 	/**
-	 * @param publishURL The publishURL to set.
+	 * @param uri The publish uri to set.
 	 */
 	void setPublishURI(URI uri);
 	
