@@ -20,6 +20,8 @@ import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.RegistryPackage;
+import javax.xml.registry.UnsupportedCapabilityException;
+
 
 import org.apache.ws.scout.BaseTestCase;
 import org.junit.After;
@@ -210,7 +212,7 @@ public class BusinessQueryManager2Test extends BaseTestCase {
         	
         	ArrayList classifications = new ArrayList();
         	classifications.add(type);
-        	
+
         	BulkResponse br = bqm.findRegistryPackages(null, namePatterns, classifications, null);
         	fail("findRegistryPackages is currently unsupported");
         	
@@ -231,8 +233,10 @@ public class BusinessQueryManager2Test extends BaseTestCase {
         	assertEquals(null, br.getExceptions());
         	assertEquals(br.getCollection(), 1);
         
-        } catch (JAXRException e) {
-        	e.printStackTrace();
-		}				
+        } catch (UnsupportedCapabilityException e) {
+        	// We expect to fail here - findRegistryPackages is unsupported
+		} catch (Exception e) {
+			fail ("Got exception : " + e.toString());
+		}
 	}
 }
