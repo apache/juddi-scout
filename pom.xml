@@ -8,8 +8,9 @@
         <artifactId>apache</artifactId>
         <version>6</version>
     </parent>
+    <groupId>org.apache.ws.scout</groupId>
     <artifactId>scout</artifactId>
-    <version>1.1</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Apache Scout</name>
@@ -19,122 +20,118 @@
     </description>
     <url>http://ws.apache.org/scout/</url>
     <issueManagement>
-      <system>JIRA</system>
-      <url>http://issues.apache.org/jira/browse/SCOUT</url>
+        <system>JIRA</system>
+        <url>http://issues.apache.org/jira/browse/SCOUT</url>
     </issueManagement>
     <ciManagement>
-      <system>Continuum</system>
-      <url>http://vmbuild.apache.org</url>
-      <notifiers>
-        <notifier>
-          <sendOnError>true</sendOnError>
-          <sendOnFailure>true</sendOnFailure>
-          <sendOnSuccess>true</sendOnSuccess>
-          <sendOnWarning>true</sendOnWarning>
-          <configuration>
-            <address>scout-dev@ws.apache.org</address>
-          </configuration>
-        </notifier>
-      </notifiers>
+        <system>Continuum</system>
+        <url>http://vmbuild.apache.org</url>
+        <notifiers>
+            <notifier>
+                <sendOnError>true</sendOnError>
+                <sendOnFailure>true</sendOnFailure>
+                <sendOnSuccess>true</sendOnSuccess>
+                <sendOnWarning>true</sendOnWarning>
+                <configuration>
+                    <address>scout-dev@ws.apache.org</address>
+                </configuration>
+            </notifier>
+        </notifiers>
     </ciManagement>
     <inceptionYear>2004</inceptionYear>
     <mailingLists>
-      <mailingList>
-        <name>WS Scout Developers</name>
-        <subscribe>scout-dev-subscribe@ws.apache.org</subscribe>
-        <unsubscribe>scout-dev-unsubscribe@ws.apache.org</unsubscribe>
-        <post>scout-dev@ws.apache.org</post>
-        <archive>http://mail-archives.apache.org/mod_mbox/ws-scout-dev/</archive>
-      </mailingList>
+        <mailingList>
+            <name>WS Scout Developers</name>
+            <subscribe>scout-dev-subscribe@ws.apache.org</subscribe>
+            <unsubscribe>scout-dev-unsubscribe@ws.apache.org</unsubscribe>
+            <post>scout-dev@ws.apache.org</post>
+            <archive>http://mail-archives.apache.org/mod_mbox/ws-scout-dev/</archive>
+        </mailingList>
     </mailingLists>
     <developers>
-      <developer>
-        <id>anil</id>
-        <name>Anil Saldhana</name>
-        <email>anil@apache.org</email>
-        <organization></organization>
-      </developer>
-      <developer>
-        <id>dims</id>
-        <name>Davanum Srinivas</name>
-        <email>dims@yahoo.com</email>
-        <organization></organization>
-      </developer>
-      <developer>
-        <id>kstam</id>
-        <name>Kurt T Stam</name>
-        <email>kstam@apache.org</email>
-        <organization></organization>
-      </developer>
-      <developer>
-        <id>jfaath</id>
-        <name>Jeff Faath</name>
-        <email>jfaath@apache.org</email>
-        <organization></organization>
-      </developer>
-      <developer>
-        <id>linsun</id>
-        <name>Lin Sun</name>
-        <email>linsun@apache.org</email>
-        <organization></organization>
-      </developer>
-      <developer>
-        <id>tcunning</id>
-        <name>Tom Cunningham</name>
-        <email>tcunning@apache.org</email>
-        <organization></organization>
-      </developer>
+        <developer>
+            <id>anil</id>
+            <name>Anil Saldhana</name>
+            <email>anil@apache.org</email>
+            <organization></organization>
+        </developer>
+        <developer>
+            <id>dims</id>
+            <name>Davanum Srinivas</name>
+            <email>dims@yahoo.com</email>
+            <organization></organization>
+        </developer>
+        <developer>
+            <id>kstam</id>
+            <name>Kurt T Stam</name>
+            <email>kstam@apache.org</email>
+            <organization></organization>
+        </developer>
+        <developer>
+            <id>jfaath</id>
+            <name>Jeff Faath</name>
+            <email>jfaath@apache.org</email>
+            <organization></organization>
+        </developer>
+        <developer>
+            <id>linsun</id>
+            <name>Lin Sun</name>
+            <email>linsun@apache.org</email>
+            <organization></organization>
+        </developer>
+        <developer>
+            <id>tcunning</id>
+            <name>Tom Cunningham</name>
+            <email>tcunning@apache.org</email>
+            <organization></organization>
+        </developer>
     </developers>
     <contributors>
-      <contributor>
-        <name>Deepack Bhole</name>
-        <email>dbhole@apache.org</email>
-        <organization></organization>
-      </contributor>
-      <contributor>
-        <name>Steve Viens</name>
-        <email>sviens@apache.org</email>
-        <organization></organization>
-      </contributor>
-      <contributor>
-        <name>David Jencks</name>
-        <email>djencks@apache.org</email>
-        <organization></organization>
-      </contributor>
-      <contributor>
-        <name>Jeremy Boynes</name>
-        <email>jboynes@apache.org</email>
-        <organization></organization>
-      </contributor>
-      <contributor>
-        <name>Jarek Gawor</name>
-        <email>gawor@apache.org</email>
-        <organization></organization>
-      </contributor>
-      <contributor>
-        <name>Geir Magnusson Jr.</name>
-        <email>geirm@apache.org</email>
-        <organization></organization>
-      </contributor>
+        <contributor>
+            <name>Deepack Bhole</name>
+            <email>dbhole@apache.org</email>
+            <organization></organization>
+        </contributor>
+        <contributor>
+            <name>Steve Viens</name>
+            <email>sviens@apache.org</email>
+            <organization></organization>
+        </contributor>
+        <contributor>
+            <name>David Jencks</name>
+            <email>djencks@apache.org</email>
+            <organization></organization>
+        </contributor>
+        <contributor>
+            <name>Jeremy Boynes</name>
+            <email>jboynes@apache.org</email>
+            <organization></organization>
+        </contributor>
+        <contributor>
+            <name>Jarek Gawor</name>
+            <email>gawor@apache.org</email>
+            <organization></organization>
+        </contributor>
+        <contributor>
+            <name>Geir Magnusson Jr.</name>
+            <email>geirm@apache.org</email>
+            <organization></organization>
+        </contributor>
     </contributors>
     <licenses>
-      <license>
-        <name>The Apache Software License, Version 2.0</name>
-        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        <distribution>repo</distribution>
-      </license>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
     </licenses>
     <scm>
-      <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/branches/v1.1/</connection>
-      <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/branches/v1.1/</developerConnection>
-      <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/branches/v1.1/</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/branches/v1.1/</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/branches/v1.1/
+        </developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/branches/v1.1/</url>
     </scm>
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>org.apache.ws.scout</groupId>-->
-            <!--<artifactId>jaxr-api</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-activation_1.1_spec</artifactId>
@@ -143,7 +140,7 @@
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jaxb_2.1_spec</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -225,34 +222,49 @@
         </dependency>
 
         <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>4.5</version>
-          <scope>test</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
-          <groupId>org.apache.juddi</groupId>
-          <artifactId>juddi</artifactId>
-          <version>2.0rc7</version>
-          <scope>test</scope>
+            <groupId>org.apache.juddi</groupId>
+            <artifactId>juddi</artifactId>
+            <version>2.0rc7</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
-          <groupId>org.apache.derby</groupId>
-          <artifactId>derby</artifactId>
-          <version>10.1.2.1</version>
-          <scope>test</scope>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.1.2.1</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-          <version>1.2.13</version>
-          <scope>test</scope>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.13</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <preparationGoals>clean install</preparationGoals>
+                        <goals>deploy</goals>
+                        <releaseProfiles>apache-release</releaseProfiles>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -266,13 +278,13 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>false</skip>
                     <excludes>
                         <exclude>**/*Abstract*.java</exclude>
                     </excludes>
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
+                    <failIfNoTests>false</failIfNoTests>
                 </configuration>
             </plugin>
 
@@ -282,7 +294,7 @@
                 <version>2.0.0</version>
                 <extensions>true</extensions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>ianal-maven-plugin</artifactId>
@@ -292,9 +304,169 @@
         </plugins>
     </build>
     <distributionManagement>
-      <site>
-        <id>website</id>
-        <url>scpexe://people.apache.org/www/ws.apache.org/scout</url>
-      </site>
+        <site>
+            <id>website</id>
+            <url>scpexe://people.apache.org/www/ws.apache.org/scout</url>
+        </site>
     </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>apache-release</id>
+            <activation>
+                <property>
+                    <name>apache-release</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- waiting for release -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                                    <descriptorRefs>
+                                        <descriptorRef>
+                                            source-release
+                                        </descriptorRef>
+                                    </descriptorRefs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <!-- apache version not yet released -->
+                                <!--<groupId>org.apache</groupId>-->
+                                <groupId>org.apache.geronimo.genesis</groupId>
+                                <artifactId>apache-source-release-assembly-descriptor</artifactId>
+                                <!-- apache version not yet known -->
+                                <version>2.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.5</version>
+
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                            <report>test-javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+
+                <configuration>
+                    <quiet>true</quiet>
+                    <tags>
+                        <tag>
+                            <name>goal</name>
+                            <placement>Xt</placement>
+                        </tag>
+                        <tag>
+                            <name>phase</name>
+                            <placement>Xt</placement>
+                        </tag>
+                        <tag>
+                            <name>execute</name>
+                            <placement>Xt</placement>
+                        </tag>
+                        <tag>
+                            <name>requiresDependencyResolution</name>
+                            <placement>Xt</placement>
+                        </tag>
+                        <tag>
+                            <name>parameter</name>
+                            <placement>Xf</placement>
+                        </tag>
+                        <tag>
+                            <name>required</name>
+                            <placement>Xf</placement>
+                        </tag>
+                        <tag>
+                            <name>readonly</name>
+                            <placement>Xf</placement>
+                        </tag>
+                        <tag>
+                            <name>component</name>
+                            <placement>Xf</placement>
+                        </tag>
+                        <tag>
+                            <name>plexus.component</name>
+                            <placement>Xf</placement>
+                        </tag>
+                        <tag>
+                            <name>plexus.requirement</name>
+                            <placement>Xf</placement>
+                        </tag>
+                    </tags>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.5</targetJdk>
+                    <linkXRef>true</linkXRef>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.4.3</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <quiet>true</quiet>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
