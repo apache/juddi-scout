@@ -2,7 +2,6 @@ package org.apache.ws.scout.registry;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +18,6 @@ import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.RegistryPackage;
 import javax.xml.registry.UnsupportedCapabilityException;
 
 
@@ -196,14 +194,15 @@ public class BusinessQueryManager2Test extends BaseTestCase {
 		}		
 	}
 	
-    @Test
-	public void testFindRegistryPackages() {
+    @Test (expected=JAXRException.class)
+	public void testFindRegistryPackages() throws JAXRException{
         login();
-        try {
+        
         	RegistryService rs = connection.getRegistryService();
 
         	BusinessQueryManager bqm = rs.getBusinessQueryManager();
-        	BusinessLifeCycleManager blm = rs.getBusinessLifeCycleManager();
+        	@SuppressWarnings("unused")
+			BusinessLifeCycleManager blm = rs.getBusinessLifeCycleManager();
 
         	Concept type = bqm.findConceptByPath("/AssociationType/RelatedTo");
 
@@ -213,30 +212,26 @@ public class BusinessQueryManager2Test extends BaseTestCase {
         	ArrayList classifications = new ArrayList();
         	classifications.add(type);
 
-        	BulkResponse br = bqm.findRegistryPackages(null, namePatterns, classifications, null);
+        	@SuppressWarnings("unused")
+			BulkResponse br = bqm.findRegistryPackages(null, namePatterns, classifications, null);
         	fail("findRegistryPackages is currently unsupported");
         	
-        	assertEquals(null, br.getExceptions());
-        	assertEquals(br.getCollection().size(), 0);
-        	
-        	RegistryPackage foopack = blm.createRegistryPackage("foo");
-        	RegistryPackage barpack = blm.createRegistryPackage("bar");
-        	Association assoc = blm.createAssociation(barpack, type);
-        	foopack.addAssociation(assoc);
-        	ArrayList al = new ArrayList();
-            al.add(foopack);
-        	br = blm.saveObjects(al);
-        	assertEquals(null, br.getExceptions());
-        	
-        	
-        	br = bqm.findRegistryPackages(null, namePatterns, classifications, null);
-        	assertEquals(null, br.getExceptions());
-        	assertEquals(br.getCollection(), 1);
-        
-        } catch (UnsupportedCapabilityException e) {
-        	// We expect to fail here - findRegistryPackages is unsupported
-		} catch (Exception e) {
-			fail ("Got exception : " + e.toString());
-		}
-	}
+//        	assertEquals(null, br.getExceptions());
+//        	assertEquals(br.getCollection().size(), 0);
+//        	
+//        	RegistryPackage foopack = blm.createRegistryPackage("foo");
+//        	RegistryPackage barpack = blm.createRegistryPackage("bar");
+//        	Association assoc = blm.createAssociation(barpack, type);
+//        	foopack.addAssociation(assoc);
+//        	ArrayList al = new ArrayList();
+//            al.add(foopack);
+//        	br = blm.saveObjects(al);
+//        	assertEquals(null, br.getExceptions());
+//        	
+//        	
+//        	br = bqm.findRegistryPackages(null, namePatterns, classifications, null);
+//        	assertEquals(null, br.getExceptions());
+//        	assertEquals(br.getCollection(), 1);
+    }
+
 }
