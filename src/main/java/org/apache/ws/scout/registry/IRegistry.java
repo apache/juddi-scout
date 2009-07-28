@@ -17,8 +17,30 @@ package org.apache.ws.scout.registry;
 
 import java.net.URI;
 
-import org.apache.ws.scout.model.uddi.v2.*;
-import org.apache.ws.scout.transport.Transport; 
+import org.apache.ws.scout.model.uddi.v2.AssertionStatusReport;
+import org.apache.ws.scout.model.uddi.v2.AuthToken;
+import org.apache.ws.scout.model.uddi.v2.BindingDetail;
+import org.apache.ws.scout.model.uddi.v2.BindingTemplate;
+import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
+import org.apache.ws.scout.model.uddi.v2.BusinessEntity;
+import org.apache.ws.scout.model.uddi.v2.BusinessList;
+import org.apache.ws.scout.model.uddi.v2.BusinessService;
+import org.apache.ws.scout.model.uddi.v2.CategoryBag;
+import org.apache.ws.scout.model.uddi.v2.DiscoveryURLs;
+import org.apache.ws.scout.model.uddi.v2.DispositionReport;
+import org.apache.ws.scout.model.uddi.v2.FindQualifiers;
+import org.apache.ws.scout.model.uddi.v2.IdentifierBag;
+import org.apache.ws.scout.model.uddi.v2.Name;
+import org.apache.ws.scout.model.uddi.v2.PublisherAssertion;
+import org.apache.ws.scout.model.uddi.v2.PublisherAssertions;
+import org.apache.ws.scout.model.uddi.v2.RegisteredInfo;
+import org.apache.ws.scout.model.uddi.v2.ServiceDetail;
+import org.apache.ws.scout.model.uddi.v2.ServiceList;
+import org.apache.ws.scout.model.uddi.v2.TModel;
+import org.apache.ws.scout.model.uddi.v2.TModelBag;
+import org.apache.ws.scout.model.uddi.v2.TModelDetail;
+import org.apache.ws.scout.model.uddi.v2.TModelList;
+import org.apache.ws.scout.transport.Transport;
 
 /**
  * 

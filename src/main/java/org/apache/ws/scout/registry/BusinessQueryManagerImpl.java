@@ -42,6 +42,8 @@ import javax.xml.registry.infomodel.RegistryObject;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.ws.scout.model.uddi.v2.AssertionStatusItem;
 import org.apache.ws.scout.model.uddi.v2.AssertionStatusReport;
 import org.apache.ws.scout.model.uddi.v2.AuthToken;
@@ -91,6 +93,7 @@ import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 public class BusinessQueryManagerImpl implements BusinessQueryManager
 {
     private final RegistryServiceImpl registryService;
+    private Log log = LogFactory.getLog(this.getClass());
 
     private static ObjectFactory objectFactory = new ObjectFactory();
 
@@ -785,9 +788,8 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 if (bk.getCollection() != null) {
                     c.addAll(bk.getCollection());
                 }
-            }
-            catch(JAXRException e) {
-                // ignore - just a problem with that type?
+            } catch(JAXRException e) {
+            	log.debug("ignore - just a problem with that type? " + e.getMessage(), e);
             }
         }
 

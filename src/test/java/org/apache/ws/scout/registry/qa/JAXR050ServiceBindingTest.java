@@ -109,7 +109,8 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
             
             //find serviceBinding
             Collection<ServiceBinding> serviceBindings2 = finder.findServiceBindings(tmpSvcKey );
-            ServiceBinding serviceBinding2 = serviceBindings2.iterator().next();
+            @SuppressWarnings("unused")
+			ServiceBinding serviceBinding2 = serviceBindings2.iterator().next();
             
             // All created ... now try to delete.
             deleteServiceBinding(sbKey);

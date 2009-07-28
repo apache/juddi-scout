@@ -15,9 +15,6 @@
  */
 package org.apache.ws.scout.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -32,20 +29,15 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.JAXRResponse;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.RegistryService;
-import javax.xml.registry.infomodel.Association;
-import javax.xml.registry.infomodel.ClassificationScheme;
-import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.infomodel.RegistryPackage;
-import javax.xml.registry.infomodel.User;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import org.apache.ws.scout.BaseTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
@@ -58,6 +50,7 @@ import org.apache.ws.scout.BaseTestCase;
 public class OwnershipTest extends BaseTestCase {
 	RegistryService rs, rs2;
 	private BusinessQueryManager bqm, bqm2;
+	@SuppressWarnings("unused")
 	private BusinessLifeCycleManager blm, blm2;
 	Collection associationKeys = null;
 	
@@ -152,9 +145,9 @@ public class OwnershipTest extends BaseTestCase {
         }
     }
     
-    @Test
+    @Test @Ignore
 	public void testGetRegistryObjects() {
-/*
+
     	login();
         try {
 
@@ -197,9 +190,8 @@ public class OwnershipTest extends BaseTestCase {
         	deleteTempOrg(org2.getKey());
         
 		} catch (JAXRException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
 	}
 }

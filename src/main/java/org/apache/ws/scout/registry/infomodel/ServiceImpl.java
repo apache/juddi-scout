@@ -25,7 +25,6 @@ import javax.xml.registry.JAXRException;
 import javax.xml.registry.LifeCycleManager;
 import javax.xml.registry.RegistryService;
 import javax.xml.registry.UnexpectedObjectException;
-import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;

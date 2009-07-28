@@ -577,7 +577,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             regobj = ireg.saveTModel(token.getAuthInfo(), (TModel[]) dataarray);
         }
         else if (op.equalsIgnoreCase("DELETE_ORG")) {
-            clearPublisherAssertions(token.getAuthInfo(), (String[]) dataarray,ireg);
+            clearPublisherAssertions(token.getAuthInfo(), ireg);
             regobj = ireg.deleteBusiness(token.getAuthInfo(), (String[]) dataarray);
         }
         else if (op.equalsIgnoreCase("DELETE_SERVICE")) {
@@ -609,7 +609,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return regobj;
     }
 
-    private void clearPublisherAssertions( String authinfo,String[] orgkeys,IRegistry ireg)
+    private void clearPublisherAssertions( String authinfo,IRegistry ireg)
     {
        Vector<PublisherAssertion> pasvect  = null;
        PublisherAssertion[] pasarr  = null;
@@ -683,7 +683,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
              }
              catch (RegistryException e)
              { 
-                //IGNORE
+                log.debug("Ignoring exception " + e.getMessage(),e);
              }
        }
 

@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
@@ -35,6 +34,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.ws.scout.model.uddi.v2.AssertionStatusReport;
 import org.apache.ws.scout.model.uddi.v2.AuthToken;
 import org.apache.ws.scout.model.uddi.v2.BindingDetail;
@@ -133,6 +134,8 @@ public class RegistryImpl implements IRegistry {
 	
 	private Marshaller marshaller = null;
 	private Unmarshaller unmarshaller = null;
+	
+	private static Log log = LogFactory.getLog(RegistryImpl.class);
 
 	/**
 	 * Creates a new instance of RegistryImpl.
@@ -485,7 +488,7 @@ public class RegistryImpl implements IRegistry {
 
         DispositionReport dr;
         JAXBElement<?> o = execute(this.objectFactory.createDeleteBinding(request), this.getPublishURI());
-        dr = (DispositionReport) o.getValue();;
+        dr = (DispositionReport) o.getValue();
 
         return dr;
 	}
@@ -1145,8 +1148,7 @@ public class RegistryImpl implements IRegistry {
 			
 			clazz = Class.forName(name, true, ccl);
 		} catch (Exception e) {
-			 //log.warn("Failed to load the class " + name + " with context
-			 //class loader " + e);
+			 log.debug("Failed to load the class " + name + " with context class loader " + e);
 		}
 
 		if (null == clazz) {

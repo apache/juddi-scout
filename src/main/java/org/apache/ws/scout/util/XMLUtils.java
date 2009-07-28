@@ -40,7 +40,7 @@ public class XMLUtils {
 		  } catch (TransformerConfigurationException e) {
 		      log.error("Could not obtain the XML. ", e);
 		  } catch (TransformerException e) {
-			  log.error("Could not obtain the XML. ",e);;
+			  log.error("Could not obtain the XML. ",e);
 		  }
 		  return xml;
 	  }

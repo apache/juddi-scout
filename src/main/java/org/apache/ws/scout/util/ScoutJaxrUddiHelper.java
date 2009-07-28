@@ -16,7 +16,11 @@
  */
 package org.apache.ws.scout.util;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.infomodel.Association;
@@ -269,22 +273,13 @@ public class ScoutJaxrUddiHelper
 				// enumeration, the key can be the parent classification scheme
                 key = c.getClassificationScheme().getKey();
             }
-			if (key == null || key.getId() == null) {
-				// The parent classification scheme may not always contain the
-				// key. It is okay if it doesn't, since the UDDI v2 spec allows
-				// TModelKey to be absent.
-
-				// TODO: This setting to "" should not be needed at all.
-				// However, a bug in jUDDI needs it to be there. See:
-				// http://issues.apache.org/jira/browse/JUDDI-78
-				//kr.setTModelKey("");
-			} else {
-                kr.setTModelKey(key.getId());
-			}
+			if (key != null && key.getId() != null) {
+				kr.setTModelKey(key.getId());
+			} 
             kr.setKeyName("Concept");
 
 			if (v != null) {
-            kr.setKeyValue(v);
+				kr.setKeyValue(v);
 			}
 
             pa.setKeyedReference(kr);
@@ -862,8 +857,7 @@ public class ScoutJaxrUddiHelper
 						}
 					}
 				} else {
-					// ebXML case - the RegistryObject is an ExtrinsicObject
-					// Not implemented
+					log.info("ebXML case - the RegistryObject is an ExtrinsicObject, Not implemented");
 				}
 			}
 			return tbag;
