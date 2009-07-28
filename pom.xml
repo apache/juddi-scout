@@ -126,10 +126,10 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/branches/v1.1/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/branches/v1.1/
+        <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/branches/scout-1.1/</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/branches/scout-1.1/
         </developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/branches/v1.1/</url>
+        <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/branches/scout-1.1/</url>
     </scm>
     <dependencies>
         <dependency>
