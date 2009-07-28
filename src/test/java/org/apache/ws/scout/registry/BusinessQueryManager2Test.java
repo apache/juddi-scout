@@ -18,7 +18,6 @@ import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Organization;
-import javax.xml.registry.UnsupportedCapabilityException;
 
 
 import org.apache.ws.scout.BaseTestCase;
