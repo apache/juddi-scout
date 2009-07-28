@@ -14,12 +14,12 @@ PROJECT GOALS
 
   The purpose of the JAXR specification is to give Java/J2EE 
   developers a common standard API to access various web 
-  services registries. This is simiar in function to the way 
+  services registries. This is similar in function to the way 
   the JDBC API provides a common API for accessing different 
   database products.
 
   The JAXR specification describes two types of providers 
-  each offerring different levels of support for interacting 
+  each offering different levels of support for interacting 
   with the two popular registry specifications in use today,
   UDDI and ebXML.
   
@@ -40,11 +40,11 @@ RELATIONSHIP TO THE JUDDI REGISTRY PROJECT
   the standard JAXR API interface (jaxr.jar) and a UDDI 
   client library such as UDDI4j.
   
-  This is where the depenedency on jUDDI comes into play. 
+  This is where the dependency on jUDDI comes into play. 
   It's a little known fact that jUDDI is not only a UDDI 
   Registry but can also act as a UDDI client. 
   
-  Since the jUDDI Registry must have the ability to recieve 
+  Since the jUDDI Registry must have the ability to receive 
   SOAP requests, deserialize them into Java objects and 
   then serialize and return SOAP responses we realized
   that we could leverage this existing functionality to
@@ -63,7 +63,7 @@ BUILDING THE JUDDI JAXR PROVIDER
   are downloaded during the build. The quickest way to
   start is, in the root directory, to type
 
-  mvn package
+  mvn install
 
   This will build all of the modules and install them in
   your local maven repository.
@@ -86,9 +86,33 @@ SUPPORT
   sending a message to the following email address:
   
     scout-dev-subscribe@ws.apache.org
+
+Release notes - Scout - Version 1.1
+
+Bug
+
+    * [SCOUT-76] - orgKey can be null in ServiceImpl
+    * [SCOUT-80] - copying lists into arrays invites code errors such as NPEs
+    * [SCOUT-81] - jaxr-api cannot contain generics
+    * [SCOUT-83] - Create the derby db in the target dir
+
+Improvement
+
+    * [SCOUT-82] - use maven best practices in build
+
+
+Release notes - Scout - Version 1.1rc1
+
+Bug
+
+    * [SCOUT-72] - Scout - need to transfor specifications to TModelBag
+    * [SCOUT-77] - Remove printStackTrace calls
+    * [SCOUT-79] - Java privileged blocks
+
+Task
+
+    * [SCOUT-43] - Add JAXB binding
   
-
-
   
 Release Notes - Scout - Version 1.0
 

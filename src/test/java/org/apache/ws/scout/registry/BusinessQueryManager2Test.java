@@ -24,7 +24,6 @@ import javax.xml.registry.infomodel.RegistryPackage;
 import org.apache.ws.scout.BaseTestCase;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -78,7 +77,7 @@ public class BusinessQueryManager2Test extends BaseTestCase {
 		}
 	}
 	
-    @Test @Ignore
+    @Test
 	public void testFindCallerAssociations() {
         BulkResponse br = null;
     	try {
@@ -191,11 +190,11 @@ public class BusinessQueryManager2Test extends BaseTestCase {
             }
             */
 		} catch (JAXRException e) {
-//			fail(e.getMessage());
+			fail(e.getMessage());
 		}		
 	}
 	
-    @Test @Ignore
+    @Test
 	public void testFindRegistryPackages() {
         login();
         try {

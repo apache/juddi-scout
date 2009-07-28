@@ -96,446 +96,443 @@ import org.apache.ws.scout.registry.infomodel.UserImpl;
  */
 public class ScoutUddiJaxrHelper
 {
-   public static Association getAssociation(Collection orgs,
-                                            LifeCycleManager lcm)
-           throws JAXRException
-   {
-      Association asso = new AssociationImpl(lcm);
-      Object[] arr = orgs.toArray();
-      asso.setSourceObject((RegistryObject)arr[0]);
-      asso.setTargetObject((RegistryObject)arr[1]);
-      return asso;
-   }
+	public static Association getAssociation(Collection orgs,
+			LifeCycleManager lcm)
+	throws JAXRException
+	{
+		Association asso = new AssociationImpl(lcm);
+		Object[] arr = orgs.toArray();
+		asso.setSourceObject((RegistryObject)arr[0]);
+		asso.setTargetObject((RegistryObject)arr[1]);
+		return asso;
+	}
 
-   public static Organization getOrganization(BusinessEntity businessEntity,
-                                              LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-      List<Name> namesList = businessEntity.getName();
-      Name n = null;
-      if (namesList.size()>0) n = namesList.get(0);
-      
-      List<Description> descriptionList = businessEntity.getDescription();
-      Description desc =null;
-      if (descriptionList.size()>0) desc = descriptionList.get(0);
+	public static Organization getOrganization(BusinessEntity businessEntity,
+			LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		List<Name> namesList = businessEntity.getName();
+		Name n = null;
+		if (namesList.size()>0) n = namesList.get(0);
 
-      Organization org = new OrganizationImpl(lifeCycleManager);
-      if(n != null ) {
-          org.setName(getIString(n.getLang(), n.getValue(), lifeCycleManager));
-      }
-      if( desc != null) {
-          org.setDescription(getIString(desc.getLang(), desc.getValue(), lifeCycleManager));
-      }
-      org.setKey(lifeCycleManager.createKey(businessEntity.getBusinessKey()));
+		List<Description> descriptionList = businessEntity.getDescription();
+		Description desc =null;
+		if (descriptionList.size()>0) desc = descriptionList.get(0);
 
-      //Set Services also
-      BusinessServices services = businessEntity.getBusinessServices();
-      if(services != null)
-      {
-    	  List<BusinessService> bizServiceList = services.getBusinessService();
-    	  for (BusinessService businessService : bizServiceList) {
-    		  org.addService(getService(businessService, lifeCycleManager));
-    	  }
-      }
+		Organization org = new OrganizationImpl(lifeCycleManager);
+		if(n != null ) {
+			org.setName(getIString(n.getLang(), n.getValue(), lifeCycleManager));
+		}
+		if( desc != null) {
+			org.setDescription(getIString(desc.getLang(), desc.getValue(), lifeCycleManager));
+		}
+		org.setKey(lifeCycleManager.createKey(businessEntity.getBusinessKey()));
 
-      /*
-       *  Users
-       *
-       *  we need to take the first contact and designate as the
-       *  'primary contact'.  Currently, the OrganizationImpl
-       *  class does that automatically as a safety in case
-       *  user forgets to set - lets be explicit here as to not
-       *  depend on that behavior
-       */
-
-      Contacts contacts = businessEntity.getContacts();
-      if(contacts != null)
-      {
-    	  List<Contact> contactList = contacts.getContact();
-    	  if (contactList!=null) {
-    		  boolean isFirst=true;
-    		  for (Contact contact : contactList) {
-    			  User user = new UserImpl(null);
-    			  String pname = contact.getPersonName();
-    			  user.setPersonName(new PersonNameImpl(pname));
-    			  if (isFirst) {
-    				  isFirst=false;
-    				  org.setPrimaryContact(user);
-    			  } else {
-    				  org.addUser(user);
-    			  }
+		//Set Services also
+		BusinessServices services = businessEntity.getBusinessServices();
+		if(services != null)
+		{
+			List<BusinessService> bizServiceList = services.getBusinessService();
+			for (BusinessService businessService : bizServiceList) {
+				org.addService(getService(businessService, lifeCycleManager));
 			}
-    	  }
-      }
-       
-      //External Links
-      DiscoveryURLs durls = businessEntity.getDiscoveryURLs();
-      if (durls != null)
-      {
-    	  List<DiscoveryURL> discoveryURL_List = durls.getDiscoveryURL();
-    	  for (DiscoveryURL discoveryURL : discoveryURL_List) {
-    		  ExternalLink link = new ExternalLinkImpl(lifeCycleManager);
-    		  link.setExternalURI(discoveryURL.getValue());
-    		  org.addExternalLink(link);
-    	  }
-      }
+		}
 
-      org.addExternalIdentifiers(getExternalIdentifiers(businessEntity.getIdentifierBag(), lifeCycleManager));
-      org.addClassifications(getClassifications(businessEntity.getCategoryBag(), lifeCycleManager));
-      
-      return org;
-   }
+		/*
+		 *  Users
+		 *
+		 *  we need to take the first contact and designate as the
+		 *  'primary contact'.  Currently, the OrganizationImpl
+		 *  class does that automatically as a safety in case
+		 *  user forgets to set - lets be explicit here as to not
+		 *  depend on that behavior
+		 */
+
+		Contacts contacts = businessEntity.getContacts();
+		if(contacts != null)
+		{
+			List<Contact> contactList = contacts.getContact();
+			if (contactList!=null) {
+				boolean isFirst=true;
+				for (Contact contact : contactList) {
+					User user = new UserImpl(null);
+					String pname = contact.getPersonName();
+					user.setPersonName(new PersonNameImpl(pname));
+					if (isFirst) {
+						isFirst=false;
+						org.setPrimaryContact(user);
+					} else {
+						org.addUser(user);
+					}
+				}
+			}
+		}
+
+		//External Links
+		DiscoveryURLs durls = businessEntity.getDiscoveryURLs();
+		if (durls != null)
+		{
+			List<DiscoveryURL> discoveryURL_List = durls.getDiscoveryURL();
+			for (DiscoveryURL discoveryURL : discoveryURL_List) {
+				ExternalLink link = new ExternalLinkImpl(lifeCycleManager);
+				link.setExternalURI(discoveryURL.getValue());
+				org.addExternalLink(link);
+			}
+		}
+
+		org.addExternalIdentifiers(getExternalIdentifiers(businessEntity.getIdentifierBag(), lifeCycleManager));
+		org.addClassifications(getClassifications(businessEntity.getCategoryBag(), lifeCycleManager));
+
+		return org;
+	}
 
 
-   public static Organization getOrganization(BusinessDetail bizdetail,
-                                              LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-	  List<BusinessEntity> bizEntityList = bizdetail.getBusinessEntity();
-      BusinessEntity[] bz = new BusinessEntity[bizEntityList.size()];
-      bizEntityList.toArray(bz);
+	public static Organization getOrganization(BusinessDetail bizdetail,
+			LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		List<BusinessEntity> bizEntityList = bizdetail.getBusinessEntity();
+		if (bizEntityList.size() != 1) {
+			throw new JAXRException("Unexpected count of organizations in BusinessDetail: " + bizEntityList.size());
+		}
+		BusinessEntity entity = bizEntityList.get(0);
+		Name n = null;
+		if (entity.getName().size()>0) n = entity.getName().get(0);
 
-      BusinessEntity entity = bz[0];
-      Name n = null;
-      if (entity.getName().size()>0) n = entity.getName().get(0);
-      
-      List<Description> descriptionList = entity.getDescription();
-      Description desc =null;
-      if (descriptionList.size()>0) desc = descriptionList.get(0);
+		List<Description> descriptionList = entity.getDescription();
+		Description desc =null;
+		if (descriptionList.size()>0) desc = descriptionList.get(0);
 
-      Organization org = new OrganizationImpl(lifeCycleManager);
-      if( n != null ) {
-          org.setName(getIString(n.getLang(), n.getValue(), lifeCycleManager));
-      }
-      if( desc != null ) {
-          org.setDescription(getIString(desc.getLang(), desc.getValue(), lifeCycleManager));
-      }
-      org.setKey(lifeCycleManager.createKey(entity.getBusinessKey()));
+		Organization org = new OrganizationImpl(lifeCycleManager);
+		if( n != null ) {
+			org.setName(getIString(n.getLang(), n.getValue(), lifeCycleManager));
+		}
+		if( desc != null ) {
+			org.setDescription(getIString(desc.getLang(), desc.getValue(), lifeCycleManager));
+		}
+		org.setKey(lifeCycleManager.createKey(entity.getBusinessKey()));
 
-      //Set Services also
-      BusinessServices services = entity.getBusinessServices();
-      List<BusinessService> bizServiceList = services.getBusinessService();
-      for (BusinessService businessService : bizServiceList) {
-    	  org.addService(getService(businessService, lifeCycleManager));
-	  }
+		//Set Services also
+		BusinessServices services = entity.getBusinessServices();
+		List<BusinessService> bizServiceList = services.getBusinessService();
+		for (BusinessService businessService : bizServiceList) {
+			org.addService(getService(businessService, lifeCycleManager));
+		}
 
-      /*
-       *  Users
-       *
-       *  we need to take the first contact and designate as the
-       *  'primary contact'.  Currently, the OrganizationImpl
-       *  class does that automatically as a safety in case
-       *  user forgets to set - lets be explicit here as to not
-       *  depend on that behavior
-       */
-      Contacts contacts = entity.getContacts();
-      List<Contact> contactList = contacts.getContact();
-      for (Contact contact : contactList) {
-         User user = new UserImpl(null);
-         String pname = contact.getPersonName();
-         user.setType(contact.getUseType());
-         user.setPersonName(new PersonNameImpl(pname));
-         
-         List<Email> emailList = contact.getEmail();
-         ArrayList<EmailAddress> tempEmails = new ArrayList<EmailAddress>();
-         for (Email email : emailList) {
-        	 tempEmails.add(new EmailAddressImpl(email.getValue(), null));
-		 }
-         user.setEmailAddresses(tempEmails);
-         
-         List<Address> addressList = contact.getAddress();
-         ArrayList<PostalAddress> tempAddresses = new ArrayList<PostalAddress>();
-         for (Address address : addressList) {
-        	 ArrayList<AddressLine> addressLineList = new ArrayList<AddressLine>(address.getAddressLine());
-        	 AddressLine[] alines = new AddressLine[addressLineList.size()];
-        	 addressLineList.toArray(alines);
-        	 
-        	 PostalAddress pa = getPostalAddress(alines);
-        	 tempAddresses.add(pa);
-		 }
-         user.setPostalAddresses(tempAddresses);
-         
-         List<Phone> phoneList = contact.getPhone();
-         ArrayList<TelephoneNumber> tempPhones = new ArrayList<TelephoneNumber>();
-         boolean isFirst=true;
-         for (Phone phone : phoneList) {
-        	 TelephoneNumberImpl tni = new TelephoneNumberImpl();
-        	 tni.setType(phone.getUseType());
-        	 tni.setNumber(phone.getValue());
-        	 tempPhones.add(tni);
-	         user.setTelephoneNumbers(tempPhones);
-	         if (isFirst) {
-	        	 isFirst=false;
-	            org.setPrimaryContact(user);
-	         } else {
-	            org.addUser(user);
-	         }
-         }
-      }
+		/*
+		 *  Users
+		 *
+		 *  we need to take the first contact and designate as the
+		 *  'primary contact'.  Currently, the OrganizationImpl
+		 *  class does that automatically as a safety in case
+		 *  user forgets to set - lets be explicit here as to not
+		 *  depend on that behavior
+		 */
+		Contacts contacts = entity.getContacts();
+		List<Contact> contactList = contacts.getContact();
+		boolean isFirst=true;
+		for (Contact contact : contactList) {
+			User user = new UserImpl(null);
+			String pname = contact.getPersonName();
+			user.setType(contact.getUseType());
+			user.setPersonName(new PersonNameImpl(pname));
 
-      //External Links
-      DiscoveryURLs durls = entity.getDiscoveryURLs();
-      if (durls != null)
-      {
-    	 List<DiscoveryURL> discoveryURL_List = durls.getDiscoveryURL();
-         for (DiscoveryURL discoveryURL : discoveryURL_List) {
-            ExternalLink link = new ExternalLinkImpl(lifeCycleManager);
-            link.setExternalURI(discoveryURL.getValue());
-            org.addExternalLink(link);
-         }
-      }
+			List<Email> emailList = contact.getEmail();
+			ArrayList<EmailAddress> tempEmails = new ArrayList<EmailAddress>();
+			for (Email email : emailList) {
+				tempEmails.add(new EmailAddressImpl(email.getValue(), null));
+			}
+			user.setEmailAddresses(tempEmails);
 
-      org.addExternalIdentifiers(getExternalIdentifiers(entity.getIdentifierBag(), lifeCycleManager));
-      org.addClassifications(getClassifications(entity.getCategoryBag(), lifeCycleManager));
-      
-      return org;
-   }
+			List<Address> addressList = contact.getAddress();
+			ArrayList<PostalAddress> tempAddresses = new ArrayList<PostalAddress>();
+			for (Address address : addressList) {
+				ArrayList<AddressLine> addressLineList = new ArrayList<AddressLine>(address.getAddressLine());
+				AddressLine[] alines = new AddressLine[addressLineList.size()];
+				addressLineList.toArray(alines);
 
-   private static PostalAddress getPostalAddress(AddressLine[] addressLineArr) throws JAXRException {
-	   PostalAddress pa = new PostalAddressImpl();
-	   HashMap<String, String> hm = new HashMap<String, String>();
-	   for (int y = 0; y < addressLineArr.length; y++) {
-		   hm.put(addressLineArr[y].getKeyName(), addressLineArr[y].getKeyValue());
-	   }        	 
-	   
-	   if (hm.containsKey("STREET_NUMBER")) {
-		   pa.setStreetNumber(hm.get("STREET_NUMBER"));
-	   }
+				PostalAddress pa = getPostalAddress(alines);
+				tempAddresses.add(pa);
+			}
+			user.setPostalAddresses(tempAddresses);
 
-	   if (hm.containsKey("STREET")) {
-		   pa.setStreet(hm.get("STREET"));
-	   }
-	   
-	   if (hm.containsKey("CITY")) {
-		   pa.setCity(hm.get("CITY"));
-	   }
-	   
-	   if (hm.containsKey("COUNTRY")) {
-		   pa.setCountry(hm.get("COUNTRY"));
-	   }
-	
-	   if (hm.containsKey("POSTALCODE")) {
-		   pa.setPostalCode(hm.get("POSTALCODE"));
-	   }
-	   
-	   if (hm.containsKey("STATE")) {
-		   pa.setStateOrProvince(hm.get("STATE"));
-	   }
-	   
-	   return pa;
-   }
-   
-   private static InternationalString getIString(String lang, String str, LifeCycleManager lifeCycleManager)
-       throws JAXRException
-   {
-	   if (str!=null) {
-		   return lifeCycleManager.createInternationalString(getLocale(lang), str);
-	   } else {
-		   return null;
-	   }
-   }
-   
-   public static InternationalString getIString(String str, LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-      return lifeCycleManager.createInternationalString(str);
-   }
+			List<Phone> phoneList = contact.getPhone();
+			ArrayList<TelephoneNumber> tempPhones = new ArrayList<TelephoneNumber>();
+			for (Phone phone : phoneList) {
+				TelephoneNumberImpl tni = new TelephoneNumberImpl();
+				tni.setType(phone.getUseType());
+				tni.setNumber(phone.getValue());
+				tempPhones.add(tni);
+			}
+			user.setTelephoneNumbers(tempPhones);
+			if (isFirst) {
+				isFirst=false;
+				org.setPrimaryContact(user);
+			} else {
+				org.addUser(user);
+			}
+		}
 
-   public static Service getService(BusinessService businessService, LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-      Service serve = new ServiceImpl(lifeCycleManager);
+		//External Links
+		DiscoveryURLs durls = entity.getDiscoveryURLs();
+		if (durls != null)
+		{
+			List<DiscoveryURL> discoveryURL_List = durls.getDiscoveryURL();
+			for (DiscoveryURL discoveryURL : discoveryURL_List) {
+				ExternalLink link = new ExternalLinkImpl(lifeCycleManager);
+				link.setExternalURI(discoveryURL.getValue());
+				org.addExternalLink(link);
+			}
+		}
 
-      String keystr = businessService.getServiceKey();
+		org.addExternalIdentifiers(getExternalIdentifiers(entity.getIdentifierBag(), lifeCycleManager));
+		org.addClassifications(getClassifications(entity.getCategoryBag(), lifeCycleManager));
 
-      if (keystr != null)
-      {
-         serve.setKey(lifeCycleManager.createKey(keystr));
-      }
+		return org;
+	}
 
-      Name n = null;
-      if (businessService.getName().size()>0) n = businessService.getName().get(0);
+	private static PostalAddress getPostalAddress(AddressLine[] addressLineArr) throws JAXRException {
+		PostalAddress pa = new PostalAddressImpl();
+		HashMap<String, String> hm = new HashMap<String, String>();
+		for (AddressLine anAddressLineArr : addressLineArr) {
+			hm.put(anAddressLineArr.getKeyName(), anAddressLineArr.getKeyValue());
+		}
 
-      if (n != null) {
-    	  String name = n.getValue();
-    	  serve.setName(lifeCycleManager.createInternationalString(getLocale(n.getLang()), name));
-      }
+		if (hm.containsKey("STREET_NUMBER")) {
+			pa.setStreetNumber(hm.get("STREET_NUMBER"));
+		}
 
-      Description desc =null;
-      if (businessService.getDescription().size()>0) desc = businessService.getDescription().get(0);
-      if (desc != null ) {
-          serve.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), desc.getValue()));
-      }
-      
-      //Populate the ServiceBindings for this Service
-      BindingTemplates bts = businessService.getBindingTemplates();
-      List<BindingTemplate> bindingTemplateList = bts.getBindingTemplate();
-      for (BindingTemplate bindingTemplate : bindingTemplateList) {
-    	  serve.addServiceBinding(getServiceBinding(bindingTemplate, lifeCycleManager));
-	  }
-      serve.addClassifications(getClassifications(businessService.getCategoryBag(), lifeCycleManager));
-      
-      return serve;
-   }
+		if (hm.containsKey("STREET")) {
+			pa.setStreet(hm.get("STREET"));
+		}
 
-   public static Service getService(ServiceInfo serviceInfo, LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-      Service service = new ServiceImpl(lifeCycleManager);
+		if (hm.containsKey("CITY")) {
+			pa.setCity(hm.get("CITY"));
+		}
 
-      String keystr = serviceInfo.getServiceKey();
+		if (hm.containsKey("COUNTRY")) {
+			pa.setCountry(hm.get("COUNTRY"));
+		}
 
-      if (keystr != null)
-      {
-         service.setKey(lifeCycleManager.createKey(keystr));
-      }
+		if (hm.containsKey("POSTALCODE")) {
+			pa.setPostalCode(hm.get("POSTALCODE"));
+		}
 
-      Name n = null;
-      if (serviceInfo.getName().size()>0) n = serviceInfo.getName().get(0);
-      if (n != null) {
-    	  String name = n.getValue();
-    	  service.setName(lifeCycleManager.createInternationalString(getLocale(n.getLang()), name));
-      }
-      return service;
-   }
+		if (hm.containsKey("STATE")) {
+			pa.setStateOrProvince(hm.get("STATE"));
+		}
 
-   public static ServiceBinding getServiceBinding(BindingTemplate businessTemplate, LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-      ServiceBinding serviceBinding = new ServiceBindingImpl(lifeCycleManager);
+		return pa;
+	}
 
-      String keystr = businessTemplate.getServiceKey();
-      if (keystr != null)
-      {
-         Service svc = new ServiceImpl(lifeCycleManager);
-         svc.setKey(lifeCycleManager.createKey(keystr));
-         ((ServiceBindingImpl)serviceBinding).setService(svc);
-      }
-      String bindingKey = businessTemplate.getBindingKey();
-      if(bindingKey != null) serviceBinding.setKey(new KeyImpl(bindingKey));
-     
-      //Access URI
-      AccessPoint access = businessTemplate.getAccessPoint();
-      if (access != null) serviceBinding.setAccessURI(access.getValue());
+	private static InternationalString getIString(String lang, String str, LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		if (str!=null) {
+			return lifeCycleManager.createInternationalString(getLocale(lang), str);
+		} else {
+			return null;
+		}
+	}
 
-      //Description
-      Description desc = null;
-      if (businessTemplate.getDescription().size()>0) desc = businessTemplate.getDescription().get(0);
-      if (desc!=null) {
-         serviceBinding.setDescription(new InternationalStringImpl(desc.getValue()));
-      }
-      /**Section D.10 of JAXR 1.0 Specification */
-      
-      TModelInstanceDetails details = businessTemplate.getTModelInstanceDetails();
-      List<TModelInstanceInfo> tmodelInstanceInfoList = details.getTModelInstanceInfo();
-      TModelInstanceInfo[] tmodelInstanceInfoArray = new TModelInstanceInfo[tmodelInstanceInfoList.size()];
-      tmodelInstanceInfoList.toArray(tmodelInstanceInfoArray);
-      
-      for (int i = 0; tmodelInstanceInfoArray != null && i < tmodelInstanceInfoArray.length; i++)
-      {
-         TModelInstanceInfo info = (TModelInstanceInfo)tmodelInstanceInfoArray[i];
-         if (info!=null && info.getInstanceDetails()!=null) {
-	         InstanceDetails idetails = info.getInstanceDetails();
-	         Collection<ExternalLink> elinks = getExternalLinks(idetails.getOverviewDoc(),lifeCycleManager);
-	         SpecificationLink slink = new SpecificationLinkImpl(lifeCycleManager);
-	         slink.addExternalLinks(elinks);
-	         serviceBinding.addSpecificationLink(slink); 
-	         
-	         ConceptImpl c = new ConceptImpl(lifeCycleManager);
-	         c.setExternalLinks(elinks);
-	         c.setKey(lifeCycleManager.createKey(info.getTModelKey())); 
-	         c.setName(lifeCycleManager.createInternationalString(idetails.getInstanceParms()));
-	         c.setValue(idetails.getInstanceParms());
-	         
-	         slink.setSpecificationObject(c);
-         }
-      }
-      
-      HostingRedirector hr = businessTemplate.getHostingRedirector();
-      if(hr != null)
-      {
-         ServiceBinding sb = lifeCycleManager.createServiceBinding();
-         sb.setKey(new KeyImpl(hr.getBindingKey()));
-         serviceBinding.setTargetBinding(sb);
-      }
+	public static InternationalString getIString(String str, LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		return lifeCycleManager.createInternationalString(str);
+	}
 
-      return serviceBinding;
-   }
+	public static Service getService(BusinessService businessService, LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		Service serve = new ServiceImpl(lifeCycleManager);
 
-   public static Concept getConcept(TModelDetail tModelDetail, LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-      Concept concept = new ConceptImpl(lifeCycleManager);
-      List<TModel> tmodelList = tModelDetail.getTModel();
-      for (TModel tmodel : tmodelList) {
-    	  concept.setKey(lifeCycleManager.createKey(tmodel.getTModelKey()));
-    	  concept.setName(lifeCycleManager.createInternationalString(getLocale(tmodel.getName().getLang()),
-    			  tmodel.getName().getValue()));
+		String keystr = businessService.getServiceKey();
 
-    	  Description desc = getDescription(tmodel);
-    	  if( desc != null ) {
-    	      concept.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), 
-    	    		  desc.getValue()));
-    	  }
+		if (keystr != null)
+		{
+			serve.setKey(lifeCycleManager.createKey(keystr));
+		}
 
-          concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lifeCycleManager));
-          concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lifeCycleManager));
-      }
-      return concept;
-   }
+		Name n = null;
+		if (businessService.getName().size()>0) n = businessService.getName().get(0);
 
-   public static Concept getConcept(TModel tmodel, LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-      Concept concept = new ConceptImpl(lifeCycleManager);
-      concept.setKey(lifeCycleManager.createKey(tmodel.getTModelKey()));
-      concept.setName(lifeCycleManager.createInternationalString(getLocale(tmodel.getName().getLang()),
-    		  tmodel.getName().getValue()));
+		if (n != null) {
+			String name = n.getValue();
+			serve.setName(lifeCycleManager.createInternationalString(getLocale(n.getLang()), name));
+		}
 
-      Description desc = getDescription(tmodel);
-      if (desc != null) {
-          concept.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), 
-        		  desc.getValue()));
-      }
-      
-      concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lifeCycleManager));
-      concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lifeCycleManager));
+		Description desc =null;
+		if (businessService.getDescription().size()>0) desc = businessService.getDescription().get(0);
+		if (desc != null ) {
+			serve.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), desc.getValue()));
+		}
 
-      return concept;
-   }
+		//Populate the ServiceBindings for this Service
+		BindingTemplates bts = businessService.getBindingTemplates();
+		List<BindingTemplate> bindingTemplateList = bts.getBindingTemplate();
+		for (BindingTemplate bindingTemplate : bindingTemplateList) {
+			serve.addServiceBinding(getServiceBinding(bindingTemplate, lifeCycleManager));
+		}
+		serve.addClassifications(getClassifications(businessService.getCategoryBag(), lifeCycleManager));
 
-   public static Concept getConcept(TModelInfo tModelInfo, LifeCycleManager lifeCycleManager)
-           throws JAXRException
-   {
-      Concept concept = new ConceptImpl(lifeCycleManager);
-      concept.setKey(lifeCycleManager.createKey(tModelInfo.getTModelKey()));
-      concept.setName(lifeCycleManager.createInternationalString(getLocale(tModelInfo.getName().getLang()), 
-    		  tModelInfo.getName().getValue()));
+		return serve;
+	}
 
-      return concept;
-   }
+	public static Service getService(ServiceInfo serviceInfo, LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		Service service = new ServiceImpl(lifeCycleManager);
 
-   private static Description getDescription( TModel tmodel )
-   {
-	   Description desc = null;
-	   if (tmodel.getDescription().size()>0) desc=tmodel.getDescription().get(0);
-       return desc;
-   }
+		String keystr = serviceInfo.getServiceKey();
 
-   /**
-    * Classifications - going to assume all are external since UDDI does not use "Concepts".
-    * @param categoryBag
-    * @param lifeCycleManager
-    * @return Collection Classifications
-    * @throws JAXRException
-    */
-   public static Collection getClassifications(CategoryBag categoryBag, LifeCycleManager lifeCycleManager) 
-   throws JAXRException {
-	   Collection<Classification> classifications = null;
-	   if (categoryBag != null) {
-		    classifications = new ArrayList<Classification>();
-		    List<KeyedReference> keyedReferenceList = categoryBag.getKeyedReference();
-		    for (KeyedReference keyedReference : keyedReferenceList) {
+		if (keystr != null)
+		{
+			service.setKey(lifeCycleManager.createKey(keystr));
+		}
+
+		Name n = null;
+		if (serviceInfo.getName().size()>0) n = serviceInfo.getName().get(0);
+		if (n != null) {
+			String name = n.getValue();
+			service.setName(lifeCycleManager.createInternationalString(getLocale(n.getLang()), name));
+		}
+		return service;
+	}
+
+	public static ServiceBinding getServiceBinding(BindingTemplate businessTemplate, LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		ServiceBinding serviceBinding = new ServiceBindingImpl(lifeCycleManager);
+
+		String keystr = businessTemplate.getServiceKey();
+		if (keystr != null)
+		{
+			Service svc = new ServiceImpl(lifeCycleManager);
+			svc.setKey(lifeCycleManager.createKey(keystr));
+			((ServiceBindingImpl)serviceBinding).setService(svc);
+		}
+		String bindingKey = businessTemplate.getBindingKey();
+		if(bindingKey != null) serviceBinding.setKey(new KeyImpl(bindingKey));
+
+		//Access URI
+		AccessPoint access = businessTemplate.getAccessPoint();
+		if (access != null) serviceBinding.setAccessURI(access.getValue());
+
+		//Description
+		Description desc = null;
+		if (businessTemplate.getDescription().size()>0) desc = businessTemplate.getDescription().get(0);
+		if (desc!=null) {
+			serviceBinding.setDescription(new InternationalStringImpl(desc.getValue()));
+		}
+		/**Section D.10 of JAXR 1.0 Specification */
+
+		TModelInstanceDetails details = businessTemplate.getTModelInstanceDetails();
+		List<TModelInstanceInfo> tmodelInstanceInfoList = details.getTModelInstanceInfo();
+
+		for (TModelInstanceInfo info: tmodelInstanceInfoList)
+		{
+			if (info!=null && info.getInstanceDetails()!=null) {
+				InstanceDetails idetails = info.getInstanceDetails();
+				Collection<ExternalLink> elinks = getExternalLinks(idetails.getOverviewDoc(),lifeCycleManager);
+				SpecificationLink slink = new SpecificationLinkImpl(lifeCycleManager);
+				slink.addExternalLinks(elinks);
+				serviceBinding.addSpecificationLink(slink); 
+
+				ConceptImpl c = new ConceptImpl(lifeCycleManager);
+				c.setExternalLinks(elinks);
+				c.setKey(lifeCycleManager.createKey(info.getTModelKey())); 
+				c.setName(lifeCycleManager.createInternationalString(idetails.getInstanceParms()));
+				c.setValue(idetails.getInstanceParms());
+
+				slink.setSpecificationObject(c);
+			}
+		}
+
+		HostingRedirector hr = businessTemplate.getHostingRedirector();
+		if(hr != null)
+		{
+			ServiceBinding sb = lifeCycleManager.createServiceBinding();
+			sb.setKey(new KeyImpl(hr.getBindingKey()));
+			serviceBinding.setTargetBinding(sb);
+		}
+
+		return serviceBinding;
+	}
+
+	public static Concept getConcept(TModelDetail tModelDetail, LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		Concept concept = new ConceptImpl(lifeCycleManager);
+		List<TModel> tmodelList = tModelDetail.getTModel();
+		for (TModel tmodel : tmodelList) {
+			concept.setKey(lifeCycleManager.createKey(tmodel.getTModelKey()));
+			concept.setName(lifeCycleManager.createInternationalString(getLocale(tmodel.getName().getLang()),
+					tmodel.getName().getValue()));
+
+			Description desc = getDescription(tmodel);
+			if( desc != null ) {
+				concept.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), 
+						desc.getValue()));
+			}
+
+			concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lifeCycleManager));
+			concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lifeCycleManager));
+		}
+		return concept;
+	}
+
+	public static Concept getConcept(TModel tmodel, LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		Concept concept = new ConceptImpl(lifeCycleManager);
+		concept.setKey(lifeCycleManager.createKey(tmodel.getTModelKey()));
+		concept.setName(lifeCycleManager.createInternationalString(getLocale(tmodel.getName().getLang()),
+				tmodel.getName().getValue()));
+
+		Description desc = getDescription(tmodel);
+		if (desc != null) {
+			concept.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), 
+					desc.getValue()));
+		}
+
+		concept.addExternalIdentifiers(getExternalIdentifiers(tmodel.getIdentifierBag(), lifeCycleManager));
+		concept.addClassifications(getClassifications(tmodel.getCategoryBag(), lifeCycleManager));
+
+		return concept;
+	}
+
+	public static Concept getConcept(TModelInfo tModelInfo, LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		Concept concept = new ConceptImpl(lifeCycleManager);
+		concept.setKey(lifeCycleManager.createKey(tModelInfo.getTModelKey()));
+		concept.setName(lifeCycleManager.createInternationalString(getLocale(tModelInfo.getName().getLang()), 
+				tModelInfo.getName().getValue()));
+
+		return concept;
+	}
+
+	private static Description getDescription( TModel tmodel )
+	{
+		Description desc = null;
+		if (tmodel.getDescription().size()>0) desc=tmodel.getDescription().get(0);
+		return desc;
+	}
+
+	/**
+	 * Classifications - going to assume all are external since UDDI does not use "Concepts".
+	 * @param categoryBag categories
+	 * @param lifeCycleManager lifecycleManager
+	 * @return Collection Classifications
+	 * @throws JAXRException on error
+	 */
+	public static Collection getClassifications(CategoryBag categoryBag, LifeCycleManager lifeCycleManager) 
+	throws JAXRException {
+		Collection<Classification> classifications = null;
+		if (categoryBag != null) {
+			classifications = new ArrayList<Classification>();
+			List<KeyedReference> keyedReferenceList = categoryBag.getKeyedReference();
+			for (KeyedReference keyedReference : keyedReferenceList) {
 				Classification classification = new ClassificationImpl(lifeCycleManager);
 				classification.setValue(keyedReference.getKeyValue());
 				classification.setName(new InternationalStringImpl(keyedReference.getKeyName()));
@@ -548,65 +545,65 @@ public class ScoutUddiJaxrHelper
 				classifications.add(classification);
 			}
 		}
-	    return classifications;
+		return classifications;
 	}
-   
-   public static Collection<ExternalLink> getExternalLinks(OverviewDoc overviewDoc , LifeCycleManager lifeCycleManager)
-   throws JAXRException
-   {
-       ArrayList<ExternalLink> alist = new ArrayList<ExternalLink>(1);
-       if(overviewDoc != null)
-       {
-    	   String descStr = "";
-    	   Description desc = null;
-    	   if (overviewDoc.getDescription().size()>0) desc = overviewDoc.getDescription().get(0);
-           if (desc !=null) descStr = desc.getValue();
-           alist.add(lifeCycleManager.createExternalLink(overviewDoc.getOverviewURL(),descStr));
-       }
-       
-       return alist;
-   }
-   
-   /**
-    * External Identifiers
-    * @param identifierBag
-    * @param lifeCycleManager
-    * @return Collection ExternalIdentifier
-    * @throws JAXRException
-    */
-   
-   public static Collection getExternalIdentifiers(IdentifierBag identifierBag, LifeCycleManager lifeCycleManager) 
-   throws JAXRException {
-	  Collection<ExternalIdentifier> extidentifiers = null;
-      if (identifierBag != null) {
-    	  extidentifiers = new ArrayList<ExternalIdentifier>();
-    	  
-    	  List<KeyedReference> keyedReferenceList = identifierBag.getKeyedReference();
-          for (KeyedReference keyedReference : keyedReferenceList) {
-             ExternalIdentifier extId = new ExternalIdentifierImpl(lifeCycleManager);
-             extId.setValue(keyedReference.getKeyValue());
-             extId.setName(new InternationalStringImpl(keyedReference.getKeyName()));
-             
-             String tmodelKey = keyedReference.getTModelKey();
-             if (tmodelKey != null) {
-            	 ClassificationScheme scheme = new ClassificationSchemeImpl(lifeCycleManager);
-            	 scheme.setKey(new KeyImpl(tmodelKey));
-            	 extId.setIdentificationScheme(scheme);
-             }
-             extidentifiers.add(extId);
-          }
-      }
-      return extidentifiers;
-   }
-   
-   private static Locale getLocale(String lang) {
-       if (lang == null || lang.trim().length() == 0) {
-           return Locale.getDefault();
-       } else if (lang.equalsIgnoreCase(Locale.getDefault().getLanguage())) {
-           return Locale.getDefault();
-       } else {
-           return new Locale(lang);
-       } 
-   }
-   
+
+	public static Collection<ExternalLink> getExternalLinks(OverviewDoc overviewDoc , LifeCycleManager lifeCycleManager)
+	throws JAXRException
+	{
+		ArrayList<ExternalLink> alist = new ArrayList<ExternalLink>(1);
+		if(overviewDoc != null)
+		{
+			String descStr = "";
+			Description desc = null;
+			if (overviewDoc.getDescription().size()>0) desc = overviewDoc.getDescription().get(0);
+			if (desc !=null) descStr = desc.getValue();
+			alist.add(lifeCycleManager.createExternalLink(overviewDoc.getOverviewURL(),descStr));
+		}
+
+		return alist;
+	}
+
+	/**
+	 * External Identifiers
+	 * @param identifierBag identifiers
+	 * @param lifeCycleManager lifecycleManager
+	 * @return Collection ExternalIdentifier
+	 * @throws JAXRException on error
+	 */
+
+	public static Collection getExternalIdentifiers(IdentifierBag identifierBag, LifeCycleManager lifeCycleManager) 
+	throws JAXRException {
+		Collection<ExternalIdentifier> extidentifiers = null;
+		if (identifierBag != null) {
+			extidentifiers = new ArrayList<ExternalIdentifier>();
+
+			List<KeyedReference> keyedReferenceList = identifierBag.getKeyedReference();
+			for (KeyedReference keyedReference : keyedReferenceList) {
+				ExternalIdentifier extId = new ExternalIdentifierImpl(lifeCycleManager);
+				extId.setValue(keyedReference.getKeyValue());
+				extId.setName(new InternationalStringImpl(keyedReference.getKeyName()));
+
+				String tmodelKey = keyedReference.getTModelKey();
+				if (tmodelKey != null) {
+					ClassificationScheme scheme = new ClassificationSchemeImpl(lifeCycleManager);
+					scheme.setKey(new KeyImpl(tmodelKey));
+					extId.setIdentificationScheme(scheme);
+				}
+				extidentifiers.add(extId);
+			}
+		}
+		return extidentifiers;
+	}
+
+	private static Locale getLocale(String lang) {
+		if (lang == null || lang.trim().length() == 0) {
+			return Locale.getDefault();
+		} else if (lang.equalsIgnoreCase(Locale.getDefault().getLanguage())) {
+			return Locale.getDefault();
+		} else {
+			return new Locale(lang);
+		} 
+	}
+
 }
