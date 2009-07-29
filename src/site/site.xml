@@ -26,8 +26,8 @@
         <href>ws.apache.org/scout/</href>
     </bannerLeft>
     <bannerRight>
-    <src>images/scout.jpg</src>
-  </bannerRight>
+        <src>images/scout.jpg</src>
+    </bannerRight>
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-default-skin</artifactId>
@@ -38,10 +38,10 @@
 
     <body>
         <breadcrumbs>
-      		<item name="Apache" href="http://www.apache.org/"/>
-      		<item name="WebServices" href="http://ws.apache.org/"/>
-      		<item name="Scout" href="http://ws.apache.org/scout/"/>
-    	</breadcrumbs>
+            <item name="Apache" href="http://www.apache.org/"/>
+            <item name="WebServices" href="http://ws.apache.org/"/>
+            <item name="Scout" href="http://ws.apache.org/scout/"/>
+        </breadcrumbs>
 
         <menu name="Apache Scout">
             <item name="Welcome" href="http://ws.apache.org/scout/index.html"/>
@@ -49,23 +49,12 @@
                 <item name="Releases" href="releases.html"/>
                 <item name="Source Code" href="source-repository.html"/>
             </item>
-            <item name="Documentation">
-                <item name="Wiki" href="http://wiki.apache.org/ws/scout"/>
-                <item name="Javadocs" href="apidocs/index.html"/>
-            </item>
-            <item name="Project Information">
-                <item name="Project Information" href="project-info.html"/>
-                <item name="Mailing Lists" href="mail-lists.html"/>
-                <item name="Issue Tracking" href="issue-tracking.html"/>
-                <item name="Dependencies" href="dependencies.html"/>
-                <item name="Dependency Convergence" href="dependency-convergence.html"/>
-                <item name="Project Team" href="team-list.html"/>
-                <item name="Project Summary" href="project-summary.html"/>
-            </item>
-            <item name="Related Projects">
-    			<item name="Apache jUDDI" href="http://ws.apache.org/juddi/" description="Apache jUDDI"/>
-  			</item>
+            <item name="Wiki" href="http://wiki.apache.org/ws/scout"/>
         </menu>
+        <menu name="Related Projects">
+            <item name="Apache jUDDI" href="http://ws.apache.org/juddi/" description="Apache jUDDI"/>
+        </menu>
+        <menu ref="reports"/>
 
     </body>
 </project>
