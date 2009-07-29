@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache</groupId>
@@ -10,7 +8,7 @@
     </parent>
     <groupId>org.apache.ws.scout</groupId>
     <artifactId>scout</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>bundle</packaging>
 
     <name>Apache Scout</name>
@@ -53,69 +51,69 @@
             <id>anil</id>
             <name>Anil Saldhana</name>
             <email>anil@apache.org</email>
-            <organization></organization>
+            <organization />
         </developer>
         <developer>
             <id>dims</id>
             <name>Davanum Srinivas</name>
             <email>dims@yahoo.com</email>
-            <organization></organization>
+            <organization />
         </developer>
         <developer>
             <id>kstam</id>
             <name>Kurt T Stam</name>
             <email>kstam@apache.org</email>
-            <organization></organization>
+            <organization />
         </developer>
         <developer>
             <id>jfaath</id>
             <name>Jeff Faath</name>
             <email>jfaath@apache.org</email>
-            <organization></organization>
+            <organization />
         </developer>
         <developer>
             <id>linsun</id>
             <name>Lin Sun</name>
             <email>linsun@apache.org</email>
-            <organization></organization>
+            <organization />
         </developer>
         <developer>
             <id>tcunning</id>
             <name>Tom Cunningham</name>
             <email>tcunning@apache.org</email>
-            <organization></organization>
+            <organization />
         </developer>
     </developers>
     <contributors>
         <contributor>
             <name>Deepack Bhole</name>
             <email>dbhole@apache.org</email>
-            <organization></organization>
+            <organization />
         </contributor>
         <contributor>
             <name>Steve Viens</name>
             <email>sviens@apache.org</email>
-            <organization></organization>
+            <organization />
         </contributor>
         <contributor>
             <name>David Jencks</name>
             <email>djencks@apache.org</email>
-            <organization></organization>
+            <organization />
         </contributor>
         <contributor>
             <name>Jeremy Boynes</name>
             <email>jboynes@apache.org</email>
-            <organization></organization>
+            <organization />
         </contributor>
         <contributor>
             <name>Jarek Gawor</name>
             <email>gawor@apache.org</email>
-            <organization></organization>
+            <organization />
         </contributor>
         <contributor>
             <name>Geir Magnusson Jr.</name>
             <email>geirm@apache.org</email>
-            <organization></organization>
+            <organization />
         </contributor>
     </contributors>
     <licenses>
@@ -126,10 +124,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/branches/scout-1.1/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/branches/scout-1.1/
-        </developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/branches/scout-1.1/</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/tags/scout-1.1</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/tags/scout-1.1</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/tags/scout-1.1</url>
     </scm>
     <dependencies>
         <dependency>
