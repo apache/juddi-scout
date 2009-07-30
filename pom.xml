@@ -185,6 +185,24 @@
                 </exclusion>
             </exclusions>
         </dependency>
+	<dependency>
+		<groupId>axis</groupId>
+		<artifactId>axis-saaj</artifactId>
+		<version>1.4</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>axis</groupId>
+		<artifactId>axis-jaxrpc</artifactId>
+		<version>1.4</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>commons-discovery</groupId>
+		<artifactId>commons-discovery</artifactId>
+		<version>0.2</version>
+		<scope>test</scope>
+	</dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
