@@ -43,6 +43,7 @@ under the License.
 	  </section>
       
 	  <section name="News">
+	    <p><strong>Aug 3, 2009</strong> Version 1.1 uses JAXB for XML binding and passes TCK</p>
 	    <p><strong>May 5, 2009</strong> Version 1.0 is now available</p>
 	  	
 	  </section>
