@@ -132,6 +132,7 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 			
 			if(associationResp.getExceptions() != null)
 			{
+				System.out.println(associationResp.getExceptions());
 				fail("Association lookup failed");
 			}
 			else
@@ -146,18 +147,18 @@ public class JAXR030AssociationsTest extends BaseTestCase {
                    while(iterAss.hasNext())
                    {
                       Association assc = (Association) iterAss.next();
-                      if(assc.getKey().getId().equals(associationID))
-                         fail("Deleted Association found");
+                      if(assc.getKey().getId().equals(associationID)) {
+                    	  System.out.println("found: " + associationID);
+                          fail("Deleted Association found");
+                      }
                    }
                 } 
 			}
 			 
-		} catch (JAXRException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
-		} finally {
-
-		}
+		} 
 	}
     
 	private void createAssociation(Organization sOrg, Organization tOrg)
