@@ -1,7 +1,7 @@
 package org.apache.ws.scout.registry;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 import java.util.List;
@@ -22,7 +22,7 @@ import org.xml.sax.InputSource;
 public class JAXBTest {
 
 	private static String PUBLISHER_ASSERTION_RESPONSE="<assertionStatusReport generic=\"2.0\" operator=\"jUDDI.org\" xmlns=\"urn:uddi-org:api_v2\"><assertionStatusItem completionStatus=\"status:fromKey_incomplete\"><fromKey>5173FA70-81E6-11DE-B7B9-A9A7A2431DC4</fromKey><toKey>517AD840-81E6-11DE-B7B9-C5758FAC28A0</toKey><keyedReference keyName=\"Concept\" keyValue=\"Implements\" tModelKey=\"UUID:DB77450D-9FA8-45D4-A7BC-04411D14E384\"/><keysOwned><fromKey>5173FA70-81E6-11DE-B7B9-A9A7A2431DC4</fromKey></keysOwned></assertionStatusItem></assertionStatusReport>";
-
+    private static String FROM_KEY="5173FA70-81E6-11DE-B7B9-A9A7A2431DC4";
 	/**
 	 * Test handling of utf8 characters
 	 */
@@ -36,6 +36,7 @@ public class JAXBTest {
 			JAXBElement<AssertionStatusReport> utf8Element = unMarshaller.unmarshal(new StreamSource(reader),AssertionStatusReport.class);
 			List<org.apache.ws.scout.model.uddi.v2.AssertionStatusItem> items =  utf8Element.getValue().getAssertionStatusItem();
 			System.out.println(items);
+			assertEquals(FROM_KEY,items.get(0).getFromKey());
 		} catch (JAXBException jaxbe) {
 			fail("No exception should be thrown");
 		}
@@ -58,6 +59,7 @@ public class JAXBTest {
 			JAXBElement<AssertionStatusReport> utf8Element = unMarshaller.unmarshal(document,AssertionStatusReport.class);
 			List<org.apache.ws.scout.model.uddi.v2.AssertionStatusItem> items =  utf8Element.getValue().getAssertionStatusItem();
 			System.out.println(items);
+			assertEquals(FROM_KEY,items.get(0).getFromKey());
 		} catch (Exception jaxbe) {
 			fail("No exception should be thrown");
 		}
