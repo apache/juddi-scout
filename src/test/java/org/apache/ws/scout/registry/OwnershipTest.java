@@ -36,7 +36,6 @@ import javax.xml.registry.infomodel.Organization;
 import org.apache.ws.scout.BaseTestCase;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
