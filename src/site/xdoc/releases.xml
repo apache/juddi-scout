@@ -17,6 +17,11 @@
           <td><strong>Description</strong></td>
         </tr>
         <tr>
+          <td><a href="https://repository.apache.org/content/groups/public/org/apache/ws/scout/scout/1.1.1/scout-1.1.1.jar">scout-1.1.1</a></td>
+          <td>11 August, 2009</td>
+          <td>Version 1.1.1 of Scout</td>
+        </tr>
+        <tr>
           <td><a href="https://repository.apache.org/content/groups/public/org/apache/ws/scout/scout/1.1/scout-1.1.jar">scout-1.1</a></td>
           <td>3 August, 2009</td>
           <td>Version 1.1. of Scout</td>
