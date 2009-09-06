@@ -29,6 +29,7 @@ import javax.xml.registry.infomodel.ClassificationScheme;
 
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
+import org.apache.ws.scout.transport.TransportException;
 
 /**
  * Scout implementation of javax.xml.registry.RegistryService
@@ -36,25 +37,32 @@ import org.apache.ws.scout.registry.infomodel.KeyImpl;
  *
  * @author Anil Saldhana  <anil@apache.org>
  * @author Jeremy Boynes <jboynes@apache.org>
+ * @author Tom Cunningham <tcunning@apache.org>
  */
 public class RegistryServiceImpl implements RegistryService
 {
-    private final RegistryImpl registry;
-    private final BusinessQueryManagerImpl queryManager;
-    private final BusinessLifeCycleManagerImpl lifeCycleManager;
-
+    private final IRegistryBase registry;
+    private final BusinessQueryManager queryManager;
+    private final BusinessLifeCycleManager lifeCycleManager;
+    
     private final ClassificationSchemeImpl postalScheme;
     private final int maxRows;
-
+    private final String uddiVersion;
 
     private ConnectionImpl connection;
 
-    public RegistryServiceImpl(RegistryImpl registry, String postalScheme, int maxRows)
+    public RegistryServiceImpl(IRegistryBase registry, String postalScheme, int maxRows, String uddiVersion)
     {
         this.registry = registry;
         this.maxRows = maxRows;
-        queryManager = new BusinessQueryManagerImpl(this);
-        lifeCycleManager = new BusinessLifeCycleManagerImpl(this);
+        this.uddiVersion = uddiVersion;
+        if ("3.0".equals(uddiVersion)) {
+        	queryManager = new BusinessQueryManagerV3Impl(this);
+        	lifeCycleManager = new BusinessLifeCycleManagerV3Impl(this);
+        } else {
+        	queryManager = new BusinessQueryManagerImpl(this);
+        	lifeCycleManager = new BusinessLifeCycleManagerImpl(this);
+        }
         if (postalScheme == null)
         {
             this.postalScheme = null;
@@ -64,13 +72,13 @@ public class RegistryServiceImpl implements RegistryService
             this.postalScheme.setKey(new KeyImpl(postalScheme));
         }
     }
-
-    IRegistry getRegistry()
+ 
+    IRegistryBase getRegistry()
     {
         return registry;
     }
 
-    BusinessLifeCycleManagerImpl getLifeCycleManagerImpl()
+    BusinessLifeCycleManager getLifeCycleManagerImpl()
     {
         return lifeCycleManager;
     }
@@ -85,6 +93,10 @@ public class RegistryServiceImpl implements RegistryService
         return new CapabilityProfileImpl();
     }
 
+    public String getUddiVersion() {
+    	return uddiVersion;
+    }
+    
     public BusinessQueryManager getBusinessQueryManager() throws JAXRException
     {
         return queryManager;
@@ -124,15 +136,12 @@ public class RegistryServiceImpl implements RegistryService
        else
        type = inquiry;
 
-       try
-       {
-          return registry.execute(s,type);
-       }
-       catch (RegistryException e)
-       {
-          throw new JAXRException(e.getLocalizedMessage());
-       }
-    }
+       try {
+    	   return registry.execute(s,type);
+	   } catch (TransportException e) {
+		   throw new JAXRException(e.getLocalizedMessage());
+	   } 
+     }
 
     public ConnectionImpl getConnection()
     {

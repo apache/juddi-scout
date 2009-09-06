@@ -27,6 +27,7 @@ import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.JAXRException;
 
+import org.apache.ws.scout.registry.RegistryImpl;
 /**
  * Test to check Jaxr Publish
  * Open source UDDI Browser  <http://www.uddibrowser.org>
@@ -43,6 +44,8 @@ public class BaseTestCase
     protected BusinessQueryManager bqm;
 
     //Set some default values
+	protected String uddiversion = RegistryImpl.DEFAULT_UDDI_VERSION;
+    protected String uddinamespace = RegistryImpl.DEFAULT_UDDI_NAMESPACE;
     protected String userid = System.getProperty("uddi.test.uid")  == null ? "jdoe"     : System.getProperty("uddi.test.uid");
     protected String passwd = System.getProperty("uddi.test.pass") == null ? "password" : System.getProperty("uddi.test.pass");
     
@@ -68,6 +71,7 @@ public class BaseTestCase
             
             final String INQUERY_URI      = scoutProperties.getProperty("inquery.uri");
             final String PUBLISH_URI      = scoutProperties.getProperty("publish.uri");
+            final String SECURITY_URI    = scoutProperties.getProperty("security.uri");
             final String TRANSPORT_CLASS  = scoutProperties.getProperty("transport.class");
              
             if (scoutProperties.getProperty("userid")!=null) {
@@ -84,6 +88,14 @@ public class BaseTestCase
                 passwd = scoutProperties.getProperty("password2");
             }
             
+            if (scoutProperties.getProperty("scout.proxy.uddiVersion") != null)
+            {
+            	uddiversion = scoutProperties.getProperty("scout.proxy.uddiVersion");
+            }
+            if (scoutProperties.getProperty("scout.proxy.uddiNamespace") != null) {
+            	uddinamespace = scoutProperties.getProperty("scout.proxy.uddiNamespace");
+            }            
+            
             // Define connection configuration properties
             // To query, you need only the query URL
             Properties props = new Properties();
@@ -96,12 +108,20 @@ public class BaseTestCase
             				System.getProperty("javax.xml.registry.lifeCycleManagerURL") == null ? 
             				PUBLISH_URI :
             				System.getProperty("javax.xml.registry.lifeCycleManagerURL"));
+            if ("3.0".equals(uddiversion)) {
+            	props.setProperty("javax.xml.registry.securityManagerURL",
+    				System.getProperty("javax.xml.registry.securityManagerURL") == null ? 
+    				SECURITY_URI :
+    				System.getProperty("javax.xml.registry.securityManagerURL"));
+            }
             props.setProperty("javax.xml.registry.factoryFactoryClass",
                     "org.apache.ws.scout.? it isregistry.ConnectionFactoryImpl");
             props.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
             props.setProperty("javax.xml.registry.uddi.maxRows", String.valueOf(maxRows));
        
-       
+            props.setProperty("scout.proxy.uddiVersion", uddiversion);
+            props.setProperty("scout.proxy.uddiNamespace", uddinamespace);
+
             // Create the connection, passing it the configuration properties
             ConnectionFactory factory = ConnectionFactory.newInstance();
             factory.setProperties(props);

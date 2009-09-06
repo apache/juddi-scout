@@ -19,6 +19,9 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.axis.AxisFault;
 import org.apache.axis.Message;
 import org.apache.axis.client.Call;
@@ -28,6 +31,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.scout.registry.RegistryException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -43,7 +47,7 @@ public class AxisTransport implements Transport
   private static Log log = LogFactory.getLog(AxisTransport.class);
 
   public Element send(Element request,URI endpointURL)
-    throws RegistryException
+    throws TransportException
   {    
     Service service = null;
     Call call = null;
@@ -73,11 +77,11 @@ public class AxisTransport implements Transport
         response = msg.getSOAPEnvelope().getFirstBody().getAsDOM();
       }
       catch (Exception ex) {
-        throw new RegistryException(ex);
+        throw new TransportException(ex);
       }
     }
     catch (Exception ex) {
-      throw new RegistryException(ex);
+      throw new TransportException(ex);
     }
 
     if (log.isDebugEnabled()) {
@@ -89,7 +93,7 @@ public class AxisTransport implements Transport
   }
   
   public String send(String request,URI endpointURL)
-    throws RegistryException
+    throws TransportException
   {    
     Service service = null;
     Call call = null;
@@ -116,11 +120,11 @@ public class AxisTransport implements Transport
         response = msg.getSOAPEnvelope().getFirstBody().getAsString();
       }
       catch (Exception ex) {
-        throw new RegistryException(ex);
+        throw new TransportException(ex);
       }
     }
     catch (Exception ex) {
-      throw new RegistryException(ex);
+      throw new TransportException(ex);
     }
 
     log.debug("\nResponse message:\n" + response);

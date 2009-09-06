@@ -44,32 +44,8 @@ import javax.xml.registry.infomodel.ServiceBinding;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ws.scout.model.uddi.v2.AssertionStatusItem;
-import org.apache.ws.scout.model.uddi.v2.AssertionStatusReport;
-import org.apache.ws.scout.model.uddi.v2.AuthToken;
-import org.apache.ws.scout.model.uddi.v2.BindingDetail;
-import org.apache.ws.scout.model.uddi.v2.BindingTemplate;
-import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
-import org.apache.ws.scout.model.uddi.v2.BusinessInfo;
-import org.apache.ws.scout.model.uddi.v2.BusinessInfos;
-import org.apache.ws.scout.model.uddi.v2.BusinessList;
-import org.apache.ws.scout.model.uddi.v2.BusinessService;
-import org.apache.ws.scout.model.uddi.v2.FindQualifiers;
-import org.apache.ws.scout.model.uddi.v2.KeyedReference;
-import org.apache.ws.scout.model.uddi.v2.Name;
-import org.apache.ws.scout.model.uddi.v2.ObjectFactory;
-import org.apache.ws.scout.model.uddi.v2.PublisherAssertion;
-import org.apache.ws.scout.model.uddi.v2.PublisherAssertions;
-import org.apache.ws.scout.model.uddi.v2.RegisteredInfo;
-import org.apache.ws.scout.model.uddi.v2.ServiceDetail;
-import org.apache.ws.scout.model.uddi.v2.ServiceInfo;
-import org.apache.ws.scout.model.uddi.v2.ServiceInfos;
-import org.apache.ws.scout.model.uddi.v2.ServiceList;
-import org.apache.ws.scout.model.uddi.v2.TModel;
-import org.apache.ws.scout.model.uddi.v2.TModelDetail;
-import org.apache.ws.scout.model.uddi.v2.TModelInfo;
-import org.apache.ws.scout.model.uddi.v2.TModelInfos;
-import org.apache.ws.scout.model.uddi.v2.TModelList;
+
+import org.uddi.api_v3.*;
 import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
@@ -78,8 +54,8 @@ import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceBindingImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.util.EnumerationHelper;
-import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
-import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
+import org.apache.ws.scout.util.ScoutJaxrUddiV3Helper;
+import org.apache.ws.scout.util.ScoutUddiV3JaxrHelper;
 
 /**
  * Implements the JAXR BusinessQueryManager Interface
@@ -90,14 +66,14 @@ import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
  * @author <a href="mailto:jboynes@apache.org">Jeremy Boynes</a>
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  */
-public class BusinessQueryManagerImpl implements BusinessQueryManager
+public class BusinessQueryManagerV3Impl implements BusinessQueryManager
 {
     private final RegistryServiceImpl registryService;
     private Log log = LogFactory.getLog(this.getClass());
 
     private static ObjectFactory objectFactory = new ObjectFactory();
 
-    public BusinessQueryManagerImpl(RegistryServiceImpl registry)
+    public BusinessQueryManagerV3Impl(RegistryServiceImpl registry)
     {
         this.registryService = registry;
     }
@@ -126,16 +102,16 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                           Collection externalIdentifiers,
                                           Collection externalLinks) throws JAXRException
     {
-        IRegistry registry = (IRegistry) registryService.getRegistry();
+        IRegistryV3 registry = (IRegistryV3) registryService.getRegistry();
         try
         {
             FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
             Name[] nameArray = mapNamePatterns(namePatterns);
             BusinessList result = registry.findBusiness(nameArray,
                     null, 
-                    ScoutJaxrUddiHelper.getIdentifierBagFromExternalIdentifiers(externalIdentifiers), 
-                    ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
-                    null,
+                    ScoutJaxrUddiV3Helper.getIdentifierBagFromExternalIdentifiers(externalIdentifiers), 
+                    ScoutJaxrUddiV3Helper.getCategoryBagFromClassifications(classifications), 
+                    ScoutJaxrUddiV3Helper.getTModelBagFromSpecifications(specifications),
                     juddiFindQualifiers,
                     registryService.getMaxRows());
             
@@ -148,13 +124,14 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             	for (BusinessInfo businessInfo : bizInfoList) {
                     //Now get the details on the individual biz
                     BusinessDetail detail = registry.getBusinessDetail(businessInfo.getBusinessKey());
-                    orgs.add(((BusinessLifeCycleManagerImpl)registryService.getLifeCycleManagerImpl()).createOrganization(detail));
-                }
+                    BusinessLifeCycleManagerV3Impl blcm = (BusinessLifeCycleManagerV3Impl)registryService.getLifeCycleManagerImpl();
+                    orgs.add(blcm.createOrganization(detail));
+				}
             	bizInfoArr = new BusinessInfo[bizInfoList.size()];
             	bizInfoList.toArray(bizInfoArr);
             }
             return new BulkResponseImpl(orgs);
-        } catch (RegistryException e)
+        } catch (RegistryV3Exception e)
         {
             throw new JAXRException(e);
         }
@@ -166,7 +143,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                          Collection associationTypes) throws JAXRException
     {
         //TODO: Currently we just return all the Association objects owned by the caller
-        IRegistry registry = (IRegistry) registryService.getRegistry();
+        IRegistryV3 registry = (IRegistryV3) registryService.getRegistry();
         try
         {
             ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
@@ -182,7 +159,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 orgcol.add(new KeyImpl(sourceKey));
                 orgcol.add(new KeyImpl(targetKey));
                 BulkResponse bl = getRegistryObjects(orgcol, LifeCycleManager.ORGANIZATION);
-                Association asso = ScoutUddiJaxrHelper.getAssociation(bl.getCollection(),
+                Association asso = ScoutUddiV3JaxrHelper.getAssociation(bl.getCollection(),
                                              registryService.getBusinessLifeCycleManager());
                 KeyedReference keyr = pas.getKeyedReference();
                 Concept c = new ConceptImpl(getRegistryService().getBusinessLifeCycleManager());
@@ -193,7 +170,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 col.add(asso);
             }
             return new BulkResponseImpl(col);
-        } catch (RegistryException e)
+        } catch (RegistryV3Exception e)
         {
             throw new JAXRException(e);
         }
@@ -205,7 +182,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                                                Collection associationTypes) throws JAXRException
     {
         //TODO: Currently we just return all the Association objects owned by the caller
-        IRegistry registry = (IRegistry) registryService.getRegistry();
+        IRegistryV3 registry = (IRegistryV3) registryService.getRegistry();
         try
         {
             ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
@@ -237,7 +214,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 orgcol.add(new KeyImpl(sourceKey));
                 orgcol.add(new KeyImpl(targetKey));
                 BulkResponse bl = getRegistryObjects(orgcol, LifeCycleManager.ORGANIZATION);
-                Association asso = ScoutUddiJaxrHelper.getAssociation(bl.getCollection(),
+                Association asso = ScoutUddiV3JaxrHelper.getAssociation(bl.getCollection(),
                                              registryService.getBusinessLifeCycleManager());
                 //Set Confirmation
                 ((AssociationImpl)asso).setConfirmedBySourceOwner(caller);
@@ -258,7 +235,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
 
             return new BulkResponseImpl(col);
-        } catch (RegistryException e)
+        } catch (RegistryV3Exception e)
         {
             throw new JAXRException(e);
         }
@@ -423,7 +400,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             else {
 
                 //Lets ask the uddi registry if it has the TModels
-                IRegistry registry = (IRegistry) registryService.getRegistry();
+                IRegistryV3 registry = (IRegistryV3) registryService.getRegistry();
                 FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
                 try
                 {
@@ -445,7 +422,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                         }
                     }
 
-                } catch (RegistryException e)
+                } catch (RegistryV3Exception e)
                 { 
                     throw new JAXRException(e.getLocalizedMessage());
                 }
@@ -513,7 +490,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
         LinkedHashSet<Concept> col = new LinkedHashSet<Concept>();
 
         //Lets ask the uddi registry if it has the TModels
-        IRegistry registry = (IRegistry) registryService.getRegistry();
+        IRegistryV3 registry = (IRegistryV3) registryService.getRegistry();
         FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
         Iterator iter = null;
         if (namePatterns != null) iter = namePatterns.iterator();
@@ -523,19 +500,19 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try
             {
                 TModelList list = registry.findTModel(namestr, 
-                        ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
-                        ScoutJaxrUddiHelper.getIdentifierBagFromExternalIdentifiers(externalIdentifiers), 
+                        ScoutJaxrUddiV3Helper.getCategoryBagFromClassifications(classifications), 
+                        ScoutJaxrUddiV3Helper.getIdentifierBagFromExternalIdentifiers(externalIdentifiers), 
                 		juddiFindQualifiers, 10);
                
                 if (list != null && list.getTModelInfos()!=null) {
                 	List<TModelInfo> tmodelInfoList = list.getTModelInfos().getTModelInfo();
                 	if (tmodelInfoList!=null) {
                 		for (TModelInfo info: tmodelInfoList) {
-                            col.add(ScoutUddiJaxrHelper.getConcept(info, this.registryService.getBusinessLifeCycleManager()));
+                            col.add(ScoutUddiV3JaxrHelper.getConcept(info, this.registryService.getBusinessLifeCycleManager()));
 						}
                 	}
                 }
-            } catch (RegistryException e) { 
+            } catch (RegistryV3Exception e) { 
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -558,15 +535,15 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     {
         BulkResponseImpl blkRes = new BulkResponseImpl();
 
-        IRegistry iRegistry = (IRegistry) registryService.getRegistry();
+        IRegistryV3 iRegistry = (IRegistryV3) registryService.getRegistry();
         FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
 
         try
         {
  
             BindingDetail bindingDetail = iRegistry.findBinding(serviceKey.getId(),
-                    ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
-            		ScoutJaxrUddiHelper.getTModelBagFromSpecifications(specifications),
+                    ScoutJaxrUddiV3Helper.getCategoryBagFromClassifications(classifications), 
+            		ScoutJaxrUddiV3Helper.getTModelBagFromSpecifications(specifications),
             		juddiFindQualifiers,registryService.getMaxRows());
 
             /*
@@ -582,7 +559,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 for (int i=0; bindarr != null && i < bindarr.length; i++) {
                     BindingTemplate si = bindarr[i];
-                    ServiceBinding sb =  ScoutUddiJaxrHelper.getServiceBinding(si,
+                    ServiceBinding sb =  ScoutUddiV3JaxrHelper.getServiceBinding(si,
                             registryService.getBusinessLifeCycleManager());
                     col.add(sb);
                    //Fill the Service object by making a call to registry
@@ -593,7 +570,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 blkRes.setCollection(col);
             }
         }
-        catch (RegistryException e) {
+        catch (RegistryV3Exception e) {
             throw new JAXRException(e.getLocalizedMessage());
         }
 
@@ -623,7 +600,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     {
         BulkResponseImpl blkRes = new BulkResponseImpl();
 
-        IRegistry iRegistry = (IRegistry) registryService.getRegistry();
+        IRegistryV3 iRegistry = (IRegistryV3) registryService.getRegistry();
         FindQualifiers juddiFindQualifiers = mapFindQualifiers(findQualifiers);
         Name[] juddiNames = mapNamePatterns(namePatterns);
 
@@ -641,7 +618,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
             ServiceList serviceList = iRegistry.findService(id, 
             		juddiNames,
-                    ScoutJaxrUddiHelper.getCategoryBagFromClassifications(classifications), 
+                    ScoutJaxrUddiV3Helper.getCategoryBagFromClassifications(classifications), 
                     null, 
                     juddiFindQualifiers, registryService.getMaxRows());
 
@@ -663,7 +640,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                 blkRes.setCollection(col);
             }
         }
-        catch (RegistryException e) {
+        catch (RegistryV3Exception e) {
             throw new JAXRException(e.getLocalizedMessage());
         }
 
@@ -677,7 +654,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
     public RegistryObject getRegistryObject(String id, String objectType) throws JAXRException
     {
-        IRegistry registry = (IRegistry) registryService.getRegistry();
+        IRegistryV3 registry = (IRegistryV3) registryService.getRegistry();
         BusinessLifeCycleManager lcm = registryService.getBusinessLifeCycleManager();
 
         if (LifeCycleManager.CLASSIFICATION_SCHEME.equalsIgnoreCase(objectType)) {
@@ -685,7 +662,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try {
 
                 TModelDetail tmodeldetail = registry.getTModelDetail(id);
-                Concept c = ScoutUddiJaxrHelper.getConcept(tmodeldetail, lcm);
+                Concept c = ScoutUddiV3JaxrHelper.getConcept(tmodeldetail, lcm);
 
                 /*
                  * now turn into a concrete ClassificationScheme
@@ -699,7 +676,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 return scheme;
             }
-            catch (RegistryException e) {
+            catch (RegistryV3Exception e) {
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -707,9 +684,9 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try
             {
                 BusinessDetail orgdetail = registry.getBusinessDetail(id);
-                return ScoutUddiJaxrHelper.getOrganization(orgdetail, lcm);
+                return ScoutUddiV3JaxrHelper.getOrganization(orgdetail, lcm);
             }
-            catch (RegistryException e) {
+            catch (RegistryV3Exception e) {
                 throw new JAXRException(e.getLocalizedMessage());
             }
 
@@ -719,9 +696,9 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             try
             {
                 TModelDetail tmodeldetail = registry.getTModelDetail(id);
-                return ScoutUddiJaxrHelper.getConcept(tmodeldetail, lcm);
+                return ScoutUddiV3JaxrHelper.getConcept(tmodeldetail, lcm);
             }
-            catch (RegistryException e) { 
+            catch (RegistryV3Exception e) { 
                 throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -736,7 +713,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 					}
                 }
             }
-            catch (RegistryException e) {
+            catch (RegistryV3Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -757,7 +734,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     protected Service getServiceFromBusinessService(BusinessService bs, LifeCycleManager lcm)
         throws JAXRException {
 
-        ServiceImpl service  = (ServiceImpl) ScoutUddiJaxrHelper.getService(bs, lcm);
+        ServiceImpl service  = (ServiceImpl) ScoutUddiV3JaxrHelper.getService(bs, lcm);
         service.setSubmittingOrganizationKey(bs.getBusinessKey());
 
         return service;
@@ -803,7 +780,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
     public BulkResponse getRegistryObjects(Collection objectKeys, String objectType) throws JAXRException
     {
-        IRegistry registry = (IRegistry) registryService.getRegistry();
+        IRegistryV3 registry = (IRegistryV3) registryService.getRegistry();
         //Convert into a vector of strings
         String[] keys = new String[objectKeys.size()];
         int currLoc = 0;
@@ -823,10 +800,10 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 for (TModel tModel: tmodelList)
                 {
-                    col.add(ScoutUddiJaxrHelper.getConcept(tModel, lcm));
+                    col.add(ScoutUddiV3JaxrHelper.getConcept(tModel, lcm));
                 }
 
-            } catch (RegistryException e)
+            } catch (RegistryV3Exception e)
             { 
                 throw new JAXRException(e.getLocalizedMessage());
             }
@@ -845,11 +822,11 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                         List<BusinessInfo> bizInfoList = infos.getBusinessInfo();
                         for (BusinessInfo businessInfo: bizInfoList) {
                             BusinessDetail detail = registry.getBusinessDetail(businessInfo.getBusinessKey());
-                            col.add(((BusinessLifeCycleManagerImpl)registryService.getLifeCycleManagerImpl()).createOrganization(detail));
+                            col.add(((BusinessLifeCycleManagerV3Impl)registryService.getLifeCycleManagerImpl()).createOrganization(detail));
                         }
                     }
                 }
-            } catch (RegistryException e) {
+            } catch (RegistryV3Exception e) {
                     throw new JAXRException(e.getLocalizedMessage());
             }
         }
@@ -861,11 +838,11 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
 
                 for (TModel tmodel: tmodelList)
                 {
-                    col.add(ScoutUddiJaxrHelper.getConcept(tmodel, lcm));
+                    col.add(ScoutUddiV3JaxrHelper.getConcept(tmodel, lcm));
                 }
 
             }
-            catch (RegistryException e)
+            catch (RegistryV3Exception e)
             { 
                 throw new JAXRException(e.getLocalizedMessage());
             }
@@ -886,7 +863,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
                     }
                 }
             }
-            catch (RegistryException e) {
+            catch (RegistryV3Exception e) {
                 throw new JAXRException(e);
             }
         }
@@ -902,7 +879,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
     public BulkResponse getRegistryObjects(String id) throws JAXRException
     {
         if (LifeCycleManager.ORGANIZATION.equalsIgnoreCase(id)) {
-            IRegistry registry = (IRegistry) registryService.getRegistry();
+            IRegistryV3 registry = (IRegistryV3) registryService.getRegistry();
         	ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
             AuthToken auth = this.getAuthToken(con,registry);
     		LinkedHashSet<Organization> orgs = null;
@@ -914,11 +891,11 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             		orgs = new LinkedHashSet<Organization>();
             		for (BusinessInfo businessInfo : bizInfoList) {
             			BusinessDetail detail = registry.getBusinessDetail(businessInfo.getBusinessKey());
-                        orgs.add(((BusinessLifeCycleManagerImpl)registryService.getLifeCycleManagerImpl()).createOrganization(detail));
+                        orgs.add(((BusinessLifeCycleManagerV3Impl)registryService.getLifeCycleManagerImpl()).createOrganization(detail));
 					}
             	}
             	
-            } catch (RegistryException re) {
+            } catch (RegistryV3Exception re) {
             	throw new JAXRException(re);
             }
             return new BulkResponseImpl(orgs);
@@ -990,7 +967,7 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
      * @return auth token
      * @throws JAXRException
      */
-    private AuthToken getAuthToken(ConnectionImpl connection, IRegistry ireg)
+    private AuthToken getAuthToken(ConnectionImpl connection, IRegistryV3 ireg)
             throws JAXRException {
         Set creds = connection.getCredentials();
         Iterator it = creds.iterator();

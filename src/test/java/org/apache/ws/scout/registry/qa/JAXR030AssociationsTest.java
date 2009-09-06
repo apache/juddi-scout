@@ -230,9 +230,13 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 		Collection<String> findQualifiers = new ArrayList<String>();
 		findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
 		Collection<String> namePatterns = new ArrayList<String>();
-		namePatterns.add("%" + tempSrcOrgName + "%");
-		namePatterns.add("%" + tempTgtOrgName + "%");
-
+		if ("3.0".equals(uddiversion)) {
+			namePatterns.add(tempSrcOrgName);
+			namePatterns.add(tempTgtOrgName);
+		} else {
+			namePatterns.add("%" + tempSrcOrgName + "%");
+			namePatterns.add("%" + tempTgtOrgName + "%");
+		}
 		// Find based upon qualifier type and values
 		System.out.println("\n-- searching the registry --\n");
 		BulkResponse response = bqm.findOrganizations(findQualifiers,

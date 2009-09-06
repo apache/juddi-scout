@@ -24,6 +24,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
@@ -37,53 +38,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ws.scout.model.uddi.v2.AssertionStatusReport;
-import org.apache.ws.scout.model.uddi.v2.AuthToken;
-import org.apache.ws.scout.model.uddi.v2.BindingDetail;
-import org.apache.ws.scout.model.uddi.v2.BindingTemplate;
-import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
-import org.apache.ws.scout.model.uddi.v2.BusinessEntity;
-import org.apache.ws.scout.model.uddi.v2.BusinessList;
-import org.apache.ws.scout.model.uddi.v2.BusinessService;
-import org.apache.ws.scout.model.uddi.v2.CategoryBag;
-import org.apache.ws.scout.model.uddi.v2.DeleteBinding;
-import org.apache.ws.scout.model.uddi.v2.DeleteBusiness;
-import org.apache.ws.scout.model.uddi.v2.DeletePublisherAssertions;
-import org.apache.ws.scout.model.uddi.v2.DeleteService;
-import org.apache.ws.scout.model.uddi.v2.DeleteTModel;
-import org.apache.ws.scout.model.uddi.v2.DiscoveryURLs;
-import org.apache.ws.scout.model.uddi.v2.DispositionReport;
-import org.apache.ws.scout.model.uddi.v2.FindBinding;
-import org.apache.ws.scout.model.uddi.v2.FindBusiness;
-import org.apache.ws.scout.model.uddi.v2.FindQualifiers;
-import org.apache.ws.scout.model.uddi.v2.FindService;
-import org.apache.ws.scout.model.uddi.v2.FindTModel;
-import org.apache.ws.scout.model.uddi.v2.GetAssertionStatusReport;
-import org.apache.ws.scout.model.uddi.v2.GetAuthToken;
-import org.apache.ws.scout.model.uddi.v2.GetBusinessDetail;
-import org.apache.ws.scout.model.uddi.v2.GetPublisherAssertions;
-import org.apache.ws.scout.model.uddi.v2.GetRegisteredInfo;
-import org.apache.ws.scout.model.uddi.v2.GetServiceDetail;
-import org.apache.ws.scout.model.uddi.v2.GetTModelDetail;
-import org.apache.ws.scout.model.uddi.v2.IdentifierBag;
-import org.apache.ws.scout.model.uddi.v2.Name;
-import org.apache.ws.scout.model.uddi.v2.ObjectFactory;
-import org.apache.ws.scout.model.uddi.v2.PublisherAssertion;
-import org.apache.ws.scout.model.uddi.v2.PublisherAssertions;
-import org.apache.ws.scout.model.uddi.v2.RegisteredInfo;
-import org.apache.ws.scout.model.uddi.v2.SaveBinding;
-import org.apache.ws.scout.model.uddi.v2.SaveBusiness;
-import org.apache.ws.scout.model.uddi.v2.SaveService;
-import org.apache.ws.scout.model.uddi.v2.SaveTModel;
-import org.apache.ws.scout.model.uddi.v2.ServiceDetail;
-import org.apache.ws.scout.model.uddi.v2.ServiceList;
-import org.apache.ws.scout.model.uddi.v2.SetPublisherAssertions;
-import org.apache.ws.scout.model.uddi.v2.TModel;
-import org.apache.ws.scout.model.uddi.v2.TModelBag;
-import org.apache.ws.scout.model.uddi.v2.TModelDetail;
-import org.apache.ws.scout.model.uddi.v2.TModelList;
+
+import org.uddi.api_v3.*;
 import org.apache.ws.scout.transport.Transport;
 import org.apache.ws.scout.transport.TransportException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -103,7 +62,7 @@ import org.xml.sax.SAXException;
  * 
  */
 
-public class RegistryImpl implements IRegistry {
+public class RegistryV3Impl implements IRegistryV3 {
 
 	public static final String INQUIRY_ENDPOINT_PROPERTY_NAME = "scout.proxy.inquiryURL";
 	public static final String PUBLISH_ENDPOINT_PROPERTY_NAME = "scout.proxy.publishURL";
@@ -142,12 +101,12 @@ public class RegistryImpl implements IRegistry {
 	private Marshaller marshaller = null;
 	private Unmarshaller unmarshaller = null;
 	
-	private static Log log = LogFactory.getLog(RegistryImpl.class);
+	private static Log log = LogFactory.getLog(RegistryV3Impl.class);
 
 	/**
 	 * Creates a new instance of RegistryImpl.
 	 */
-	public RegistryImpl(Properties props) {
+	public RegistryV3Impl(Properties props) {
 		super();
 
 		this.init(props);
@@ -242,7 +201,7 @@ public class RegistryImpl implements IRegistry {
 	 * 
 	 * @param uddiRequest
 	 * @return String
-	 * @throws RegistryException
+	 * @throws RegistryV3Exception
 	 */
 	public String execute(String uddiRequest, String urltype)
 			throws TransportException {
@@ -262,7 +221,7 @@ public class RegistryImpl implements IRegistry {
 	 * 
 	 */
 	public JAXBElement<?> execute(JAXBElement<?> uddiRequest, URI endPointURI)
-			throws RegistryException {
+			throws RegistryV3Exception {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
@@ -274,13 +233,13 @@ public class RegistryImpl implements IRegistry {
             this.marshaller.marshal(uddiRequest, baos);
             doc = docBuilder.parse(new ByteArrayInputStream(baos.toByteArray()));
         } catch (SAXException saxe) {
-            throw (new RegistryException(saxe));
+            throw (new RegistryV3Exception(saxe));
         } catch (ParserConfigurationException pce) {
-            throw (new RegistryException(pce));
+            throw (new RegistryV3Exception(pce));
         } catch (IOException ioe) {
-            throw (new RegistryException(ioe));
+            throw (new RegistryV3Exception(ioe));
         } catch (JAXBException ioe) {
-            throw (new RegistryException(ioe));
+            throw (new RegistryV3Exception(ioe));
         }
 		Element request = doc.getDocumentElement();
 
@@ -292,14 +251,13 @@ public class RegistryImpl implements IRegistry {
 	    // A SOAP request is made and a SOAP response
 	    // is returned.
 
-	    
 	    Element response;
 	    try {
 	    	response = transport.send(request, endPointURI);
 	    } catch (TransportException te) {
-	    	throw new RegistryException(te);
+	    	throw new RegistryV3Exception(te);
 	    }
-	   /* if (response.hasAttributes()) {
+	    /* if (response.hasAttributes()) {
 		    NamedNodeMap am = response.getAttributes();
 		    ArrayList<String> al = new ArrayList<String>();
 		    for (int i = 0; i < am.getLength(); i++) {
@@ -325,13 +283,13 @@ public class RegistryImpl implements IRegistry {
 
 	    String responseName = response.getLocalName();
 	    if (responseName == null) {
-	        throw new RegistryException("Unsupported response "
+	        throw new RegistryV3Exception("Unsupported response "
 	                + "from registry. A value was not present.");
 		} 
 	    
         // Let's now try to determine which UDDI response
         // we received and unmarshal it appropriately or
-        // throw a RegistryException if it's unknown.
+        // throw a RegistryV3Exception if it's unknown.
         // Well, we have now determined that something was
         // returned and it is "a something" that we know
         // about so let's unmarshal it into a RegistryObject
@@ -343,7 +301,7 @@ public class RegistryImpl implements IRegistry {
 	    try {
 	        uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(response);
 	    } catch (JAXBException xmle) {
-	        throw (new RegistryException(xmle));
+	        throw (new RegistryV3Exception(xmle));
 	    }
 
 		if (responseName.toLowerCase().equals("fault")) {
@@ -377,21 +335,21 @@ public class RegistryImpl implements IRegistry {
 						dispRptObj = (JAXBElement<DispositionReport>) unmarshaller.unmarshal((Element) nodeList
 								.item(0));
 					} catch (JAXBException xmle) {
-						throw (new RegistryException(xmle));
+						throw (new RegistryV3Exception(xmle));
 					}
                     dispRpt = dispRptObj.getValue();
                 }
 			}
 
-			RegistryException e = new RegistryException(fCode, fString, fActor, dispRpt);
+			RegistryV3Exception e = new RegistryV3Exception(fCode, fString, fActor, dispRpt);
 		
-			// Create RegistryException instance and return
+			// Create RegistryV3Exception instance and return
 			throw e;
 		}
 
 		return uddiResponse;
 	}
-
+ 
 	/**
 	 * @return Returns the adminURL.
 	 */
@@ -531,10 +489,10 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to remove an existing bindingTemplate from the bindingTemplates
 	 * collection that is part of a specified businessService structure."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public DispositionReport deleteBinding(String authInfo,
-			String[] bindingKeyArray) throws RegistryException {
+			String[] bindingKeyArray) throws RegistryV3Exception {
 		DeleteBinding request = this.objectFactory.createDeleteBinding();
 
 		if (authInfo != null) {
@@ -555,10 +513,10 @@ public class RegistryImpl implements IRegistry {
 	/**
 	 * "Used to delete registered businessEntity information from the registry."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public DispositionReport deleteBusiness(String authInfo,
-			String[] businessKeyArray) throws RegistryException {
+			String[] businessKeyArray) throws RegistryV3Exception {
 		DeleteBusiness request = this.objectFactory.createDeleteBusiness();
 		
 		if (authInfo != null) {
@@ -577,10 +535,10 @@ public class RegistryImpl implements IRegistry {
 	}
 
 	/**
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public DispositionReport deletePublisherAssertions(String authInfo,
-			PublisherAssertion[] assertionArray) throws RegistryException {
+			PublisherAssertion[] assertionArray) throws RegistryV3Exception {
 		DeletePublisherAssertions request = this.objectFactory.createDeletePublisherAssertions();
 
 		if (authInfo != null) {
@@ -603,10 +561,10 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to delete an existing businessService from the businessServices
 	 * collection that is part of a specified businessEntity."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public DispositionReport deleteService(String authInfo,
-			String[] serviceKeyArray) throws RegistryException {
+			String[] serviceKeyArray) throws RegistryV3Exception {
 		DeleteService request = this.objectFactory.createDeleteService();
 		
 		if (authInfo != null) {
@@ -630,10 +588,10 @@ public class RegistryImpl implements IRegistry {
 	 * references to a tModel when this call is made, the tModel will be marked
 	 * deleted instead of being physically removed."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public DispositionReport deleteTModel(String authInfo,
-			String[] tModelKeyArray) throws RegistryException {
+			String[] tModelKeyArray) throws RegistryV3Exception {
 		DeleteTModel request = this.objectFactory.createDeleteTModel();
 
 		if (authInfo != null) {
@@ -656,13 +614,13 @@ public class RegistryImpl implements IRegistry {
 	 * Used to locate information about one or more businesses. Returns a
 	 * businessList message that matches the conditions specified.
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public BusinessList findBusiness(Name[] nameArray,
 			DiscoveryURLs discoveryURLs, IdentifierBag identifierBag,
 			CategoryBag categoryBag, TModelBag tModelBag,
 			FindQualifiers findQualifiers, int maxRows)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		FindBusiness request = this.objectFactory.createFindBusiness();
 
 		if (nameArray != null) {
@@ -683,9 +641,7 @@ public class RegistryImpl implements IRegistry {
 
 		if (tModelBag != null) {
 			request.setTModelBag(tModelBag);
-		} else {
-			request.setTModelBag(this.objectFactory.createTModelBag());
- 		}
+		} 
 
 		if (findQualifiers != null) {
 			request.setFindQualifiers(findQualifiers);
@@ -705,12 +661,12 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to locate specific bindings within a registered businessService.
 	 * Returns a bindingDetail message."
 	 * 
-	 * @exception RegistryException
+	 * @exception RegistryV3Exception
 	 */
 	public BindingDetail findBinding(String serviceKey,
 			CategoryBag categoryBag, TModelBag tModelBag,
 			FindQualifiers findQualifiers, int maxRows)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		// FIXME: Juddi's methods also set category bag (per uddi spec v3).
 		// However, we are sticking to v2 for now, so categorybag doesn't
 		// exist under FindBinding. It is fine for now, since the incoming
@@ -723,11 +679,12 @@ public class RegistryImpl implements IRegistry {
 			request.setServiceKey(serviceKey);
 		}
 
+		if (categoryBag != null) {
+			request.setCategoryBag(categoryBag);
+		}
+		
 		if (tModelBag != null) {
 			request.setTModelBag(tModelBag);
-		} else {
-			TModelBag tmb = this.objectFactory.createTModelBag(); 
-			request.setTModelBag(tmb);
 		}
 
 		if (findQualifiers != null) {
@@ -749,12 +706,12 @@ public class RegistryImpl implements IRegistry {
 	 * that the name, categoryBag, and tModelBag arguments are mutually
 	 * exclusive.
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public ServiceList findService(String businessKey, Name[] nameArray,
 			CategoryBag categoryBag, TModelBag tModelBag,
 			FindQualifiers findQualifiers, int maxRows)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		FindService request = this.objectFactory.createFindService();
 
 		if (businessKey != null) {
@@ -791,11 +748,11 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to locate one or more tModel information structures. Returns a
 	 * tModelList structure."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public TModelList findTModel(String name, CategoryBag categoryBag,
 			IdentifierBag identifierBag, FindQualifiers findQualifiers,
-			int maxRows) throws RegistryException {
+			int maxRows) throws RegistryV3Exception {
 		FindTModel request = this.objectFactory.createFindTModel();
 
 		Name jaxbName = this.objectFactory.createName();
@@ -829,10 +786,10 @@ public class RegistryImpl implements IRegistry {
 	}
 
 	/**
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public AssertionStatusReport getAssertionStatusReport(String authInfo,
-			String completionStatus) throws RegistryException {
+			String completionStatus) throws RegistryV3Exception {
 		GetAssertionStatusReport request = this.objectFactory.createGetAssertionStatusReport();
 
 		if (authInfo != null) {
@@ -840,7 +797,8 @@ public class RegistryImpl implements IRegistry {
 		}
 
 		if (completionStatus != null) {
-			request.setCompletionStatus(completionStatus);
+			CompletionStatus cs = CompletionStatus.fromValue(completionStatus);
+			request.setCompletionStatus(cs);
 		}
 
         AssertionStatusReport asr;
@@ -857,10 +815,10 @@ public class RegistryImpl implements IRegistry {
 	 * publishers API. This server serves as the program's equivalent of a login
 	 * request."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public AuthToken getAuthToken(String userID, String cred)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		GetAuthToken request = this.objectFactory.createGetAuthToken();
 
 		if (userID != null) {
@@ -890,10 +848,10 @@ public class RegistryImpl implements IRegistry {
 	 * Used to get the full businessEntity information for a particular business
 	 * entity. Returns a businessDetail message.
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public BusinessDetail getBusinessDetail(String businessKey)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		String[] keys = new String[1];
 		keys[0] = businessKey;
 
@@ -904,10 +862,10 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to get the full businessEntity information for one or more
 	 * businesses. Returns a businessDetail message."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public BusinessDetail getBusinessDetail(String[] businessKeyArray)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		GetBusinessDetail request = this.objectFactory.createGetBusinessDetail();
 
 		if (businessKeyArray != null) {
@@ -922,29 +880,33 @@ public class RegistryImpl implements IRegistry {
 	}
 
 	/**
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public PublisherAssertions getPublisherAssertions(String authInfo)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		GetPublisherAssertions request = this.objectFactory.createGetPublisherAssertions();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
 
-        PublisherAssertions pa;
+        PublisherAssertions pa = new PublisherAssertions();
         JAXBElement<?> o = execute(this.objectFactory.createGetPublisherAssertions(request),
         		this.getPublishURI());
-        pa = (PublisherAssertions) o.getValue();
+        PublisherAssertionsResponse par = (PublisherAssertionsResponse) o.getValue();
+        List<PublisherAssertion> assertions = par.getPublisherAssertion();
+        for (int i = 0; i < assertions.size(); i++ ) {
+        	pa.getPublisherAssertion().add((PublisherAssertion)assertions.get(i));
+        }
 
         return pa;
 	}
 
 	/**
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public RegisteredInfo getRegisteredInfo(String authInfo)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		GetRegisteredInfo request = this.objectFactory.createGetRegisteredInfo();
 
 		if (authInfo != null) {
@@ -963,10 +925,10 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to get full details for a particular registered businessService.
 	 * Returns a serviceDetail message."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public ServiceDetail getServiceDetail(String serviceKey)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		String[] keys = new String[1];
 		keys[0] = serviceKey;
 
@@ -977,10 +939,10 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to get full details for a given set of registered businessService
 	 * data. Returns a serviceDetail message."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public ServiceDetail getServiceDetail(String[] serviceKeyArray)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		GetServiceDetail request = this.objectFactory.createGetServiceDetail();
 
 		if (serviceKeyArray != null) {
@@ -999,10 +961,10 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to get full details for a particular registered TModel. Returns a
 	 * tModelDetail message."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public TModelDetail getTModelDetail(String tModelKey)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		String[] keys = new String[1];
 		keys[0] = tModelKey;
 
@@ -1013,10 +975,10 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to get full details for a given set of registered tModel data.
 	 * Returns a tModelDetail message."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public TModelDetail getTModelDetail(String[] tModelKeyArray)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		GetTModelDetail request = this.objectFactory.createGetTModelDetail();
 
 		if (tModelKeyArray != null) {
@@ -1032,10 +994,10 @@ public class RegistryImpl implements IRegistry {
 	}
 
 	/**
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public PublisherAssertions setPublisherAssertions(String authInfo,
-			PublisherAssertion[] assertionArray) throws RegistryException {
+			PublisherAssertion[] assertionArray) throws RegistryV3Exception {
 		SetPublisherAssertions request = this.objectFactory.createSetPublisherAssertions();
 
 		if (authInfo != null) {
@@ -1059,10 +1021,10 @@ public class RegistryImpl implements IRegistry {
 	 * bindingTemplate information. Use this to control information about
 	 * technical capabilities exposed by a registered business."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public BindingDetail saveBinding(String authInfo,
-			BindingTemplate[] bindingArray) throws RegistryException {
+			BindingTemplate[] bindingArray) throws RegistryV3Exception {
 		SaveBinding request = this.objectFactory.createSaveBinding();
 
 		if (authInfo != null) {
@@ -1087,20 +1049,27 @@ public class RegistryImpl implements IRegistry {
 	 * about the entire business. Of the save_x APIs this one has the broadest
 	 * effect."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public BusinessDetail saveBusiness(String authInfo,
-			BusinessEntity[] businessArray) throws RegistryException {
+			BusinessEntity[] businessArray) throws RegistryV3Exception {
 		SaveBusiness request = this.objectFactory.createSaveBusiness();
 
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
-
+			
 		if (businessArray != null) {
+			for (int i = 0; i < businessArray.length; i++) {
+				BusinessEntity be = businessArray[i];
+				if (be.getBusinessServices().getBusinessService().size() == 0) {
+					be.setBusinessServices(null);
+				}
+			}
+
 			request.getBusinessEntity().addAll(Arrays.asList(businessArray));
 		}
-
+		
         BusinessDetail bd;
         JAXBElement<?> o = execute(this.objectFactory.createSaveBusiness(request), 
         		this.getPublishURI());
@@ -1113,10 +1082,10 @@ public class RegistryImpl implements IRegistry {
 	 * "Used to register or update complete information about a businessService
 	 * exposed by a specified businessEntity."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public ServiceDetail saveService(String authInfo,
-			BusinessService[] serviceArray) throws RegistryException {
+			BusinessService[] serviceArray) throws RegistryV3Exception {
 		SaveService request = this.objectFactory.createSaveService();
 
 		if (authInfo != null) {
@@ -1138,10 +1107,10 @@ public class RegistryImpl implements IRegistry {
 	/**
 	 * "Used to register or update complete information about a tModel."
 	 * 
-	 * @exception RegistryException;
+	 * @exception RegistryV3Exception;
 	 */
 	public TModelDetail saveTModel(String authInfo, TModel[] tModelArray)
-			throws RegistryException {
+			throws RegistryV3Exception {
 		SaveTModel request = this.objectFactory.createSaveTModel();
 
 		if (authInfo != null) {

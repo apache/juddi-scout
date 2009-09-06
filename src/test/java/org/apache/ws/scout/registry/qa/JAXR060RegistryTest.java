@@ -125,7 +125,7 @@ public class JAXR060RegistryTest extends BaseTestCase
         {
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
 			Collection<Organization> orgs = finder.findOrganizationsByName("Red Hat/JBossESB");
 			Organization org = orgs.iterator().next();
 			assertEquals("Red Hat/JBossESB", org.getName().getValue());
@@ -135,7 +135,7 @@ public class JAXR060RegistryTest extends BaseTestCase
 		try {
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             Collection<Organization> orgs = finder.findOrganizationsByName("Not Existing Org");
 			assertEquals(0, orgs.size());
 		} catch (JAXRException je) {
@@ -145,7 +145,7 @@ public class JAXR060RegistryTest extends BaseTestCase
 		try {
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             Collection<Organization> orgs = finder.findOrganizationsByName("Red Hat/JBossESB");
             Organization organization = orgs.iterator().next();
             
@@ -173,7 +173,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
             blm = rs.getBusinessLifeCycleManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             //Find the service
             Service service = finder.findService("registry","Registry Test ServiceName", blm);
             assertEquals("Registry Test ServiceName", service.getName().getValue());
@@ -185,7 +185,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
             blm = rs.getBusinessLifeCycleManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             //Find the service
             Service service = finder.findService("registry","Registry Test ServiceName", blm);
             
@@ -210,7 +210,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             assertEquals(BulkResponse.STATUS_SUCCESS, br2.getStatus());
            
             //Delete one binding            
-            Collection<ServiceBinding> serviceBindings2 = finder.findServiceBindings(service.getKey());
+            Collection<ServiceBinding> serviceBindings2 = finder.findServiceBindings(service.getKey(),classification);
             if ((serviceBindings2 != null) && (serviceBindings2.iterator() != null) 
             		&& (serviceBindings2.iterator().hasNext())) {
             	ServiceBinding serviceBinding2 = serviceBindings2.iterator().next();
@@ -225,7 +225,7 @@ public class JAXR060RegistryTest extends BaseTestCase
         {
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
 			Collection<Organization> orgs = finder.findOrganizationsByName("Red Hat/JBossESB");
             Organization org = orgs.iterator().next();
 			//Listing out the services and their Bindings
@@ -259,7 +259,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
             blm = rs.getBusinessLifeCycleManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             //Find the service
             Service service = finder.findService("registry","Registry Test ServiceName", blm);
             Remover remover = new Remover(blm);
@@ -273,7 +273,7 @@ public class JAXR060RegistryTest extends BaseTestCase
             RegistryService rs = connection.getRegistryService();
             bqm = rs.getBusinessQueryManager();
             blm = rs.getBusinessLifeCycleManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             Collection<Organization> orgs = finder.findOrganizationsByName("Red Hat/JBossESB");
             Organization org = orgs.iterator().next();
             Remover remover = new Remover(blm);

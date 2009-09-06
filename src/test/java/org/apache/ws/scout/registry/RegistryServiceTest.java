@@ -37,7 +37,7 @@ public class RegistryServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        registry = new RegistryServiceImpl(null, null, -1);
+        registry = new RegistryServiceImpl(null, null, -1, "3.0");
     }
     
     @Test

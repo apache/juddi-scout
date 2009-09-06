@@ -30,8 +30,8 @@ import org.w3c.dom.Element;
 public interface Transport
 {
   Element send(Element request,URI endPointURI)
-    throws RegistryException;
+    throws TransportException;
   
   String send(String request,URI endpointURI)
-    throws RegistryException;
+    throws TransportException;
 }

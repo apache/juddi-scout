@@ -30,6 +30,7 @@ import javax.xml.registry.RegistryService;
  * For futher details, look into the JAXR API Javadoc.
  *
  * @author Anil Saldhana  <anil@apache.org>
+ * @author Tom Cunningham <tcunning@apache.org>
  */
 public class ConnectionImpl implements Connection, Serializable
 {
@@ -37,11 +38,13 @@ public class ConnectionImpl implements Connection, Serializable
     private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;
-    private final RegistryImpl registry;
+    private final IRegistryBase registry;
     private final String postalScheme;
     private final int maxRows;
+    private String uddiVersion;
 
-    public ConnectionImpl(URI queryManagerURI, URI lifeCycleManagerURI, String transportClass, String postalScheme, int maxRows)
+    public ConnectionImpl(URI queryManagerURI, URI lifeCycleManagerURI, URI securityManagerURI, String transportClass, String postalScheme, int maxRows,
+    	String uddiNamespace, String uddiVersion)
     {
         Properties prop = new Properties();
         /**
@@ -49,8 +52,12 @@ public class ConnectionImpl implements Connection, Serializable
          * juddi RegistryProxy uses, set the System property
          * accordingly.
          */
+		this.uddiVersion = uddiVersion;
+
         if (transportClass!=null) {
     		prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transportClass);
+    		prop.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, uddiNamespace);
+    		prop.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, uddiVersion);
     	} else {
     		String transport = SecurityActions.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
     		if (transport != null) {
@@ -61,9 +68,14 @@ public class ConnectionImpl implements Connection, Serializable
          * Even if the properties passed contains no values,
          * juddi takes default values
          */
-        registry = new RegistryImpl(prop);   
+        if ("3.0".equals(uddiVersion)) {
+        	registry = new RegistryV3Impl(prop);
+        } else {
+            registry = new RegistryImpl(prop);           	
+        }
         registry.setInquiryURI(queryManagerURI);
         registry.setPublishURI(lifeCycleManagerURI);
+        registry.setSecurityURI(securityManagerURI);
         this.postalScheme = postalScheme;
         this.maxRows = maxRows;
 
@@ -71,7 +83,7 @@ public class ConnectionImpl implements Connection, Serializable
 
     public RegistryService getRegistryService() throws JAXRException
     {
-        RegistryServiceImpl reg = new RegistryServiceImpl(registry, postalScheme, maxRows);
+        RegistryServiceImpl reg = new RegistryServiceImpl(registry, postalScheme, maxRows, uddiVersion);
         reg.setConnection(this);
         return reg;
     }

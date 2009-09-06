@@ -31,6 +31,7 @@ import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Key;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
+import javax.xml.registry.infomodel.SpecificationLink;
 
 /**
  * Find RegistryObjects
@@ -41,10 +42,18 @@ import javax.xml.registry.infomodel.ServiceBinding;
 public class Finder
 {
     private BusinessQueryManager bqm;
+    private String uddiVersion;
     
     public Finder(BusinessQueryManager bqm) {
         super();
         this.bqm = bqm;
+        this.uddiVersion = "2.0";
+    }
+    
+    public Finder(BusinessQueryManager bqm, String version) {
+    	super();
+    	this.bqm = bqm;
+    	this.uddiVersion = version;
     }
 
     public Collection findOrganizationsByName(String queryStr) throws JAXRException {
@@ -52,8 +61,11 @@ public class Finder
     	Collection<String> findQualifiers = new ArrayList<String>();
     	findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
     	Collection<String> namePatterns = new ArrayList<String>();
-    	namePatterns.add("%" + queryStr + "%");
-    	
+    	if ("3.0".equals(uddiVersion)) {
+    		namePatterns.add(queryStr);
+    	} else {
+    		namePatterns.add("%" + queryStr + "%");
+    	}
     	// Find based upon qualifier type and values
     	System.out.println("\n-- searching the registry --\n");
         BulkResponse response =
@@ -72,8 +84,11 @@ public class Finder
         Collection<String> findQualifiers = new ArrayList<String>();
         findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
         Collection<String> namePatterns = new ArrayList<String>();
-        namePatterns.add("%" + queryStr + "%");
-        
+        if ("3.0".equals(uddiVersion)) {
+        	namePatterns.add(queryStr);
+        } else {
+        	namePatterns.add("%" + queryStr + "%");
+        }
         // Find based upon qualifier type and values
         System.out.println("\n-- searching the registry --\n");
         BulkResponse response =
@@ -90,7 +105,7 @@ public class Finder
         Collection<String> findQualifiers = new ArrayList<String>();
         findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
         Collection<String> namePatterns = new ArrayList<String>();
-        namePatterns.add("%" + queryStr + "%");
+        namePatterns.add(queryStr);
         
         // Find based upon qualifier type and values
         System.out.println("\n-- searching the registry --\n");
@@ -99,6 +114,9 @@ public class Finder
                     namePatterns,
                     null,
                     null);
+        if ((response == null) || (response.getCollection() == null) || (response.getCollection().size() ==0) ) {
+        	return null;
+        }
         
         return (ClassificationScheme) response.getCollection().iterator().next();
     }
@@ -160,4 +178,35 @@ public class Finder
         return serviceBindings;
     }
 
+    @SuppressWarnings("unchecked")
+    public Collection<ServiceBinding> findServiceBindings(Key serviceKey, Classification classification) throws JAXRException
+    {
+        Collection<ServiceBinding> serviceBindings=null;
+        Collection<String> findQualifiers = new ArrayList<String>();
+        findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
+        Collection<Classification> classifications = new ArrayList<Classification>();
+        classifications.add(classification);
+        BulkResponse bulkResponse = bqm.findServiceBindings(serviceKey,findQualifiers,classifications,null);
+        if (bulkResponse.getStatus()==JAXRResponse.STATUS_SUCCESS){
+            serviceBindings = (Collection<ServiceBinding>) bulkResponse.getCollection();
+        }
+        return serviceBindings;
+    }
+
+    
+    
+    @SuppressWarnings("unchecked")
+    public Collection<ServiceBinding> findServiceBindings(Key serviceKey, SpecificationLink specLink) throws JAXRException
+    {
+        Collection<ServiceBinding> serviceBindings=null;
+        Collection<String> findQualifiers = new ArrayList<String>();
+        findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
+        Collection<SpecificationLink> specifications = new ArrayList<SpecificationLink>();
+        specifications.add(specLink);
+        BulkResponse bulkResponse = bqm.findServiceBindings(serviceKey,findQualifiers,null,specifications);
+        if (bulkResponse.getStatus()==JAXRResponse.STATUS_SUCCESS){
+            serviceBindings = (Collection<ServiceBinding>) bulkResponse.getCollection();
+        }
+        return serviceBindings;
+    }
 }

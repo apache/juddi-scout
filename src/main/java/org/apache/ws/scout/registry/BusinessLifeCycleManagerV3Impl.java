@@ -48,35 +48,16 @@ import javax.xml.registry.infomodel.ServiceBinding;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ws.scout.model.uddi.v2.AssertionStatusItem;
-import org.apache.ws.scout.model.uddi.v2.AssertionStatusReport;
-import org.apache.ws.scout.model.uddi.v2.AuthToken;
-import org.apache.ws.scout.model.uddi.v2.BindingDetail;
-import org.apache.ws.scout.model.uddi.v2.BindingTemplate;
-import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
-import org.apache.ws.scout.model.uddi.v2.BusinessEntity;
-import org.apache.ws.scout.model.uddi.v2.BusinessInfo;
-import org.apache.ws.scout.model.uddi.v2.BusinessService;
-import org.apache.ws.scout.model.uddi.v2.Description;
-import org.apache.ws.scout.model.uddi.v2.DispositionReport;
-import org.apache.ws.scout.model.uddi.v2.ErrInfo;
-import org.apache.ws.scout.model.uddi.v2.KeyedReference;
-import org.apache.ws.scout.model.uddi.v2.Name;
-import org.apache.ws.scout.model.uddi.v2.ObjectFactory;
-import org.apache.ws.scout.model.uddi.v2.PublisherAssertion;
-import org.apache.ws.scout.model.uddi.v2.PublisherAssertions;
-import org.apache.ws.scout.model.uddi.v2.Result;
-import org.apache.ws.scout.model.uddi.v2.ServiceDetail;
-import org.apache.ws.scout.model.uddi.v2.ServiceInfo;
-import org.apache.ws.scout.model.uddi.v2.TModel;
-import org.apache.ws.scout.model.uddi.v2.TModelDetail;
+import org.uddi.api_v3.*;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceImpl;
 import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
+import org.apache.ws.scout.util.ScoutJaxrUddiV3Helper;
 import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
+import org.apache.ws.scout.util.ScoutUddiV3JaxrHelper;
 
 /**
  * Implements JAXR BusinessLifeCycleManager Interface.
@@ -86,7 +67,7 @@ import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  * @author <a href="mailto:tcunning@apache.org">Tom Cunningham</a>
  */
-public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
+public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         implements BusinessLifeCycleManager, Serializable {
 	
 	
@@ -95,7 +76,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     
     private transient ObjectFactory objectFactory = new ObjectFactory();
 	
-    public BusinessLifeCycleManagerImpl(RegistryService registry) {
+    public BusinessLifeCycleManagerV3Impl(RegistryService registry) {
         super(registry);
         if(objectFactory == null)
         	objectFactory = new ObjectFactory();
@@ -256,7 +237,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             
                 Association association = (Association) iter.next();
                 association.getSourceObject();
-                PublisherAssertion pa = ScoutJaxrUddiHelper.getPubAssertionFromJAXRAssociation(association);
+                PublisherAssertion pa = ScoutJaxrUddiV3Helper.getPubAssertionFromJAXRAssociation(association);
                 sarr[currLoc] = pa;
                 currLoc++;
             
@@ -265,7 +246,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 try {
                     bd = (PublisherAssertions) executeOperation(sarr, "SAVE_ASSOCIATION");
                 }
-                catch (RegistryException e) {
+                catch (RegistryV3Exception e) {
                     exceptions.add(new SaveException(e));
                     bulk.setExceptions(exceptions);
                     bulk.setStatus(JAXRResponse.STATUS_FAILURE);
@@ -308,7 +289,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         while (iter.hasNext()) {
             try {
                 TModel en =
-                        ScoutJaxrUddiHelper.getTModelFromJAXRClassificationScheme((ClassificationScheme) iter.next());
+                		ScoutJaxrUddiV3Helper.getTModelFromJAXRClassificationScheme((ClassificationScheme) iter.next());
                 entityarr[currLoc] = en;
                 currLoc++;
             }
@@ -322,7 +303,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         try {
             td = (TModelDetail) executeOperation(entityarr, "SAVE_TMODEL");
         }
-        catch (RegistryException e) {
+        catch (RegistryV3Exception e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
             return bulk;
@@ -356,7 +337,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         while (iter.hasNext()) {
             try {
                 TModel en =
-                        ScoutJaxrUddiHelper.getTModelFromJAXRConcept((Concept) iter.next());
+                	ScoutJaxrUddiV3Helper.getTModelFromJAXRConcept((Concept) iter.next());
                 entityarr[currLoc] = en;
                 currLoc++;
             }
@@ -370,7 +351,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         try {
             td = (TModelDetail) executeOperation(entityarr, "SAVE_TMODEL");
         }
-        catch (RegistryException e) {
+        catch (RegistryV3Exception e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
             return bulk;
@@ -405,7 +386,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         while (iter.hasNext()) {
             try {
                 BusinessEntity en =
-                        ScoutJaxrUddiHelper.getBusinessEntityFromJAXROrg((Organization) iter.next());
+                	ScoutJaxrUddiV3Helper.getBusinessEntityFromJAXROrg((Organization) iter.next());
                 entityarr[currLoc] = en;
                 currLoc++;
             }
@@ -419,7 +400,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         try {
             bd = (BusinessDetail) executeOperation(entityarr, "SAVE_ORG");
         }
-        catch (RegistryException e) {
+        catch (RegistryV3Exception e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
             return bulk;
@@ -453,7 +434,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         int currLoc = 0;
         while (iter.hasNext()) {
             try {
-                BindingTemplate bs = ScoutJaxrUddiHelper.getBindingTemplateFromJAXRSB((ServiceBinding) iter.next());
+                BindingTemplate bs = ScoutJaxrUddiV3Helper.getBindingTemplateFromJAXRSB((ServiceBinding) iter.next());
                 sbarr[currLoc] = bs;
                 currLoc++;
             }
@@ -466,7 +447,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         try {
             bd = (BindingDetail) executeOperation(sbarr, "SAVE_SERVICE_BINDING");
         }
-        catch (RegistryException e) {
+        catch (RegistryV3Exception e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
             return bulk;
@@ -500,7 +481,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         int currLoc = 0;
         while (iter.hasNext()) {
             try {
-                BusinessService bs = ScoutJaxrUddiHelper.getBusinessServiceFromJAXRService((Service) iter.next());
+                BusinessService bs = ScoutJaxrUddiV3Helper.getBusinessServiceFromJAXRService((Service) iter.next());
                 sarr[currLoc] = bs;
                 currLoc++;
             }
@@ -513,7 +494,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         try {
             sd = (ServiceDetail) executeOperation(sarr, "SAVE_SERVICE");
         }
-        catch (RegistryException e) {
+        catch (RegistryV3Exception e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
             return bulk;
@@ -554,13 +535,13 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     //Protected Methods
     protected Object executeOperation(Object dataarray, String op)
-            throws RegistryException, JAXRException {
+            throws RegistryV3Exception, JAXRException {
         if (registry == null) {
             throw new IllegalStateException("No registry");
         }
 
-        IRegistry ireg =  (IRegistry) registry.getRegistry();
-
+        IRegistryV3 ireg = (IRegistryV3) registry.getRegistry();
+        
         ConnectionImpl connection = registry.getConnection();
         AuthToken token = getAuthToken(connection, ireg);
         if (token == null) {
@@ -603,7 +584,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
             for(int i=0;i<len;i++)
             {
                String keystr = ((String[])dataarray)[i];
-               paarr[i] = ScoutJaxrUddiHelper.getPubAssertionFromJAXRAssociationKey(keystr);
+               paarr[i] = ScoutJaxrUddiV3Helper.getPubAssertionFromJAXRAssociationKey(keystr);
             }
             regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), paarr);
         }
@@ -617,7 +598,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return regobj;
     }
 
-    private void clearPublisherAssertions( String authinfo,IRegistry ireg)
+    private void clearPublisherAssertions( String authinfo,IRegistryV3 ireg)
     {
        Vector<PublisherAssertion> pasvect  = null;
        PublisherAssertion[] pasarr  = null;
@@ -679,7 +660,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         	  }
           }
        }
-       catch (RegistryException e)
+       catch (RegistryV3Exception e)
        {
           throw new RuntimeException(e);
        }
@@ -689,7 +670,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
              {
                 ireg.deletePublisherAssertions(authinfo, pasarr);
              }
-             catch (RegistryException e)
+             catch (RegistryV3Exception e)
              { 
                 log.debug("Ignoring exception " + e.getMessage(),e);
              }
@@ -739,7 +720,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                 }
             }
         }
-        catch (RegistryException regExcept) {
+        catch (RegistryV3Exception regExcept) {
 
             /*
              * jUDDI (and prollie others) throw an exception on any fault in
@@ -772,7 +753,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
      * @return auth token
      * @throws JAXRException
      */
-    private AuthToken getAuthToken(ConnectionImpl connection, IRegistry ireg)
+    private AuthToken getAuthToken(ConnectionImpl connection, IRegistryV3 ireg)
             throws JAXRException {
         Set creds = connection.getCredentials();
         String username = "", pwd = "";
@@ -824,9 +805,9 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
     		
     	}return pa;
     }
-
+    
     Organization createOrganization(BusinessDetail bizDetail) throws JAXRException {
-        return ScoutUddiJaxrHelper.getOrganization(bizDetail, this);
+        return ScoutUddiV3JaxrHelper.getOrganization(bizDetail, this);
     }    
     
     Organization createOrganization(BusinessInfo bizInfo) throws JAXRException {

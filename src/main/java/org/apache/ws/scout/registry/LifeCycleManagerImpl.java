@@ -18,7 +18,6 @@ package org.apache.ws.scout.registry;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 
 import javax.activation.DataHandler;
@@ -51,11 +50,6 @@ import javax.xml.registry.infomodel.SpecificationLink;
 import javax.xml.registry.infomodel.TelephoneNumber;
 import javax.xml.registry.infomodel.User;
 
-import org.apache.ws.scout.model.uddi.v2.BusinessDetail;
-import org.apache.ws.scout.model.uddi.v2.BusinessInfo;
-import org.apache.ws.scout.model.uddi.v2.Description;
-import org.apache.ws.scout.model.uddi.v2.Name;
-import org.apache.ws.scout.model.uddi.v2.ServiceInfo;
 import org.apache.ws.scout.registry.infomodel.AssociationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationImpl;
 import org.apache.ws.scout.registry.infomodel.ClassificationSchemeImpl;
@@ -75,7 +69,6 @@ import org.apache.ws.scout.registry.infomodel.SlotImpl;
 import org.apache.ws.scout.registry.infomodel.SpecificationLinkImpl;
 import org.apache.ws.scout.registry.infomodel.TelephoneNumberImpl;
 import org.apache.ws.scout.registry.infomodel.UserImpl;
-import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 
 /**
  * Implements JAXR LifeCycleManager Interface
@@ -449,45 +442,4 @@ public abstract class LifeCycleManagerImpl implements LifeCycleManager {
         throw new UnsupportedCapabilityException();
     }
 
-    Organization createOrganization(BusinessInfo bizInfo) throws JAXRException {
-        String key = bizInfo.getBusinessKey();
-        List<Name> names = bizInfo.getName(); 
-        
-        List<Description> descriptions = bizInfo.getDescription();
-        List<ServiceInfo> serviceInfos = bizInfo.getServiceInfos().getServiceInfo();
-        
-        OrganizationImpl org = new OrganizationImpl(this);
-        org.setKey(createKey(key));
-        if (names != null && names.size() > 0) {
-            org.setName(createInternationalString(names.get(0).getValue()));
-        }
-        if (descriptions != null && descriptions.size() > 0) {
-            org.setDescription(createInternationalString(descriptions.get(0).getValue()));
-        }
-        if (serviceInfos != null && serviceInfos.size() > 0) {
-            List<Service> services = new ArrayList<Service>(serviceInfos.size());
-            for (int i = 0; i < serviceInfos.size(); i++) {
-                ServiceInfo serviceInfo = serviceInfos.get(i);
-                services.add(createService(serviceInfo));
-            }
-            org.addServices(services);
-        }
-
-        return org;
-    }
-
-    Organization createOrganization(BusinessDetail bizDetail) throws JAXRException {
-        return ScoutUddiJaxrHelper.getOrganization(bizDetail, this);
-    }
-
-    Service createService(ServiceInfo serviceInfo) throws JAXRException {
-        String key = serviceInfo.getServiceKey();
-        List<Name> names = serviceInfo.getName();
-        ServiceImpl service = new ServiceImpl(this);
-        service.setKey(createKey(key));
-        if (names != null && names.size() > 0) {
-            service.setName(createInternationalString(names.get(0).getValue()));
-        }
-        return service;
-    }
 }

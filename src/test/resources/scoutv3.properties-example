@@ -1,0 +1,36 @@
+########################################################################################################
+# TRANSPORT
+########################################################################################################
+#local transport
+#inquery.uri     =org.apache.juddi.registry.local.InquiryService#inquire
+#publish.uri     =org.apache.juddi.registry.local.PublishService#publish
+#transport.class =org.apache.ws.scout.transport.LocalTransport
+#rmi transport        
+#inquery.uri     =jnp://localhost:1099/InquiryService?org.apache.juddi.registry.rmi.Inquiry#inquire
+#publish.uri     =jnp://localhost:1099/PublishService?org.apache.juddi.registry.rmi.Publish#publish
+#transport.class =org.apache.ws.scout.transport.RMITransport
+#axis transport
+inquery.uri     =http://localhost:8080/juddi/services/inquiry
+publish.uri     =http://localhost:8080/juddi/services/publish
+security.uri	=http://localhost:8080/juddi/services/security
+transport.class =org.apache.ws.scout.transport.AxisTransport
+scout.proxy.uddiVersion=3.0
+scout.proxy.uddiNamespace=urn:uddi-org:api_v3
+#axis2 transport
+#inquery.uri     =http://localhost:8080/juddi/inquiry
+#publish.uri     =http://localhost:8080/juddi/publish
+#transport.class =org.apache.ws.scout.transport.Axis2Transport
+#soap transport
+#inquery.uri     =http://kstam.int.atl.jboss.com:9901/uddi/inquiry_v2
+#publish.uri     =http://kstam.int.atl.jboss.com:9901/uddi/publish_v2
+#transport.class =org.apache.ws.scout.transport.AxisTransport
+#userid          =Administrator
+#password        =password
+#
+########################################################################################################
+# SECURITY
+########################################################################################################
+userid          =root
+password        =root
+
+javax.xml.registry.uddi.maxRows=10

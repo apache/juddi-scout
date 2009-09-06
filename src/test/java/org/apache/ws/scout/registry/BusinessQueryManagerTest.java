@@ -13,7 +13,7 @@ public class BusinessQueryManagerTest extends TestCase {
 
     public void testFindClassificationSchemeByName() throws JAXRException {
 
-        BusinessQueryManager blm = new BusinessQueryManagerImpl(new RegistryServiceImpl(null, null, -1));
+        BusinessQueryManager blm = new BusinessQueryManagerV3Impl(new RegistryServiceImpl(null, null, -1, "3.0"));
 
         ClassificationScheme scheme = blm.findClassificationSchemeByName(null, "AssociationType");
         assertNotNull(scheme);

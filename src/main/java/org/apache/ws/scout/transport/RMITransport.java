@@ -47,7 +47,7 @@ public class RMITransport implements Transport
    * Sends an element and returns an element.
    */
   public Element send(Element request,URI endpointURI)
-    throws RegistryException
+    throws TransportException
   {    
     Element response = null;
 
@@ -88,7 +88,7 @@ public class RMITransport implements Transport
     	response = (Element) node.getFirstChild();
     }
     catch (Exception ex) {
-      throw new RegistryException(ex);
+      throw new TransportException(ex);
     }
     if (log.isDebugEnabled()) {
     	log.debug("\nResponse message:\n" + XMLUtils.convertNodeToXMLString(response));
@@ -100,7 +100,7 @@ public class RMITransport implements Transport
    * Sends an XML, responds with an XML.
    */
   public String send(String request,URI endpointURI)
-    throws RegistryException
+    throws TransportException
   {    
     String response = null;
     log.debug("\nRequest message:\n" + request);
@@ -111,7 +111,7 @@ public class RMITransport implements Transport
         Element element = document.getDocumentElement();
         response= XMLUtils.convertNodeToXMLString(send(element, endpointURI));
     } catch (Exception ex) { 
-    	throw new RegistryException(ex);
+    	throw new TransportException(ex);
     }
     log.debug("\nResponse message:\n" + response);
     return response;

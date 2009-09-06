@@ -260,6 +260,6 @@ public class LifeCycleManagerTest extends TestCase {
     }
     protected void setUp() throws Exception {
         super.setUp();
-        manager = new ConcreteLifeCycleManager(new RegistryServiceImpl(null, null, -1));
+        manager = new ConcreteLifeCycleManager(new RegistryServiceImpl(null, null, -1, "3.0"));
     }
 }

@@ -36,12 +36,14 @@ import javax.xml.registry.UnsupportedCapabilityException;
  *
  * @author Anil Saldhana  <anil@apache.org>
  * @author Jeremy Boynes  <jboynes@apache.org>
+ * @author Tom Cunningham <tcunning@apache.org>
  */
 public class ConnectionFactoryImpl extends ConnectionFactory implements Serializable
 {
     private static final long serialVersionUID = 1L;
     private static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
     private static final String LIFECYCLEMANAGER_PROPERTY = "javax.xml.registry.lifeCycleManagerURL";
+    private static final String SECURITYMANAGER_PROPERTY = "javax.xml.registry.securityManagerURL";
     private static final String SEMANTICEQUIVALENCES_PROPERTY = "javax.xml.registry.semanticEquivalences";
     private static final String POSTALADDRESSSCHEME_PROPERTY = "javax.xml.registry.postalAddressScheme";
     private static final String AUTHENTICATIONMETHOD_PROPERTY = "javax.xml.registry.security.authenticationMethod";
@@ -49,11 +51,14 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
 
     private String queryManagerURL;
     private String lifeCycleManagerURL;
+    private String securityManagerURL;
     private String transportClass;
     private String semanticEquivalences;
     private String authenticationMethod;
     private Integer maxRows;
     private String postalAddressScheme;
+	private String uddiNamespace;
+	private String uddiVersion;
 
     /**
      * Public no-arg constructor so that this ConnectionFactory can be
@@ -71,6 +76,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         }
         URI queryManager;
         URI lifeCycleManager;
+        URI securityManager = null;
         try
         {
             queryManager = new URI(queryManagerURL);
@@ -85,7 +91,16 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         {
             throw new InvalidRequestException("Invalid lifeCycleManagerURL: " + lifeCycleManagerURL, e);
         }
-        return new ConnectionImpl(queryManager, lifeCycleManager, transportClass, null, maxRows == null ? -1 : maxRows.intValue());
+        try
+        {      
+        	if (securityManagerURL != null) {
+        		securityManager = new URI(securityManagerURL);
+        	}
+        } catch (URISyntaxException e) {
+        	securityManager = null;
+        }
+        	return new ConnectionImpl(queryManager, lifeCycleManager, securityManager, transportClass, null, maxRows == null ? -1 : maxRows.intValue(),
+                               uddiNamespace, uddiVersion);
     }
 
     public FederatedConnection createFederatedConnection(Collection collection) throws JAXRException
@@ -111,6 +126,10 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         {
             props.put(LIFECYCLEMANAGER_PROPERTY, lifeCycleManagerURL);
         }
+        if (securityManagerURL != null)
+        {
+        	props.put(SECURITYMANAGER_PROPERTY, securityManagerURL);
+        }
         if (semanticEquivalences != null)
         {
             props.put(SEMANTICEQUIVALENCES_PROPERTY, semanticEquivalences);
@@ -127,6 +146,13 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         {
             props.put(MAXROWS_PROPERTY, maxRows.toString());
         }
+        if (uddiNamespace != null) {
+        	props.put(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, uddiNamespace);
+        }
+        if (uddiVersion != null) {
+        	props.put(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, uddiVersion);
+        }
+
         return props;
     }
 
@@ -139,10 +165,15 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
     {
         queryManagerURL = properties.getProperty(QUERYMANAGER_PROPERTY);
         lifeCycleManagerURL = properties.getProperty(LIFECYCLEMANAGER_PROPERTY);
+        securityManagerURL = properties.getProperty(SECURITYMANAGER_PROPERTY);
+
         transportClass = properties.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
         semanticEquivalences = properties.getProperty(SEMANTICEQUIVALENCES_PROPERTY);
         authenticationMethod = properties.getProperty(AUTHENTICATIONMETHOD_PROPERTY);
         postalAddressScheme = properties.getProperty(POSTALADDRESSSCHEME_PROPERTY);
+        uddiVersion = properties.getProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME);
+        uddiNamespace = properties.getProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME);
+
         String val = properties.getProperty(MAXROWS_PROPERTY);
         maxRows = (val == null) ? null : Integer.valueOf(val);
     }

@@ -106,9 +106,19 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
             
             System.out.println("\nCreating service binding...\n");
             Key sbKey = createServiceBinding(tmpSvc);
+                       
+            
+            SpecificationLink specLink = blm.createSpecificationLink();            
+            Concept concept = null;
+            if ("3.0".equals(uddiversion)) {
+            	concept = (Concept)bqm.getRegistryObject("uddi:uddi.org:findqualifier:orlikekeys", BusinessLifeCycleManager.CONCEPT);
+            } else {
+            	concept = (Concept)bqm.getRegistryObject("uuid:AD61DE98-4DB8-31B2-A299-A2373DC97212",BusinessLifeCycleManager.CONCEPT);
+            }
+            specLink.setSpecificationObject(concept);
             
             //find serviceBinding
-            Collection<ServiceBinding> serviceBindings2 = finder.findServiceBindings(tmpSvcKey );
+            Collection<ServiceBinding> serviceBindings2 = finder.findServiceBindings(tmpSvcKey, specLink);
             @SuppressWarnings("unused")
 			ServiceBinding serviceBinding2 = serviceBindings2.iterator().next();
             
@@ -141,11 +151,16 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
         
         RegistryService rs = connection.getRegistryService();
         bqm = rs.getBusinessQueryManager();
-        Concept concept = (Concept)bqm.getRegistryObject("uuid:AD61DE98-4DB8-31B2-A299-A2373DC97212",BusinessLifeCycleManager.CONCEPT);
+        Concept concept = null;
+        if ("3.0".equals(uddiversion)) {        
+        	concept = (Concept)bqm.getRegistryObject("uddi:uddi.org:findqualifier:orlikekeys", BusinessLifeCycleManager.CONCEPT);
+        } else {
+        	concept = (Concept)bqm.getRegistryObject("uuid:AD61DE98-4DB8-31B2-A299-A2373DC97212",BusinessLifeCycleManager.CONCEPT);
+        }
+        
         specLink.setSpecificationObject(concept);
         
         serviceBinding.addSpecificationLink(specLink);
-        
         ArrayList<ServiceBinding> serviceBindings = new ArrayList<ServiceBinding>();
         serviceBindings.add(serviceBinding);
 
