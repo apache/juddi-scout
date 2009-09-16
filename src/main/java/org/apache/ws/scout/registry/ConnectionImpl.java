@@ -53,12 +53,21 @@ public class ConnectionImpl implements Connection, Serializable
          * accordingly.
          */
 		this.uddiVersion = uddiVersion;
-
+		if (uddiVersion != null) {
+			prop.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, uddiVersion);
+		} else {
+    		prop.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, RegistryImpl.DEFAULT_UDDI_VERSION);
+		}
+			
+		if (uddiNamespace!=null) {
+    		prop.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, uddiNamespace);
+		} else {
+			prop.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, RegistryImpl.DEFAULT_UDDI_NAMESPACE);
+		}
+		
         if (transportClass!=null) {
     		prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transportClass);
-    		prop.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, uddiNamespace);
-    		prop.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, uddiVersion);
-    	} else {
+        } else {
     		String transport = SecurityActions.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
     		if (transport != null) {
     			prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transport);
