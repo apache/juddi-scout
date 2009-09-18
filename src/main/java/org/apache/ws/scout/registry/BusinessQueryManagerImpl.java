@@ -178,19 +178,24 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             for (PublisherAssertion pas : publisherAssertionList) {
                 String sourceKey = pas.getFromKey();
                 String targetKey = pas.getToKey();
-                Collection<Key> orgcol = new ArrayList<Key>();
-                orgcol.add(new KeyImpl(sourceKey));
-                orgcol.add(new KeyImpl(targetKey));
-                BulkResponse bl = getRegistryObjects(orgcol, LifeCycleManager.ORGANIZATION);
-                Association asso = ScoutUddiJaxrHelper.getAssociation(bl.getCollection(),
-                                             registryService.getBusinessLifeCycleManager());
-                KeyedReference keyr = pas.getKeyedReference();
-                Concept c = new ConceptImpl(getRegistryService().getBusinessLifeCycleManager());
-                c.setName(new InternationalStringImpl(keyr.getKeyName()));
-                c.setKey( new KeyImpl(keyr.getTModelKey()) );
-                c.setValue(keyr.getKeyValue());
-                asso.setAssociationType(c);
-                col.add(asso);
+				
+				if ((sourceObjectId==null || sourceObjectId.equals(sourceKey))
+					&& (targetObjectId==null || targetObjectId.equals(targetKey))) {
+						Collection<Key> orgcol = new ArrayList<Key>();
+						orgcol.add(new KeyImpl(sourceKey));
+						orgcol.add(new KeyImpl(targetKey));
+						BulkResponse bl = getRegistryObjects(orgcol, LifeCycleManager.ORGANIZATION);
+						Association asso = ScoutUddiJaxrHelper.getAssociation(bl.getCollection(),
+							registryService.getBusinessLifeCycleManager());
+						KeyedReference keyr = pas.getKeyedReference();
+						Concept c = new ConceptImpl(getRegistryService().getBusinessLifeCycleManager());
+						c.setName(new InternationalStringImpl(keyr.getKeyName()));
+						c.setKey( new KeyImpl(keyr.getTModelKey()) );
+						c.setValue(keyr.getKeyValue());
+						asso.setAssociationType(c);
+						col.add(asso);
+				}
+
             }
             return new BulkResponseImpl(col);
         } catch (RegistryException e)
@@ -840,14 +845,11 @@ public class BusinessQueryManagerImpl implements BusinessQueryManager
             {
             	RegisteredInfo ri = registry.getRegisteredInfo(auth.getAuthInfo());
                 if (ri != null) {
-                    BusinessInfos infos = ri.getBusinessInfos();
-                    if (infos != null) {
-                        List<BusinessInfo> bizInfoList = infos.getBusinessInfo();
-                        for (BusinessInfo businessInfo: bizInfoList) {
-                            BusinessDetail detail = registry.getBusinessDetail(businessInfo.getBusinessKey());
+						for (String key:keys) {
+							BusinessDetail detail = registry.getBusinessDetail(key);
                             col.add(((BusinessLifeCycleManagerImpl)registryService.getLifeCycleManagerImpl()).createOrganization(detail));
                         }
-                    }
+                    
                 }
             } catch (RegistryException e) {
                     throw new JAXRException(e.getLocalizedMessage());

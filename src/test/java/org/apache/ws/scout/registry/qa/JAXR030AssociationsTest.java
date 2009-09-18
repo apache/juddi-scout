@@ -66,7 +66,8 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 	private static String tempSrcOrgName = "Apache Source Org -- APACHE SCOUT TEST";
 	private static String tempTgtOrgName = "Apache Target Org -- APACHE SCOUT TEST";
 
-	Organization sOrg, tOrg;
+	private Organization sOrg=null;
+	private Organization tOrg=null;
 
     @Before
 	public void setUp() {
@@ -89,10 +90,21 @@ public class JAXR030AssociationsTest extends BaseTestCase {
     @Test
 	public void testPublishFindAndDeleteAssociation() {
 		login();
+		
 		try {
+			
 			RegistryService rs = connection.getRegistryService();
 			bqm = rs.getBusinessQueryManager();
 			blm = rs.getBusinessLifeCycleManager();
+			
+			//deleting any pre-exisiting organizations
+			ArrayList<Organization> orgs = findTempOrgs();
+			for (Organization organization : orgs) {
+				Collection<Key> keys = new ArrayList<Key>();
+				keys.add(organization.getKey());
+				blm.deleteOrganizations(keys);
+			}
+			
             Creator creator = new Creator(blm);
 
 			System.out.println("\nCreating temporary organizations...\n");
@@ -104,22 +116,49 @@ public class JAXR030AssociationsTest extends BaseTestCase {
             blm.saveOrganizations(organizations);
            
 			System.out.println("\nSearching for newly created organizations...\n");
-			ArrayList<Organization> orgs = findTempOrgs();
-			sOrg = orgs.get(0);
-			tOrg = orgs.get(1);
+			ArrayList<Organization> newOrgs = findTempOrgs();
+			sOrg = newOrgs.get(0);
+			tOrg = newOrgs.get(1);
 
 			System.out.println("\nCreating association...\n");
 			createAssociation(sOrg, tOrg);
 
 			// All created ... now try to delete.
-			findAndDeleteAssociation();
-
-		} catch (JAXRException e) {
+			String associationID = findAndDeleteAssociation();
+			
+			//Let us look for associations now
+			BulkResponse associationResp = 
+				bqm.findCallerAssociations(null, Boolean.TRUE, Boolean.TRUE, null);
+			
+			if(associationResp.getExceptions() != null)
+			{
+				System.out.println(associationResp.getExceptions());
+				fail("Association lookup failed");
+			}
+			else
+			{
+				Collection retAssocs = associationResp.getCollection();
+                if (retAssocs.size() == 0)
+                {
+                    //Pass
+                } else
+                {
+                   Iterator iterAss = retAssocs.iterator();
+                   while(iterAss.hasNext())
+                   {
+                      Association assc = (Association) iterAss.next();
+                      if(assc.getKey().getId().equals(associationID)) {
+                    	  System.out.println("found: " + associationID);
+                          fail("Deleted Association found");
+                      }
+                   }
+                } 
+			}
+			 
+		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
-		} finally {
-
-		}
+		} 
 	}
     
 	private void createAssociation(Organization sOrg, Organization tOrg)
@@ -152,8 +191,10 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 		}
 	}
 
-	private void findAndDeleteAssociation() throws JAXRException {
+	private String findAndDeleteAssociation() throws JAXRException {
 
+		String id = null;
+		
 		String sOrgID = sOrg.getKey().getId();
 		String tOrgID = tOrg.getKey().getId();
 
@@ -188,11 +229,13 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 				// Print spacer between messages
 				System.out.println(" --- ");
 
+				id = a.getKey().getId();
 				deleteAssociation(a.getKey());
 
 				System.out.println("\n ============================== \n");
-			}
+			} 
 		}
+		return id;
 	}
 
 	private void deleteAssociation(Key key) throws JAXRException {
@@ -222,9 +265,7 @@ public class JAXR030AssociationsTest extends BaseTestCase {
 
 	private ArrayList<Organization> findTempOrgs() throws JAXRException {
 
-		ArrayList<Organization> toReturn = new ArrayList<Organization>(2);
-        toReturn.add(null);
-        toReturn.add(null);
+		ArrayList<Organization> toReturn = new ArrayList<Organization>();
 
 		// Define find qualifiers and name patterns
 		Collection<String> findQualifiers = new ArrayList<String>();

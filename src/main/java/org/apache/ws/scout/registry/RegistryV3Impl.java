@@ -18,6 +18,7 @@ package org.apache.ws.scout.registry;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
@@ -35,6 +36,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,6 +44,8 @@ import org.apache.commons.logging.LogFactory;
 import org.uddi.api_v3.*;
 import org.apache.ws.scout.transport.Transport;
 import org.apache.ws.scout.transport.TransportException;
+
+import org.apache.ws.scout.util.XMLUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -299,7 +303,14 @@ public class RegistryV3Impl implements IRegistryV3 {
 
         JAXBElement<?> uddiResponse = null;
 	    try {
-	        uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(response);
+	    	String xml = XMLUtils.convertNodeToXMLString(response);
+	        log.debug("Response is: " + xml);
+	    	
+		StringReader reader = new StringReader(xml);
+		uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(new StreamSource(reader));
+	    	//It is probably faster not to go to a String, but JAXB has issues with this
+	        //uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(response);
+
 	    } catch (JAXBException xmle) {
 	        throw (new RegistryV3Exception(xmle));
 	    }

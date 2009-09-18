@@ -36,7 +36,6 @@ import javax.xml.registry.infomodel.Organization;
 import org.apache.ws.scout.BaseTestCase;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -145,7 +144,7 @@ public class OwnershipTest extends BaseTestCase {
         }
     }
     
-    @Test @Ignore
+    @Test
 	public void testGetRegistryObjects() {
 
     	login();
@@ -158,36 +157,40 @@ public class OwnershipTest extends BaseTestCase {
             if (br.getStatus() == JAXRResponse.STATUS_SUCCESS)
             {
             	System.out.println("BR.size : " + br.getCollection().size());
-            	Collection coll = br.getCollection();
-            	Iterator iterator = coll.iterator();
+            	Collection coll1 = br.getCollection();
+            	Iterator iterator = coll1.iterator();
+            	Collection<String> orgKeys = new ArrayList<String>();
             	while (iterator.hasNext()) {
             		Organization org = (Organization) iterator.next();
             		System.out.println("BR " + org.getName().getValue(Locale.US));
+            		orgKeys.add(org.getKey().getId());
             	}
 
             	if (br.getCollection().size() == 0) {
             		fail("Found no organizations for user 1");
             	}
+            	
+            	BulkResponse br2 = bqm2.getRegistryObjects(LifeCycleManager.ORGANIZATION);
+                if (br2.getStatus() == JAXRResponse.STATUS_SUCCESS)
+                {
+                	Collection coll = br2.getCollection();
+                	Iterator iterator2 = coll.iterator();
+                	while (iterator2.hasNext()) {
+                		Organization org = (Organization) iterator2.next();
+                		System.out.println("BR2 " + org.getName().getValue(Locale.US));
+                		if (orgKeys.contains(org.getKey().getId())) {
+                			fail("Should not find organizations from user1");
+                		}
+                		
+                	}
+                }        	
+            	
+            	deleteTempOrg(org1.getKey());
+            	deleteTempOrg(org2.getKey());
 
             }
         	
-        	BulkResponse br2 = bqm2.getRegistryObjects(LifeCycleManager.ORGANIZATION);
-            if (br2.getStatus() == JAXRResponse.STATUS_SUCCESS)
-            {
-            	if (br2.getCollection().size() != 0) {
-            		fail("There should be no found organizations for user 2, found "
-            				+ br2.getCollection().size());
-            	}
-            	Collection coll = br2.getCollection();
-            	Iterator iterator = coll.iterator();
-            	while (iterator.hasNext()) {
-            		Organization org = (Organization) iterator.next();
-            		System.out.println("BR2 " + org.getName().getValue(Locale.US));
-            	}
-            }        	
         	
-        	deleteTempOrg(org1.getKey());
-        	deleteTempOrg(org2.getKey());
         
 		} catch (JAXRException e) {
 			e.printStackTrace();

@@ -619,81 +619,42 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
     private void clearPublisherAssertions( String authinfo,IRegistry ireg)
     {
-       Vector<PublisherAssertion> pasvect  = null;
-       PublisherAssertion[] pasarr  = null;
+       Vector<PublisherAssertion> pasvect  = new Vector<PublisherAssertion>();
+       
        try
        {
           AssertionStatusReport report = ireg.getAssertionStatusReport(authinfo,"status:complete");
           List<AssertionStatusItem> assertionStatusItemList = report.getAssertionStatusItem();
-          AssertionStatusItem[] assertionStatusItemArr = 
-        	  new AssertionStatusItem[assertionStatusItemList.size()];
+          for (AssertionStatusItem assertionStatusItem : assertionStatusItemList) {
+              pasvect.add(this.getPublisherAssertion(assertionStatusItem));
+		  }
 
-          int len = assertionStatusItemArr != null? assertionStatusItemArr.length : 0;
-          for (int i = 0; i < len; i++)
-          {
-                AssertionStatusItem asi = assertionStatusItemArr[i];
-               /* String sourceKey = asi.getFromKey();
-                String targetKey = asi.getToKey();
-                PublisherAssertion pa = new PublisherAssertion();
-                pa.setFromKey(sourceKey);
-                pa.setToKey(targetKey);
-                KeyedReference keyr = asi.getKeyedReference();
-                pa.setKeyedReference(keyr);
-                pa.setTModelKey(keyr.getTModelKey());
-                pa.setKeyName(keyr.getKeyName());
-                pa.setKeyValue(keyr.getKeyValue());
-                if(pasvect == null) pasvect = new Vector(len);
-                pasvect.add(pa);*/
-                if(pasvect == null) pasvect = new Vector<PublisherAssertion>(len);
-                pasvect.add(this.getPublisherAssertion(asi));
-           }
           report = ireg.getAssertionStatusReport(authinfo,"status:toKey_incomplete");
-          assertionStatusItemArr = report.getAssertionStatusItem().toArray(assertionStatusItemArr);
-
-          len = assertionStatusItemArr != null? assertionStatusItemArr.length : 0;
-          for (int i = 0; i < len; i++)
-          {
-                AssertionStatusItem asi = (AssertionStatusItem) assertionStatusItemArr[i];
-                if(pasvect == null) pasvect = new Vector<PublisherAssertion>(len);
-                pasvect.add(this.getPublisherAssertion(asi));
-          }
+          assertionStatusItemList = report.getAssertionStatusItem();
+          for (AssertionStatusItem assertionStatusItem : assertionStatusItemList) {
+              pasvect.add(this.getPublisherAssertion(assertionStatusItem));
+		  }
 
           report = ireg.getAssertionStatusReport(authinfo,"status:fromKey_incomplete");
-          assertionStatusItemArr = report.getAssertionStatusItem().toArray(assertionStatusItemArr);
+          assertionStatusItemList = report.getAssertionStatusItem();
+          for (AssertionStatusItem assertionStatusItem : assertionStatusItemList) {
+              pasvect.add(this.getPublisherAssertion(assertionStatusItem));
+		  }
 
-          len = assertionStatusItemArr != null? assertionStatusItemArr.length : 0;
-          for (int i = 0; i < len; i++)
-          {
-                AssertionStatusItem asi = (AssertionStatusItem) assertionStatusItemArr[i];
-                if(pasvect == null) pasvect = new Vector<PublisherAssertion>(len);
-                pasvect.add(this.getPublisherAssertion(asi));
-          }
-
-          if (pasvect != null) {
-        	  pasarr = new PublisherAssertion[pasvect.size()];
-        	  Iterator iter = pasvect.iterator();
-        	  int pasarrPos = 0;
-        	  while (iter.hasNext()) {
-        		  pasarr[pasarrPos] = ((PublisherAssertion) iter.next());
-        		  pasarrPos++;
-        	  }
+          if (pasvect.size() > 0) {
+        	  PublisherAssertion[] pasarr = new PublisherAssertion[pasvect.size()];
+        	  int i=0;
+              for (PublisherAssertion publisherAssertion : pasvect) {
+				  pasarr[i++] = publisherAssertion;
+			  }
+        	  ireg.deletePublisherAssertions(authinfo, pasarr);
           }
        }
        catch (RegistryException e)
        {
           throw new RuntimeException(e);
        }
-
-          if(pasarr != null && pasarr.length > 0)
-             try
-             {
-                ireg.deletePublisherAssertions(authinfo, pasarr);
-             }
-             catch (RegistryException e)
-             { 
-                log.debug("Ignoring exception " + e.getMessage(),e);
-             }
-       }
+    }
 
 
 

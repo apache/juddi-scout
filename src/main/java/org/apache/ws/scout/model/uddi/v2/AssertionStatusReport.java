@@ -14,6 +14,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -43,7 +44,8 @@ import javax.xml.bind.annotation.XmlType;
     "assertionStatusItem"
 })
 public class AssertionStatusReport {
-
+	
+	@XmlElement(required = true)
     protected List<AssertionStatusItem> assertionStatusItem;
     @XmlAttribute(required = true)
     protected String generic;
