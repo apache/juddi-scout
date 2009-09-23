@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -40,17 +39,58 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.uddi.api_v3.*;
 import org.apache.ws.scout.transport.Transport;
 import org.apache.ws.scout.transport.TransportException;
-
 import org.apache.ws.scout.util.XMLUtils;
-
+import org.uddi.api_v3.AssertionStatusReport;
+import org.uddi.api_v3.AuthToken;
+import org.uddi.api_v3.BindingDetail;
+import org.uddi.api_v3.BindingTemplate;
+import org.uddi.api_v3.BusinessDetail;
+import org.uddi.api_v3.BusinessEntity;
+import org.uddi.api_v3.BusinessList;
+import org.uddi.api_v3.BusinessService;
+import org.uddi.api_v3.CategoryBag;
+import org.uddi.api_v3.CompletionStatus;
+import org.uddi.api_v3.DeleteBinding;
+import org.uddi.api_v3.DeleteBusiness;
+import org.uddi.api_v3.DeletePublisherAssertions;
+import org.uddi.api_v3.DeleteService;
+import org.uddi.api_v3.DeleteTModel;
+import org.uddi.api_v3.DiscoveryURLs;
+import org.uddi.api_v3.DispositionReport;
+import org.uddi.api_v3.FindBinding;
+import org.uddi.api_v3.FindBusiness;
+import org.uddi.api_v3.FindQualifiers;
+import org.uddi.api_v3.FindService;
+import org.uddi.api_v3.FindTModel;
+import org.uddi.api_v3.GetAssertionStatusReport;
+import org.uddi.api_v3.GetAuthToken;
+import org.uddi.api_v3.GetBusinessDetail;
+import org.uddi.api_v3.GetPublisherAssertions;
+import org.uddi.api_v3.GetRegisteredInfo;
+import org.uddi.api_v3.GetServiceDetail;
+import org.uddi.api_v3.GetTModelDetail;
+import org.uddi.api_v3.IdentifierBag;
+import org.uddi.api_v3.Name;
+import org.uddi.api_v3.ObjectFactory;
+import org.uddi.api_v3.PublisherAssertion;
+import org.uddi.api_v3.PublisherAssertions;
+import org.uddi.api_v3.PublisherAssertionsResponse;
+import org.uddi.api_v3.RegisteredInfo;
+import org.uddi.api_v3.SaveBinding;
+import org.uddi.api_v3.SaveBusiness;
+import org.uddi.api_v3.SaveService;
+import org.uddi.api_v3.SaveTModel;
+import org.uddi.api_v3.ServiceDetail;
+import org.uddi.api_v3.ServiceList;
+import org.uddi.api_v3.SetPublisherAssertions;
+import org.uddi.api_v3.TModel;
+import org.uddi.api_v3.TModelBag;
+import org.uddi.api_v3.TModelDetail;
+import org.uddi.api_v3.TModelList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -186,14 +226,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 		
 		try
 		{
-			JAXBContext context = JAXBContextUtil.getContext(JAXBContextUtil.UDDI_V2_VERSION);
 			JAXBContext v3context = JAXBContextUtil.getContext(JAXBContextUtil.UDDI_V3_VERSION);
-			if ("3.0".equals(uddiVer)) { 
-				this.unmarshaller = v3context.createUnmarshaller(); 
-			} else {
-				this.unmarshaller = context.createUnmarshaller(); 
-			}
-			this.marshaller = context.createMarshaller();
+			this.unmarshaller = v3context.createUnmarshaller(); 
+			this.marshaller = v3context.createMarshaller();
+
 		}
 		catch(JAXBException e)
 		{
