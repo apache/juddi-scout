@@ -226,8 +226,8 @@ public class RegistryImpl implements IRegistry {
 		
 		try
 		{
-			JAXBContext context = JAXBContext.newInstance(new Class[] {ObjectFactory.class});
-			JAXBContext v3context = JAXBContext.newInstance(new Class[] {org.uddi.api_v3.ObjectFactory.class});
+			JAXBContext context = JAXBContextUtil.getContext(JAXBContextUtil.UDDI_V2_VERSION);
+			JAXBContext v3context = JAXBContextUtil.getContext(JAXBContextUtil.UDDI_V3_VERSION);
 			if ("3.0".equals(uddiVer)) { 
 				this.unmarshaller = v3context.createUnmarshaller(); 
 			} else {
