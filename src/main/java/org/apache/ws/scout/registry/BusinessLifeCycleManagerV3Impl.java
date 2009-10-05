@@ -48,16 +48,35 @@ import javax.xml.registry.infomodel.ServiceBinding;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.uddi.api_v3.*;
 import org.apache.ws.scout.registry.infomodel.ConceptImpl;
 import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
 import org.apache.ws.scout.registry.infomodel.KeyImpl;
 import org.apache.ws.scout.registry.infomodel.OrganizationImpl;
 import org.apache.ws.scout.registry.infomodel.ServiceImpl;
-import org.apache.ws.scout.util.ScoutJaxrUddiHelper;
 import org.apache.ws.scout.util.ScoutJaxrUddiV3Helper;
-import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
 import org.apache.ws.scout.util.ScoutUddiV3JaxrHelper;
+import org.uddi.api_v3.AssertionStatusItem;
+import org.uddi.api_v3.AssertionStatusReport;
+import org.uddi.api_v3.AuthToken;
+import org.uddi.api_v3.BindingDetail;
+import org.uddi.api_v3.BindingTemplate;
+import org.uddi.api_v3.BusinessDetail;
+import org.uddi.api_v3.BusinessEntity;
+import org.uddi.api_v3.BusinessInfo;
+import org.uddi.api_v3.BusinessService;
+import org.uddi.api_v3.Description;
+import org.uddi.api_v3.DispositionReport;
+import org.uddi.api_v3.ErrInfo;
+import org.uddi.api_v3.KeyedReference;
+import org.uddi.api_v3.Name;
+import org.uddi.api_v3.ObjectFactory;
+import org.uddi.api_v3.PublisherAssertion;
+import org.uddi.api_v3.PublisherAssertions;
+import org.uddi.api_v3.Result;
+import org.uddi.api_v3.ServiceDetail;
+import org.uddi.api_v3.ServiceInfo;
+import org.uddi.api_v3.TModel;
+import org.uddi.api_v3.TModelDetail;
 
 /**
  * Implements JAXR BusinessLifeCycleManager Interface.
@@ -69,10 +88,10 @@ import org.apache.ws.scout.util.ScoutUddiV3JaxrHelper;
  */
 public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         implements BusinessLifeCycleManager, Serializable {
-	
-	
-    private static final long serialVersionUID = 1L;
-    private Log log = LogFactory.getLog(this.getClass());
+		
+	private static final long serialVersionUID = -1145007155334678356L;
+
+	private Log log = LogFactory.getLog(this.getClass());
     
     private transient ObjectFactory objectFactory = new ObjectFactory();
 	

@@ -26,7 +26,7 @@ import org.uddi.api_v3.*;
  */
 public class RegistryV3Exception extends Exception
 {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -733955749275810694L;
 	public static final int E_ASSERTION_NOT_FOUND = 30000;
 	public static final int E_AUTH_TOKEN_EXPIRED = 10110;
 	public static final int E_AUTH_TOKEN_REQUIRED = 10120;

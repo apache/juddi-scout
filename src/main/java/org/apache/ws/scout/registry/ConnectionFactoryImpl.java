@@ -40,8 +40,8 @@ import javax.xml.registry.UnsupportedCapabilityException;
  */
 public class ConnectionFactoryImpl extends ConnectionFactory implements Serializable
 {
-    private static final long serialVersionUID = 1L;
-    private static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
+	private static final long serialVersionUID = -6902106826496922256L;
+	private static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
     private static final String LIFECYCLEMANAGER_PROPERTY = "javax.xml.registry.lifeCycleManagerURL";
     private static final String SECURITYMANAGER_PROPERTY = "javax.xml.registry.securityManagerURL";
     private static final String SEMANTICEQUIVALENCES_PROPERTY = "javax.xml.registry.semanticEquivalences";

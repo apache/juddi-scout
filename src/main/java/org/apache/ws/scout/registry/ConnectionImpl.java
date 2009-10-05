@@ -34,8 +34,8 @@ import javax.xml.registry.RegistryService;
  */
 public class ConnectionImpl implements Connection, Serializable
 {
-    private static final long serialVersionUID = 1L;
-    private boolean closed = false;
+	private static final long serialVersionUID = 3542404895814764176L;
+	private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;
     private final IRegistryBase registry;

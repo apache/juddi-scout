@@ -88,10 +88,10 @@ import org.apache.ws.scout.util.ScoutUddiJaxrHelper;
  */
 public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         implements BusinessLifeCycleManager, Serializable {
-	
-	
-    private static final long serialVersionUID = 1L;
-    private Log log = LogFactory.getLog(this.getClass());
+		
+	private static final long serialVersionUID = -4533264314909343311L;
+
+	private Log log = LogFactory.getLog(this.getClass());
     
     private transient ObjectFactory objectFactory = new ObjectFactory();
 	
