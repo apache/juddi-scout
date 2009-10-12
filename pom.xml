@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.apache.ws.scout</groupId>
     <artifactId>scout</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <packaging>bundle</packaging>
 
     <name>Apache Scout</name>
@@ -124,9 +124,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/trunk</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/trunk</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/tags/scout-1.2</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/tags/scout-1.2</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/tags/scout-1.2</url>
     </scm>
     <dependencies>
         <dependency>
