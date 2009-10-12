@@ -17,7 +17,6 @@ package org.apache.ws.scout.transport;
 
 import java.net.URI;
 
-import org.apache.ws.scout.registry.RegistryException;
 import org.w3c.dom.Element;
 
 /**

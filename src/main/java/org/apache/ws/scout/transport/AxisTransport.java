@@ -19,9 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.axis.AxisFault;
 import org.apache.axis.Message;
 import org.apache.axis.client.Call;
@@ -30,8 +27,6 @@ import org.apache.axis.message.SOAPBodyElement;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ws.scout.registry.RegistryException;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**

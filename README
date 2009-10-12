@@ -87,6 +87,18 @@ SUPPORT
   
     scout-dev-subscribe@ws.apache.org
 
+
+Release notes - Scout - Version 1.2
+
+Bug
+
+    * [SCOUT-65] - Scout tests don't have a way of choosing between multiple versions of jUDDI
+    * [SCOUT-66] - Need support for multiple UDDI versions within scout
+    * [SCOUT-89] - Exclusion of axis-related JARs causes NoClassDefFoundError in testing AxisTransport
+    * [SCOUT-91] - JAXBContext.newInstance is expensive and needs to be cached
+    * [SCOUT-92] - Fix SerialVersionUID in scout impl classes
+
+
 Release notes - Scout - Version 1.1
 
 Bug

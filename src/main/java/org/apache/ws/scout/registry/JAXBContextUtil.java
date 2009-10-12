@@ -1,7 +1,6 @@
 package org.apache.ws.scout.registry;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.util.HashMap;
 import java.util.Map;

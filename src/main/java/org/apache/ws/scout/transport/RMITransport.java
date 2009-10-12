@@ -25,7 +25,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ws.scout.registry.RegistryException;
 import org.apache.ws.scout.util.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,7 +33,7 @@ import org.w3c.dom.Node;
 /**
  * RMI Message transport class.
  * 
- * <p>This transpor calls jUDDI using RMI.</p>
+ * <p>This transport calls jUDDI using RMI.</p>
  * 
  * @author Kurt Stam (kurt.stam@redhat.com)
  */
