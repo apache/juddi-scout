@@ -15,6 +15,7 @@
  */
 package org.apache.ws.scout.transport;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 
@@ -31,7 +32,7 @@ import org.w3c.dom.Node;
 /**
  * Local Message transport class.
  * 
- * <p>This transpor calls jUDDI directly.</p>
+ * <p>This transport calls jUDDI directly.</p>
  * 
  * @author Kurt Stam (kurt.stam@redhat.com)
  */
@@ -61,8 +62,9 @@ public class LocalTransport implements Transport
     	Method method = c.getMethod(methodName, Element.class);
     	Node node = (Node) method.invoke(requestHandler, request);
     	response = (Element) node.getFirstChild();
-    }
-    catch (Exception ex) {
+    } catch (InvocationTargetException ite) {
+      throw new TransportException(new Exception(ite.getTargetException().getMessage()));
+    } catch (Exception ex) {
       throw new TransportException(ex);
     }
     if (log.isDebugEnabled()) {
