@@ -28,7 +28,7 @@ under the License.
       <section name="Intro">
 	      <p>Apache Scout is an open source implementation of the <a href="http://jcp.org/en/jsr/detail?id=93">JSR 93 - JavaTM API for
 		XML Registries 1.0 (JAXR)</a>. The JAXR API allows the integration of XML Registries based on either UDDI or ebXML. Scout
-		implements the required (level 0) part of the specification, which means that is can talk to any UDDI-2.0 compliant Registry.
+		implements the required (level 0) part of the specification, which means that it can talk to any UDDI compliant Registry.
 	      </p>
 	  </section>
     
