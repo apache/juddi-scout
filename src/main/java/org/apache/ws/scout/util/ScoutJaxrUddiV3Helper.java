@@ -68,7 +68,7 @@ public class ScoutJaxrUddiV3Helper
 	public static Address getAddress(PostalAddress postalAddress) throws JAXRException {
 		Address address = objectFactory.createAddress();
 
-		AddressLine[] addarr = new AddressLine[6];
+		AddressLine[] addarr = new AddressLine[7];
 
         String stnum = postalAddress.getStreetNumber();
         String st = postalAddress.getStreet();
@@ -76,42 +76,56 @@ public class ScoutJaxrUddiV3Helper
         String country = postalAddress.getCountry();
         String code = postalAddress.getPostalCode();
         String state = postalAddress.getStateOrProvince();
+        String type = postalAddress.getType();
 
 		AddressLine stnumAL = objectFactory.createAddressLine();
         stnumAL.setKeyName("STREET_NUMBER");
 		if (stnum != null) {
-        stnumAL.setKeyValue(stnum);
+			stnumAL.setKeyValue(stnum);
+			stnumAL.setValue(stnum);
 		}
 
 		AddressLine stAL = objectFactory.createAddressLine();
         stAL.setKeyName("STREET");
 		if (st != null) {
-        stAL.setKeyValue(st);
+			stAL.setKeyValue(st);
+			stAL.setValue(st);
 		}
 
 		AddressLine cityAL = objectFactory.createAddressLine();
         cityAL.setKeyName("CITY");
 		if (city != null) {
-        cityAL.setKeyValue(city);
+			cityAL.setKeyValue(city);
+			cityAL.setValue(city);
 		}
 
 		AddressLine countryAL = objectFactory.createAddressLine();
         countryAL.setKeyName("COUNTRY");
 		if (country != null) {
-        countryAL.setKeyValue(country);
+			countryAL.setKeyValue(country);
+			countryAL.setValue(country);
 		}
 
 		AddressLine codeAL = objectFactory.createAddressLine();
         codeAL.setKeyName("POSTALCODE");
 		if (code != null) {
-        codeAL.setKeyValue(code);
+			codeAL.setKeyValue(code);
+			codeAL.setValue(code);
 		}
 
 		AddressLine stateAL = objectFactory.createAddressLine();
         stateAL.setKeyName("STATE");
 		if (state != null) {
-        stateAL.setKeyValue(state);
+			stateAL.setKeyValue(state);
+			stateAL.setValue(state);
 		}
+		
+        AddressLine typeAL = objectFactory.createAddressLine();
+        typeAL.setKeyName("TYPE");
+        if (type != null) {
+                typeAL.setKeyValue(type);
+                typeAL.setValue(type);
+        }
 
 		// Add the AddressLine to vector
 		addarr[0] = stnumAL;
@@ -120,7 +134,8 @@ public class ScoutJaxrUddiV3Helper
 		addarr[3] = countryAL;
 		addarr[4] = codeAL;
 		addarr[5] = stateAL;
-
+		addarr[6] = typeAL;
+		
 		address.getAddressLine().addAll(Arrays.asList(addarr));
 
         return address;
