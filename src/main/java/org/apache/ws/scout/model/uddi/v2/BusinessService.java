@@ -126,7 +126,7 @@ public class BusinessService {
      *     
      */
     public BindingTemplates getBindingTemplates() {
-        return bindingTemplates;
+	return (bindingTemplates == null ? new BindingTemplates() : bindingTemplates) ;
     }
 
     /**
