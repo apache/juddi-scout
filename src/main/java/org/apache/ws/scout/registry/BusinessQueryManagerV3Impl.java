@@ -148,8 +148,18 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
         {
             ConnectionImpl con = ((RegistryServiceImpl)getRegistryService()).getConnection();
             AuthToken auth = this.getAuthToken(con,registry);
-            PublisherAssertions result =
-                    registry.getPublisherAssertions(auth.getAuthInfo());
+            PublisherAssertions result = null;
+            try {
+                    result = registry.getPublisherAssertions(auth.getAuthInfo());
+        	} catch (RegistryV3Exception rve) {
+        		String username = getUsernameFromCredentials(con.getCredentials());
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
+        		}
+        		auth = getAuthToken(con, registry);
+                result = registry.getPublisherAssertions(auth.getAuthInfo());
+        	}
+
             List<PublisherAssertion> publisherAssertionList = result.getPublisherAssertion();
             LinkedHashSet<Association> col = new LinkedHashSet<Association>();
             for (PublisherAssertion pas : publisherAssertionList) {
@@ -202,8 +212,17 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
                  if(caller  && !other   )
                         confirm = Constants.COMPLETION_STATUS_TOKEY_INCOMPLETE;
 
-            report = registry.getAssertionStatusReport(auth.getAuthInfo(),confirm);
-            
+            try { 
+            	report = registry.getAssertionStatusReport(auth.getAuthInfo(),confirm);
+        	} catch (RegistryV3Exception rve) {
+        		String username = getUsernameFromCredentials(con.getCredentials());
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
+        		}
+        		auth = getAuthToken(con, registry);
+            	report = registry.getAssertionStatusReport(auth.getAuthInfo(),confirm);
+        	}
+
             
             List<AssertionStatusItem> assertionStatusItemList = report.getAssertionStatusItem();
             LinkedHashSet<Association> col = new LinkedHashSet<Association>();
@@ -815,7 +834,18 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
         	
             try
             {
-            	RegisteredInfo ri = registry.getRegisteredInfo(auth.getAuthInfo());
+            	RegisteredInfo ri = null;
+            	try {
+            		ri = registry.getRegisteredInfo(auth.getAuthInfo());
+            	} catch (RegistryV3Exception rve) {
+            		String username = getUsernameFromCredentials(con.getCredentials());
+            		if (AuthTokenV3Singleton.getToken(username) != null) {
+            			AuthTokenV3Singleton.deleteAuthToken(username);
+            		}
+            		auth = getAuthToken(con, registry);
+            		ri = registry.getRegisteredInfo(auth.getAuthInfo());
+            	}
+
                 if (ri != null) {
                     BusinessInfos infos = ri.getBusinessInfos();
                     if (infos != null) {
@@ -885,7 +915,18 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
     		LinkedHashSet<Organization> orgs = null;
             try
             {
-            	RegisteredInfo ri = registry.getRegisteredInfo(auth.getAuthInfo());
+            	RegisteredInfo ri = null;
+            	try {
+            		ri = registry.getRegisteredInfo(auth.getAuthInfo());
+            	} catch (RegistryV3Exception rve) {
+            		String username = getUsernameFromCredentials(con.getCredentials());
+            		if (AuthTokenV3Singleton.getToken(username) != null) {
+            			AuthTokenV3Singleton.deleteAuthToken(username);
+            		}
+            		auth = getAuthToken(con, registry);
+            		ri = registry.getRegisteredInfo(auth.getAuthInfo());
+            	}
+
             	if (ri != null && ri.getBusinessInfos()!=null) {
             		List<BusinessInfo> bizInfoList = ri.getBusinessInfos().getBusinessInfo();
             		orgs = new LinkedHashSet<Organization>();
@@ -977,6 +1018,11 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
             username = pass.getUserName();
             pwd = new String(pass.getPassword());
         }
+
+        if (AuthTokenV3Singleton.getToken(username) != null) {
+        	return (AuthToken) AuthTokenV3Singleton.getToken(username);
+        }
+        
         AuthToken token = null;
         try {
             token = ireg.getAuthToken(username, pwd);
@@ -984,6 +1030,22 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
         catch (Exception e) {
             throw new JAXRException(e);
         }
+        AuthTokenV3Singleton.addAuthToken(username, token);
+
         return token;
     }
+    
+    private String getUsernameFromCredentials(Set credentials) {
+        String username = "", pwd = "";
+                
+        if (credentials != null) {
+        	Iterator it = credentials.iterator();
+        	while (it.hasNext()) {
+        		PasswordAuthentication pass = (PasswordAuthentication) it.next();
+        		username = pass.getUserName();
+        	}
+        }
+        return username;
+    }
+
 }
