@@ -21,6 +21,7 @@ import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -93,12 +94,18 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 
 	private Log log = LogFactory.getLog(this.getClass());
     
+    private static Hashtable cachedAuthTokenHash = null;
+	
     private transient ObjectFactory objectFactory = new ObjectFactory();
 	
     public BusinessLifeCycleManagerImpl(RegistryService registry) {
-        super(registry);
+    	super(registry);
+        
         if(objectFactory == null)
         	objectFactory = new ObjectFactory();
+        
+        if (cachedAuthTokenHash == null) 
+        	cachedAuthTokenHash = new Hashtable();
     }
 
     /**
@@ -570,32 +577,117 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         Object regobj;
         if(op.equalsIgnoreCase("SAVE_ASSOCIATION"))
         {
-            regobj = ireg.setPublisherAssertions(token.getAuthInfo(), (PublisherAssertion[]) dataarray);
-        } else
-        if (op.equalsIgnoreCase("SAVE_SERVICE")) {
-            regobj = ireg.saveService(token.getAuthInfo(), (BusinessService[])dataarray);
+        	try {
+        		regobj = ireg.setPublisherAssertions(token.getAuthInfo(), (PublisherAssertion[]) dataarray);
+        	} catch (RegistryException rve) {
+        		String username = getUsernameFromCredentials(connection.getCredentials());
+        		if (cachedAuthTokenHash.containsKey(username)) {
+        			cachedAuthTokenHash.remove(username);
+        		}
+        		token = getAuthToken(connection, ireg);
+        		regobj = ireg.setPublisherAssertions(token.getAuthInfo(), (PublisherAssertion[]) dataarray);
+        	}
+        } 
+        else if (op.equalsIgnoreCase("SAVE_SERVICE")) {
+        	try {
+        		regobj = ireg.saveService(token.getAuthInfo(), (BusinessService[])dataarray);
+        	} catch (RegistryException rve) {
+        		String username = getUsernameFromCredentials(connection.getCredentials());
+        		if (cachedAuthTokenHash.containsKey(username)) {
+        			cachedAuthTokenHash.remove(username);
+        		}
+        		token = getAuthToken(connection, ireg);
+        		regobj = ireg.saveService(token.getAuthInfo(), (BusinessService[])dataarray);
+        	}
         }
         else if (op.equalsIgnoreCase("SAVE_SERVICE_BINDING")) {
-            regobj = ireg.saveBinding(token.getAuthInfo(), (BindingTemplate[]) dataarray);
+        	try {
+        		regobj = ireg.saveBinding(token.getAuthInfo(), (BindingTemplate[]) dataarray);
+        	} catch (RegistryException rve) {
+        		String username = getUsernameFromCredentials(connection.getCredentials());
+        		if (cachedAuthTokenHash.containsKey(username)) {
+        			cachedAuthTokenHash.remove(username);
+        		}
+        		token = getAuthToken(connection, ireg);
+        		regobj = ireg.saveBinding(token.getAuthInfo(), (BindingTemplate[]) dataarray);        		
+        	}
         }
         else if (op.equalsIgnoreCase("SAVE_ORG")) {
-            regobj = ireg.saveBusiness(token.getAuthInfo(), (BusinessEntity[]) dataarray);
+        	try {
+        		regobj = ireg.saveBusiness(token.getAuthInfo(), (BusinessEntity[]) dataarray);
+        	} catch (RegistryException rve) {
+        		String username = getUsernameFromCredentials(connection.getCredentials());
+        		if (cachedAuthTokenHash.containsKey(username)) {
+        			cachedAuthTokenHash.remove(username);
+        		}
+        		token = getAuthToken(connection, ireg);
+        		regobj = ireg.saveBusiness(token.getAuthInfo(), (BusinessEntity[]) dataarray);
+        	}
         }
         else if (op.equalsIgnoreCase("SAVE_TMODEL")) {
-            regobj = ireg.saveTModel(token.getAuthInfo(), (TModel[]) dataarray);
+        	try {
+        		regobj = ireg.saveTModel(token.getAuthInfo(), (TModel[]) dataarray);
+        	} catch (RegistryException rve) {
+        		String username = getUsernameFromCredentials(connection.getCredentials());
+        		if (cachedAuthTokenHash.containsKey(username)) {
+        			cachedAuthTokenHash.remove(username);
+        		}
+        		token = getAuthToken(connection, ireg);
+        		regobj = ireg.saveTModel(token.getAuthInfo(), (TModel[]) dataarray);
+        	}
         }
         else if (op.equalsIgnoreCase("DELETE_ORG")) {
-            clearPublisherAssertions(token.getAuthInfo(), ireg);
-            regobj = ireg.deleteBusiness(token.getAuthInfo(), (String[]) dataarray);
+            try {
+                clearPublisherAssertions(token.getAuthInfo(), ireg);
+            	regobj = ireg.deleteBusiness(token.getAuthInfo(), (String[]) dataarray);
+        	} catch (RegistryException rve) {
+        		String username = getUsernameFromCredentials(connection.getCredentials());
+        		if (cachedAuthTokenHash.containsKey(username)) {
+        			cachedAuthTokenHash.remove(username);
+        		}
+        		token = getAuthToken(connection, ireg);
+                clearPublisherAssertions(token.getAuthInfo(), ireg);
+        		regobj = ireg.deleteBusiness(token.getAuthInfo(), (String[]) dataarray);
+        	}
         }
         else if (op.equalsIgnoreCase("DELETE_SERVICE")) {
-            regobj = ireg.deleteService(token.getAuthInfo(), (String[]) dataarray);
+        	try {
+        		regobj = ireg.deleteService(token.getAuthInfo(), (String[]) dataarray);
+	    	} catch (RegistryException rve) {
+	    		String username = getUsernameFromCredentials(connection.getCredentials());
+	    		if (cachedAuthTokenHash.containsKey(username)) {
+	    			cachedAuthTokenHash.remove(username);
+	    		}
+	    		token = getAuthToken(connection, ireg);
+	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+        		regobj = ireg.deleteService(token.getAuthInfo(), (String[]) dataarray);
+	    	}
         }
         else if (op.equalsIgnoreCase("DELETE_SERVICEBINDING")) {
-            regobj = ireg.deleteBinding(token.getAuthInfo(), (String[]) dataarray);
+        	try	{
+        		regobj = ireg.deleteBinding(token.getAuthInfo(), (String[]) dataarray);
+	    	} catch (RegistryException rve) {
+	    		String username = getUsernameFromCredentials(connection.getCredentials());
+	    		if (cachedAuthTokenHash.containsKey(username)) {
+	    			cachedAuthTokenHash.remove(username);
+	    		}
+	    		token = getAuthToken(connection, ireg);
+	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+        		regobj = ireg.deleteBinding(token.getAuthInfo(), (String[]) dataarray);
+	    	}
         }
         else if (op.equalsIgnoreCase("DELETE_CONCEPT")) {
-            regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
+            try {
+            	regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
+	    	} catch (RegistryException rve) {
+	    		String username = getUsernameFromCredentials(connection.getCredentials());
+	    		if (cachedAuthTokenHash.containsKey(username)) {
+	    			cachedAuthTokenHash.remove(username);
+	    		}
+	    		token = getAuthToken(connection, ireg);
+	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+            	regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
+	    	}
         }
         else if (op.equalsIgnoreCase("DELETE_ASSOCIATION")) {
            int len = ((String[]) dataarray).length;
@@ -605,7 +697,17 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
                String keystr = ((String[])dataarray)[i];
                paarr[i] = ScoutJaxrUddiHelper.getPubAssertionFromJAXRAssociationKey(keystr);
             }
-            regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), paarr);
+            try {
+                regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), paarr);
+            } catch (RegistryException rve) {
+	    		String username = getUsernameFromCredentials(connection.getCredentials());
+	    		if (cachedAuthTokenHash.containsKey(username)) {
+	    			cachedAuthTokenHash.remove(username);
+	    		}
+	    		token = getAuthToken(connection, ireg);
+	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), paarr);
+	    	}
         }
         else if (op.equalsIgnoreCase("DELETE_CLASSIFICATIONSCHEME")) {
             regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
@@ -724,7 +826,19 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         return bulk;
     }
 
-
+    private String getUsernameFromCredentials(Set credentials) {
+        String username = "", pwd = "";
+                
+        if (credentials != null) {
+        	Iterator it = credentials.iterator();
+        	while (it.hasNext()) {
+        		PasswordAuthentication pass = (PasswordAuthentication) it.next();
+        		username = pass.getUserName();
+        	}
+        }
+        return username;
+    }
+    
     /**
      * Get the Auth Token from the registry
      *
@@ -734,18 +848,22 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
      * @throws JAXRException
      */
     private AuthToken getAuthToken(ConnectionImpl connection, IRegistry ireg)
-            throws JAXRException {
+            throws JAXRException {    	
         Set creds = connection.getCredentials();
         String username = "", pwd = "";
         if (creds != null) {
         	Iterator it = creds.iterator();
         	while (it.hasNext()) {
         		PasswordAuthentication pass = (PasswordAuthentication) it.next();
-        		username = pass.getUserName();
+        		username = pass.getUserName	();
         		pwd = new String(pass.getPassword());
         	}
         }
 
+        if ((cachedAuthTokenHash != null) && (cachedAuthTokenHash.containsKey(username))) {
+        	return (AuthToken) cachedAuthTokenHash.get(username);
+        }
+        
         AuthToken token = null;
         try {
             token = ireg.getAuthToken(username, pwd);
@@ -754,6 +872,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         { 
             throw new JAXRException(e);
         }
+        cachedAuthTokenHash.put(username, token);
         return token;
     }
 
