@@ -8,7 +8,6 @@ public class AuthTokenSingleton {
 	private static Hashtable cachedAuthTokenHash = new Hashtable();
 	
 	private AuthTokenSingleton() {
-		cachedAuthTokenHash = new Hashtable();
 	}
 
 	public static AuthToken getToken(String username) {

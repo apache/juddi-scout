@@ -96,14 +96,10 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
     
     private transient ObjectFactory objectFactory = new ObjectFactory();
 	
-    private static Hashtable cachedAuthTokenHash = null;
-    
     public BusinessLifeCycleManagerV3Impl(RegistryService registry) {
         super(registry);
         if(objectFactory == null)
         	objectFactory = new ObjectFactory();
-        if (cachedAuthTokenHash == null) 
-        	cachedAuthTokenHash = new Hashtable();
     }
 
     /**
@@ -579,8 +575,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         		regobj = ireg.setPublisherAssertions(token.getAuthInfo(), (PublisherAssertion[]) dataarray);
         	} catch (RegistryV3Exception rve) {
         		String username = getUsernameFromCredentials(connection.getCredentials());
-        		if (cachedAuthTokenHash.containsKey(username)) {
-        			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
         		}
         		token = getAuthToken(connection, ireg);
         		regobj = ireg.setPublisherAssertions(token.getAuthInfo(), (PublisherAssertion[]) dataarray);
@@ -590,8 +586,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         		regobj = ireg.saveService(token.getAuthInfo(), (BusinessService[])dataarray);
         	} catch (RegistryV3Exception rve) {
         		String username = getUsernameFromCredentials(connection.getCredentials());
-        		if (cachedAuthTokenHash.containsKey(username)) {
-        			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
         		}
         		token = getAuthToken(connection, ireg);
         		regobj = ireg.saveService(token.getAuthInfo(), (BusinessService[])dataarray);
@@ -602,8 +598,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         		regobj = ireg.saveBinding(token.getAuthInfo(), (BindingTemplate[]) dataarray);
         	} catch (RegistryV3Exception rve) {
         		String username = getUsernameFromCredentials(connection.getCredentials());
-        		if (cachedAuthTokenHash.containsKey(username)) {
-        			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
         		}
         		token = getAuthToken(connection, ireg);
         		regobj = ireg.saveBinding(token.getAuthInfo(), (BindingTemplate[]) dataarray);        		
@@ -614,8 +610,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         		regobj = ireg.saveBusiness(token.getAuthInfo(), (BusinessEntity[]) dataarray);
         	} catch (RegistryV3Exception rve) {
         		String username = getUsernameFromCredentials(connection.getCredentials());
-        		if (cachedAuthTokenHash.containsKey(username)) {
-        			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
         		}
         		token = getAuthToken(connection, ireg);
         		regobj = ireg.saveBusiness(token.getAuthInfo(), (BusinessEntity[]) dataarray);
@@ -626,8 +622,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         		regobj = ireg.saveTModel(token.getAuthInfo(), (TModel[]) dataarray);
         	} catch (RegistryV3Exception rve) {
         		String username = getUsernameFromCredentials(connection.getCredentials());
-        		if (cachedAuthTokenHash.containsKey(username)) {
-        			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
         		}
         		token = getAuthToken(connection, ireg);
         		regobj = ireg.saveTModel(token.getAuthInfo(), (TModel[]) dataarray);
@@ -639,8 +635,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
             	regobj = ireg.deleteBusiness(token.getAuthInfo(), (String[]) dataarray);
         	} catch (RegistryV3Exception rve) {
         		String username = getUsernameFromCredentials(connection.getCredentials());
-        		if (cachedAuthTokenHash.containsKey(username)) {
-        			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
         		}
         		token = getAuthToken(connection, ireg);
                 clearPublisherAssertions(token.getAuthInfo(), ireg);
@@ -652,8 +648,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         		regobj = ireg.deleteService(token.getAuthInfo(), (String[]) dataarray);
 	    	} catch (RegistryV3Exception rve) {
 	    		String username = getUsernameFromCredentials(connection.getCredentials());
-	    		if (cachedAuthTokenHash.containsKey(username)) {
-	    			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
 	            clearPublisherAssertions(token.getAuthInfo(), ireg);
@@ -665,8 +661,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         		regobj = ireg.deleteBinding(token.getAuthInfo(), (String[]) dataarray);
 	    	} catch (RegistryV3Exception rve) {
 	    		String username = getUsernameFromCredentials(connection.getCredentials());
-	    		if (cachedAuthTokenHash.containsKey(username)) {
-	    			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
 	            clearPublisherAssertions(token.getAuthInfo(), ireg);
@@ -678,8 +674,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
             	regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
 	    	} catch (RegistryV3Exception rve) {
 	    		String username = getUsernameFromCredentials(connection.getCredentials());
-	    		if (cachedAuthTokenHash.containsKey(username)) {
-	    			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
 	            clearPublisherAssertions(token.getAuthInfo(), ireg);
@@ -698,8 +694,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
             	regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), paarr);
             } catch (RegistryV3Exception rve) {
 	    		String username = getUsernameFromCredentials(connection.getCredentials());
-	    		if (cachedAuthTokenHash.containsKey(username)) {
-	    			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
 	            clearPublisherAssertions(token.getAuthInfo(), ireg);
@@ -711,8 +707,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         		regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
 	    	} catch (RegistryV3Exception rve) {
 	    		String username = getUsernameFromCredentials(connection.getCredentials());
-	    		if (cachedAuthTokenHash.containsKey(username)) {
-	    			cachedAuthTokenHash.remove(username);
+        		if (AuthTokenV3Singleton.getToken(username) != null) {
+        			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
 	            clearPublisherAssertions(token.getAuthInfo(), ireg);
@@ -908,8 +904,8 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         	}
         }
 
-        if ((cachedAuthTokenHash != null) && (cachedAuthTokenHash.containsKey(username))) {
-        	return (AuthToken) cachedAuthTokenHash.get(username);
+        if (AuthTokenV3Singleton.getToken(username) != null) {
+        	return (AuthToken) AuthTokenV3Singleton.getToken(username);
         }
         
         
@@ -921,7 +917,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         { 
             throw new JAXRException(e);
         }
-        cachedAuthTokenHash.put(username, token);
+        AuthTokenV3Singleton.addAuthToken(username, token);
         return token;	
     }
 

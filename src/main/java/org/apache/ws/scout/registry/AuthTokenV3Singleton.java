@@ -8,10 +8,9 @@ public class AuthTokenV3Singleton {
 	private static Hashtable cachedAuthTokenHash = new Hashtable();
 	
 	private AuthTokenV3Singleton() {
-		cachedAuthTokenHash = new Hashtable();
 	}
 
-	public static AuthToken getInstance(String username) {
+	public static AuthToken getToken(String username) {
 		if (instance == null) {
 			instance = new AuthTokenV3Singleton();
 		}
