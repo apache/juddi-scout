@@ -643,7 +643,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         		token = getAuthToken(connection, ireg);
                 clearPublisherAssertions(token.getAuthInfo(), ireg);
         		regobj = ireg.deleteBusiness(token.getAuthInfo(), (String[]) dataarray);
-        	}
+        	} 
         }
         else if (op.equalsIgnoreCase("DELETE_SERVICE")) {
         	try {
@@ -654,7 +654,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         			AuthTokenSingleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
-	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            //clearPublisherAssertions(token.getAuthInfo(), ireg);
         		regobj = ireg.deleteService(token.getAuthInfo(), (String[]) dataarray);
 	    	}
         }
@@ -667,7 +667,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         			AuthTokenSingleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
-	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            //clearPublisherAssertions(token.getAuthInfo(), ireg);
         		regobj = ireg.deleteBinding(token.getAuthInfo(), (String[]) dataarray);
 	    	}
         }
@@ -685,7 +685,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 	    	}
         }
         else if (op.equalsIgnoreCase("DELETE_ASSOCIATION")) {
-           int len = ((String[]) dataarray).length;
+        	int len = ((String[]) dataarray).length;
             PublisherAssertion[] paarr = new PublisherAssertion[len];
             for(int i=0;i<len;i++)
             {
@@ -705,7 +705,17 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
 	    	}
         }
         else if (op.equalsIgnoreCase("DELETE_CLASSIFICATIONSCHEME")) {
-            regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
+            try {
+                regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
+	    	} catch (RegistryException rve) {
+	    		String username = getUsernameFromCredentials(connection.getCredentials());
+        		if (AuthTokenSingleton.getToken(username) != null) {
+        			AuthTokenSingleton.deleteAuthToken(username);
+	    		}
+	    		token = getAuthToken(connection, ireg);
+	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
+	    	}
         }
         else {
             throw new JAXRException("Unsupported operation:" + op);
@@ -749,7 +759,17 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
        }
        catch (RegistryException e)
        {
-          throw new RuntimeException(e);
+           ConnectionImpl connection = registry.getConnection();
+    	   String username = getUsernameFromCredentials(connection.getCredentials());
+    	   if (AuthTokenSingleton.getToken(username) != null) {
+    		   AuthTokenSingleton.deleteAuthToken(username);
+    	   }
+    	   AuthToken token = null;
+    	   try {
+    		   token = getAuthToken(connection, ireg);
+    	   } catch (JAXRException je) {
+    	   }
+   		   clearPublisherAssertions( token.getAuthInfo(), ireg);
        }
     }
 

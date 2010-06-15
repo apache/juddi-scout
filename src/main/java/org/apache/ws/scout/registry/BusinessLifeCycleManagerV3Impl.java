@@ -639,7 +639,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         			AuthTokenV3Singleton.deleteAuthToken(username);
         		}
         		token = getAuthToken(connection, ireg);
-                clearPublisherAssertions(token.getAuthInfo(), ireg);
+                //clearPublisherAssertions(token.getAuthInfo(), ireg);
         		regobj = ireg.deleteBusiness(token.getAuthInfo(), (String[]) dataarray);
         	}
         }
@@ -652,7 +652,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
-	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            //clearPublisherAssertions(token.getAuthInfo(), ireg);
         		regobj = ireg.deleteService(token.getAuthInfo(), (String[]) dataarray);
 	    	}
         }
@@ -665,7 +665,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
-	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            //clearPublisherAssertions(token.getAuthInfo(), ireg);
         		regobj = ireg.deleteBinding(token.getAuthInfo(), (String[]) dataarray);
 	    	}
         }
@@ -678,7 +678,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
-	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            //clearPublisherAssertions(token.getAuthInfo(), ireg);
             	regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
 	    	}
         }
@@ -698,7 +698,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
-	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            //clearPublisherAssertions(token.getAuthInfo(), ireg);
             	regobj = ireg.deletePublisherAssertions(token.getAuthInfo(), paarr);
 	    	}
         }
@@ -711,7 +711,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         			AuthTokenV3Singleton.deleteAuthToken(username);
 	    		}
 	    		token = getAuthToken(connection, ireg);
-	            clearPublisherAssertions(token.getAuthInfo(), ireg);
+	            //clearPublisherAssertions(token.getAuthInfo(), ireg);
         		regobj = ireg.deleteTModel(token.getAuthInfo(), (String[]) dataarray);
 	    	}	        		
         }
