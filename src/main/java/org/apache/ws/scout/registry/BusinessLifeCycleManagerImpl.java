@@ -424,6 +424,7 @@ public class BusinessLifeCycleManagerImpl extends LifeCycleManagerImpl
         catch (RegistryException e) {
             exceptions.add(new SaveException(e.getLocalizedMessage()));
             bulk.setStatus(JAXRResponse.STATUS_FAILURE);
+            bulk.setExceptions(exceptions);
             return bulk;
         }
 
