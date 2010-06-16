@@ -327,32 +327,8 @@ public class RegistryImpl implements IRegistry {
 	    if (responseName == null) {
 	        throw new RegistryException("Unsupported response "
 	                + "from registry. A value was not present.");
-		} 
+		} 	    
 	    
-        // Let's now try to determine which UDDI response
-        // we received and unmarshal it appropriately or
-        // throw a RegistryException if it's unknown.
-        // Well, we have now determined that something was
-        // returned and it is "a something" that we know
-        // about so let's unmarshal it into a RegistryObject
-        // Next, let's make sure we didn't recieve a SOAP
-        // Fault. If it is a SOAP Fault then throw it
-        // immediately.
-
-        JAXBElement<?> uddiResponse = null;
-	    try {
-	    	String xml = XMLUtils.convertNodeToXMLString(response);
-	        log.debug("Response is: " + xml);
-	    	
-		StringReader reader = new StringReader(xml);
-		uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(new StreamSource(reader));
-	    	//It is probably faster not to go to a String, but JAXB has issues with this
-	        //uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(response);
-
-	    } catch (JAXBException xmle) {
-	        throw (new RegistryException(xmle));
-	    }
-
 		if (responseName.toLowerCase().equals("fault")) {
 			NodeList nodeList = null;
 			
@@ -395,6 +371,30 @@ public class RegistryImpl implements IRegistry {
 			// Create RegistryException instance and return
 			throw e;
 		}
+	    
+        // Let's now try to determine which UDDI response
+        // we received and unmarshal it appropriately or
+        // throw a RegistryException if it's unknown.
+        // Well, we have now determined that something was
+        // returned and it is "a something" that we know
+        // about so let's unmarshal it into a RegistryObject
+        // Next, let's make sure we didn't recieve a SOAP
+        // Fault. If it is a SOAP Fault then throw it
+        // immediately.
+
+        JAXBElement<?> uddiResponse = null;
+	    try {
+	    	String xml = XMLUtils.convertNodeToXMLString(response);
+	        log.debug("Response is: " + xml);
+	        
+	        StringReader reader = new StringReader(xml);
+	        uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(new StreamSource(reader));
+	    	//It is probably faster not to go to a String, but JAXB has issues with this
+	        //uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(response);
+
+	    } catch (JAXBException xmle) {
+	        throw (new RegistryException(xmle));
+	    }
 
 		return uddiResponse;
 	}
