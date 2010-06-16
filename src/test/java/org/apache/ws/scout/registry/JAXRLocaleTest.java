@@ -80,8 +80,10 @@ public class JAXRLocaleTest extends BaseTestCase
         Organization organization = (Organization) blm.createObject(BusinessLifeCycleManager.ORGANIZATION);
 
         is = getIString(locale, "Apache Scout Org");
+        is.setValue(Locale.JAPANESE, "Apache Scoot Org");
         organization.setName(is);
         is = getIString(locale, "This is the org for Apache Scout Test");
+        is.setValue(Locale.JAPANESE, "This is the org for Apache Scout Test");
         organization.setDescription(is);
 
         Collection<Organization> organizations = new ArrayList<Organization>();
@@ -99,16 +101,22 @@ public class JAXRLocaleTest extends BaseTestCase
         
         assertEquals(organization.getName().getValue(locale),
                      organization1.getName().getValue(locale));
+        assertEquals(organization.getName().getValue(Locale.JAPANESE),
+                organization1.getName().getValue(Locale.JAPANESE));
         
         assertEquals(organization.getDescription().getValue(locale), 
                      organization1.getDescription().getValue(locale));
-                       
+        assertEquals(organization.getDescription().getValue(Locale.JAPANESE), 
+                organization1.getDescription().getValue(Locale.JAPANESE));
+
         // create Service
         Service service = (Service) blm.createObject(BusinessLifeCycleManager.SERVICE);
 
         is = getIString(locale, "Apache Scout Service");
+        is.setValue(Locale.JAPANESE, "Apache Scoot Service");
         service.setName(is);
         is = getIString(locale, "This is the service for Apache Scout Test");
+        is.setValue(Locale.JAPANESE, "This is the service for Apache Scoot Test");
         service.setDescription(is);
 
         organization1.addService(service);
@@ -128,6 +136,8 @@ public class JAXRLocaleTest extends BaseTestCase
         
         assertEquals(service.getName().getValue(locale),
                      service1.getName().getValue(locale));
+        assertEquals(service.getName().getValue(Locale.JAPANESE),
+        			service1.getName().getValue(Locale.JAPANESE));
         
         assertEquals(service.getDescription().getValue(locale), 
                      service1.getDescription().getValue(locale));
