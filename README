@@ -87,6 +87,23 @@ SUPPORT
   
     scout-dev-subscribe@ws.apache.org
 
+Release notes - Scout - Version 1.2.2
+
+Bug
+
+    * [SCOUT-94] - Look at commented out Slot code in ScoutJaxrUddiV3Helper.getTModelFromJAXRClassificationScheme
+    * [SCOUT-95] - Provide a mechanism for caching the AuthToken
+    * [SCOUT-98] - BusinessLifeCycleManager.saveOrganizations(Collection organizations) does not return exception list if failed to save
+    * [SCOUT-99] - OrganizationS returned by findOrganizations() contain at most one name and description even if multiple names or descriptions are present
+    * [SCOUT-101] - Faults are not handled properly by RegistryImpl.execute(JAXBElement<?> uddiRequest, URI endPointURI)
+
+Release notes - Scout - Version 1.2.1
+
+Bug
+
+    * [SCOUT-96] - Make sure we pass JUDDI exceptions on through the Scout chain
+    * [SCOUT-100] - org.apache.ws.scout.util.ScoutJaxrUddiV3Helper.getAddress fails to fill in line field of AddressLine
+    * [SCOUT-102] - Need to fix null case for org.apache.ws.scout.model.uddi.v2.BusinessService->getBindingTemplates
 
 Release notes - Scout - Version 1.2
 
