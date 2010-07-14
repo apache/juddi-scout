@@ -16,7 +16,12 @@
           <td><strong>Date</strong></td>
           <td><strong>Description</strong></td>
         </tr>
-         <tr>
+        <tr>
+          <td><a href="https://repository.apache.org/content/groups/public/org/apache/ws/scout/scout/1.2.2/">scout-1.2.2</a></td>
+          <td>18 July, 2010</td>
+          <td>Version 1.2.2 of Scout, second 1.2 bug fix release</td>
+        </tr>
+        <tr>
           <td><a href="https://repository.apache.org/content/groups/public/org/apache/ws/scout/scout/1.2.1/">scout-1.2.1</a></td>
           <td>1 Februari, 2010</td>
           <td>Version 1.2.1 of Scout, first 1.2 bug fix release</td>
