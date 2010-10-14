@@ -23,7 +23,7 @@
     <bannerLeft>
         <name>Apache Scout</name>
         <src>images/project-logo.jpg</src>
-        <href>ws.apache.org/scout/</href>
+        <href>juddi.apache.org/scout/</href>
     </bannerLeft>
     <bannerRight>
         <src>images/scout.jpg</src>
@@ -39,20 +39,20 @@
     <body>
         <breadcrumbs>
             <item name="Apache" href="http://www.apache.org/"/>
-            <item name="WebServices" href="http://ws.apache.org/"/>
-            <item name="Scout" href="http://ws.apache.org/scout/"/>
+            <item name="jUDDI" href="http://juddi.apache.org/"/>
+            <item name="Scout" href="http://juddi.apache.org/scout/"/>
         </breadcrumbs>
 
         <menu name="Apache Scout">
-            <item name="Welcome" href="http://ws.apache.org/scout/index.html"/>
+            <item name="Welcome" href="http://juddi.apache.org/scout/index.html"/>
             <item name="Get Scout">
                 <item name="Releases" href="releases.html"/>
                 <item name="Source Code" href="source-repository.html"/>
             </item>
-            <item name="Wiki" href="http://wiki.apache.org/ws/scout"/>
+            <item name="Wiki" href="http://wiki.apache.org/juddi/scout"/>
         </menu>
         <menu name="Related Projects">
-            <item name="Apache jUDDI" href="http://ws.apache.org/juddi/" description="Apache jUDDI"/>
+            <item name="Apache jUDDI" href="http://juddi.apache.org/" description="Apache jUDDI"/>
         </menu>
         <menu ref="reports"/>
 

@@ -16,7 +16,7 @@
         Apache Scout is an implementation of the JSR 93 - JavaTM API for
         XML Registries 1.0 (JAXR)
     </description>
-    <url>http://ws.apache.org/scout/</url>
+    <url>http://juddi.apache.org/scout/</url>
     <issueManagement>
         <system>JIRA</system>
         <url>http://issues.apache.org/jira/browse/SCOUT</url>
@@ -31,7 +31,7 @@
                 <sendOnSuccess>true</sendOnSuccess>
                 <sendOnWarning>true</sendOnWarning>
                 <configuration>
-                    <address>scout-dev@ws.apache.org</address>
+                    <address>juddi-dev@apache.org</address>
                 </configuration>
             </notifier>
         </notifiers>
@@ -39,11 +39,11 @@
     <inceptionYear>2004</inceptionYear>
     <mailingLists>
         <mailingList>
-            <name>WS Scout Developers</name>
-            <subscribe>scout-dev-subscribe@ws.apache.org</subscribe>
-            <unsubscribe>scout-dev-unsubscribe@ws.apache.org</unsubscribe>
-            <post>scout-dev@ws.apache.org</post>
-            <archive>http://mail-archives.apache.org/mod_mbox/ws-scout-dev/</archive>
+            <name>jUDDI/Scout Developers</name>
+            <subscribe>juddi-dev-subscribe@apache.org</subscribe>
+            <unsubscribe>juddi-dev-unsubscribe@apache.org</unsubscribe>
+            <post>juddi-dev@apache.org</post>
+            <archive>http://mail-archives.apache.org/mod_mbox/juddi-dev/</archive>
         </mailingList>
     </mailingLists>
     <developers>
@@ -54,9 +54,8 @@
             <organization />
         </developer>
         <developer>
-            <id>dims</id>
-            <name>Davanum Srinivas</name>
-            <email>dims@yahoo.com</email>
+            <name>David Jencks</name>
+            <email>djencks@apache.org</email>
             <organization />
         </developer>
         <developer>
@@ -72,9 +71,8 @@
             <organization />
         </developer>
         <developer>
-            <id>linsun</id>
-            <name>Lin Sun</name>
-            <email>linsun@apache.org</email>
+            <name>Steve Viens</name>
+            <email>sviens@apache.org</email>
             <organization />
         </developer>
         <developer>
@@ -91,18 +89,18 @@
             <organization />
         </contributor>
         <contributor>
-            <name>Steve Viens</name>
-            <email>sviens@apache.org</email>
+            <name>Davanum Srinivas</name>
+            <email>dims@yahoo.com</email>
             <organization />
         </contributor>
         <contributor>
-            <name>David Jencks</name>
-            <email>djencks@apache.org</email>
+            <name>Geir Magnusson Jr.</name>
+            <email>geirm@apache.org</email>
             <organization />
         </contributor>
         <contributor>
-            <name>Jeremy Boynes</name>
-            <email>jboynes@apache.org</email>
+            <name>Lin Sun</name>
+            <email>linsun@apache.org</email>
             <organization />
         </contributor>
         <contributor>
@@ -111,8 +109,8 @@
             <organization />
         </contributor>
         <contributor>
-            <name>Geir Magnusson Jr.</name>
-            <email>geirm@apache.org</email>
+            <name>Jeremy Boynes</name>
+            <email>jboynes@apache.org</email>
             <organization />
         </contributor>
     </contributors>
@@ -124,9 +122,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/webservices/scout/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/webservices/scout/trunk</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/webservices/scout/trunk</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/juddi/scout/trunk</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/juddi/scout/trunk</url>
     </scm>
     <dependencies>
         <dependency>
@@ -357,7 +355,7 @@
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>scpexe://people.apache.org/www/ws.apache.org/scout</url>
+            <url>scpexe://people.apache.org/www/juddi.apache.org/scout</url>
         </site>
     </distributionManagement>
 

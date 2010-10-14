@@ -58,12 +58,15 @@ under the License.
       </section>
       
       <section name="Getting Started">
-        <p>Download the Scout-1.0.jar and set up a UDDI-2.0 compliant Registry like 
-        <a href="http://ws.apache.org/juddi/">jUDDI-2.x</a>. Check out the unittest in the
+        <p>Download the Scout-1.2.2.jar and set up a UDDI-2.0 compliant Registry like 
+        <a href="http://juddi.apache.org/">jUDDI-2.x</a>. Check out the unittest in the
         Scout project as they are nice examples on how to use the JAXR API. The 
-        <a href="http://svn.apache.org/viewvc/webservices/scout/trunk/scout/src/test/">unit-tests</a>
+        <a href="http://svn.apache.org/viewvc/juddi/scout/trunk/scout/src/test/">unit-tests</a>
         use embedded jUDDI backed by an embedded Derby database. The configuration
         for this can be found in the scout.properties and juddi.properties files.
+        </p>
+        <p>
+        The JAXR spec does not support UDDI v3 functionality, but Scout makes an effort to support the UDDI v2 functionality in UDDI v3 registries. 
         </p>
         <p>Additional information regarding JAXR can be found at:
         <ul>
