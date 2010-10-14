@@ -54,6 +54,7 @@
             <organization />
         </developer>
         <developer>
+            <id>djencks</id>
             <name>David Jencks</name>
             <email>djencks@apache.org</email>
             <organization />
