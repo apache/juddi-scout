@@ -967,6 +967,14 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
         {
             String jaxrQualifier = (String) i.next();
             String juddiQualifier = jaxrQualifier;
+           
+            // SCOUT-111 
+            // If the JAXR qualifier is exactNameMatch, then 
+            // set the UDDI v3 qualifier to exactMatch 
+            if ("exactNameMatch".equals(jaxrQualifier)) {
+                juddiQualifier = "exactMatch";
+            }
+            
             if (juddiQualifier == null)
             {
                 throw new UnsupportedCapabilityException("jUDDI does not support FindQualifer: " + jaxrQualifier);
