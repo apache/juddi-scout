@@ -41,13 +41,13 @@ import javax.xml.registry.UnsupportedCapabilityException;
 public class ConnectionFactoryImpl extends ConnectionFactory implements Serializable
 {
 	private static final long serialVersionUID = -6902106826496922256L;
-	private static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
-    private static final String LIFECYCLEMANAGER_PROPERTY = "javax.xml.registry.lifeCycleManagerURL";
-    private static final String SECURITYMANAGER_PROPERTY = "javax.xml.registry.securityManagerURL";
-    private static final String SEMANTICEQUIVALENCES_PROPERTY = "javax.xml.registry.semanticEquivalences";
-    private static final String POSTALADDRESSSCHEME_PROPERTY = "javax.xml.registry.postalAddressScheme";
-    private static final String AUTHENTICATIONMETHOD_PROPERTY = "javax.xml.registry.security.authenticationMethod";
-    private static final String MAXROWS_PROPERTY = "javax.xml.registry.uddi.maxRows";
+	public static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
+	public static final String LIFECYCLEMANAGER_PROPERTY = "javax.xml.registry.lifeCycleManagerURL";
+	public static final String SECURITYMANAGER_PROPERTY = "javax.xml.registry.securityManagerURL";
+	public static final String SEMANTICEQUIVALENCES_PROPERTY = "javax.xml.registry.semanticEquivalences";
+	public static final String POSTALADDRESSSCHEME_PROPERTY = "javax.xml.registry.postalAddressScheme";
+	public static final String AUTHENTICATIONMETHOD_PROPERTY = "javax.xml.registry.security.authenticationMethod";
+	public static final String MAXROWS_PROPERTY = "javax.xml.registry.uddi.maxRows";
 
     private String queryManagerURL;
     private String lifeCycleManagerURL;
