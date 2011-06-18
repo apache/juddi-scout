@@ -549,7 +549,7 @@ public class ScoutUddiV3JaxrHelper
 				Description desc = null;
 				if (overviewDoc.getDescription().size()>0) desc = overviewDoc.getDescription().get(0);
 				if (desc !=null) descStr = desc.getValue();
-				alist.add(lifeCycleManager.createExternalLink(overviewDoc.getOverviewURL().toString(),descStr));
+				alist.add(lifeCycleManager.createExternalLink(overviewDoc.getOverviewURL().getValue().toString(),descStr));
 
 			}
 		}
