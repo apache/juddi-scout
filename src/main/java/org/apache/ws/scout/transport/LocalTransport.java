@@ -62,8 +62,6 @@ public class LocalTransport implements Transport
     	Method method = c.getMethod(methodName, Element.class);
     	Node node = (Node) method.invoke(requestHandler, request);
     	response = (Element) node.getFirstChild();
-    } catch (InvocationTargetException ite) {
-      throw new TransportException(new Exception(ite.getTargetException().getMessage()));
     } catch (Exception ex) {
       throw new TransportException(ex);
     }
