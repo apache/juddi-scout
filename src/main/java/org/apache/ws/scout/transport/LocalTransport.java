@@ -61,7 +61,9 @@ public class LocalTransport implements Transport
     	Object requestHandler = c.newInstance();
     	Method method = c.getMethod(methodName, Element.class);
     	Node node = (Node) method.invoke(requestHandler, request);
-    	response = (Element) node.getFirstChild();
+    	if (node.getFirstChild()!=null) {
+    		response = (Element) node.getFirstChild();
+    	}
     } catch (Exception ex) {
       throw new TransportException(ex);
     }

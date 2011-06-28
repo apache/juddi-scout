@@ -84,7 +84,9 @@ public class RMITransport implements Transport
     	//Calling that method
     	Node node = (Node) method.invoke(requestHandler, request);
     	//The result is in the first element
-    	response = (Element) node.getFirstChild();
+    	if (node.getFirstChild()!=null) {
+    		response = (Element) node.getFirstChild();
+    	}
     }
     catch (Exception ex) {
       throw new TransportException(ex);
