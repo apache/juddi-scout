@@ -85,20 +85,33 @@ public class ScoutUddiV3JaxrHelper
 			LifeCycleManager lifeCycleManager)
 	throws JAXRException
 	{
+		Organization org = new OrganizationImpl(lifeCycleManager);
 		List<Name> namesList = businessEntity.getName();
-		Name n = null;
-		if (namesList.size()>0) n = namesList.get(0);
+		if ((namesList != null) && (namesList.size() > 0)) {
+			InternationalString is = null;
+			for (int i = 0; i < namesList.size(); i++)  {
+				Name n = namesList.get(i);
+				if (is == null) {
+					is = getIString(n.getLang(), n.getValue(), lifeCycleManager);
+				} else {
+					is.setValue(getLocale(n.getLang()), n.getValue());
+				}
+			}
+			org.setName(is);
+		}
 
 		List<Description> descriptionList = businessEntity.getDescription();
-		Description desc =null;
-		if (descriptionList.size()>0) desc = descriptionList.get(0);
-
-		Organization org = new OrganizationImpl(lifeCycleManager);
-		if(n != null ) {
-			org.setName(getIString(n.getLang(), n.getValue(), lifeCycleManager));
-		}
-		if( desc != null) {
-			org.setDescription(getIString(desc.getLang(), desc.getValue(), lifeCycleManager));
+		if ((descriptionList != null) && (descriptionList.size() > 0)) {
+			InternationalString is = null;
+			for (int i = 0; i < descriptionList.size(); i++)  {
+				Description desc = descriptionList.get(i);
+				if (is == null) {
+					is = getIString(desc.getLang(), desc.getValue(), lifeCycleManager);
+				} else {
+					is.setValue(getLocale(desc.getLang()), desc.getValue());
+				}
+			}
+			org.setDescription(is);
 		}
 		org.setKey(lifeCycleManager.createKey(businessEntity.getBusinessKey()));
 
@@ -169,23 +182,37 @@ public class ScoutUddiV3JaxrHelper
 	throws JAXRException
 	{
 		List<BusinessEntity> bizEntityList = bizdetail.getBusinessEntity();
+		Organization org = new OrganizationImpl(lifeCycleManager);
 		if (bizEntityList.size() != 1) {
 			throw new JAXRException("Unexpected count of organizations in BusinessDetail: " + bizEntityList.size());
 		}
 		BusinessEntity entity = bizEntityList.get(0);
-		Name n = null;
-		if (entity.getName().size()>0) n = entity.getName().get(0);
+		List<Name> namesList = entity.getName();
+		if ((namesList != null) && (namesList.size() > 0)) {
+			InternationalString is = null;
+			for (int i = 0; i < namesList.size(); i++)  {
+				Name n = namesList.get(i);
+				if (is == null) {
+					is = getIString(n.getLang(), n.getValue(), lifeCycleManager);
+				} else {
+					is.setValue(getLocale(n.getLang()), n.getValue());
+				}
+			}
+			org.setName(is);
+		}
 
 		List<Description> descriptionList = entity.getDescription();
-		Description desc =null;
-		if (descriptionList.size()>0) desc = descriptionList.get(0);
-
-		Organization org = new OrganizationImpl(lifeCycleManager);
-		if( n != null ) {
-			org.setName(getIString(n.getLang(), n.getValue(), lifeCycleManager));
-		}
-		if( desc != null ) {
-			org.setDescription(getIString(desc.getLang(), desc.getValue(), lifeCycleManager));
+		if ((descriptionList != null) && (descriptionList.size() > 0)) {
+			InternationalString is = null;
+			for (int i = 0; i < descriptionList.size(); i++)  {
+				Description desc = descriptionList.get(i);
+				if (is == null) {
+					is = getIString(desc.getLang(), desc.getValue(), lifeCycleManager);
+				} else {
+					is.setValue(getLocale(desc.getLang()), desc.getValue());
+				}
+			}
+			org.setDescription(is);
 		}
 		org.setKey(lifeCycleManager.createKey(entity.getBusinessKey()));
 
@@ -338,19 +365,29 @@ public class ScoutUddiV3JaxrHelper
 			serve.setKey(lifeCycleManager.createKey(keystr));
 		}
 
-		Name n = null;
-		if (businessService.getName().size()>0) n = businessService.getName().get(0);
-
-		if (n != null) {
-			String name = n.getValue();
-			serve.setName(lifeCycleManager.createInternationalString(getLocale(n.getLang()), name));
+		List<Name> namesList = businessService.getName();
+		InternationalString is = null;
+		for (int i = 0; i < namesList.size(); i++) {
+			Name n = namesList.get(i);
+			if (is == null) {
+				is = lifeCycleManager.createInternationalString(getLocale(n.getLang()), n.getValue());
+			} else {
+				is.setValue(getLocale(n.getLang()), n.getValue());
+			}
 		}
-
-		Description desc =null;
-		if (businessService.getDescription().size()>0) desc = businessService.getDescription().get(0);
-		if (desc != null ) {
-			serve.setDescription(lifeCycleManager.createInternationalString(getLocale(desc.getLang()), desc.getValue()));
+		serve.setName(is);
+		
+		List<Description> descriptionList = businessService.getDescription();
+		InternationalString dis = null;
+		for (int i = 0; i < namesList.size(); i++) {
+			Description desc = descriptionList.get(i);
+			if (dis == null) {
+				dis = lifeCycleManager.createInternationalString(getLocale(desc.getLang()), desc.getValue());
+			} else {
+				dis.setValue(getLocale(desc.getLang()), desc.getValue());
+			}
 		}
+		serve.setDescription(dis);
 
 		//Populate the ServiceBindings for this Service
 		BindingTemplates bts = businessService.getBindingTemplates();
@@ -377,12 +414,17 @@ public class ScoutUddiV3JaxrHelper
 			service.setKey(lifeCycleManager.createKey(keystr));
 		}
 
-		Name n = null;
-		if (serviceInfo.getName().size()>0) n = serviceInfo.getName().get(0);
-		if (n != null) {
-			String name = n.getValue();
-			service.setName(lifeCycleManager.createInternationalString(getLocale(n.getLang()), name));
+		List<Name> namesList = serviceInfo.getName();
+		InternationalString is = null;
+		for (int i = 0; i < namesList.size(); i++) {
+			Name n = namesList.get(i);
+			if (is == null) {
+				is = lifeCycleManager.createInternationalString(getLocale(n.getLang()), n.getValue());
+			} else {
+				is.setValue(getLocale(n.getLang()), n.getValue());
+			}
 		}
+		service.setName(is);
 		return service;
 	}
 
