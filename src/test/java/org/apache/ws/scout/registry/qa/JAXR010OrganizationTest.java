@@ -103,7 +103,7 @@ public class JAXR010OrganizationTest extends BaseTestCase
             blm = rs.getBusinessLifeCycleManager();
             bqm = rs.getBusinessQueryManager();
             Creator creator = new Creator(blm);
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             
             Collection<Organization> orgs = new ArrayList<Organization>();
             Organization organization = creator.createOrganization(this.getClass().getName());
@@ -162,7 +162,7 @@ public class JAXR010OrganizationTest extends BaseTestCase
             bqm = rs.getBusinessQueryManager();
             System.out.println("We have the Business Query Manager");
             Printer printer = new Printer();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
 
             Collection orgs = finder.findOrganizationsByName(this.getClass().getName());
             if (orgs == null) {
@@ -199,7 +199,7 @@ public class JAXR010OrganizationTest extends BaseTestCase
     //      Get registry service and business query manager
             bqm = rs.getBusinessQueryManager();
             System.out.println("We have the Business Query Manager");
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             Remover remover = new Remover(blm);
             Collection orgs = finder.findOrganizationsByName(this.getClass().getName());
             for (Iterator orgIter = orgs.iterator(); orgIter.hasNext();)
@@ -223,7 +223,7 @@ public class JAXR010OrganizationTest extends BaseTestCase
             bqm = rs.getBusinessQueryManager();
             blm = rs.getBusinessLifeCycleManager();
             System.out.println("We have the Business Query Manager");
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
             Remover remover = new Remover(blm);
             Collection schemes = finder.findClassificationSchemesByName(this.getClass().getName());
             for (Iterator iter = schemes.iterator(); iter.hasNext();)

@@ -44,12 +44,6 @@ public class Finder
     private BusinessQueryManager bqm;
     private String uddiVersion;
     
-    public Finder(BusinessQueryManager bqm) {
-        super();
-        this.bqm = bqm;
-        this.uddiVersion = "2.0";
-    }
-    
     public Finder(BusinessQueryManager bqm, String version) {
     	super();
     	this.bqm = bqm;

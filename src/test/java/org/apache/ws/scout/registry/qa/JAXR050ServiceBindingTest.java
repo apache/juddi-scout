@@ -94,7 +94,7 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
             RegistryService rs = connection.getRegistryService();
             blm = rs.getBusinessLifeCycleManager();
             bqm = rs.getBusinessQueryManager();
-            Finder finder = new Finder(bqm);
+            Finder finder = new Finder(bqm, uddiversion);
 
             System.out.println("\nCreating temporary organization...\n");
             Organization tmpOrg = createTempOrg();
