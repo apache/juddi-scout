@@ -111,16 +111,16 @@ public class AssociationImpl extends RegistryObjectImpl implements Association
       try
       {
          id = source.getKey().getId();
-         id += ":" + target.getKey().getId();
+         id += "|" + target.getKey().getId();
          Key k = null;
          if(type != null ) k = type.getKey();
-         if(k == null || k.getId() == "" ) id +=":NULL";
+         if(k == null || k.getId() == "" ) id +="|NULL";
          else
-          id+=":"+k.getId();
-         id += ":" + "Concept";  //UDDI: KeyedReference->Key Name
+          id+="|"+k.getId();
+         id += "|" + "Concept";  //UDDI: KeyedReference->Key Name
          //String val = "NULL"; KS unused
-         if(type!= null)  id += ":" + type.getValue();
-         else  id +=":NULL";
+         if(type!= null)  id += "|" + type.getValue();
+         else  id +="|NULL";
 
       }
       catch (JAXRException e)
