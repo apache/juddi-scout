@@ -311,88 +311,90 @@ public class RegistryV3Impl implements IRegistryV3 {
 		    	response.removeAttribute(attr);
 		    }
 	    }*/
-
-	    if (response.getNamespaceURI()==null) {
-            response.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
-        }
-	    
-	    // If we are getting responses from a UDDI v3, remove the xmlns
-	    
-	    // First, let's make sure that a response
-	    // (any response) is found in the SOAP Body.
-
-	    String responseName = response.getLocalName();
-	    if (responseName == null) {
-	        throw new RegistryV3Exception("Unsupported response "
-	                + "from registry. A value was not present.");
-		} 
-	    
-        // Let's now try to determine which UDDI response
-        // we received and unmarshal it appropriately or
-        // throw a RegistryV3Exception if it's unknown.
-        // Well, we have now determined that something was
-        // returned and it is "a something" that we know
-        // about so let's unmarshal it into a RegistryObject
-        // Next, let's make sure we didn't recieve a SOAP
-        // Fault. If it is a SOAP Fault then throw it
-        // immediately.
-
-        JAXBElement<?> uddiResponse = null;
-	    try {
-	    	String xml = XMLUtils.convertNodeToXMLString(response);
-	        log.debug("Response is: " + xml);
-	    	
-		StringReader reader = new StringReader(xml);
-		uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(new StreamSource(reader));
-	    	//It is probably faster not to go to a String, but JAXB has issues with this
-	        //uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(response);
-
-	    } catch (JAXBException xmle) {
-	        throw (new RegistryV3Exception(xmle));
-	    }
-
-		if (responseName.toLowerCase().equals("fault")) {
-			NodeList nodeList = null;
-			
-			// Child Elements
-			String fCode = null;
-			nodeList = response.getElementsByTagName("faultcode");
-			if (nodeList.getLength() > 0)
-				fCode = nodeList.item(0).getNodeValue();
-
-			String fString = null;
-			nodeList = response.getElementsByTagName("faultstring");
-			if (nodeList.getLength() > 0)
-				fString = nodeList.item(0).getNodeValue();
-
-			String fActor = null;
-			nodeList = response.getElementsByTagName("faultactor");
-			if (nodeList.getLength() > 0)
-				fActor = nodeList.item(0).getNodeValue();
-
-			DispositionReport dispRpt = null;
-
-			nodeList = response.getElementsByTagName("detail");
-			if (nodeList.getLength() > 0) {
-				nodeList = ((Element) nodeList.item(0))
-						.getElementsByTagName("dispositionReport");
+	    JAXBElement<?> uddiResponse = null;
+	    if (response!=null) {
+		    if (response.getNamespaceURI()==null) {
+	            response.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
+	        }
+		    
+		    // If we are getting responses from a UDDI v3, remove the xmlns
+		    
+		    // First, let's make sure that a response
+		    // (any response) is found in the SOAP Body.
+	
+		    String responseName = response.getLocalName();
+		    if (responseName == null) {
+		        throw new RegistryV3Exception("Unsupported response "
+		                + "from registry. A value was not present.");
+			} 
+		    
+	        // Let's now try to determine which UDDI response
+	        // we received and unmarshal it appropriately or
+	        // throw a RegistryV3Exception if it's unknown.
+	        // Well, we have now determined that something was
+	        // returned and it is "a something" that we know
+	        // about so let's unmarshal it into a RegistryObject
+	        // Next, let's make sure we didn't recieve a SOAP
+	        // Fault. If it is a SOAP Fault then throw it
+	        // immediately.
+	
+	        
+		    try {
+		    	String xml = XMLUtils.convertNodeToXMLString(response);
+		        log.debug("Response is: " + xml);
+		    	
+			StringReader reader = new StringReader(xml);
+			uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(new StreamSource(reader));
+		    	//It is probably faster not to go to a String, but JAXB has issues with this
+		        //uddiResponse = (JAXBElement<?>) unmarshaller.unmarshal(response);
+	
+		    } catch (JAXBException xmle) {
+		        throw (new RegistryV3Exception(xmle));
+		    }
+	
+			if (responseName.toLowerCase().equals("fault")) {
+				NodeList nodeList = null;
+				
+				// Child Elements
+				String fCode = null;
+				nodeList = response.getElementsByTagName("faultcode");
+				if (nodeList.getLength() > 0)
+					fCode = nodeList.item(0).getNodeValue();
+	
+				String fString = null;
+				nodeList = response.getElementsByTagName("faultstring");
+				if (nodeList.getLength() > 0)
+					fString = nodeList.item(0).getNodeValue();
+	
+				String fActor = null;
+				nodeList = response.getElementsByTagName("faultactor");
+				if (nodeList.getLength() > 0)
+					fActor = nodeList.item(0).getNodeValue();
+	
+				DispositionReport dispRpt = null;
+	
+				nodeList = response.getElementsByTagName("detail");
 				if (nodeList.getLength() > 0) {
-					JAXBElement<DispositionReport> dispRptObj = null;
-					try {
-						dispRptObj = (JAXBElement<DispositionReport>) unmarshaller.unmarshal((Element) nodeList
-								.item(0));
-					} catch (JAXBException xmle) {
-						throw (new RegistryV3Exception(xmle));
-					}
-                    dispRpt = dispRptObj.getValue();
-                }
+					nodeList = ((Element) nodeList.item(0))
+							.getElementsByTagName("dispositionReport");
+					if (nodeList.getLength() > 0) {
+						JAXBElement<DispositionReport> dispRptObj = null;
+						try {
+							dispRptObj = (JAXBElement<DispositionReport>) unmarshaller.unmarshal((Element) nodeList
+									.item(0));
+						} catch (JAXBException xmle) {
+							throw (new RegistryV3Exception(xmle));
+						}
+	                    dispRpt = dispRptObj.getValue();
+	                }
+				}
+	
+				RegistryV3Exception e = new RegistryV3Exception(fCode, fString, fActor, dispRpt);
+			
+				// Create RegistryV3Exception instance and return
+				throw e;
 			}
-
-			RegistryV3Exception e = new RegistryV3Exception(fCode, fString, fActor, dispRpt);
-		
-			// Create RegistryV3Exception instance and return
-			throw e;
-		}
+	    }
 
 		return uddiResponse;
 	}
@@ -550,9 +552,11 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getBindingKey().addAll(Arrays.asList(bindingKeyArray));
 		}
 
-        DispositionReport dr;
+        DispositionReport dr = new DispositionReport();
         JAXBElement<?> o = execute(this.objectFactory.createDeleteBinding(request), this.getPublishURI());
-        dr = (DispositionReport) o.getValue();
+        if (o!=null) {
+        	dr = (DispositionReport) o.getValue();
+        }
 
         return dr;
 	}
@@ -574,9 +578,11 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getBusinessKey().addAll(Arrays.asList(businessKeyArray));
 		}
 
-        DispositionReport dr;
+        DispositionReport dr = new DispositionReport();
         JAXBElement<?> o = execute(this.objectFactory.createDeleteBusiness(request), this.getPublishURI());
-        dr = (DispositionReport) o.getValue();
+        if (o!=null){
+        	dr = (DispositionReport) o.getValue();
+        }
 
         return dr;
 	}
@@ -596,10 +602,12 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getPublisherAssertion().addAll(Arrays.asList(assertionArray));
 		}
 
-        DispositionReport dr;
+        DispositionReport dr = new DispositionReport();
         JAXBElement<?> o = execute(this.objectFactory.createDeletePublisherAssertions(request), 
         		this.getPublishURI());
-        dr = (DispositionReport) o.getValue();
+        if (o!=null) {
+        	dr = (DispositionReport) o.getValue();
+        }
 
         return dr;
 	}
@@ -622,10 +630,12 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getServiceKey().addAll(Arrays.asList(serviceKeyArray));
 		}
 
-        DispositionReport dr;
+        DispositionReport dr = new DispositionReport();
         JAXBElement<?> o = execute(this.objectFactory.createDeleteService(request), 
         		this.getPublishURI());
-        dr = (DispositionReport) o.getValue();
+        if (o!=null) {
+        	dr = (DispositionReport) o.getValue();
+        }
 
         return dr;
 	}
@@ -649,10 +659,12 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getTModelKey().addAll(Arrays.asList(tModelKeyArray));
 		}
 
-        DispositionReport dr;
+        DispositionReport dr = new DispositionReport();
         JAXBElement<?> o = execute(this.objectFactory.createDeleteTModel(request), 
         		this.getPublishURI());
-        dr = (DispositionReport) o.getValue();
+        if (o!=null) {
+        	dr = (DispositionReport) o.getValue();
+        }
 
         return dr;
 	}

@@ -63,7 +63,9 @@ public class AxisTransport implements Transport
       Object[] soapBodies = new Object[] { body };
 
       Vector result = (Vector)call.invoke(soapBodies);
-      response = ((SOAPBodyElement)result.elementAt(0)).getAsDOM();
+      if (result.size() > 0) {
+    	  response = ((SOAPBodyElement)result.elementAt(0)).getAsDOM();
+      }
     }
     catch (AxisFault fault) {
 
@@ -106,7 +108,9 @@ public class AxisTransport implements Transport
       Object[] soapBodies = new Object[] { body };
     
       Vector result = (Vector)call.invoke(soapBodies);
-      response = ((SOAPBodyElement)result.elementAt(0)).getAsString();
+      if (result.size() > 0 ) {
+    	  response = ((SOAPBodyElement)result.elementAt(0)).getAsString();
+      }
     }
     catch (AxisFault fault) {
 

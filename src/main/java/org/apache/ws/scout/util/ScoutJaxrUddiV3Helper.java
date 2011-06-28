@@ -284,14 +284,14 @@ public class ScoutJaxrUddiV3Helper
 			String key) throws JAXRException {
 		PublisherAssertion pa = objectFactory.createPublisherAssertion();
 		try {
-			StringTokenizer token = new StringTokenizer(key, ":");
+			StringTokenizer token = new StringTokenizer(key, "|");
 			if (token.hasMoreTokens()) {
                pa.setFromKey(getToken(token.nextToken()));
                pa.setToKey(getToken(token.nextToken()));
 				KeyedReference kr = objectFactory.createKeyedReference();
 				// Sometimes the Key is UUID:something
                String str = getToken(token.nextToken());
-				if ("UUID".equals(str))
+				if ("UUID".equalsIgnoreCase(str))
 					str += ":" + getToken(token.nextToken());
                kr.setTModelKey(str);
                kr.setKeyName(getToken(token.nextToken()));
