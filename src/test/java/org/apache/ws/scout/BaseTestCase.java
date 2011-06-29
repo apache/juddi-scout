@@ -18,6 +18,7 @@ package org.apache.ws.scout;
 
 import java.net.PasswordAuthentication;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -63,8 +64,14 @@ public class BaseTestCase
         System.out.println("************************************************************");
         try
         {
+        	String envUDDIVersion =  System.getenv("uddi.version");
+        	if (envUDDIVersion==null) envUDDIVersion = "2";
+        	String propertiesFile = "/scoutv" + envUDDIVersion + ".properties";
+        	
+        	System.out.println("Reading Scout Properties from: " + propertiesFile);
+        	
             Properties scoutProperties = new Properties();
-            scoutProperties.load(getClass().getResourceAsStream("/scout.properties"));
+            scoutProperties.load(getClass().getResourceAsStream(propertiesFile));
             
             Properties juddiProperties = new Properties();
             juddiProperties.load(getClass().getResourceAsStream("/juddi.properties"));
