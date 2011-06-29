@@ -293,7 +293,7 @@ public class ScoutJaxrUddiHelper
 			String key) throws JAXRException {
 		PublisherAssertion pa = objectFactory.createPublisherAssertion();
 		try {
-			StringTokenizer token = new StringTokenizer(key, ":");
+			StringTokenizer token = new StringTokenizer(key, "|");
 			if (token.hasMoreTokens()) {
                pa.setFromKey(getToken(token.nextToken()));
                pa.setToKey(getToken(token.nextToken()));
