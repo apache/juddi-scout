@@ -72,6 +72,7 @@ import org.uddi.api_v3.GetRegisteredInfo;
 import org.uddi.api_v3.GetServiceDetail;
 import org.uddi.api_v3.GetTModelDetail;
 import org.uddi.api_v3.IdentifierBag;
+import org.uddi.api_v3.InfoSelection;
 import org.uddi.api_v3.Name;
 import org.uddi.api_v3.ObjectFactory;
 import org.uddi.api_v3.PublisherAssertion;
@@ -290,7 +291,11 @@ public class RegistryV3Impl implements IRegistryV3 {
 	    //request.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns", this.getUddiNamespace());
 	    // A SOAP request is made and a SOAP response
 	    // is returned.
-
+	    if (log.isDebugEnabled()) {
+	    	String xmlIn = XMLUtils.convertNodeToXMLString(request);
+	    	log.debug("Request send to UDDI Registry: " + xmlIn);
+	    }
+	    
 	    Element response;
 	    try {
 	    	response = transport.send(request, endPointURI);
@@ -971,6 +976,8 @@ public class RegistryV3Impl implements IRegistryV3 {
 		if (authInfo != null) {
 			request.setAuthInfo(authInfo);
 		}
+		
+		request.setInfoSelection(InfoSelection.ALL);
 
         RegisteredInfo ri;
         JAXBElement<?> o = execute(this.objectFactory.createGetRegisteredInfo(request), 
