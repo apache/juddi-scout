@@ -804,8 +804,8 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
         String[] keys = new String[objectKeys.size()];
         int currLoc = 0;
         for (Key key : (Collection<Key>) objectKeys) {
-            keys[currLoc] = key.getId();
-            currLoc++;
+        	String keyString = key.getId();
+            keys[currLoc++]=keyString;
         }
         LinkedHashSet<RegistryObject> col = new LinkedHashSet<RegistryObject>();
         LifeCycleManager lcm = registryService.getLifeCycleManagerImpl();
@@ -849,11 +849,10 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
                 if (ri != null) {
                     BusinessInfos infos = ri.getBusinessInfos();
                     if (infos != null) {
-                        List<BusinessInfo> bizInfoList = infos.getBusinessInfo();
-                        for (BusinessInfo businessInfo: bizInfoList) {
-                            BusinessDetail detail = registry.getBusinessDetail(businessInfo.getBusinessKey());
-                            col.add(((BusinessLifeCycleManagerV3Impl)registryService.getLifeCycleManagerImpl()).createOrganization(detail));
-                        }
+                        for (String key: keys) {
+                        	BusinessDetail detail = registry.getBusinessDetail(key);
+                    		col.add(((BusinessLifeCycleManagerV3Impl)registryService.getLifeCycleManagerImpl()).createOrganization(detail));
+						}
                     }
                 }
             } catch (RegistryV3Exception e) {
