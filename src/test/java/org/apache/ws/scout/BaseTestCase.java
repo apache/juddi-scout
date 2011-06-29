@@ -27,6 +27,7 @@ import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.JAXRException;
 
+import org.apache.juddi.v3.client.config.UDDIClerkManager;
 import org.apache.ws.scout.registry.RegistryImpl;
 /**
  * Test to check Jaxr Publish
@@ -37,6 +38,9 @@ import org.apache.ws.scout.registry.RegistryImpl;
  */
 public class BaseTestCase
 {
+	
+	private static UDDIClerkManager manager;
+	
     protected Connection connection;
     protected Connection connection2;
     
@@ -90,8 +94,14 @@ public class BaseTestCase
             
             if (scoutProperties.getProperty("scout.proxy.uddiVersion") != null)
             {
-            	uddiversion = scoutProperties.getProperty("scout.proxy.uddiVersion");
+            	uddiversion = scoutProperties.getProperty("scout.proxy.uddiVersion","2.0");
             }
+            
+            if ("3.0".equals(uddiversion)) {
+            	manager = new UDDIClerkManager();
+            	manager.start();
+            }
+            
             if (scoutProperties.getProperty("scout.proxy.uddiNamespace") != null) {
             	uddinamespace = scoutProperties.getProperty("scout.proxy.uddiNamespace");
             }            
@@ -138,8 +148,12 @@ public class BaseTestCase
      */
     public void tearDown()
     {
+    	
         try
         {
+        	if ("3.0".equals(uddiversion)) {
+            	manager.stop();
+            }
             if (connection != null)
                 connection.close();
             
