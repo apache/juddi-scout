@@ -81,49 +81,49 @@ public class ScoutJaxrUddiV3Helper
 		AddressLine stnumAL = objectFactory.createAddressLine();
         stnumAL.setKeyName("STREET_NUMBER");
 		if (stnum != null) {
-			stnumAL.setKeyValue(stnum);
+			stnumAL.setKeyValue("STREET_NUMBER");
 			stnumAL.setValue(stnum);
 		}
 
 		AddressLine stAL = objectFactory.createAddressLine();
         stAL.setKeyName("STREET");
 		if (st != null) {
-			stAL.setKeyValue(st);
+			stAL.setKeyValue("STREET");
 			stAL.setValue(st);
 		}
 
 		AddressLine cityAL = objectFactory.createAddressLine();
         cityAL.setKeyName("CITY");
 		if (city != null) {
-			cityAL.setKeyValue(city);
+			cityAL.setKeyValue("CITY");
 			cityAL.setValue(city);
 		}
 
 		AddressLine countryAL = objectFactory.createAddressLine();
         countryAL.setKeyName("COUNTRY");
 		if (country != null) {
-			countryAL.setKeyValue(country);
+			countryAL.setKeyValue("COUNTRY");
 			countryAL.setValue(country);
 		}
 
 		AddressLine codeAL = objectFactory.createAddressLine();
         codeAL.setKeyName("POSTALCODE");
 		if (code != null) {
-			codeAL.setKeyValue(code);
+			codeAL.setKeyValue("POSTALCODE");
 			codeAL.setValue(code);
 		}
 
 		AddressLine stateAL = objectFactory.createAddressLine();
         stateAL.setKeyName("STATE");
 		if (state != null) {
-			stateAL.setKeyValue(state);
+			stateAL.setKeyValue("STATE");
 			stateAL.setValue(state);
 		}
 		
         AddressLine typeAL = objectFactory.createAddressLine();
         typeAL.setKeyName("TYPE");
         if (type != null) {
-                typeAL.setKeyValue(type);
+                typeAL.setKeyValue("TYPE");
                 typeAL.setValue(type);
         }
 

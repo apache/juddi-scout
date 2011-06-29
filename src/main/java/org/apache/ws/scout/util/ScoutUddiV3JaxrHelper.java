@@ -307,7 +307,7 @@ public class ScoutUddiV3JaxrHelper
 		PostalAddress pa = new PostalAddressImpl();
 		HashMap<String, String> hm = new HashMap<String, String>();
 		for (AddressLine anAddressLineArr : addressLineArr) {
-			hm.put(anAddressLineArr.getKeyName(), anAddressLineArr.getKeyValue());
+			hm.put(anAddressLineArr.getKeyName(), anAddressLineArr.getValue());
 		}
 
 		if (hm.containsKey("STREET_NUMBER")) {
