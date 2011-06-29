@@ -379,7 +379,7 @@ public class ScoutUddiV3JaxrHelper
 		
 		List<Description> descriptionList = businessService.getDescription();
 		InternationalString dis = null;
-		for (int i = 0; i < namesList.size(); i++) {
+		for (int i = 0; i < descriptionList.size(); i++) {
 			Description desc = descriptionList.get(i);
 			if (dis == null) {
 				dis = lifeCycleManager.createInternationalString(getLocale(desc.getLang()), desc.getValue());
