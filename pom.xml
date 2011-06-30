@@ -13,7 +13,7 @@
 	<packaging>bundle</packaging>
 
 	<properties>
-		<juddi.registry.version>3.1.1-SNAPSHOT</juddi.registry.version>
+		<juddi.registry.version>3.1.0</juddi.registry.version>
 	</properties>
 
 	<prerequisites>
@@ -350,7 +350,7 @@
 		<profile>
 			<id>uddiv2</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<dependencies>
 				<dependency>
@@ -420,13 +420,13 @@
 		<profile>
 			<id>uddiv3</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<dependencies>
 				<dependency>
 					<groupId>org.apache.juddi</groupId>
 					<artifactId>juddi-tomcat</artifactId>
-					<version>3.1.1-SNAPSHOT</version>
+					<version>3.1.0</version>
 					<scope>test</scope>
 					<type>zip</type>
 				</dependency>
