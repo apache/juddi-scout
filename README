@@ -82,10 +82,32 @@ SUPPORT
 
   Thanks from the Scout development team for downloading 
   the package; help us make it better by sending comments 
-  to scout-dev@ws.apache.org. Subscribe to this list by 
+  to dev@juddi.apache.org. Subscribe to this list by 
   sending a message to the following email address:
   
-    scout-dev-subscribe@ws.apache.org
+    dev-subscribe@juddi.apache.org
+
+Release Notes - Scout - Version 1.2.3
+
+Bug
+
+    * [SCOUT-105] - dont eat InvocationTargetException cause in org.apache.ws.scout.transport.LocalTransport
+    * [SCOUT-108] - get_assertionStatusReport fails with juddi-client 3.0.4
+    * [SCOUT-109] - scout does not conform to jUDDI WSDL
+    * [SCOUT-113] - Overview URL Incorrectly displayed
+    * [SCOUT-116] - IndexOutOfBoundsException in AxisTransport after changes in JUDDI-498.
+    * [SCOUT-118] - Unit tests are broken using UDDI v3.
+    * [SCOUT-119] - IndexOutOfBoundsException caused by a simple copy&paste bug in following code.
+    * [SCOUT-120] - When getting Organizations by key on UDDIv3 ALL organizations are returned
+
+Improvement
+
+    * [SCOUT-104] - make property constants public in org.apache.ws.scout.registry.ConnectionFactoryImpl
+
+Task
+
+    * [SCOUT-112] - Upgrade juddi dependency to 3.1.0
+
 
 Release notes - Scout - Version 1.2.2
 
