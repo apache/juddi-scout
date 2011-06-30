@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache</groupId>
@@ -9,7 +8,7 @@
 	</parent>
 	<groupId>org.apache.ws.scout</groupId>
 	<artifactId>scout</artifactId>
-	<version>1.2.3-SNAPSHOT</version>
+	<version>1.2.3</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -132,9 +131,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/juddi/scout/trunk</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</developerConnection>
-		<url>http://svn.apache.org/viewcvs.cgi/juddi/scout/trunk</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/juddi/scout/tags/scout-1.2.3</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/tags/scout-1.2.3</developerConnection>
+		<url>http://svn.apache.org/viewcvs.cgi/juddi/scout/tags/scout-1.2.3</url>
 	</scm>
 	<dependencies>
 		<dependency>
@@ -473,14 +472,9 @@
 								<phase>pre-integration-test</phase>
 								<configuration>
 									<tasks>
-										<unzip dest="target"
-											src="target/juddi-tomcat-${juddi.registry.version}.zip" />
-										<copy file="${basedir}/server.xml"
-											todir="target/juddi-tomcat-${juddi.registry.version}/conf"
-											overwrite="true" />
-										<copy file="${basedir}/log4j.properties"
-											todir="target/juddi-tomcat-${juddi.registry.version}/webapps/juddiv3/WEB-INF/classes"
-											overwrite="true" />
+										<unzip dest="target" src="target/juddi-tomcat-${juddi.registry.version}.zip" />
+										<copy file="${basedir}/server.xml" todir="target/juddi-tomcat-${juddi.registry.version}/conf" overwrite="true" />
+										<copy file="${basedir}/log4j.properties" todir="target/juddi-tomcat-${juddi.registry.version}/webapps/juddiv3/WEB-INF/classes" overwrite="true" />
 									</tasks>
 								</configuration>
 								<goals>
