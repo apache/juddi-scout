@@ -122,8 +122,8 @@ public class BaseTestCase
     				SECURITY_URI :
     				System.getProperty("javax.xml.registry.securityManagerURL"));
             }
-            props.setProperty("javax.xml.registry.factoryFactoryClass",
-                    "org.apache.ws.scout.? it isregistry.ConnectionFactoryImpl");
+            props.setProperty("javax.xml.registry.ConnectionFactoryClass",
+                    "org.apache.ws.scout.registry.ConnectionFactoryImpl");
             props.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
             props.setProperty("javax.xml.registry.uddi.maxRows", String.valueOf(maxRows));
        
