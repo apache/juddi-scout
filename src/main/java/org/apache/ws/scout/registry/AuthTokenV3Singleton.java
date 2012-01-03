@@ -25,7 +25,7 @@ public class AuthTokenV3Singleton {
 		if (instance == null) {
 			instance = new AuthTokenV3Singleton();
 		}
-		cachedAuthTokenHash.put(username, token);
+		if (token!=null) cachedAuthTokenHash.put(username, token);
 	}
 	
 	public synchronized static void deleteAuthToken(String username) {

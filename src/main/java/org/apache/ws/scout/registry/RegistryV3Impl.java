@@ -900,9 +900,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 			getAuthTokenURI = this.getPublishURI();
 		}
 		
-        AuthToken at;
+        AuthToken at = null;
         JAXBElement<?> o = execute(this.objectFactory.createGetAuthToken(request), 
         		getAuthTokenURI);
+        if (o!=null)
         at = (AuthToken) o.getValue();
 
         return at;
