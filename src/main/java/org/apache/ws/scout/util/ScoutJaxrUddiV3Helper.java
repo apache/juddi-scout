@@ -227,6 +227,14 @@ public class ScoutJaxrUddiV3Helper
                                     ourl.setValue(link.getExternalURI());
                                     overviewDoc.setOverviewURL(ourl);
                                 }
+                                if (slink.getUsageParameters() != null) {
+                                    StringBuffer buffer = new StringBuffer();
+                                    for (Object o : slink.getUsageParameters()) {
+                                        String s = (String) o;
+                                        buffer.append(s + " ");
+                                    }
+                                    ids.setInstanceParms(buffer.toString().trim());
+                                }
                             } 
                         }
 					}
