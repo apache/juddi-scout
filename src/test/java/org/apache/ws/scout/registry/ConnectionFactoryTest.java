@@ -47,14 +47,18 @@ public class ConnectionFactoryTest extends TestCase {
 
     public void testSetQueryManagerURL() {
         String url = "http://localhost";
-        factory.setQueryManagerURL(url);
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionFactoryImpl.QUERYMANAGER_PROPERTY, url);
+        factory.setProperties(properties);
         assertEquals(url, factory.getQueryManagerURL());
         assertEquals(url, factory.getProperties().getProperty("javax.xml.registry.queryManagerURL"));
     }
 
     public void testSetLifeCycleURL() {
         String url = "http://localhost";
-        factory.setLifeCycleManagerURL(url);
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY, url);
+        factory.setProperties(properties);
         assertEquals(url, factory.getLifeCycleManagerURL());
         assertEquals(url, factory.getProperties().getProperty("javax.xml.registry.lifeCycleManagerURL"));
     }
@@ -63,65 +67,75 @@ public class ConnectionFactoryTest extends TestCase {
         String urns =
                 "urn:uuid:0a1324f7-6d4a-4d73-a088-9ab1d00c9a91,urn:uuid:23a5feac-26b9-4525-82fc-997885a0e6a2" + '|' +
                 "urn:uuid:1acf6ed2-cd6e-4797-aad8-8937a3cff88b,urn:uuid:152d6f28-cb56-4e5d-9f55-96b132def0e4";
-        factory.setSemanticEquivalences(urns);
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionFactoryImpl.SEMANTICEQUIVALENCES_PROPERTY, urns);
+        factory.setProperties(properties);
         assertEquals(urns, factory.getSemanticEquivalences());
         assertEquals(urns, factory.getProperties().getProperty("javax.xml.registry.semanticEquivalences"));
     }
 
     public void testSetAuthenticationMethod() {
         String method = "HTTP_BASIC";
-        factory.setAuthenticationMethod(method);
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionFactoryImpl.AUTHENTICATIONMETHOD_PROPERTY, method);
+        factory.setProperties(properties);
         assertEquals(method, factory.getAuthenticationMethod());
         assertEquals(method, factory.getProperties().getProperty("javax.xml.registry.security.authenticationMethod"));
     }
 
     public void testSetPostalAddressScheme() {
         String scheme = "User Defined";
-        factory.setPostalAddressScheme(scheme);
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionFactoryImpl.POSTALADDRESSSCHEME_PROPERTY, scheme);
+        factory.setProperties(properties);
         assertEquals(scheme, factory.getPostalAddressScheme());
         assertEquals(scheme, factory.getProperties().getProperty("javax.xml.registry.postalAddressScheme"));
     }
 
     public void testMaxRows() {
-        Integer maxRows = new Integer(1234);
-        factory.setMaxRows(maxRows);
+        Integer maxRows = 1234;
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionFactoryImpl.MAXROWS_PROPERTY, String.valueOf(maxRows));
+        factory.setProperties(properties);
         assertEquals(maxRows, factory.getMaxRows());
         assertEquals(maxRows.toString(), factory.getProperties().getProperty("javax.xml.registry.uddi.maxRows"));
     }
 
     public void testNullQueryManagerURL() {
-        factory.setQueryManagerURL(null);
+        factory.setProperties(null);
         assertFalse(factory.getProperties().containsKey("javax.xml.registry.queryManagerURL"));
     }
 
     public void testNullLifeCycleManagerURL() {
-        factory.setLifeCycleManagerURL(null);
+        factory.setProperties(null);
         assertFalse(factory.getProperties().containsKey("javax.xml.registry.lifeCycleManagerURL"));
     }
 
     public void testNullSemanticEquivalences() {
-        factory.setSemanticEquivalences(null);
+        factory.setProperties(null);
         assertFalse(factory.getProperties().containsKey("javax.xml.registry.semanticEquivalences"));
     }
 
     public void testNullAuthenticationMethod() {
-        factory.setAuthenticationMethod(null);
+        factory.setProperties(null);
         assertFalse(factory.getProperties().containsKey("javax.xml.registry.security.authenticationMethod"));
     }
 
     public void testNullMaxRows() {
-        factory.setMaxRows(null);
+        factory.setProperties(null);
         assertFalse(factory.getProperties().containsKey("javax.xml.registry.uddi.maxRows"));
     }
 
     public void testNullPostalAddressScheme() {
-        factory.setPostalAddressScheme(null);
+        factory.setProperties(null);
         assertFalse(factory.getProperties().containsKey("javax.xml.registry.postalAddressScheme"));
     }
 
     public void testCreateConnection() throws JAXRException {
-        factory.setQueryManagerURL("http://localhost");
-        factory.setLifeCycleManagerURL("http://localhost");
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionFactoryImpl.QUERYMANAGER_PROPERTY, "http://localhost");
+        properties.setProperty(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY , "http://localhost");
+        factory.setProperties(properties);
         Connection c = factory.createConnection();
         try {
             assertEquals(ConnectionImpl.class, c.getClass());
@@ -131,8 +145,9 @@ public class ConnectionFactoryTest extends TestCase {
     }
 
     public void testCreateConnectionWithNullLifeCycleURL() throws JAXRException {
-        factory.setQueryManagerURL("http://localhost");
-        factory.setLifeCycleManagerURL(null);
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionFactoryImpl.QUERYMANAGER_PROPERTY, "http://localhost");
+        factory.setProperties(properties);
         Connection c = factory.createConnection();
         try {
             assertEquals(ConnectionImpl.class, c.getClass());
@@ -140,33 +155,6 @@ public class ConnectionFactoryTest extends TestCase {
             c.close();
         }
     }
-
-// KS: This is no longer invalid..
-//    
-//    public void testCreateConnectionWithInvalidQueryURL() {
-//        factory.setQueryManagerURL("foo:bar");
-//        try {
-//            factory.createConnection();
-//            fail("did not reject invalid URL");
-//        } catch (InvalidRequestException e) {
-//            // OK
-//        } catch (JAXRException e) {
-//            fail("threw JAXRException");
-//        }
-//    }
-//
-//    public void testCreateConnectionWithInvalidLifeCycleURL() {
-//        factory.setQueryManagerURL("http://localhost");
-//        factory.setLifeCycleManagerURL("foo:bar");
-//        try {
-//            factory.createConnection();
-//            fail("did not reject invalid URL");
-//        } catch (InvalidRequestException e) {
-//            // OK
-//        } catch (JAXRException e) {
-//            fail("threw JAXRException");
-//        }
-//    }
 
     public void testCreateConnectionWithNullQueryURL() {
         try {

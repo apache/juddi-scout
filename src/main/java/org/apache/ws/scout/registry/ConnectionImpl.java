@@ -25,6 +25,11 @@ import javax.xml.registry.Connection;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.juddi.v3.client.config.UDDIClerkManager;
+
 /**
  * Apache Scout Implementation of a JAXR Connection.
  * For futher details, look into the JAXR API Javadoc.
@@ -35,6 +40,7 @@ import javax.xml.registry.RegistryService;
 public class ConnectionImpl implements Connection, Serializable
 {
 	private static final long serialVersionUID = 3542404895814764176L;
+	private static Log log = LogFactory.getLog(ConnectionImpl.class);
 	private boolean closed = false;
     private boolean synchronous = true;
     private Set credentials;
@@ -42,11 +48,11 @@ public class ConnectionImpl implements Connection, Serializable
     private final String postalScheme;
     private final int maxRows;
     private String uddiVersion;
+    UDDIClerkManager manager = null;
 
     public ConnectionImpl(URI queryManagerURI, URI lifeCycleManagerURI, URI securityManagerURI, String transportClass, String postalScheme, int maxRows,
-    	String uddiNamespace, String uddiVersion)
+    	String uddiNamespace, String uddiVersion, String uddiConfig, Properties properties)
     {
-        Properties prop = new Properties();
         /**
          * If you want to override any of the properties
          * juddi RegistryProxy uses, set the System property
@@ -54,23 +60,23 @@ public class ConnectionImpl implements Connection, Serializable
          */
 		this.uddiVersion = uddiVersion;
 		if (uddiVersion != null) {
-			prop.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, uddiVersion);
+		    properties.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, uddiVersion);
 		} else {
-    		prop.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, RegistryImpl.DEFAULT_UDDI_VERSION);
+		    properties.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, RegistryImpl.DEFAULT_UDDI_VERSION);
 		}
 			
 		if (uddiNamespace!=null) {
-    		prop.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, uddiNamespace);
+		    properties.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, uddiNamespace);
 		} else {
-			prop.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, RegistryImpl.DEFAULT_UDDI_NAMESPACE);
+		    properties.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, RegistryImpl.DEFAULT_UDDI_NAMESPACE);
 		}
 		
         if (transportClass!=null) {
-    		prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transportClass);
+            properties.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transportClass);
         } else {
     		String transport = SecurityActions.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
     		if (transport != null) {
-    			prop.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transport);
+    		    properties.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transport);
     		}
         }
         /**
@@ -78,9 +84,21 @@ public class ConnectionImpl implements Connection, Serializable
          * juddi takes default values
          */
         if ("3.0".equals(uddiVersion)) {
-        	registry = new RegistryV3Impl(prop);
+            String nodeName = null;
+            String managerName = null;
+            if (manager==null) {
+                try {
+                    manager = new UDDIClerkManager("META-INF/jaxr-uddi.xml", properties);
+                    manager.start();
+                    nodeName = manager.getClientConfig().getHomeNode().getName();
+                    managerName = manager.getName();
+                } catch (ConfigurationException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+        	registry = new RegistryV3Impl(properties, nodeName, managerName);
         } else {
-            registry = new RegistryImpl(prop);           	
+            registry = new RegistryImpl(properties);           	
         }
         registry.setInquiryURI(queryManagerURI);
         registry.setPublishURI(lifeCycleManagerURI);

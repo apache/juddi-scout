@@ -65,22 +65,14 @@ public class BaseTestCase
         try
         {
         	String envUDDIVersion =  System.getenv("uddi.version");
-        	if (envUDDIVersion==null) envUDDIVersion = "2";
+        	if (envUDDIVersion==null) envUDDIVersion = "3";
         	String propertiesFile = "/scoutv" + envUDDIVersion + ".properties";
         	
         	System.out.println("Reading Scout Properties from: " + propertiesFile);
         	
             Properties scoutProperties = new Properties();
             scoutProperties.load(getClass().getResourceAsStream(propertiesFile));
-            
-            Properties juddiProperties = new Properties();
-            juddiProperties.load(getClass().getResourceAsStream("/juddi.properties"));
-            
-            final String INQUERY_URI      = scoutProperties.getProperty("inquery.uri");
-            final String PUBLISH_URI      = scoutProperties.getProperty("publish.uri");
-            final String SECURITY_URI    = scoutProperties.getProperty("security.uri");
-            final String TRANSPORT_CLASS  = scoutProperties.getProperty("transport.class");
-             
+          
             if (scoutProperties.getProperty("userid")!=null) {
                 userid = scoutProperties.getProperty("userid");
             }
@@ -88,12 +80,12 @@ public class BaseTestCase
                 passwd = scoutProperties.getProperty("password");
             }
             
-            if (scoutProperties.getProperty("userid2")!=null) {
-                userid = scoutProperties.getProperty("userid2");
-            }
-            if (scoutProperties.getProperty("password2")!=null) {
-                passwd = scoutProperties.getProperty("password2");
-            }
+//            if (scoutProperties.getProperty("userid2")!=null) {
+//                userid = scoutProperties.getProperty("userid2");
+//            }
+//            if (scoutProperties.getProperty("password2")!=null) {
+//                passwd = scoutProperties.getProperty("password2");
+//            }
             
             if (scoutProperties.getProperty("scout.proxy.uddiVersion") != null)
             {
@@ -104,35 +96,9 @@ public class BaseTestCase
             	uddinamespace = scoutProperties.getProperty("scout.proxy.uddiNamespace");
             }            
             
-            // Define connection configuration properties
-            // To query, you need only the query URL
-            Properties props = new Properties();
-            
-            props.setProperty("javax.xml.registry.queryManagerURL",
-            				System.getProperty("javax.xml.registry.queryManagerURL") == null ? 
-            				INQUERY_URI :
-            				System.getProperty("javax.xml.registry.queryManagerURL"));
-            props.setProperty("javax.xml.registry.lifeCycleManagerURL",
-            				System.getProperty("javax.xml.registry.lifeCycleManagerURL") == null ? 
-            				PUBLISH_URI :
-            				System.getProperty("javax.xml.registry.lifeCycleManagerURL"));
-            if ("3.0".equals(uddiversion)) {
-            	props.setProperty("javax.xml.registry.securityManagerURL",
-    				System.getProperty("javax.xml.registry.securityManagerURL") == null ? 
-    				SECURITY_URI :
-    				System.getProperty("javax.xml.registry.securityManagerURL"));
-            }
-            props.setProperty("javax.xml.registry.ConnectionFactoryClass",
-                    "org.apache.ws.scout.registry.ConnectionFactoryImpl");
-            props.setProperty("scout.proxy.transportClass", TRANSPORT_CLASS);
-            props.setProperty("javax.xml.registry.uddi.maxRows", String.valueOf(maxRows));
-       
-            props.setProperty("scout.proxy.uddiVersion", uddiversion);
-            props.setProperty("scout.proxy.uddiNamespace", uddinamespace);
-
             // Create the connection, passing it the configuration properties
             ConnectionFactory factory = ConnectionFactory.newInstance();
-            factory.setProperties(props);
+            factory.setProperties(scoutProperties);
             connection = factory.createConnection();
             connection2 = factory.createConnection();
         } catch (Exception e)

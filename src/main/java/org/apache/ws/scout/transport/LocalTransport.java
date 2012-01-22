@@ -15,7 +15,6 @@
  */
 package org.apache.ws.scout.transport;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 
@@ -39,8 +38,18 @@ import org.w3c.dom.Node;
 public class LocalTransport implements Transport
 {
   private static Log log = LogFactory.getLog(LocalTransport.class);
+  private String nodeName;
+  private String managerName;
 
-  /** 
+  public LocalTransport(){};
+  
+  public LocalTransport(String nodeName, String managerName) {
+    super();
+    this.nodeName = nodeName;
+    this.managerName = managerName;
+}
+
+/** 
    * Sends an element and returns an element.
    */
   public Element send(Element request,URI endpointURI)
@@ -59,8 +68,14 @@ public class LocalTransport implements Transport
     	log.debug("Method=" + methodName);
     	Class<?> c = Class.forName(className);
     	Object requestHandler = c.newInstance();
-    	Method method = c.getMethod(methodName, Element.class);
-    	Node node = (Node) method.invoke(requestHandler, request);
+    	Node node = null;
+    	if (managerName!=null) {
+    	    Method method = c.getMethod(methodName, Element.class, String.class, String.class);
+    	    node = (Node) method.invoke(requestHandler, request, nodeName, managerName);
+    	} else {
+    	    Method method = c.getMethod(methodName, Element.class);
+    	    node = (Node) method.invoke(requestHandler, request);
+    	}
     	if (node!=null && node.getFirstChild()!=null) {
     		response = (Element) node.getFirstChild();
     	}

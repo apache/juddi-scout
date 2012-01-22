@@ -39,6 +39,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.scout.transport.LocalTransport;
 import org.apache.ws.scout.transport.Transport;
 import org.apache.ws.scout.transport.TransportException;
 import org.apache.ws.scout.util.XMLUtils;
@@ -141,6 +142,9 @@ public class RegistryV3Impl implements IRegistryV3 {
 	private String uddiVersion;
 	private String uddiNamespace;
 	
+	private String nodeName;
+	private String managerName;
+	
 	private ObjectFactory objectFactory = new ObjectFactory();
 	
 	private Marshaller marshaller = null;
@@ -151,21 +155,23 @@ public class RegistryV3Impl implements IRegistryV3 {
 	/**
 	 * Creates a new instance of RegistryImpl.
 	 */
-	public RegistryV3Impl(Properties props) {
+	public RegistryV3Impl(Properties props, String nodeName, String managerName) {
 		super();
 
-		this.init(props);
+		this.init(props, nodeName, managerName);
 	}
 
 	/**
 	 * 
 	 */
-	private void init(Properties props) {
+	private void init(Properties props, String nodeName, String managerName) {
 		// We need to have a non-null Properties
 		// instance so initialization takes place.
 		if (props == null)
 			props = new Properties();
 
+		this.nodeName = nodeName;
+		this.managerName = managerName;
 		// Override defaults with specific specific values
 		try {
 			String iURL = props.getProperty(INQUIRY_ENDPOINT_PROPERTY_NAME);
@@ -1075,10 +1081,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getPublisherAssertion().addAll(Arrays.asList(assertionArray));
 		}
 
-        PublisherAssertions pa;
+        PublisherAssertions pa = null;
         JAXBElement<?> o = execute(this.objectFactory.createSetPublisherAssertions(request), 
         		this.getPublishURI());
-        pa = (PublisherAssertions) o.getValue();
+        if (o!=null) pa = (PublisherAssertions) o.getValue();
 
         return pa;
 	}
@@ -1220,7 +1226,13 @@ public class RegistryV3Impl implements IRegistryV3 {
 
 		try {
 			// try to instantiate the TransportFactory
-			transport = (Transport) transportClass.newInstance();
+		    if (LocalTransport.class.getName().equals(className) && managerName!=null) {
+		        transport = (Transport) transportClass.getConstructor(
+		                new Class[]{String.class,String.class})
+		                .newInstance(nodeName,managerName);
+		    } else {
+		        transport = (Transport) transportClass.newInstance();
+		    }
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}

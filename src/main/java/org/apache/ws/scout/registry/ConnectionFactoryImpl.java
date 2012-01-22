@@ -41,13 +41,17 @@ import javax.xml.registry.UnsupportedCapabilityException;
 public class ConnectionFactoryImpl extends ConnectionFactory implements Serializable
 {
 	private static final long serialVersionUID = -6902106826496922256L;
-	public static final String QUERYMANAGER_PROPERTY = "javax.xml.registry.queryManagerURL";
-	public static final String LIFECYCLEMANAGER_PROPERTY = "javax.xml.registry.lifeCycleManagerURL";
-	public static final String SECURITYMANAGER_PROPERTY = "javax.xml.registry.securityManagerURL";
+	public static final String QUERYMANAGER_PROPERTY         = "javax.xml.registry.queryManagerURL";
+	public static final String LIFECYCLEMANAGER_PROPERTY     = "javax.xml.registry.lifeCycleManagerURL";
+	public static final String SECURITYMANAGER_PROPERTY      = "javax.xml.registry.securityManagerURL";
 	public static final String SEMANTICEQUIVALENCES_PROPERTY = "javax.xml.registry.semanticEquivalences";
-	public static final String POSTALADDRESSSCHEME_PROPERTY = "javax.xml.registry.postalAddressScheme";
+	public static final String POSTALADDRESSSCHEME_PROPERTY  = "javax.xml.registry.postalAddressScheme";
 	public static final String AUTHENTICATIONMETHOD_PROPERTY = "javax.xml.registry.security.authenticationMethod";
-	public static final String MAXROWS_PROPERTY = "javax.xml.registry.uddi.maxRows";
+	public static final String MAXROWS_PROPERTY              = "javax.xml.registry.uddi.maxRows";
+	
+	public static final String JUDDI_CLIENT_CONFIG_FILE      = "scout.juddi.client.config.file";
+	
+	public static final String DEFAULT_JUDDI_CLIENT_CONFIG_FILE = "META-INF/jaxr-uddi.xml";
 
     private String queryManagerURL;
     private String lifeCycleManagerURL;
@@ -59,6 +63,10 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
     private String postalAddressScheme;
 	private String uddiNamespace;
 	private String uddiVersion;
+	
+	private Properties properties = new Properties();
+	
+	private String uddiConfigFile;
 
     /**
      * Public no-arg constructor so that this ConnectionFactory can be
@@ -100,7 +108,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         	securityManager = null;
         }
         	return new ConnectionImpl(queryManager, lifeCycleManager, securityManager, transportClass, null, maxRows == null ? -1 : maxRows.intValue(),
-                               uddiNamespace, uddiVersion);
+                               uddiNamespace, uddiVersion, uddiConfigFile, properties);
     }
 
     public FederatedConnection createFederatedConnection(Collection collection) throws JAXRException
@@ -117,43 +125,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
      */
     public Properties getProperties()
     {
-        Properties props = new Properties();
-        if (queryManagerURL != null)
-        {
-            props.put(QUERYMANAGER_PROPERTY, queryManagerURL);
-        }
-        if (lifeCycleManagerURL != null)
-        {
-            props.put(LIFECYCLEMANAGER_PROPERTY, lifeCycleManagerURL);
-        }
-        if (securityManagerURL != null)
-        {
-        	props.put(SECURITYMANAGER_PROPERTY, securityManagerURL);
-        }
-        if (semanticEquivalences != null)
-        {
-            props.put(SEMANTICEQUIVALENCES_PROPERTY, semanticEquivalences);
-        }
-        if (postalAddressScheme != null)
-        {
-            props.put(POSTALADDRESSSCHEME_PROPERTY, postalAddressScheme);
-        }
-        if (authenticationMethod != null)
-        {
-            props.put(AUTHENTICATIONMETHOD_PROPERTY, authenticationMethod);
-        }
-        if (maxRows != null)
-        {
-            props.put(MAXROWS_PROPERTY, maxRows.toString());
-        }
-        if (uddiNamespace != null) {
-        	props.put(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, uddiNamespace);
-        }
-        if (uddiVersion != null) {
-        	props.put(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, uddiVersion);
-        }
-
-        return props;
+        return properties;
     }
 
     /**
@@ -163,9 +135,19 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
      */
     public void setProperties(Properties properties)
     {
-        queryManagerURL = properties.getProperty(QUERYMANAGER_PROPERTY);
-        lifeCycleManagerURL = properties.getProperty(LIFECYCLEMANAGER_PROPERTY);
-        securityManagerURL = properties.getProperty(SECURITYMANAGER_PROPERTY);
+        if (properties==null) properties = new Properties();
+        this.properties = properties;
+        if (isUDDIv3(properties)) {
+            // UDDI v3 uses the juddi client
+            queryManagerURL     = "org.apache.juddi.v3.client.transport.wrapper.UDDIInquiryService#inquire";
+            lifeCycleManagerURL = "org.apache.juddi.v3.client.transport.wrapper.UDDIPublicationService#publish";
+            securityManagerURL  = "org.apache.juddi.v3.client.transport.wrapper.UDDISecurityService#secure";
+            uddiConfigFile      = properties.getProperty(JUDDI_CLIENT_CONFIG_FILE, DEFAULT_JUDDI_CLIENT_CONFIG_FILE);
+        } else {
+            queryManagerURL = properties.getProperty(QUERYMANAGER_PROPERTY);
+            lifeCycleManagerURL = properties.getProperty(LIFECYCLEMANAGER_PROPERTY);
+            securityManagerURL = properties.getProperty(SECURITYMANAGER_PROPERTY);
+        }
 
         transportClass = properties.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
         semanticEquivalences = properties.getProperty(SEMANTICEQUIVALENCES_PROPERTY);
@@ -176,6 +158,14 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
 
         String val = properties.getProperty(MAXROWS_PROPERTY);
         maxRows = (val == null) ? null : Integer.valueOf(val);
+    }
+    
+    private boolean isUDDIv3(Properties properties) {
+        if (properties.containsKey(RegistryImpl.UDDI_VERSION_PROPERTY_NAME)) {
+            String version = properties.getProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME);
+            if (version.equals("3") || version.equals("3.0")) return true;
+        }
+        return false;
     }
 
     public static ConnectionFactory newInstance()
@@ -188,19 +178,9 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         return authenticationMethod;
     }
 
-    public void setAuthenticationMethod(String authenticationMethod)
-    {
-        this.authenticationMethod = authenticationMethod;
-    }
-
     public String getLifeCycleManagerURL()
     {
         return lifeCycleManagerURL;
-    }
-
-    public void setLifeCycleManagerURL(String lifeCycleManagerURL)
-    {
-        this.lifeCycleManagerURL = lifeCycleManagerURL;
     }
 
     public Integer getMaxRows()
@@ -208,19 +188,9 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         return maxRows;
     }
 
-    public void setMaxRows(Integer maxRows)
-    {
-        this.maxRows = maxRows;
-    }
-
     public String getPostalAddressScheme()
     {
         return postalAddressScheme;
-    }
-
-    public void setPostalAddressScheme(String postalAddressScheme)
-    {
-        this.postalAddressScheme = postalAddressScheme;
     }
 
     public String getQueryManagerURL()
@@ -228,26 +198,12 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         return queryManagerURL;
     }
 
-    public void setQueryManagerURL(String queryManagerURL)
-    {
-        this.queryManagerURL = queryManagerURL;
-    }
-
     public String getSemanticEquivalences()
     {
         return semanticEquivalences;
     }
 
-    public void setSemanticEquivalences(String semanticEquivalences)
-    {
-        this.semanticEquivalences = semanticEquivalences;
-    }
-
 	public String getTransportClass() {
 		return transportClass;
-	}
-
-	public void setTransportClass(String transportClass) {
-		this.transportClass = transportClass;
 	}
 }

@@ -26,6 +26,7 @@ import org.apache.ws.scout.BaseTestCase;
 import org.apache.ws.scout.Creator;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -251,7 +252,7 @@ public class BusinessLifeCyleManagerlTest extends BaseTestCase
             assertEquals(BulkResponse.STATUS_SUCCESS, br2.getStatus());
             
             //delete association
-            BulkResponse br3 = blm.deleteAssociations((Collection<Key>)br2.getCollection());
+            BulkResponse br3 = blm.deleteAssociations(br2.getCollection());
             assertEquals(BulkResponse.STATUS_SUCCESS, br3.getStatus());
             
             //delete organizations

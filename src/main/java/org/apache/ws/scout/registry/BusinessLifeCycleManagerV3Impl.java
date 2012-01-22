@@ -823,7 +823,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
                 keyarr[currLoc] = key.getId();
                 currLoc++;
             }
-            // Save business
+            // Delete operation
             DispositionReport bd = (DispositionReport) executeOperation(keyarr, op);
             List<Result> resultList = bd.getResult();
             keyResultArr = new Result[resultList.size()];
