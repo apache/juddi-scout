@@ -90,13 +90,21 @@ public class ConnectionImpl implements Connection, Serializable
                 try {
                     manager = new UDDIClerkManager(uddiConfig, properties);
                     manager.start();
-                    nodeName = manager.getClientConfig().getHomeNode().getName();
-                    managerName = manager.getName();
                 } catch (ConfigurationException e) {
                     log.error(e.getMessage(),e);
                 }
             }
-        	registry = new RegistryV3Impl(properties, nodeName, managerName);
+            try {
+                nodeName = manager.getClientConfig().getHomeNode().getName();
+            } catch (ConfigurationException e) {
+                log.error(e.getMessage(),e);
+            }
+            managerName = manager.getName();
+            if (managerName != null) {
+                registry = new RegistryV3Impl(properties, nodeName, managerName);
+            } else {
+                registry = new RegistryImpl(properties);
+            }
         } else {
             registry = new RegistryImpl(properties);           	
         }
