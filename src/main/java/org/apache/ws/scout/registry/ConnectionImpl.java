@@ -88,7 +88,7 @@ public class ConnectionImpl implements Connection, Serializable
             String managerName = null;
             if (manager==null) {
                 try {
-                    manager = new UDDIClerkManager("META-INF/jaxr-uddi.xml", properties);
+                    manager = new UDDIClerkManager(uddiConfig, properties);
                     manager.start();
                     nodeName = manager.getClientConfig().getHomeNode().getName();
                     managerName = manager.getName();
