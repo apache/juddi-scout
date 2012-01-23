@@ -719,10 +719,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 
 		request.setMaxRows(maxRows);
 
-        BusinessList bl;
+        BusinessList bl = null;
         JAXBElement<?> o = execute(this.objectFactory.createFindBusiness(request),
         		this.getInquiryURI());
-        bl = (BusinessList) o.getValue();
+        if (o != null) bl = (BusinessList) o.getValue();
 
         return bl;
 	}
@@ -762,10 +762,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 		}
 		request.setMaxRows(maxRows);
 
-        BindingDetail bd;
+        BindingDetail bd = null;
         JAXBElement<?> o = execute(this.objectFactory.createFindBinding(request), 
         		this.getInquiryURI());
-        bd = (BindingDetail) o.getValue();
+        if (o != null) bd = (BindingDetail) o.getValue();
 
         return bd;
 	}
@@ -806,10 +806,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 
 		request.setMaxRows(maxRows);
 
-        ServiceList sl;
+        ServiceList sl = null;
         JAXBElement<?> o = execute(this.objectFactory.createFindService(request), 
         		this.getInquiryURI());
-        sl = (ServiceList) o.getValue();
+        if (o != null) sl = (ServiceList) o.getValue();
 
         return sl;
 	}
@@ -847,10 +847,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 
 		request.setMaxRows(maxRows);
 
-        TModelList tml;
+        TModelList tml = null;
         JAXBElement<?> o = execute(this.objectFactory.createFindTModel(request), 
         		this.getInquiryURI());
-        tml = (TModelList) o.getValue();
+        if (o !=null) tml = (TModelList) o.getValue();
 
         return tml;
 	}
@@ -871,7 +871,7 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.setCompletionStatus(cs);
 		}
 
-        AssertionStatusReport asr;
+        AssertionStatusReport asr = new AssertionStatusReport();
         JAXBElement<?> o = execute(this.objectFactory.createGetAssertionStatusReport(request), 
         		this.getPublishURI());
         asr = (AssertionStatusReport) o.getValue();
@@ -943,7 +943,7 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getBusinessKey().addAll(Arrays.asList(businessKeyArray));
 		}
 
-        BusinessDetail bd;
+        BusinessDetail bd = null;
         JAXBElement<?> o = execute(this.objectFactory.createGetBusinessDetail(request), 
         		this.getInquiryURI());
         bd = (BusinessDetail) o.getValue(); 
@@ -964,10 +964,12 @@ public class RegistryV3Impl implements IRegistryV3 {
         PublisherAssertions pa = new PublisherAssertions();
         JAXBElement<?> o = execute(this.objectFactory.createGetPublisherAssertions(request),
         		this.getPublishURI());
-        PublisherAssertionsResponse par = (PublisherAssertionsResponse) o.getValue();
-        List<PublisherAssertion> assertions = par.getPublisherAssertion();
-        for (int i = 0; i < assertions.size(); i++ ) {
-        	pa.getPublisherAssertion().add((PublisherAssertion)assertions.get(i));
+        if (o != null) {
+            PublisherAssertionsResponse par = (PublisherAssertionsResponse) o.getValue();
+            List<PublisherAssertion> assertions = par.getPublisherAssertion();
+            for (int i = 0; i < assertions.size(); i++ ) {
+            	pa.getPublisherAssertion().add((PublisherAssertion)assertions.get(i));
+            }
         }
 
         return pa;
@@ -986,10 +988,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 		
 		request.setInfoSelection(InfoSelection.ALL);
 
-        RegisteredInfo ri;
+        RegisteredInfo ri = null;
         JAXBElement<?> o = execute(this.objectFactory.createGetRegisteredInfo(request), 
         		this.getPublishURI());
-        ri = (RegisteredInfo) o.getValue();
+        if (o != null) ri = (RegisteredInfo) o.getValue();
 
         return ri;
 	}
@@ -1022,10 +1024,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getServiceKey().addAll(Arrays.asList(serviceKeyArray));
 		}
 
-        ServiceDetail sd;
+        ServiceDetail sd = null;
         JAXBElement<?> o = execute(this.objectFactory.createGetServiceDetail(request), 
         		this.getInquiryURI());
-        sd = (ServiceDetail) o.getValue();
+        if (o != null) sd = (ServiceDetail) o.getValue();
 
         return sd;
 	}
@@ -1058,10 +1060,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getTModelKey().addAll(Arrays.asList(tModelKeyArray));
 		}
 
-        TModelDetail tmd;
+        TModelDetail tmd = null;
         JAXBElement<?> o = execute(this.objectFactory.createGetTModelDetail(request), 
         		this.getInquiryURI());
-        tmd = (TModelDetail) o.getValue();
+        if (o != null) tmd = (TModelDetail) o.getValue();
 
         return tmd;
 	}
@@ -1108,10 +1110,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getBindingTemplate().addAll(Arrays.asList(bindingArray));
 		}
 		
-        BindingDetail bd;
+        BindingDetail bd = null;
         JAXBElement<?> o = execute(this.objectFactory.createSaveBinding(request), 
         		this.getPublishURI());
-        bd = (BindingDetail) o.getValue();
+        if (o != null) bd = (BindingDetail) o.getValue();
 
         return bd;
 	}
@@ -1143,10 +1145,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getBusinessEntity().addAll(Arrays.asList(businessArray));
 		}
 		
-        BusinessDetail bd;
+        BusinessDetail bd = null;
         JAXBElement<?> o = execute(this.objectFactory.createSaveBusiness(request), 
         		this.getPublishURI());
-        bd = (BusinessDetail) o.getValue();
+        if (o != null) bd = (BusinessDetail) o.getValue();
 
         return bd;
 	}
@@ -1169,10 +1171,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getBusinessService().addAll(Arrays.asList(serviceArray));
 		}
 
-        ServiceDetail sd;
+        ServiceDetail sd = null;
         JAXBElement<?> o = execute(this.objectFactory.createSaveService(request), 
         		this.getPublishURI());
-        sd = (ServiceDetail) o.getValue();
+        if (o != null) sd = (ServiceDetail) o.getValue();
 
         return sd;
 	}
@@ -1194,10 +1196,10 @@ public class RegistryV3Impl implements IRegistryV3 {
 			request.getTModel().addAll(Arrays.asList(tModelArray));
 		}
 
-        TModelDetail tmd;
+        TModelDetail tmd = null;
         JAXBElement<?> o = execute(this.objectFactory.createSaveTModel(request), 
         		this.getPublishURI());
-        tmd = (TModelDetail) o.getValue();
+        if (o != null) tmd = (TModelDetail) o.getValue();
         return tmd;
 	}
 
