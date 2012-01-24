@@ -1,0 +1,5 @@
+<aspectj>
+    <aspects>
+            <aspect name="org.apache.ws.scout.registry.qa.BusinessLifeCycleManagerImplReplacement"/>
+     </aspects>
+</aspectj>
