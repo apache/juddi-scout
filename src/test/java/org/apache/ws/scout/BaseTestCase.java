@@ -65,7 +65,7 @@ public class BaseTestCase
         try
         {
         	String envUDDIVersion =  System.getenv("uddi.version");
-        	if (envUDDIVersion==null) envUDDIVersion = "3";
+        	if (envUDDIVersion==null) envUDDIVersion = "2";
         	String propertiesFile = "/scoutv" + envUDDIVersion + ".properties";
         	
         	System.out.println("Reading Scout Properties from: " + propertiesFile);
