@@ -12,7 +12,7 @@
 	<packaging>bundle</packaging>
 
 	<properties>
-		<juddi.registry.version>3.1.3-SNAPSHOT</juddi.registry.version>
+		<juddi.registry.version>3.1.2</juddi.registry.version>
 	</properties>
 
 	<prerequisites>
@@ -359,7 +359,7 @@
 		<profile>
 			<id>uddiv2</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<dependencies>
 				<dependency>
@@ -429,7 +429,7 @@
 		<profile>
 			<id>uddiv3</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<dependencies>
 				<dependency>
