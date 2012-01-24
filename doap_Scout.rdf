@@ -28,9 +28,9 @@
     <category rdf:resource="http://projects.apache.org/category/xml" />
     <release>
       <Version>
-        <name>Scout v1.2.2</name>
-        <created>2010-07-18</created>
-        <revision>1.2.2</revision>
+        <name>Scout v1.2.4</name>
+        <created>2012-01-27</created>
+        <revision>1.2.4</revision>
       </Version>
     </release>
     <repository>
