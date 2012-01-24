@@ -142,7 +142,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
             queryManagerURL     = "org.apache.juddi.v3.client.transport.wrapper.UDDIInquiryService#inquire";
             lifeCycleManagerURL = "org.apache.juddi.v3.client.transport.wrapper.UDDIPublicationService#publish";
             securityManagerURL  = "org.apache.juddi.v3.client.transport.wrapper.UDDISecurityService#secure";
-            uddiConfigFile      = properties.getProperty(JUDDI_CLIENT_CONFIG_FILE, DEFAULT_JUDDI_CLIENT_CONFIG_FILE);
+            uddiConfigFile      = properties.getProperty(JUDDI_CLIENT_CONFIG_FILE);// DEFAULT_JUDDI_CLIENT_CONFIG_FILE);
         } else {
             queryManagerURL = properties.getProperty(QUERYMANAGER_PROPERTY);
             lifeCycleManagerURL = properties.getProperty(LIFECYCLEMANAGER_PROPERTY);

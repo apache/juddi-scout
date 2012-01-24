@@ -86,7 +86,7 @@ public class ConnectionImpl implements Connection, Serializable
         if ("3.0".equals(uddiVersion)) {
             String nodeName = null;
             String managerName = null;
-            if (manager==null) {
+            if (manager==null && uddiConfig!=null) {
                 try {
                     manager = new UDDIClerkManager(uddiConfig, properties);
                     manager.start();
@@ -94,17 +94,15 @@ public class ConnectionImpl implements Connection, Serializable
                     log.error(e.getMessage(),e);
                 }
             }
-            try {
-                nodeName = manager.getClientConfig().getHomeNode().getName();
-            } catch (ConfigurationException e) {
-                log.error(e.getMessage(),e);
+            if (manager !=null) {
+                try {
+                    managerName = manager.getName();
+                    nodeName = manager.getClientConfig().getHomeNode().getName();
+                } catch (ConfigurationException e) {
+                    log.error(e.getMessage(),e);
+                }
             }
-            managerName = manager.getName();
-            if (managerName != null) {
-                registry = new RegistryV3Impl(properties, nodeName, managerName);
-            } else {
-                registry = new RegistryImpl(properties);
-            }
+            registry = new RegistryV3Impl(properties, nodeName, managerName);
         } else {
             registry = new RegistryImpl(properties);           	
         }
