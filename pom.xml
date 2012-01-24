@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>org.apache.juddi.scout</groupId>
 	<artifactId>scout</artifactId>
-	<version>1.2.5-SNAPSHOT</version>
+	<version>1.2.4-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -624,20 +624,6 @@
 					</plugin>
 				</plugins>
 			</build>
-			<dependencies>
-        <dependency>
-          <groupId>org.apache.juddi</groupId>
-          <artifactId>juddi</artifactId>
-          <version>2.0.1</version>
-          <scope>test</scope>
-        </dependency>
-            <!--  have to figure out which dependencies of 3.0.2 make the uddiv2 build work -->
-          <dependency>
-            <groupId>org.apache.juddi</groupId>
-            <artifactId>uddi-ws</artifactId>
-            <version>3.0.2</version>
-          </dependency>
-      </dependencies>
 		</profile>
 		<profile>
 			<id>testcache</id>
