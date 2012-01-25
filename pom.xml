@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>org.apache.juddi.scout</groupId>
 	<artifactId>scout</artifactId>
-	<version>1.2.4-SNAPSHOT</version>
+	<version>1.2.4</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -131,9 +131,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/juddi/scout/trunk</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</developerConnection>
-		<url>http://svn.apache.org/viewcvs.cgi/juddi/scout/trunk</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/juddi/scout/tags/scout-1.2.4</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/tags/scout-1.2.4</developerConnection>
+		<url>http://svn.apache.org/viewcvs.cgi/juddi/scout/tags/scout-1.2.4</url>
 	</scm>
 	<dependencies>
 		<dependency>
@@ -636,6 +636,53 @@
 							</dependency>
 						</dependencies>
 					</plugin>
+					         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+              <skip>true</skip>
+              <includes>
+                <include>**/*Test.java</include>
+              </includes>
+              <systemProperties>
+                <property>
+                  <name>derby.stream.error.file</name>
+                  <value>target/derby.log</value>
+                </property>
+                <property>
+                  <name>java.io.tmpdir</name>
+                  <value>${basedir}/temp</value>
+                </property>
+              </systemProperties>
+              <environmentVariables>
+                <uddi.version>2</uddi.version>
+              </environmentVariables>
+            </configuration>
+            <executions>
+              <execution>
+                <id>surefire-it</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <skip>false</skip>
+                  <systemProperties>
+                    <property>
+                      <name>cactus.contextURL</name>
+                      <value>http://localhost:8880/juddi</value>
+                    </property>
+                    <property>
+                      <name>java.io.tmpdir</name>
+                      <value>${basedir}/temp</value>
+                    </property>
+                  </systemProperties>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+					
 				</plugins>
 			</build>
 		</profile>
