@@ -45,8 +45,8 @@ public class BaseTestCase
     protected BusinessQueryManager bqm;
 
     //Set some default values
-	protected String uddiversion = RegistryImpl.DEFAULT_UDDI_VERSION;
-    protected String uddinamespace = RegistryImpl.DEFAULT_UDDI_NAMESPACE;
+	protected String uddiversion = null;
+ 
     protected String userid = System.getProperty("uddi.test.uid")  == null ? "jdoe"     : System.getProperty("uddi.test.uid");
     protected String passwd = System.getProperty("uddi.test.pass") == null ? "password" : System.getProperty("uddi.test.pass");
     
@@ -66,6 +66,7 @@ public class BaseTestCase
         {
         	String envUDDIVersion =  System.getenv("uddi.version");
         	if (envUDDIVersion==null) envUDDIVersion = "2";
+        	uddiversion = envUDDIVersion + ".0";
         	String propertiesFile = "/scoutv" + envUDDIVersion + ".properties";
         	
         	System.out.println("Reading Scout Properties from: " + propertiesFile);
@@ -86,16 +87,7 @@ public class BaseTestCase
 //            if (scoutProperties.getProperty("password2")!=null) {
 //                passwd = scoutProperties.getProperty("password2");
 //            }
-            
-            if (scoutProperties.getProperty("scout.proxy.uddiVersion") != null)
-            {
-            	uddiversion = scoutProperties.getProperty("scout.proxy.uddiVersion","2.0");
-            }
-            
-            if (scoutProperties.getProperty("scout.proxy.uddiNamespace") != null) {
-            	uddinamespace = scoutProperties.getProperty("scout.proxy.uddiNamespace");
-            }            
-            
+
             // Create the connection, passing it the configuration properties
             ConnectionFactory factory = ConnectionFactory.newInstance();
             factory.setProperties(scoutProperties);

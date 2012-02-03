@@ -50,7 +50,6 @@ public class ConnectionFactoryTest extends TestCase {
         Properties properties = new Properties();
         properties.setProperty(ConnectionFactoryImpl.QUERYMANAGER_PROPERTY, url);
         factory.setProperties(properties);
-        assertEquals(url, factory.getQueryManagerURL());
         assertEquals(url, factory.getProperties().getProperty("javax.xml.registry.queryManagerURL"));
     }
 
@@ -59,7 +58,6 @@ public class ConnectionFactoryTest extends TestCase {
         Properties properties = new Properties();
         properties.setProperty(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY, url);
         factory.setProperties(properties);
-        assertEquals(url, factory.getLifeCycleManagerURL());
         assertEquals(url, factory.getProperties().getProperty("javax.xml.registry.lifeCycleManagerURL"));
     }
 
@@ -70,7 +68,6 @@ public class ConnectionFactoryTest extends TestCase {
         Properties properties = new Properties();
         properties.setProperty(ConnectionFactoryImpl.SEMANTICEQUIVALENCES_PROPERTY, urns);
         factory.setProperties(properties);
-        assertEquals(urns, factory.getSemanticEquivalences());
         assertEquals(urns, factory.getProperties().getProperty("javax.xml.registry.semanticEquivalences"));
     }
 
@@ -79,7 +76,6 @@ public class ConnectionFactoryTest extends TestCase {
         Properties properties = new Properties();
         properties.setProperty(ConnectionFactoryImpl.AUTHENTICATIONMETHOD_PROPERTY, method);
         factory.setProperties(properties);
-        assertEquals(method, factory.getAuthenticationMethod());
         assertEquals(method, factory.getProperties().getProperty("javax.xml.registry.security.authenticationMethod"));
     }
 
@@ -88,7 +84,6 @@ public class ConnectionFactoryTest extends TestCase {
         Properties properties = new Properties();
         properties.setProperty(ConnectionFactoryImpl.POSTALADDRESSSCHEME_PROPERTY, scheme);
         factory.setProperties(properties);
-        assertEquals(scheme, factory.getPostalAddressScheme());
         assertEquals(scheme, factory.getProperties().getProperty("javax.xml.registry.postalAddressScheme"));
     }
 
@@ -97,7 +92,6 @@ public class ConnectionFactoryTest extends TestCase {
         Properties properties = new Properties();
         properties.setProperty(ConnectionFactoryImpl.MAXROWS_PROPERTY, String.valueOf(maxRows));
         factory.setProperties(properties);
-        assertEquals(maxRows, factory.getMaxRows());
         assertEquals(maxRows.toString(), factory.getProperties().getProperty("javax.xml.registry.uddi.maxRows"));
     }
 
@@ -159,11 +153,8 @@ public class ConnectionFactoryTest extends TestCase {
     public void testCreateConnectionWithNullQueryURL() {
         try {
             factory.createConnection();
-            fail("did not reject invalid URL");
-        } catch (InvalidRequestException e) {
-            // OK
-        } catch (JAXRException e) {
-            fail("threw JAXRException");
+        } catch (Exception e) {
+            fail("threw Exception");
         }
     }
 

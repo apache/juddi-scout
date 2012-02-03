@@ -110,25 +110,15 @@ import org.xml.sax.SAXException;
 
 public class RegistryV3Impl implements IRegistryV3 {
 
-	public static final String INQUIRY_ENDPOINT_PROPERTY_NAME = "scout.proxy.inquiryURL";
-	public static final String PUBLISH_ENDPOINT_PROPERTY_NAME = "scout.proxy.publishURL";
-	public static final String SECURITY_ENDPOINT_PROPERTY_NAME = "scout.proxy.securityURL";
-	public static final String ADMIN_ENDPOINT_PROPERTY_NAME = "scout.proxy.adminURL";
-	public static final String TRANSPORT_CLASS_PROPERTY_NAME = "scout.proxy.transportClass";
-	public static final String SECURITY_PROVIDER_PROPERTY_NAME = "scout.proxy.securityProvider";
-	public static final String PROTOCOL_HANDLER_PROPERTY_NAME = "scout.proxy.protocolHandler";
-	public static final String UDDI_VERSION_PROPERTY_NAME = "scout.proxy.uddiVersion";
-	public static final String UDDI_NAMESPACE_PROPERTY_NAME = "scout.proxy.uddiNamespace";
-
-	public static final String DEFAULT_INQUIRY_ENDPOINT = "http://localhost/juddi/inquiry";
-	public static final String DEFAULT_PUBLISH_ENDPOINT = "http://localhost/juddi/publish";
-	public static final String DEFAULT_SECURITY_ENDPOINT = "http://localhost/juddi/security";
-	public static final String DEFAULT_ADMIN_ENDPOINT = "http://localhost/juddi/admin";
-	public static final String DEFAULT_TRANSPORT_CLASS = "org.apache.ws.scout.transport.AxisTransport";
+	public static final String DEFAULT_INQUIRY_ENDPOINT  = "org.apache.juddi.v3.client.transport.wrapper.UDDIInquiryService#inquire";;
+	public static final String DEFAULT_PUBLISH_ENDPOINT  = "org.apache.juddi.v3.client.transport.wrapper.UDDIPublicationService#publish";
+	public static final String DEFAULT_SECURITY_ENDPOINT = "org.apache.juddi.v3.client.transport.wrapper.UDDISecurityService#secure";
+	public static final String DEFAULT_ADMIN_ENDPOINT    = "http://localhost/juddiv3/";
+	public static final String DEFAULT_TRANSPORT_CLASS   = "org.apache.ws.scout.transport.LocalTransport";
 	public static final String DEFAULT_SECURITY_PROVIDER = "com.sun.net.ssl.internal.ssl.Provider";
-	public static final String DEFAULT_PROTOCOL_HANDLER = "com.sun.net.ssl.internal.www.protocol";
-	public static final String DEFAULT_UDDI_VERSION = "2.0";
-	public static final String DEFAULT_UDDI_NAMESPACE = "urn:uddi-org:api_v2";
+	public static final String DEFAULT_PROTOCOL_HANDLER  = "com.sun.net.ssl.internal.www.protocol";
+	public static final String DEFAULT_UDDI_VERSION      = "3.0";
+	public static final String DEFAULT_UDDI_NAMESPACE    = "urn:uddi-org:api_v3";
 
 	private URI adminURI;
 	private URI inquiryURI;
@@ -165,83 +155,37 @@ public class RegistryV3Impl implements IRegistryV3 {
 	 * 
 	 */
 	private void init(Properties props, String nodeName, String managerName) {
-		// We need to have a non-null Properties
-		// instance so initialization takes place.
-		if (props == null)
-			props = new Properties();
+	    this.nodeName = nodeName;
+	    this.managerName = managerName;
+        // We need to have a non-null Properties
+        // instance so initialization takes place.
+        if (props == null) props = new Properties();
 
-		this.nodeName = nodeName;
-		this.managerName = managerName;
-		// Override defaults with specific specific values
-		try {
-			String iURL = props.getProperty(INQUIRY_ENDPOINT_PROPERTY_NAME);
-			if (iURL != null)
-				this.setInquiryURI(new URI(iURL));
-			else
-				this.setInquiryURI(new URI(DEFAULT_INQUIRY_ENDPOINT));
-
-			String pURL = props.getProperty(PUBLISH_ENDPOINT_PROPERTY_NAME);
-			if (pURL != null)
-				this.setPublishURI(new URI(pURL));
-			else
-				this.setPublishURI(new URI(DEFAULT_PUBLISH_ENDPOINT));
-
-			String sURL = props.getProperty(SECURITY_ENDPOINT_PROPERTY_NAME);
-			if (sURL != null)
-				this.setSecurityURI(new URI(sURL));
-			else
-				this.setSecurityURI(new URI(DEFAULT_SECURITY_ENDPOINT));
-			
-			String aURL = props.getProperty(ADMIN_ENDPOINT_PROPERTY_NAME);
-			if (aURL != null)
-				this.setAdminURI(new URI(aURL));
-			else
-				this.setAdminURI(new URI(DEFAULT_ADMIN_ENDPOINT));
-		} catch (URISyntaxException muex) {
-			throw new RuntimeException(muex);
-		}
-
-		String secProvider = props.getProperty(SECURITY_PROVIDER_PROPERTY_NAME);
-		if (secProvider != null)
-			this.setSecurityProvider(secProvider);
-		else
-			this.setSecurityProvider(DEFAULT_SECURITY_PROVIDER);
-
-		String protoHandler = props.getProperty(PROTOCOL_HANDLER_PROPERTY_NAME);
-		if (protoHandler != null)
-			this.setProtocolHandler(protoHandler);
-		else
-			this.setProtocolHandler(DEFAULT_PROTOCOL_HANDLER);
-
-		String uddiVer = props.getProperty(UDDI_VERSION_PROPERTY_NAME);
-		if (uddiVer != null)
-			this.setUddiVersion(uddiVer);
-		else
-			this.setUddiVersion(DEFAULT_UDDI_VERSION);
-
-		String uddiNS = props.getProperty(UDDI_NAMESPACE_PROPERTY_NAME);
-		if (uddiNS != null)
-			this.setUddiNamespace(uddiNS);
-		else
-			this.setUddiNamespace(DEFAULT_UDDI_NAMESPACE);
-
-		String transClass = props.getProperty(TRANSPORT_CLASS_PROPERTY_NAME);
-		if (transClass != null)
-			this.setTransport(this.getTransport(transClass));
-		else
-			this.setTransport(this.getTransport(DEFAULT_TRANSPORT_CLASS));
-		
-		try
-		{
-			JAXBContext v3context = JAXBContextUtil.getContext(JAXBContextUtil.UDDI_V3_VERSION);
-			this.unmarshaller = v3context.createUnmarshaller(); 
-			this.marshaller = v3context.createMarshaller();
-
-		}
-		catch(JAXBException e)
-		{
-			throw new RuntimeException(e);
-		}
+        // Override defaults with specific specific values
+        try {
+            // note that since we are using the juddi-client, these settings are fixed!
+            // the URL settings will be passed down to the juddi-client config. 
+            // (see the parameters in the "META-INF/jaxr-uddi.xml)
+            setInquiryURI(new URI(DEFAULT_INQUIRY_ENDPOINT));
+            setPublishURI(new URI(DEFAULT_PUBLISH_ENDPOINT));
+            setSecurityURI(new URI(DEFAULT_SECURITY_ENDPOINT));
+            setTransport(getTransport(DEFAULT_TRANSPORT_CLASS));
+            // the following parameters are still configurable however
+            setAdminURI(new URI(props.getProperty(ConnectionFactoryImpl.ADMIN_ENDPOINT_PROPERTY, DEFAULT_ADMIN_ENDPOINT)));
+            setSecurityProvider(props.getProperty(ConnectionFactoryImpl.SECURITY_PROVIDER_PROPERTY, DEFAULT_SECURITY_PROVIDER));
+            setProtocolHandler(props.getProperty(ConnectionFactoryImpl.PROTOCOL_HANDLER_PROPERTY, DEFAULT_PROTOCOL_HANDLER));
+            setUddiVersion(props.getProperty(ConnectionFactoryImpl.UDDI_NAMESPACE_PROPERTY, DEFAULT_UDDI_VERSION));
+            setUddiNamespace(props.getProperty(ConnectionFactoryImpl.UDDI_NAMESPACE_PROPERTY, DEFAULT_UDDI_NAMESPACE));
+            
+            JAXBContext context = JAXBContextUtil.getContext(JAXBContextUtil.UDDI_V3_VERSION);
+            unmarshaller = context.createUnmarshaller(); 
+            marshaller = context.createMarshaller();
+            
+        } catch (URISyntaxException muex) {
+            throw new RuntimeException(muex);
+        } catch(JAXBException e) {
+           throw new RuntimeException(e);
+        }
 	}
 
 	/**

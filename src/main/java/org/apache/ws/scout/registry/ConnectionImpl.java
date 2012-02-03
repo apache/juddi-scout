@@ -17,7 +17,6 @@
 package org.apache.ws.scout.registry;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Properties;
 import java.util.Set;
 
@@ -39,6 +38,10 @@ import org.apache.juddi.v3.client.config.UDDIClerkManager;
  */
 public class ConnectionImpl implements Connection, Serializable
 {
+    public static final String JUDDI_CLIENT_CONFIG_FILE         = "scout.juddi.client.config.file";
+    public static final String DEFAULT_JUDDI_CLIENT_CONFIG_FILE = "META-INF/jaxr-uddi.xml";
+    public static final String DEFAULT_UDDI_VERSION             = "2.0";
+    
 	private static final long serialVersionUID = 3542404895814764176L;
 	private static Log log = LogFactory.getLog(ConnectionImpl.class);
 	private boolean closed = false;
@@ -50,45 +53,20 @@ public class ConnectionImpl implements Connection, Serializable
     private String uddiVersion;
     UDDIClerkManager manager = null;
 
-    public ConnectionImpl(URI queryManagerURI, URI lifeCycleManagerURI, URI securityManagerURI, String transportClass, String postalScheme, int maxRows,
-    	String uddiNamespace, String uddiVersion, String uddiConfig, Properties properties)
+    public ConnectionImpl(Properties properties)
     {
-        /**
-         * If you want to override any of the properties
-         * juddi RegistryProxy uses, set the System property
-         * accordingly.
-         */
-		this.uddiVersion = uddiVersion;
-		if (uddiVersion != null) {
-		    properties.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, uddiVersion);
-		} else {
-		    properties.setProperty(RegistryImpl.UDDI_VERSION_PROPERTY_NAME, RegistryImpl.DEFAULT_UDDI_VERSION);
-		}
-			
-		if (uddiNamespace!=null) {
-		    properties.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, uddiNamespace);
-		} else {
-		    properties.setProperty(RegistryImpl.UDDI_NAMESPACE_PROPERTY_NAME, RegistryImpl.DEFAULT_UDDI_NAMESPACE);
-		}
-		
-        if (transportClass!=null) {
-            properties.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transportClass);
-        } else {
-    		String transport = SecurityActions.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
-    		if (transport != null) {
-    		    properties.setProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME, transport);
-    		}
-        }
-        /**
-         * Even if the properties passed contains no values,
-         * juddi takes default values
-         */
-        if ("3.0".equals(uddiVersion)) {
+        postalScheme = properties.getProperty(ConnectionFactoryImpl.POSTALADDRESSSCHEME_PROPERTY);
+        String val = properties.getProperty(ConnectionFactoryImpl.MAXROWS_PROPERTY);
+        maxRows = (val == null) ? -1 : Integer.valueOf(val);
+        uddiVersion = properties.getProperty(ConnectionFactoryImpl.UDDI_VERSION_PROPERTY, DEFAULT_UDDI_VERSION);
+     
+        String uddiConfigFile      = properties.getProperty(JUDDI_CLIENT_CONFIG_FILE);// DEFAULT_JUDDI_CLIENT_CONFIG_FILE);
+        if (isUDDIv3(uddiVersion)) {
             String nodeName = null;
             String managerName = null;
-            if (manager==null && uddiConfig!=null) {
+            if (manager==null && uddiConfigFile!=null) {
                 try {
-                    manager = new UDDIClerkManager(uddiConfig, properties);
+                    manager = new UDDIClerkManager(uddiConfigFile, properties);
                     manager.start();
                 } catch (ConfigurationException e) {
                     log.error(e.getMessage(),e);
@@ -106,12 +84,15 @@ public class ConnectionImpl implements Connection, Serializable
         } else {
             registry = new RegistryImpl(properties);           	
         }
-        registry.setInquiryURI(queryManagerURI);
-        registry.setPublishURI(lifeCycleManagerURI);
-        registry.setSecurityURI(securityManagerURI);
-        this.postalScheme = postalScheme;
-        this.maxRows = maxRows;
 
+        //this.postalScheme = postalScheme;
+        //this.maxRows = maxRows;
+
+    }
+    
+    private boolean isUDDIv3(String version) {
+        if (version.startsWith("3")) return true;
+        return false;
     }
 
     public RegistryService getRegistryService() throws JAXRException
