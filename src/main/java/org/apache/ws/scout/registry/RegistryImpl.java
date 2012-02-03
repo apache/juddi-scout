@@ -119,7 +119,7 @@ public class RegistryImpl implements IRegistry {
 	public static final String DEFAULT_PUBLISH_ENDPOINT = "http://localhost/juddi/publish";
 	public static final String DEFAULT_SECURITY_ENDPOINT = "http://localhost/juddi/security";
 	public static final String DEFAULT_ADMIN_ENDPOINT = "http://localhost/juddi/admin";
-	public static final String DEFAULT_TRANSPORT_CLASS = "org.apache.ws.scout.transport.AxisTransport";
+	public static final String DEFAULT_TRANSPORT_CLASS = "org.apache.ws.scout.transport.SaajTransport";
 	public static final String DEFAULT_SECURITY_PROVIDER = "com.sun.net.ssl.internal.ssl.Provider";
 	public static final String DEFAULT_PROTOCOL_HANDLER = "com.sun.net.ssl.internal.www.protocol";
 	public static final String DEFAULT_UDDI_VERSION = "2.0";
