@@ -89,8 +89,7 @@ public class ScoutUddiV3JaxrHelper
 		List<Name> namesList = businessEntity.getName();
 		if ((namesList != null) && (namesList.size() > 0)) {
 			InternationalString is = null;
-			for (int i = 0; i < namesList.size(); i++)  {
-				Name n = namesList.get(i);
+			for (Name n : namesList)  {
 				if (is == null) {
 					is = getIString(n.getLang(), n.getValue(), lifeCycleManager);
 				} else {
@@ -103,8 +102,7 @@ public class ScoutUddiV3JaxrHelper
 		List<Description> descriptionList = businessEntity.getDescription();
 		if ((descriptionList != null) && (descriptionList.size() > 0)) {
 			InternationalString is = null;
-			for (int i = 0; i < descriptionList.size(); i++)  {
-				Description desc = descriptionList.get(i);
+			for (Description desc : descriptionList)  {
 				if (is == null) {
 					is = getIString(desc.getLang(), desc.getValue(), lifeCycleManager);
 				} else {
@@ -190,8 +188,7 @@ public class ScoutUddiV3JaxrHelper
 		List<Name> namesList = entity.getName();
 		if ((namesList != null) && (namesList.size() > 0)) {
 			InternationalString is = null;
-			for (int i = 0; i < namesList.size(); i++)  {
-				Name n = namesList.get(i);
+			for (Name n : namesList)  {
 				if (is == null) {
 					is = getIString(n.getLang(), n.getValue(), lifeCycleManager);
 				} else {
@@ -204,8 +201,7 @@ public class ScoutUddiV3JaxrHelper
 		List<Description> descriptionList = entity.getDescription();
 		if ((descriptionList != null) && (descriptionList.size() > 0)) {
 			InternationalString is = null;
-			for (int i = 0; i < descriptionList.size(); i++)  {
-				Description desc = descriptionList.get(i);
+			for (Description desc : descriptionList)  {
 				if (is == null) {
 					is = getIString(desc.getLang(), desc.getValue(), lifeCycleManager);
 				} else {
@@ -367,8 +363,7 @@ public class ScoutUddiV3JaxrHelper
 
 		List<Name> namesList = businessService.getName();
 		InternationalString is = null;
-		for (int i = 0; i < namesList.size(); i++) {
-			Name n = namesList.get(i);
+		for (Name n : namesList) {
 			if (is == null) {
 				is = lifeCycleManager.createInternationalString(getLocale(n.getLang()), n.getValue());
 			} else {
@@ -379,8 +374,7 @@ public class ScoutUddiV3JaxrHelper
 		
 		List<Description> descriptionList = businessService.getDescription();
 		InternationalString dis = null;
-		for (int i = 0; i < descriptionList.size(); i++) {
-			Description desc = descriptionList.get(i);
+		for (Description desc : descriptionList) {
 			if (dis == null) {
 				dis = lifeCycleManager.createInternationalString(getLocale(desc.getLang()), desc.getValue());
 			} else {
@@ -416,8 +410,7 @@ public class ScoutUddiV3JaxrHelper
 
 		List<Name> namesList = serviceInfo.getName();
 		InternationalString is = null;
-		for (int i = 0; i < namesList.size(); i++) {
-			Name n = namesList.get(i);
+		for (Name n : namesList) {
 			if (is == null) {
 				is = lifeCycleManager.createInternationalString(getLocale(n.getLang()), n.getValue());
 			} else {
