@@ -136,7 +136,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
     public void setProperties(Properties properties)
     {
         if (properties==null) properties = new Properties();
-        this.properties = properties;
+        this.properties.putAll(properties);
         if (isUDDIv3(properties)) {
             // UDDI v3 uses the juddi client
             queryManagerURL     = "org.apache.juddi.v3.client.transport.wrapper.UDDIInquiryService#inquire";
@@ -146,8 +146,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
         } else {
             queryManagerURL = properties.getProperty(QUERYMANAGER_PROPERTY);
             lifeCycleManagerURL = properties.getProperty(LIFECYCLEMANAGER_PROPERTY);
-            securityManagerURL = properties.getProperty(SECURITYMANAGER_PROPERTY);
-        }
+       }
 
         transportClass = properties.getProperty(RegistryImpl.TRANSPORT_CLASS_PROPERTY_NAME);
         semanticEquivalences = properties.getProperty(SEMANTICEQUIVALENCES_PROPERTY);
