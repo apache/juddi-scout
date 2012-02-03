@@ -158,7 +158,7 @@ public class RegistryImpl implements IRegistry {
 			setAdminURI(new URI(props.getProperty(ConnectionFactoryImpl.ADMIN_ENDPOINT_PROPERTY, DEFAULT_ADMIN_ENDPOINT)));
 			setSecurityProvider(props.getProperty(ConnectionFactoryImpl.SECURITY_PROVIDER_PROPERTY, DEFAULT_SECURITY_PROVIDER));
 			setProtocolHandler(props.getProperty(ConnectionFactoryImpl.PROTOCOL_HANDLER_PROPERTY, DEFAULT_PROTOCOL_HANDLER));
-			setUddiVersion(props.getProperty(ConnectionFactoryImpl.UDDI_NAMESPACE_PROPERTY, DEFAULT_UDDI_VERSION));
+			setUddiVersion(props.getProperty(ConnectionFactoryImpl.UDDI_VERSION_PROPERTY, DEFAULT_UDDI_VERSION));
 			setUddiNamespace(props.getProperty(ConnectionFactoryImpl.UDDI_NAMESPACE_PROPERTY, DEFAULT_UDDI_NAMESPACE));
 			setTransport(getTransport(props.getProperty(ConnectionFactoryImpl.TRANSPORT_CLASS_PROPERTY, DEFAULT_TRANSPORT_CLASS)));
 			
