@@ -35,6 +35,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.registry.InvalidRequestException;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
@@ -144,17 +145,19 @@ public class RegistryV3Impl implements IRegistryV3 {
 
 	/**
 	 * Creates a new instance of RegistryImpl.
+	 * @throws InvalidRequestException 
 	 */
-	public RegistryV3Impl(Properties props, String nodeName, String managerName) {
+	public RegistryV3Impl(Properties props, String nodeName, String managerName) throws InvalidRequestException {
 		super();
 
 		this.init(props, nodeName, managerName);
 	}
 
 	/**
+	 * @throws InvalidRequestException 
 	 * 
 	 */
-	private void init(Properties props, String nodeName, String managerName) {
+	private void init(Properties props, String nodeName, String managerName) throws InvalidRequestException {
 	    this.nodeName = nodeName;
 	    this.managerName = managerName;
         // We need to have a non-null Properties
@@ -182,7 +185,7 @@ public class RegistryV3Impl implements IRegistryV3 {
             marshaller = context.createMarshaller();
             
         } catch (URISyntaxException muex) {
-            throw new RuntimeException(muex);
+            throw new InvalidRequestException(muex.getMessage(), muex);
         } catch(JAXBException e) {
            throw new RuntimeException(e);
         }

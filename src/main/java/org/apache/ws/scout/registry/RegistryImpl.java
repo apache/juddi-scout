@@ -34,6 +34,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.registry.InvalidRequestException;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
@@ -105,8 +106,6 @@ import org.xml.sax.SAXException;
 
 public class RegistryImpl implements IRegistry {
 
-	public static final String DEFAULT_INQUIRY_ENDPOINT        = "http://localhost:8080/juddi/inquiry";
-	public static final String DEFAULT_PUBLISH_ENDPOINT        = "http://localhost:8080/juddi/publish";
 	public static final String DEFAULT_ADMIN_ENDPOINT          = "http://localhost:8080/juddi/admin";
 	public static final String DEFAULT_TRANSPORT_CLASS         = "org.apache.ws.scout.transport.SaajTransport";
 	public static final String DEFAULT_SECURITY_PROVIDER       = "com.sun.net.ssl.internal.ssl.Provider";
@@ -135,26 +134,32 @@ public class RegistryImpl implements IRegistry {
 
 	/**
 	 * Creates a new instance of RegistryImpl.
+	 * @throws InvalidRequestException 
 	 */
-	public RegistryImpl(Properties props) {
+	public RegistryImpl(Properties props) throws InvalidRequestException {
 		super();
 
 		this.init(props);
 	}
 
 	/**
+	 * @throws InvalidRequestException 
 	 * 
 	 */
-	private void init(Properties props) {
+	private void init(Properties props) throws InvalidRequestException {
 		// We need to have a non-null Properties
 		// instance so initialization takes place.
 		if (props == null) props = new Properties();
 
 		// Override defaults with specific specific values
 		try {
-			setInquiryURI(new URI(props.getProperty(ConnectionFactoryImpl.QUERYMANAGER_PROPERTY,DEFAULT_INQUIRY_ENDPOINT)));
-			setPublishURI(new URI(props.getProperty(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY, DEFAULT_PUBLISH_ENDPOINT)));
-			setSecurityURI(new URI(props.getProperty(ConnectionFactoryImpl.SECURITYMANAGER_PROPERTY, getPublishURI().toString())));
+			setInquiryURI(new URI(props.getProperty(ConnectionFactoryImpl.QUERYMANAGER_PROPERTY)));
+			if (props.containsKey(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY)) {
+			    setPublishURI(new URI(props.getProperty(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY)));
+			}
+			String securityURL = props.getProperty(ConnectionFactoryImpl.SECURITYMANAGER_PROPERTY, 
+			        props.getProperty(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY));
+			if (securityURL!=null) setSecurityURI(new URI(securityURL));
 			setAdminURI(new URI(props.getProperty(ConnectionFactoryImpl.ADMIN_ENDPOINT_PROPERTY, DEFAULT_ADMIN_ENDPOINT)));
 			setSecurityProvider(props.getProperty(ConnectionFactoryImpl.SECURITY_PROVIDER_PROPERTY, DEFAULT_SECURITY_PROVIDER));
 			setProtocolHandler(props.getProperty(ConnectionFactoryImpl.PROTOCOL_HANDLER_PROPERTY, DEFAULT_PROTOCOL_HANDLER));
@@ -165,9 +170,8 @@ public class RegistryImpl implements IRegistry {
 			JAXBContext context = JAXBContextUtil.getContext(JAXBContextUtil.UDDI_V2_VERSION);
             unmarshaller = context.createUnmarshaller(); 
             marshaller = context.createMarshaller();
-            
 		} catch (URISyntaxException muex) {
-			throw new RuntimeException(muex);
+			throw new InvalidRequestException(muex.getMessage(),muex);
 		} catch(JAXBException e) {
            throw new RuntimeException(e);
         }
