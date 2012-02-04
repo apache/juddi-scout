@@ -141,18 +141,24 @@ public class ConnectionFactoryTest extends TestCase {
     public void testCreateConnectionWithNullLifeCycleURL() throws JAXRException {
         Properties properties = new Properties();
         properties.setProperty(ConnectionFactoryImpl.QUERYMANAGER_PROPERTY, "http://localhost");
-        factory.setProperties(properties);
-        Connection c = factory.createConnection();
+        Connection c = null;
         try {
+            factory.setProperties(properties);
+            c = factory.createConnection();
             assertEquals(ConnectionImpl.class, c.getClass());
+        } catch (Exception e) {
+            fail("it's ok to have a null lifeCycleURL");
         } finally {
-            c.close();
+            if (c!=null) c.close();
         }
     }
 
     public void testCreateConnectionWithNullQueryURL() {
         try {
             factory.createConnection();
+            fail("should have thrown an InvalidRequestException");
+        } catch (InvalidRequestException ire) {
+            //expected
         } catch (Exception e) {
             fail("threw Exception");
         }

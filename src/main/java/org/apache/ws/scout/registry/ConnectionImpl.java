@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.registry.Connection;
+import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.RegistryService;
 
@@ -53,7 +54,7 @@ public class ConnectionImpl implements Connection, Serializable
     private String uddiVersion;
     UDDIClerkManager manager = null;
 
-    public ConnectionImpl(Properties properties)
+    public ConnectionImpl(Properties properties) throws InvalidRequestException
     {
         postalScheme = properties.getProperty(ConnectionFactoryImpl.POSTALADDRESSSCHEME_PROPERTY);
         String val = properties.getProperty(ConnectionFactoryImpl.MAXROWS_PROPERTY);

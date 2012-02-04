@@ -23,6 +23,7 @@ import java.util.Properties;
 import javax.xml.registry.Connection;
 import javax.xml.registry.ConnectionFactory;
 import javax.xml.registry.FederatedConnection;
+import javax.xml.registry.InvalidRequestException;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.UnsupportedCapabilityException;
 
@@ -63,6 +64,9 @@ public class ConnectionFactoryImpl extends ConnectionFactory implements Serializ
 
     public Connection createConnection() throws JAXRException
     {
+        //The JAXR spec requires the queryManagerURL to be defined
+        String queryManagerURL = properties.getProperty(QUERYMANAGER_PROPERTY);
+        if (queryManagerURL==null) throw new InvalidRequestException("Missing required property " + QUERYMANAGER_PROPERTY);
         return new ConnectionImpl(properties);
     }
 
