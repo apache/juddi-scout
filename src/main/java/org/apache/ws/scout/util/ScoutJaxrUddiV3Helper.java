@@ -833,7 +833,8 @@ public class ScoutJaxrUddiV3Helper
     				}
                 }
 			}
-			return cbag;
+			if (cbag.getKeyedReference().isEmpty()) return null;
+			else return cbag;
     	} catch (Exception ud) {
 			throw new JAXRException("Apache JAXR Impl:", ud);
 		}
@@ -849,20 +850,25 @@ public class ScoutJaxrUddiV3Helper
 			Iterator speciter = specifications.iterator();
 			while (speciter.hasNext()) {
 				RegistryObject registryobject = (RegistryObject) speciter.next();
-				if (registryobject instanceof SpecificationLink) {
-					SpecificationLink specificationlink = (SpecificationLink) registryobject;
-					if (specificationlink.getSpecificationObject() != null) {
-						RegistryObject ro = specificationlink.getSpecificationObject();
-						if (ro.getKey() != null) {
-							Key key = ro.getKey();
-							tbag.getTModelKey().add(key.toString());
-						}
-					}
+				if (registryobject instanceof Concept) {
+				    Concept concept = (Concept) registryobject;
+				    if (concept.getKey() != null) {
+				        tbag.getTModelKey().add(concept.getKey().toString());
+				    }
+//					SpecificationLink specificationlink = (SpecificationLink) registryobject;
+//					if (specificationlink.getSpecificationObject() != null) {
+//						RegistryObject ro = specificationlink.getSpecificationObject();
+//						if (ro.getKey() != null) {
+//							Key key = ro.getKey();
+//							tbag.getTModelKey().add(key.toString());
+//						}
+//					}
 				} else {
 					log.info("ebXML case - the RegistryObject is an ExtrinsicObject, Not implemented");
 				}
 			}
-			return tbag;
+			if (tbag.getTModelKey().isEmpty()) return null;
+			else return tbag;
     	} catch (Exception ud) {
 			throw new JAXRException("Apache JAXR Impl:", ud);
 		}
