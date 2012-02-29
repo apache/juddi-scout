@@ -957,28 +957,32 @@ public class BusinessQueryManagerV3Impl implements BusinessQueryManager
 
     static FindQualifiers mapFindQualifiers(Collection jaxrQualifiers) throws UnsupportedCapabilityException
     {
-        if (jaxrQualifiers == null)
-        {
-            return null;
-        }
         FindQualifiers result = objectFactory.createFindQualifiers();
-        for (Iterator i = jaxrQualifiers.iterator(); i.hasNext();)
-        {
-            String jaxrQualifier = (String) i.next();
-            String juddiQualifier = jaxrQualifier;
-           
-            // SCOUT-111 
-            // If the JAXR qualifier is exactNameMatch, then 
-            // set the UDDI v3 qualifier to exactMatch 
-            if ("exactNameMatch".equals(jaxrQualifier)) {
-                juddiQualifier = "exactMatch";
-            }
-            
-            if (juddiQualifier == null)
+        boolean exact = false;
+        if (jaxrQualifiers != null) {
+            for (Iterator i = jaxrQualifiers.iterator(); i.hasNext();)
             {
-                throw new UnsupportedCapabilityException("jUDDI does not support FindQualifer: " + jaxrQualifier);
+                String jaxrQualifier = (String) i.next();
+                String juddiQualifier = jaxrQualifier;
+               
+                // SCOUT-111 
+                // If the JAXR qualifier is exactNameMatch, then 
+                // set the UDDI v3 qualifier to exactMatch 
+                if ("exactNameMatch".equals(jaxrQualifier) || "exactMatch".equals(jaxrQualifier)) {
+                    juddiQualifier = "exactMatch";
+                    exact = true;
+                }
+                
+                if (juddiQualifier == null)
+                {
+                    throw new UnsupportedCapabilityException("jUDDI does not support FindQualifer: " + jaxrQualifier);
+                }
+                result.getFindQualifier().add(juddiQualifier);
             }
-            result.getFindQualifier().add(juddiQualifier);
+        }
+        if (!exact) {
+            //Making it backwards compatible with UDDIv2, so the JAXR tests don't get confused.
+            result.getFindQualifier().add("approximateMatch");
         }
         return result;
     }
