@@ -60,6 +60,16 @@ public class ConnectionImpl implements Connection, Serializable
         String val = properties.getProperty(ConnectionFactoryImpl.MAXROWS_PROPERTY);
         maxRows = (val == null) ? -1 : Integer.valueOf(val);
         uddiVersion = properties.getProperty(ConnectionFactoryImpl.UDDI_VERSION_PROPERTY, DEFAULT_UDDI_VERSION);
+        //The TCK does not set the UDDI_VERSION, so if the lifecycle URL contains 'v3' we 
+        //automagically set the version to be "3.0"
+        if (!properties.contains(ConnectionFactoryImpl.UDDI_VERSION_PROPERTY) 
+                && (properties.contains(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY)) 
+                && properties.getProperty(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY).contains("v3") ) {
+            properties.setProperty(ConnectionFactoryImpl.UDDI_VERSION_PROPERTY, "3.0");
+            uddiVersion = "3.0";
+            String securityManager = properties.getProperty(ConnectionFactoryImpl.LIFECYCLEMANAGER_PROPERTY).replace("publish", "security");
+            properties.setProperty(ConnectionFactoryImpl.SECURITYMANAGER_PROPERTY, securityManager);
+        }
      
         String uddiConfigFile      = properties.getProperty(JUDDI_CLIENT_CONFIG_FILE);// DEFAULT_JUDDI_CLIENT_CONFIG_FILE);
         if (isUDDIv3(uddiVersion)) {
