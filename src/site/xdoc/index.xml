@@ -43,6 +43,7 @@ under the License.
 	  </section>
       
 	  <section name="News">
+	    <p><strong>Feb 29, 2012</strong> Version 1.2.6 <a href="http://apachejuddi.blogspot.com/2012/02/first-time-running-he-jaxr-tck-with.html">passes the JEE6 TCK running against jUDDIv2 as well as jUDDIv3</a></p>
 	    <p><strong>Oct 23, 2009</strong> Version 1.2 adds support for UDDI v3</p>
 	    <p><strong>Aug 3, 2009</strong> Version 1.1 uses JAXB for XML binding and passes TCK</p>
 	    <p><strong>May 5, 2009</strong> Version 1.0 is now available</p>
@@ -76,6 +77,8 @@ under the License.
           <li><a href="http://www.javaworld.com/javaworld/jw-06-2002/jw-0614-jaxr.html">Discover and publish Web services with JAXR</a></li>
           <li><a href="http://www.javaworld.com/javaworld/jw-09-2002/jw-1213-webservices.html">Publish and find UDDI tModels with JAXR and WSDL</a></li>
           <li><a href="http://www.jboss.org/jbossesb/docs/4.2.1GA/manuals/html/services/Registry.html">JBossESB Registry</a></li>
+          <li><a href="http://apachejuddi.blogspot.com/2012/02/using-jaxr-on-jboss-711.html">Using JAXR on JBoss-7.1</a></li>
+          
         </ul>
         </p>
       </section>
