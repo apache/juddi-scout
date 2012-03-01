@@ -847,15 +847,20 @@ public class ScoutJaxrUddiHelper
 			Iterator speciter = specifications.iterator();
 			while (speciter.hasNext()) {
 				RegistryObject registryobject = (RegistryObject) speciter.next();
-				if (registryobject instanceof SpecificationLink) {
-					SpecificationLink specificationlink = (SpecificationLink) registryobject;
-					if (specificationlink.getSpecificationObject() != null) {
-						RegistryObject ro = specificationlink.getSpecificationObject();
-						if (ro.getKey() != null) {
-							Key key = ro.getKey();
-							tbag.getTModelKey().add(key.toString());
-						}
-					}
+				if (registryobject instanceof Concept) {
+                    Concept concept = (Concept) registryobject;
+                    if (concept.getKey() != null) {
+                        tbag.getTModelKey().add(concept.getKey().toString());
+                    }
+//				if (registryobject instanceof SpecificationLink) {
+//					SpecificationLink specificationlink = (SpecificationLink) registryobject;
+//					if (specificationlink.getSpecificationObject() != null) {
+//						RegistryObject ro = specificationlink.getSpecificationObject();
+//						if (ro.getKey() != null) {
+//							Key key = ro.getKey();
+//							tbag.getTModelKey().add(key.toString());
+//						}
+//					}
 				} else {
 					log.info("ebXML case - the RegistryObject is an ExtrinsicObject, Not implemented");
 				}
