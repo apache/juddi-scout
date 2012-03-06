@@ -6,10 +6,10 @@
   </properties>
   <body>
     <section name="Releases">    
-      <p>This contains JAXR implementation for UDDI v2.0 and v3.0 registries that has been 
-          	tested against Apache jUDDI registry. The implementation has been tested against 
-          	J2EE 1.4 Compatibility Test Suite from Sun for the JAXR tests when integrated 
-          	with J2EE Application Servers (JBoss, Apache Geronimo and Jonas).</p>
+      <p>Scout is an implementation of the Java API for XML Registries. Scout has been tested with UDDI v2.0 and v3.0 registries.
+            Both configuration passed the 
+          	J2EE 1.6 Compatibility Test Suite (TCK) from Sun for the JAXR tests when integrated 
+          	with J2EE Application Servers (JBoss AS7, Apache Geronimo).</p>
       <table>   
         <tr> 
           <td><strong>Name</strong></td>
@@ -17,14 +17,14 @@
           <td><strong>Description</strong></td>
         </tr>
         <tr>
+          <td><a href="https://repository.apache.org/content/groups/public/org/apache/ws/scout/scout/1.2.6/">scout-1.2.6</a></td>
+          <td>March 6, 2012</td>
+          <td>Version 1.2.6 of Scout, stable release</td>
+        </tr>
+        <tr>
           <td><a href="https://repository.apache.org/content/groups/public/org/apache/ws/scout/scout/1.2.5/">scout-1.2.5</a></td>
           <td>Feb 6, 2012</td>
           <td>Version 1.2.5 of Scout, stable release</td>
-        </tr>
-        <tr>
-          <td><a href="https://repository.apache.org/content/groups/public/org/apache/ws/scout/scout/1.2.4/">scout-1.2.4</a></td>
-          <td>Jan 12, 2012</td>
-          <td>Version 1.2.4 of Scout, stable release</td>
         </tr>
       </table>    
 		
