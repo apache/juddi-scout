@@ -478,6 +478,7 @@ public class ScoutUddiV3JaxrHelper
 			sb.setKey(new KeyImpl(hr.getBindingKey()));
 			serviceBinding.setTargetBinding(sb);
 		}
+		serviceBinding.addClassifications(getClassifications(businessTemplate.getCategoryBag(), lifeCycleManager));
 
 		return serviceBinding;
 	}

@@ -177,11 +177,16 @@ public class ScoutJaxrUddiV3Helper
 			// TODO:Need to look further at the mapping b/w BindingTemplate and
 			// Jaxr ServiceBinding
 
-			// Get Service information
-           Service svc = serviceBinding.getService();
-			if (svc != null && svc.getKey() != null && svc.getKey().getId() != null) {
+            CategoryBag catBag = getCategoryBagFromClassifications(serviceBinding.getClassifications());
+            if (catBag!=null) {
+                bt.setCategoryBag(catBag);
+            }
+			
+            // Get Service information
+            Service svc = serviceBinding.getService();
+            if (svc != null && svc.getKey() != null && svc.getKey().getId() != null) {
               bt.setServiceKey(svc.getKey().getId());
-           }
+            }
 			
 			InternationalString idesc = serviceBinding.getDescription();
             
