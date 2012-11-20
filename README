@@ -87,6 +87,57 @@ SUPPORT
   
     dev-subscribe@juddi.apache.org
 
+Release Notes - Scout - Version 1.2.7
+
+Bug
+
+    [SCOUT-130] - Download links do not work
+    [SCOUT-131] - Need to save and retrieve specifications/category bags related to bindings
+
+
+Release Notes - Scout - Version 1.2.6
+
+Bug
+
+    [SCOUT-127] - When Scout uses a UDDI v3, it needs to make querying backwards compatible
+    [SCOUT-128] - When using a UDDI v3 registry the UDDI-Version should be set to '3.0'
+    [SCOUT-129] - Querying using 'specifications' is not implemented correctly.
+
+Task
+
+    [SCOUT-103] - Need to update the Scout Site
+
+
+Release Notes - Scout - Version 1.2.5
+
+Bug
+
+    [SCOUT-107] - fix constants in org.apache.ws.scout.registry.RegistryV3Impl for uddi 3
+    [SCOUT-125] - Array out of Range
+    [SCOUT-126] - If the properties are defined add to it, rather then dropping them
+
+Improvement
+
+    [SCOUT-106] - why do you have defaults for queryManagerURL and other but require them being set via properties when creating a connection?
+
+Task
+
+    [SCOUT-124] - Add SaajTransport
+
+
+Release Notes - Scout - Version 1.2.4
+
+Bug
+
+    [SCOUT-114] - Table J3_TMODEL_INSTANCE_INFO - Column INSTANCE_PARMS getting persisted with NULL in DB2
+    [SCOUT-117] - EXACT_MATCH was EXACT_NAME_MATCH in v2. V3 should add EXACT_NAME_MATCH for backward compatibility in FindQualifiers
+    [SCOUT-121] - Upgrade pom
+    [SCOUT-122] - LocalTransport should be able to handle a null node response
+
+Task
+
+    [SCOUT-123] - Switch the tests to use UDDI v3 by default
+
 Release Notes - Scout - Version 1.2.3
 
 Bug
