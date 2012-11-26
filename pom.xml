@@ -131,7 +131,7 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/juddi/scout/trunk</connection>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</connection>
 		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</developerConnection>
 		<url>http://svn.apache.org/viewcvs.cgi/juddi/scout/trunk</url>
 	</scm>
