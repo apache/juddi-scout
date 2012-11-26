@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>org.apache.juddi.scout</groupId>
 	<artifactId>scout</artifactId>
-	<version>1.2.7-SNAPSHOT</version>
+	<version>1.2.7</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -131,9 +131,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</developerConnection>
-		<url>http://svn.apache.org/viewcvs.cgi/juddi/scout/trunk</url>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/tags/scout-1.2.7</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/tags/scout-1.2.7</developerConnection>
+		<url>http://svn.apache.org/viewcvs.cgi/juddi/scout/tags/scout-1.2.7</url>
 	</scm>
 	<dependencies>
 		<dependency>
