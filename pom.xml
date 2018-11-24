@@ -13,7 +13,7 @@
 
     <properties>
         <javadoc.extra.settings />
-        <juddi.registry.version>3.3.6-SNAPSHOT</juddi.registry.version>
+        <juddi.registry.version>3.3.6</juddi.registry.version>
     </properties>
 
 
