@@ -20,7 +20,7 @@ import javax.xml.registry.infomodel.Key;
 
 /**
  * Implements JAXR Interface.
- * For futher details, look into the JAXR API Javadoc.
+ * For further details, look into the JAXR API Javadoc.
  *
  * @author Anil Saldhana  <anil@apache.org>
  */

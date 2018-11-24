@@ -45,7 +45,7 @@ public class EnumerationHelper
     private static Log log = LogFactory.getLog(EnumerationHelper.class);
    
 
-    private final static String UDDI_ORG_TYPES		      = "C1ACF26D-9672-4404-9D70-39B756E62AB4"; 
+    private final static String UDDI_ORG_TYPES		      = "uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4"; 
     private final static String OBJECT_TYPE                   = "ObjectType";
     private final static String ASSOCIATION_TYPE              = "AssociationType";
     private final static String URL_TYPE                      = "URLType";
@@ -120,7 +120,7 @@ public class EnumerationHelper
             throws JAXRException, IllegalArgumentException
     {
         if (!TYPES_LIST.contains(firstToken)) throw new IllegalArgumentException("Expected the path to " +
-                "start with one of " + TYPES);
+                "start with one of " + Arrays.toString(TYPES));
         
         //get the predefined classificationscheme
         ClassificationScheme cs = new ClassificationSchemeImpl(null);
@@ -129,7 +129,7 @@ public class EnumerationHelper
 
         ArrayList<String> conceptStrings = typesMap.get(firstToken);
         if (!conceptStrings.contains(secondToken)) throw new IllegalArgumentException("Expected the path to " +
-                "end with one of " + conceptStrings.toArray());
+                "end with one of " + Arrays.toString(conceptStrings.toArray()));
                 
         Concept concept = new ConceptImpl(null);
         concept.setName(new InternationalStringImpl(secondToken.toLowerCase()));

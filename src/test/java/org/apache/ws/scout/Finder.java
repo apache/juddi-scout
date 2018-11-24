@@ -177,7 +177,6 @@ public class Finder
     {
         Collection<ServiceBinding> serviceBindings=null;
         Collection<String> findQualifiers = new ArrayList<String>();
-        findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
         Collection<Classification> classifications = new ArrayList<Classification>();
         classifications.add(classification);
         BulkResponse bulkResponse = bqm.findServiceBindings(serviceKey,findQualifiers,classifications,null);
@@ -194,7 +193,6 @@ public class Finder
     {
         Collection<ServiceBinding> serviceBindings=null;
         Collection<String> findQualifiers = new ArrayList<String>();
-        findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
         Collection<SpecificationLink> specifications = new ArrayList<SpecificationLink>();
         specifications.add(specLink);
         BulkResponse bulkResponse = bqm.findServiceBindings(serviceKey,findQualifiers,null,specifications);

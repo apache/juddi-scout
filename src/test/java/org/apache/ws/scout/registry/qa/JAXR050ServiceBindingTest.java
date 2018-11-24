@@ -24,9 +24,11 @@ import java.util.Iterator;
 
 import javax.xml.registry.BulkResponse;
 import javax.xml.registry.BusinessLifeCycleManager;
+import javax.xml.registry.FindQualifier;
 import javax.xml.registry.JAXRException;
 import javax.xml.registry.JAXRResponse;
 import javax.xml.registry.RegistryService;
+import javax.xml.registry.infomodel.ClassificationScheme;
 import javax.xml.registry.infomodel.Concept;
 import javax.xml.registry.infomodel.ExternalLink;
 import javax.xml.registry.infomodel.InternationalString;
@@ -40,7 +42,10 @@ import junit.framework.JUnit4TestAdapter;
 
 import org.apache.ws.scout.BaseTestCase;
 import org.apache.ws.scout.Finder;
+import org.apache.ws.scout.Remover;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -67,14 +72,42 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
 	String tempOrgName = "Apache JAXR Service Org -- APACHE SCOUT TEST";
 
     @Before
-    public void setUp()
-    {
-       super.setUp();
+    public void setUp() {
+        super.setUp();
+        login();
+        try {
+            RegistryService rs = connection.getRegistryService();
+            bqm = rs.getBusinessQueryManager();
+            blm = rs.getBusinessLifeCycleManager();
+            ClassificationScheme cScheme = blm.createClassificationScheme("org.jboss.soa.esb.:testcategory", "JBossESB Classification Scheme");
+            ArrayList<ClassificationScheme> cSchemes = new ArrayList<ClassificationScheme>();
+            cSchemes.add(cScheme);
+            BulkResponse br = blm.saveClassificationSchemes(cSchemes);
+            assertEquals(JAXRResponse.STATUS_SUCCESS, br.getStatus());
+        } catch (Exception je) {
+            je.printStackTrace();
+            fail(je.getMessage());
+        }
     }
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
         super.tearDown();
+        login();
+        try {
+            RegistryService rs = connection.getRegistryService();
+            bqm = rs.getBusinessQueryManager();
+            blm = rs.getBusinessLifeCycleManager();
+            Collection<String> findQualifiers = new ArrayList<String>();
+            findQualifiers.add(FindQualifier.AND_ALL_KEYS);
+            //findQualifiers.add(FindQualifier.SORT_BY_NAME_DESC);
+            ClassificationScheme cScheme = bqm.findClassificationSchemeByName(findQualifiers, "org.jboss.soa.esb.:testcategory");
+            Remover remover = new Remover(blm);
+            remover.removeClassificationScheme(cScheme);
+        } catch (Exception je) {
+            je.printStackTrace();
+            fail(je.getMessage());
+        }
     }
 
 	/**
@@ -109,13 +142,13 @@ public class JAXR050ServiceBindingTest extends BaseTestCase
                        
             
             SpecificationLink specLink = blm.createSpecificationLink();            
-            Concept concept = null;
+            /*Concept concept = null;
             if ("3.0".equals(uddiversion)) {
             	concept = (Concept)bqm.getRegistryObject("uddi:uddi.org:findqualifier:orlikekeys", BusinessLifeCycleManager.CONCEPT);
             } else {
             	concept = (Concept)bqm.getRegistryObject("uuid:AD61DE98-4DB8-31B2-A299-A2373DC97212",BusinessLifeCycleManager.CONCEPT);
             }
-            specLink.setSpecificationObject(concept);
+            specLink.setSpecificationObject(concept);*/
             
             //find serviceBinding
             Collection<ServiceBinding> serviceBindings2 = finder.findServiceBindings(tmpSvcKey, specLink);

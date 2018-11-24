@@ -332,7 +332,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         List<TModel> tmodelList = td.getTModel();
         entityarr = new TModel[tmodelList.size()];
         tmodelList.toArray(entityarr); 
-        log.debug("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        log.debug("After Saving TModel. Obtained vector size:" + ((entityarr != null) ? entityarr.length : 0));
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             TModel tm = (TModel) entityarr[i];
             coll.add(new KeyImpl(tm.getTModelKey()));
@@ -381,7 +381,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         entityarr = new TModel[tmodelList.size()];
         tmodelList.toArray(entityarr);
         
-        log.debug("After Saving TModel. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        log.debug("After Saving TModel. Obtained vector size:" + ((entityarr != null) ? entityarr.length : 0));
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             TModel tm = (TModel) entityarr[i];
             coll.add(new KeyImpl(tm.getTModelKey()));
@@ -431,7 +431,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
         entityarr = new BusinessEntity[bizEntityList.size()];
         bizEntityList.toArray(entityarr);
         
-        log.debug("After Saving Business. Obtained vector size:" + entityarr != null ? entityarr.length : 0);
+        log.debug("After Saving Business. Obtained vector size:" + ((entityarr != null) ? entityarr.length : 0));
         for (int i = 0; entityarr != null && i < entityarr.length; i++) {
             BusinessEntity entity = (BusinessEntity) entityarr[i];
             coll.add(new KeyImpl(entity.getBusinessKey()));
@@ -829,7 +829,7 @@ public class BusinessLifeCycleManagerV3Impl extends LifeCycleManagerImpl
             keyResultArr = new Result[resultList.size()];
             resultList.toArray(keyResultArr); 
             
-            log.debug("After deleting Business. Obtained vector size:" + keyResultArr != null ? keyResultArr.length : 0);
+            log.debug("After deleting Business. Obtained vector size:" + ((keyResultArr != null) ? keyResultArr.length : 0));
             for (int i = 0; keyResultArr != null && i < keyResultArr.length; i++) {
                 Result result = (Result) keyResultArr[i];
                 int errno = result.getErrno();

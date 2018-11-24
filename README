@@ -87,6 +87,15 @@ SUPPORT
   
     dev-subscribe@juddi.apache.org
 
+Release Notes - Scout - Version 1.2.8
+
+Bug
+
+	[SCOUT-136] - Scout adds sort by name desc to findBinding UDDI requests, which is invalid 
+	[SCOUT-135] - Fix for mismatch with UDDI Address Line
+	[SCOUT-134] - Updates dependencies and code to match the jUDDI 3.1.5 APIs
+
+	
 Release Notes - Scout - Version 1.2.7
 
 Bug

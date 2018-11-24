@@ -40,6 +40,7 @@ import junit.framework.JUnit4TestAdapter;
 import org.apache.ws.scout.BaseTestCase;
 import org.apache.ws.scout.Creator;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -117,6 +118,7 @@ public class JAXR030AssociationsTest extends BaseTestCase {
            
 			System.out.println("\nSearching for newly created organizations...\n");
 			ArrayList<Organization> newOrgs = findTempOrgs();
+                        Assert.assertEquals(2, newOrgs.size());
 			sOrg = newOrgs.get(0);
 			tOrg = newOrgs.get(1);
 

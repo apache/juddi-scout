@@ -214,11 +214,19 @@ public interface IRegistryV3 extends IRegistryBase {
 	  throws RegistryV3Exception;
 	  
 	  /**
+           * 
 	   * "Used to locate specific bindings within a registered
 	   *  businessService. Returns a bindingDetail message."
 	   *
 	   * @exception RegistryV3Exception
-	   */
+           * @param serviceKey
+           * @param categoryBag
+           * @param tModelBag
+           * @param findQualifiers
+           * @param maxRows
+           * @return
+           * @throws RegistryV3Exception 
+           */
 	  BindingDetail findBinding(String serviceKey,CategoryBag categoryBag,TModelBag tModelBag,FindQualifiers findQualifiers,int maxRows)
 	  throws RegistryV3Exception;
 	  

@@ -709,12 +709,12 @@ public class RegistryV3Impl implements IRegistryV3 {
 		}
 		request.setMaxRows(maxRows);
 
-        BindingDetail bd = null;
-        JAXBElement<?> o = execute(this.objectFactory.createFindBinding(request), 
-        		this.getInquiryURI());
-        if (o != null) bd = (BindingDetail) o.getValue();
+                BindingDetail bd = null;
+                JAXBElement<?> o = execute(this.objectFactory.createFindBinding(request), 
+                                this.getInquiryURI());
+                if (o != null) bd = (BindingDetail) o.getValue();
 
-        return bd;
+                return bd;
 	}
 
 	/**
@@ -1084,9 +1084,11 @@ public class RegistryV3Impl implements IRegistryV3 {
 		if (businessArray != null) {
 			for (int i = 0; i < businessArray.length; i++) {
 				BusinessEntity be = businessArray[i];
-				if (be.getBusinessServices().getBusinessService().size() == 0) {
-					be.setBusinessServices(null);
-				}
+                                if (be.getBusinessServices()!=null)
+                                    
+                                    if (be.getBusinessServices().getBusinessService().size() == 0) {
+                                            be.setBusinessServices(null);
+                                    }
 			}
 
 			request.getBusinessEntity().addAll(Arrays.asList(businessArray));

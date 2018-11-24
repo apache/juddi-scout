@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <uddi>
   <reloadDelay>5000</reloadDelay>
-  <manager name="jaxr">
+  <client name="jaxr">
     <nodes>
       <node isHomeJUDDI="true">
       <name>jaxr-client</name>
@@ -12,5 +12,5 @@
       <securityUrl>${javax.xml.registry.securityManagerURL}</securityUrl>
     </node>
     </nodes>
-  </manager>
+  </client>
 </uddi>

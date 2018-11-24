@@ -16,6 +16,11 @@
           <td><strong>Date</strong></td>
           <td><strong>Description</strong></td>
         </tr>
+		<tr>
+          <td><a href="https://repository.apache.org/content/groups/public/org/apache/juddi/scout/scout/1.2.6/">scout-1.2.6</a></td>
+          <td>Nov 30, 2012</td>
+          <td>Version 1.2.7 of Scout, stable release</td>
+        </tr>
         <tr>
           <td><a href="https://repository.apache.org/content/groups/public/org/apache/juddi/scout/scout/1.2.6/">scout-1.2.6</a></td>
           <td>March 6, 2012</td>

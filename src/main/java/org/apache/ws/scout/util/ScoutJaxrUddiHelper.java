@@ -84,19 +84,17 @@ import org.apache.ws.scout.registry.infomodel.InternationalStringImpl;
  * @author <a href="mailto:kstam@apache.org">Kurt T Stam</a>
  * @author <a href="mailto:tcunning@apache.org">Tom Cunningham</a>
  */
-public class ScoutJaxrUddiHelper 
-{
+public class ScoutJaxrUddiHelper {
+
     private static final String UDDI_ORG_TYPES = "uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4";
-	private static Log log = LogFactory.getLog(ScoutJaxrUddiHelper.class);
-	private static ObjectFactory objectFactory = new ObjectFactory();
-	
+    private static Log log = LogFactory.getLog(ScoutJaxrUddiHelper.class);
+    private static ObjectFactory objectFactory = new ObjectFactory();
+
     /**
      * Get UDDI Address given JAXR Postal Address
      */
-	public static Address getAddress(PostalAddress postalAddress) throws JAXRException {
-		Address address = objectFactory.createAddress();
-
-		AddressLine[] addarr = new AddressLine[6];
+    public static Address getAddress(PostalAddress postalAddress) throws JAXRException {
+        Address address = objectFactory.createAddress();
 
         String stnum = postalAddress.getStreetNumber();
         String st = postalAddress.getStreet();
@@ -105,116 +103,119 @@ public class ScoutJaxrUddiHelper
         String code = postalAddress.getPostalCode();
         String state = postalAddress.getStateOrProvince();
 
-		AddressLine stnumAL = objectFactory.createAddressLine();
-        stnumAL.setKeyName("STREET_NUMBER");
-		if (stnum != null) {
-        stnumAL.setKeyValue(stnum);
-		}
+        if (stnum != null && stnum.length() > 0) {
+            AddressLine stnumAL = objectFactory.createAddressLine();
+            stnumAL.setValue(stnum);
+            stnumAL.setKeyValue("STREET_NUMBER");
+            stnumAL.setKeyName("uuid:48eb2518-c1bd-354f-92c9-21a53b0ff2b1");
+            address.getAddressLine().add(stnumAL);
+        }
 
-		AddressLine stAL = objectFactory.createAddressLine();
-        stAL.setKeyName("STREET");
-		if (st != null) {
-        stAL.setKeyValue(st);
-		}
+        if (st != null && st.length() > 0) {
+            AddressLine stAL = objectFactory.createAddressLine();
+            stAL.setKeyName("uuid:48eb2518-c1bd-354f-92c9-21a53b0ff2b1");
+            stAL.setValue(st);
+            stAL.setKeyValue("STREET");
+            address.getAddressLine().add(stAL);
+        }
 
-		AddressLine cityAL = objectFactory.createAddressLine();
-        cityAL.setKeyName("CITY");
-		if (city != null) {
-        cityAL.setKeyValue(city);
-		}
+        if (city != null && city.length() > 0) {
+            AddressLine cityAL = objectFactory.createAddressLine();
+            cityAL.setKeyName("uuid:48eb2518-c1bd-354f-92c9-21a53b0ff2b1");
+            cityAL.setValue(city);
+            cityAL.setKeyValue("CITY");
+            address.getAddressLine().add(cityAL);
+        }
 
-		AddressLine countryAL = objectFactory.createAddressLine();
-        countryAL.setKeyName("COUNTRY");
-		if (country != null) {
-        countryAL.setKeyValue(country);
-		}
+        if (country != null && country.length() > 0) {
+            AddressLine countryAL = objectFactory.createAddressLine();
+            countryAL.setKeyName("uuid:48eb2518-c1bd-354f-92c9-21a53b0ff2b1");
+            countryAL.setValue(country);
+            countryAL.setKeyValue("COUNTRY");
+            address.getAddressLine().add(countryAL);
+        }
 
-		AddressLine codeAL = objectFactory.createAddressLine();
-        codeAL.setKeyName("POSTALCODE");
-		if (code != null) {
-        codeAL.setKeyValue(code);
-		}
+        if (code != null && code.length() > 0) {
+            AddressLine codeAL = objectFactory.createAddressLine();
+            codeAL.setKeyName("uuid:48eb2518-c1bd-354f-92c9-21a53b0ff2b1");
+            codeAL.setValue(code);
+            codeAL.setKeyValue("POSTALCODE");
+            address.getAddressLine().add(codeAL);
 
-		AddressLine stateAL = objectFactory.createAddressLine();
-        stateAL.setKeyName("STATE");
-		if (state != null) {
-        stateAL.setKeyValue(state);
-		}
+        }
 
-		// Add the AddressLine to vector
-		addarr[0] = stnumAL;
-		addarr[1] = stAL;
-		addarr[2] = cityAL;
-		addarr[3] = countryAL;
-		addarr[4] = codeAL;
-		addarr[5] = stateAL;
-
-		address.getAddressLine().addAll(Arrays.asList(addarr));
+        if (state != null && state.length() > 0) {
+            AddressLine stateAL = objectFactory.createAddressLine();
+            stateAL.setKeyName("uuid:48eb2518-c1bd-354f-92c9-21a53b0ff2b1");
+            stateAL.setValue(state);
+            stateAL.setKeyValue("STATE");
+            address.getAddressLine().add(stateAL);
+        }
 
         return address;
     }
 
-	public static BindingTemplate getBindingTemplateFromJAXRSB(
-			ServiceBinding serviceBinding) throws JAXRException {
-		BindingTemplate bt = objectFactory.createBindingTemplate();
-		if (serviceBinding.getKey() != null && serviceBinding.getKey().getId() != null) {
-			bt.setBindingKey(serviceBinding.getKey().getId());
-		} else {
-			bt.setBindingKey("");
-		}
-	
-		try {
-			// Set Access URI
+    public static BindingTemplate getBindingTemplateFromJAXRSB(
+            ServiceBinding serviceBinding) throws JAXRException {
+        BindingTemplate bt = objectFactory.createBindingTemplate();
+        if (serviceBinding.getKey() != null && serviceBinding.getKey().getId() != null) {
+            bt.setBindingKey(serviceBinding.getKey().getId());
+        } else {
+            bt.setBindingKey("");
+        }
+
+        try {
+            // Set Access URI
             String accessuri = serviceBinding.getAccessURI();
-			if (accessuri != null) {
-				AccessPoint accessPoint = objectFactory.createAccessPoint();
+            if (accessuri != null) {
+                AccessPoint accessPoint = objectFactory.createAccessPoint();
                 accessPoint.setURLType(getURLType(accessuri));
-				accessPoint.setValue(accessuri);
+                accessPoint.setValue(accessuri);
                 bt.setAccessPoint(accessPoint);
             }
             ServiceBinding sb = serviceBinding.getTargetBinding();
-			if (sb != null) {
-				HostingRedirector red = objectFactory.createHostingRedirector();
+            if (sb != null) {
+                HostingRedirector red = objectFactory.createHostingRedirector();
                 Key key = sb.getKey();
-				if (key != null && key.getId() != null) {
-					red.setBindingKey(key.getId());
+                if (key != null && key.getId() != null) {
+                    red.setBindingKey(key.getId());
                 } else {
                     red.setBindingKey("");
                 }
                 bt.setHostingRedirector(red);
             } else {
-            	if (bt.getAccessPoint() == null) {
-            		bt.setAccessPoint(objectFactory.createAccessPoint());
-            	}
+                if (bt.getAccessPoint() == null) {
+                    bt.setAccessPoint(objectFactory.createAccessPoint());
+                }
             }
-			// TODO:Need to look further at the mapping b/w BindingTemplate and
-			// Jaxr ServiceBinding
+            // TODO:Need to look further at the mapping b/w BindingTemplate and
+            // Jaxr ServiceBinding
 
-			// Get Service information
-           Service svc = serviceBinding.getService();
-			if (svc != null && svc.getKey() != null && svc.getKey().getId() != null) {
-              bt.setServiceKey(svc.getKey().getId());
-           }
-			
-			InternationalString idesc = serviceBinding.getDescription();
-            
+            // Get Service information
+            Service svc = serviceBinding.getService();
+            if (svc != null && svc.getKey() != null && svc.getKey().getId() != null) {
+                bt.setServiceKey(svc.getKey().getId());
+            }
+
+            InternationalString idesc = serviceBinding.getDescription();
+
             addDescriptions(bt.getDescription(), idesc);
 
-			// SpecificationLink
-           Collection<SpecificationLink> slcol = serviceBinding.getSpecificationLinks();
-			TModelInstanceDetails tid = objectFactory.createTModelInstanceDetails();
-			if (slcol != null && !slcol.isEmpty()) {
-              Iterator<SpecificationLink> iter = slcol.iterator();
-				while (iter.hasNext()) {
-					SpecificationLink slink = (SpecificationLink) iter.next();
+            // SpecificationLink
+            Collection<SpecificationLink> slcol = serviceBinding.getSpecificationLinks();
+            TModelInstanceDetails tid = objectFactory.createTModelInstanceDetails();
+            if (slcol != null && !slcol.isEmpty()) {
+                Iterator<SpecificationLink> iter = slcol.iterator();
+                while (iter.hasNext()) {
+                    SpecificationLink slink = (SpecificationLink) iter.next();
 
-					TModelInstanceInfo emptyTInfo = objectFactory.createTModelInstanceInfo();
-					tid.getTModelInstanceInfo().add(emptyTInfo);
+                    TModelInstanceInfo emptyTInfo = objectFactory.createTModelInstanceInfo();
+                    tid.getTModelInstanceInfo().add(emptyTInfo);
 
                     RegistryObject specificationObject = slink.getSpecificationObject();
-					if (specificationObject.getKey() != null && specificationObject.getKey().getId() != null) {
-						emptyTInfo.setTModelKey(specificationObject.getKey().getId());
-                        if (specificationObject.getDescription()!=null) {
+                    if (specificationObject.getKey() != null && specificationObject.getKey().getId() != null) {
+                        emptyTInfo.setTModelKey(specificationObject.getKey().getId());
+                        if (specificationObject.getDescription() != null) {
                             for (Object o : specificationObject.getDescription().getLocalizedStrings()) {
                                 LocalizedString locDesc = (LocalizedString) o;
                                 Description description = objectFactory.createDescription();
@@ -224,107 +225,108 @@ public class ScoutJaxrUddiHelper
                             }
                         }
                         Collection<ExternalLink> externalLinks = slink.getExternalLinks();
-                        if (externalLinks!=null && externalLinks.size()>0) {
+                        if (externalLinks != null && externalLinks.size() > 0) {
                             for (ExternalLink link : externalLinks) {
                                 InstanceDetails ids = objectFactory.createInstanceDetails();
                                 emptyTInfo.setInstanceDetails(ids);
-                                if (link.getDescription()!=null) {
+                                if (link.getDescription() != null) {
                                     Description description = objectFactory.createDescription();
                                     ids.getDescription().add(description);
                                     description.setValue(link.getDescription().getValue());
                                 }
-                                if (link.getExternalURI()!=null) {
+                                if (link.getExternalURI() != null) {
                                     OverviewDoc overviewDoc = objectFactory.createOverviewDoc();
                                     ids.setOverviewDoc(overviewDoc);
                                     overviewDoc.setOverviewURL(link.getExternalURI());
                                 }
-                            } 
+                            }
                         }
-					}
-              }
+                    }
+                }
             }
-			bt.setTModelInstanceDetails(tid);
-			log.debug("BindingTemplate=" + bt.toString());
-		} catch (Exception ud) {
+            bt.setTModelInstanceDetails(tid);
+            log.debug("BindingTemplate=" + bt.toString());
+        } catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return bt;
     }
 
-	public static PublisherAssertion getPubAssertionFromJAXRAssociation(
-			Association association) throws JAXRException {
-		PublisherAssertion pa = objectFactory.createPublisherAssertion();
-		try {
-			if (association.getSourceObject().getKey() != null && 
-				association.getSourceObject().getKey().getId() != null) {
-            pa.setFromKey(association.getSourceObject().getKey().getId());
-			}
-			
-			if (association.getTargetObject().getKey() != null &&
-				association.getTargetObject().getKey().getId() != null) {
-            pa.setToKey(association.getTargetObject().getKey().getId());
-			}
+    public static PublisherAssertion getPubAssertionFromJAXRAssociation(
+            Association association) throws JAXRException {
+        PublisherAssertion pa = objectFactory.createPublisherAssertion();
+        try {
+            if (association.getSourceObject().getKey() != null
+                    && association.getSourceObject().getKey().getId() != null) {
+                pa.setFromKey(association.getSourceObject().getKey().getId());
+            }
+
+            if (association.getTargetObject().getKey() != null
+                    && association.getTargetObject().getKey().getId() != null) {
+                pa.setToKey(association.getTargetObject().getKey().getId());
+            }
             Concept c = association.getAssociationType();
             String v = c.getValue();
-			KeyedReference kr = objectFactory.createKeyedReference();
+            KeyedReference kr = objectFactory.createKeyedReference();
             Key key = c.getKey();
-			if (key == null) {
-				// TODO:Need to check this. If the concept is a predefined
-				// enumeration, the key can be the parent classification scheme
+            if (key == null) {
+                // TODO:Need to check this. If the concept is a predefined
+                // enumeration, the key can be the parent classification scheme
                 key = c.getClassificationScheme().getKey();
             }
-			if (key != null && key.getId() != null) {
-				kr.setTModelKey(key.getId());
-			} 
+            if (key != null && key.getId() != null) {
+                kr.setTModelKey(key.getId());
+            }
             kr.setKeyName("Concept");
 
-			if (v != null) {
-				kr.setKeyValue(v);
-			}
-
-            pa.setKeyedReference(kr);
-		} catch (Exception ud) {
-            throw new JAXRException("Apache JAXR Impl:", ud);
-        }
-        return pa;
-    }
-
-	public static PublisherAssertion getPubAssertionFromJAXRAssociationKey(
-			String key) throws JAXRException {
-		PublisherAssertion pa = objectFactory.createPublisherAssertion();
-		try {
-			StringTokenizer token = new StringTokenizer(key, "|");
-			if (token.hasMoreTokens()) {
-               pa.setFromKey(getToken(token.nextToken()));
-               pa.setToKey(getToken(token.nextToken()));
-				KeyedReference kr = objectFactory.createKeyedReference();
-				// Sometimes the Key is UUID:something
-               String str = getToken(token.nextToken());
-				if ("UUID".equals(str))
-					str += ":" + getToken(token.nextToken());
-               kr.setTModelKey(str);
-               kr.setKeyName(getToken(token.nextToken()));
-               kr.setKeyValue(getToken(token.nextToken()));
-               pa.setKeyedReference(kr);
+            if (v != null) {
+                kr.setKeyValue(v);
             }
 
-		} catch (Exception ud) {
+            pa.setKeyedReference(kr);
+        } catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return pa;
     }
 
-	public static BusinessService getBusinessServiceFromJAXRService(
-			Service service) throws JAXRException {
-		BusinessService bs = objectFactory.createBusinessService();
-		try {
-			InternationalString iname = service.getName();
-						
-			addNames(bs.getName(), iname);
-	         
+    public static PublisherAssertion getPubAssertionFromJAXRAssociationKey(
+            String key) throws JAXRException {
+        PublisherAssertion pa = objectFactory.createPublisherAssertion();
+        try {
+            StringTokenizer token = new StringTokenizer(key, "|");
+            if (token.hasMoreTokens()) {
+                pa.setFromKey(getToken(token.nextToken()));
+                pa.setToKey(getToken(token.nextToken()));
+                KeyedReference kr = objectFactory.createKeyedReference();
+                // Sometimes the Key is UUID:something
+                String str = getToken(token.nextToken());
+                if ("UUID".equals(str)) {
+                    str += ":" + getToken(token.nextToken());
+                }
+                kr.setTModelKey(str);
+                kr.setKeyName(getToken(token.nextToken()));
+                kr.setKeyValue(getToken(token.nextToken()));
+                pa.setKeyedReference(kr);
+            }
+
+        } catch (Exception ud) {
+            throw new JAXRException("Apache JAXR Impl:", ud);
+        }
+        return pa;
+    }
+
+    public static BusinessService getBusinessServiceFromJAXRService(
+            Service service) throws JAXRException {
+        BusinessService bs = objectFactory.createBusinessService();
+        try {
+            InternationalString iname = service.getName();
+
+            addNames(bs.getName(), iname);
+
             InternationalString idesc = service.getDescription();
-    
-           addDescriptions(bs.getDescription(), idesc);
+
+            addDescriptions(bs.getDescription(), idesc);
 
             Organization o = service.getProvidingOrganization();
 
@@ -334,26 +336,26 @@ public class ScoutJaxrUddiHelper
             if (o != null) {
                 Key k = o.getKey();
 
-				if (k != null && k.getId() != null) {
+                if (k != null && k.getId() != null) {
                     bs.setBusinessKey(k.getId());
-                } 
-                    
-			} else {
+                }
+
+            } else {
                 /*
                  * gmj - I *think* this is the right thing to do
                  */
-				throw new JAXRException(
-						"Service has no associated organization");
+                throw new JAXRException(
+                        "Service has no associated organization");
             }
 
-			if (service.getKey() != null && service.getKey().getId() != null) {
+            if (service.getKey() != null && service.getKey().getId() != null) {
                 bs.setServiceKey(service.getKey().getId());
             } else {
                 bs.setServiceKey("");
             }
 
             CategoryBag catBag = getCategoryBagFromClassifications(service.getClassifications());
-            if (catBag!=null) {
+            if (catBag != null) {
                 bs.setCategoryBag(catBag);
             }
 
@@ -362,18 +364,18 @@ public class ScoutJaxrUddiHelper
             if (bt != null) {
                 bs.setBindingTemplates(bt);
             }
-   		    
+
             log.debug("BusinessService=" + bs.toString());
-		} catch (Exception ud) {
+        } catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return bs;
     }
 
-	public static TModel getTModelFromJAXRClassificationScheme(
-			ClassificationScheme classificationScheme) throws JAXRException {
-		TModel tm = objectFactory.createTModel();
-		try {
+    public static TModel getTModelFromJAXRClassificationScheme(
+            ClassificationScheme classificationScheme) throws JAXRException {
+        TModel tm = objectFactory.createTModel();
+        try {
             /*
              * a fresh scheme might not have a key
              */
@@ -389,85 +391,87 @@ public class ScoutJaxrUddiHelper
             /*
              * There's no reason to believe these are here either
              */
-
             Slot s = classificationScheme.getSlot("authorizedName");
 
-			if (s != null && s.getName() != null) {
+            if (s != null && s.getName() != null) {
                 tm.setAuthorizedName(s.getName());
             }
 
             s = classificationScheme.getSlot("operator");
 
-			if (s != null && s.getName() != null) {
+            if (s != null && s.getName() != null) {
                 tm.setOperator(s.getName());
             }
 
-			InternationalString iname = classificationScheme.getName();
-			 
+            InternationalString iname = classificationScheme.getName();
+
             tm.setName(getFirstName(iname));
 
-			InternationalString idesc = classificationScheme.getDescription();
-			
-		    addDescriptions(tm.getDescription(), idesc);
+            InternationalString idesc = classificationScheme.getDescription();
+
+            addDescriptions(tm.getDescription(), idesc);
 
             IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(classificationScheme.getExternalIdentifiers());
-            if (idBag!=null) {
+            if (idBag != null) {
                 tm.setIdentifierBag(idBag);
             }
             CategoryBag catBag = getCategoryBagFromClassifications(classificationScheme.getClassifications());
-            if (catBag!=null) {
+            if (catBag != null) {
                 tm.setCategoryBag(catBag);
             }
-			
-			// ToDO: overviewDoc
-		} catch (Exception ud) {
+
+            // ToDO: overviewDoc
+        } catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return tm;
     }
 
     public static TModel getTModelFromJAXRConcept(Concept concept)
-			throws JAXRException {
-    	TModel tm = objectFactory.createTModel();
-		if (concept == null)
-			return null;
-		try {
+            throws JAXRException {
+        TModel tm = objectFactory.createTModel();
+        if (concept == null) {
+            return null;
+        }
+        try {
             Key key = concept.getKey();
-			if (key != null && key.getId() != null)
-				tm.setTModelKey(key.getId());
+            if (key != null && key.getId() != null) {
+                tm.setTModelKey(key.getId());
+            }
             Slot sl1 = concept.getSlot("authorizedName");
-			if (sl1 != null && sl1.getName() != null)
-				tm.setAuthorizedName(sl1.getName());
+            if (sl1 != null && sl1.getName() != null) {
+                tm.setAuthorizedName(sl1.getName());
+            }
 
             Slot sl2 = concept.getSlot("operator");
-			if (sl2 != null && sl2.getName() != null)
-				tm.setOperator(sl2.getName());
+            if (sl2 != null && sl2.getName() != null) {
+                tm.setOperator(sl2.getName());
+            }
 
-			InternationalString iname = concept.getName();
+            InternationalString iname = concept.getName();
 
             tm.setName(getFirstName(iname));
 
             InternationalString idesc = concept.getDescription();
-			
+
             addDescriptions(tm.getDescription(), idesc);
 
 //          External Links
-            Collection<ExternalLink> externalLinks = concept.getExternalLinks(); 
-            if(externalLinks != null && externalLinks.size() > 0)
-            {
-                tm.setOverviewDoc(getOverviewDocFromExternalLink((ExternalLink)externalLinks.iterator().next()));
-            }  
+            Collection<ExternalLink> externalLinks = concept.getExternalLinks();
+            if (externalLinks != null && externalLinks.size() > 0) {
+                tm.setOverviewDoc(getOverviewDocFromExternalLink((ExternalLink) externalLinks.iterator().next()));
+            }
 
             IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(concept.getExternalIdentifiers());
-            if (idBag!=null) {
+            if (idBag != null) {
                 tm.setIdentifierBag(idBag);
             }
             CategoryBag catBag = getCategoryBagFromClassifications(concept.getClassifications());
-            if (catBag!=null) {
+            if (catBag != null) {
                 tm.setCategoryBag(catBag);
             }
 
-		} catch (Exception ud) {
+        } catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return tm;
@@ -495,6 +499,7 @@ public class ScoutJaxrUddiHelper
         }
         return null;
     }
+
     private static void addNames(List<Name> names, InternationalString iname) throws JAXRException {
         for (Object o : iname.getLocalizedStrings()) {
             LocalizedString locName = (LocalizedString) o;
@@ -506,52 +511,52 @@ public class ScoutJaxrUddiHelper
     }
 
     public static BusinessEntity getBusinessEntityFromJAXROrg(Organization organization)
-			throws JAXRException {
-		BusinessEntity biz = objectFactory.createBusinessEntity();
-		BusinessServices bss = objectFactory.createBusinessServices();
-		BusinessService[] barr = new BusinessService[0];
+            throws JAXRException {
+        BusinessEntity biz = objectFactory.createBusinessEntity();
+        BusinessServices bss = objectFactory.createBusinessServices();
+        BusinessService[] barr = new BusinessService[0];
 
-		try {
-			// It may just be an update
+        try {
+            // It may just be an update
             Key key = organization.getKey();
-			if (key != null && key.getId() != null) {
-				biz.setBusinessKey(key.getId());
+            if (key != null && key.getId() != null) {
+                biz.setBusinessKey(key.getId());
             } else {
                 biz.setBusinessKey("");
             }
-			// Lets get the Organization attributes at the top level
-			
-			InternationalString iname = organization.getName();
-			
-			if (iname != null) {
+            // Lets get the Organization attributes at the top level
+
+            InternationalString iname = organization.getName();
+
+            if (iname != null) {
                 addNames(biz.getName(), iname);
-			}
-			
-			InternationalString idesc = organization.getDescription();
-			
+            }
+
+            InternationalString idesc = organization.getDescription();
+
             addDescriptions(biz.getDescription(), idesc);
 
-			if (organization.getPrimaryContact() != null && 
-				organization.getPrimaryContact().getPersonName()!= null &&
-				organization.getPrimaryContact().getPersonName().getFullName() != null) {
+            if (organization.getPrimaryContact() != null
+                    && organization.getPrimaryContact().getPersonName() != null
+                    && organization.getPrimaryContact().getPersonName().getFullName() != null) {
 
-				biz.setAuthorizedName(organization.getPrimaryContact().getPersonName()
-						.getFullName());
-			}
+                biz.setAuthorizedName(organization.getPrimaryContact().getPersonName()
+                        .getFullName());
+            }
 
             Collection<Service> s = organization.getServices();
             log.debug("?Org has services=" + s.isEmpty());
 
-			barr = new BusinessService[s.size()];
+            barr = new BusinessService[s.size()];
 
             Iterator<Service> iter = s.iterator();
-			int barrPos = 0;
-			while (iter.hasNext()) {
-				BusinessService bs = ScoutJaxrUddiHelper
-						.getBusinessServiceFromJAXRService((Service) iter
-								.next());
-				barr[barrPos] = bs;
-				barrPos++;
+            int barrPos = 0;
+            while (iter.hasNext()) {
+                BusinessService bs = ScoutJaxrUddiHelper
+                        .getBusinessServiceFromJAXRService((Service) iter
+                                .next());
+                barr[barrPos] = bs;
+                barrPos++;
             }
 
             /*
@@ -559,16 +564,14 @@ public class ScoutJaxrUddiHelper
              * special designation for one of the users, and D6.1 seems to say
              * that the first UDDI user is the primary contact
              */
-
-			Contacts cts = objectFactory.createContacts();
-			Contact[] carr = new Contact[0];
+            Contacts cts = objectFactory.createContacts();
+            Contact[] carr = new Contact[0];
 
             User primaryContact = organization.getPrimaryContact();
             Collection<User> users = organization.getUsers();
 
             // Expand array to necessary size only (xmlbeans does not like
             // null items in cases like this)
-
             int carrSize = 0;
 
             if (primaryContact != null) {
@@ -606,8 +609,8 @@ public class ScoutJaxrUddiHelper
                 }
             }
 
-			bss.getBusinessService().addAll(Arrays.asList(barr));
-            if (carr.length>0) {
+            bss.getBusinessService().addAll(Arrays.asList(barr));
+            if (carr.length > 0) {
                 cts.getContact().addAll(Arrays.asList(carr));
                 biz.setContacts(cts);
             }
@@ -619,7 +622,9 @@ public class ScoutJaxrUddiHelper
             boolean first = true;
             while (exiter.hasNext()) {
                 ExternalLink link = (ExternalLink) exiter.next();
-                /** Note: jUDDI adds its own discoverURL as the businessEntity* */
+                /**
+                 * Note: jUDDI adds its own discoverURL as the businessEntity*
+                 */
                 if (first) {
                     emptyDUs = objectFactory.createDiscoveryURLs();
                     biz.setDiscoveryURLs(emptyDUs);
@@ -628,22 +633,22 @@ public class ScoutJaxrUddiHelper
                 DiscoveryURL emptyDU = objectFactory.createDiscoveryURL();
                 emptyDUs.getDiscoveryURL().add(emptyDU);
                 emptyDU.setUseType("businessEntityExt");
-				
+
                 if (link.getExternalURI() != null) {
                     emptyDU.setValue(link.getExternalURI());
                 }
             }
-			
-          IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(organization.getExternalIdentifiers());
-          if (idBag!=null) {
-              biz.setIdentifierBag(idBag);
-          }
-          CategoryBag catBag = getCategoryBagFromClassifications(organization.getClassifications());
-          if (catBag!=null) {
-              biz.setCategoryBag(catBag);
-          }
-			
-		} catch (Exception ud) {
+
+            IdentifierBag idBag = getIdentifierBagFromExternalIdentifiers(organization.getExternalIdentifiers());
+            if (idBag != null) {
+                biz.setIdentifierBag(idBag);
+            }
+            CategoryBag catBag = getCategoryBagFromClassifications(organization.getClassifications());
+            if (catBag != null) {
+                biz.setCategoryBag(catBag);
+            }
+
+        } catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return biz;
@@ -651,203 +656,214 @@ public class ScoutJaxrUddiHelper
 
     /**
      *
-     * Convert JAXR User Object to UDDI  Contact
+     * Convert JAXR User Object to UDDI Contact
      */
     public static Contact getContactFromJAXRUser(User user)
-			throws JAXRException {
-		Contact ct = objectFactory.createContact();
+            throws JAXRException {
+        Contact ct = objectFactory.createContact();
         if (user == null) {
             return null;
         }
 
-		Address[] addarr = new Address[0];
-		Phone[] phonearr = new Phone[0];
-		Email[] emailarr = new Email[0];
-		try {
-			
-			if (user.getPersonName() != null && user.getPersonName().getFullName() != null) {
-				ct.setPersonName(user.getPersonName().getFullName());
-			}
-			
-			if (user.getType() != null) {
-            ct.setUseType(user.getType());
-			}
-			// Postal Address
+        Address[] addarr = new Address[0];
+        Phone[] phonearr = new Phone[0];
+        Email[] emailarr = new Email[0];
+        try {
+
+            if (user.getPersonName() != null && user.getPersonName().getFullName() != null) {
+                ct.setPersonName(user.getPersonName().getFullName());
+            }
+
+            if (user.getType() != null) {
+                ct.setUseType(user.getType());
+            }
+            // Postal Address
             Collection<PostalAddress> postc = user.getPostalAddresses();
 
-			addarr = new Address[postc.size()];
+            addarr = new Address[postc.size()];
 
             Iterator<PostalAddress> iterator = postc.iterator();
-			int addarrPos = 0;
-			while (iterator.hasNext()) {
+            int addarrPos = 0;
+            while (iterator.hasNext()) {
                 PostalAddress post = (PostalAddress) iterator.next();
-				addarr[addarrPos] = ScoutJaxrUddiHelper.getAddress(post);
-				addarrPos++;
+                addarr[addarrPos] = ScoutJaxrUddiHelper.getAddress(post);
+                addarrPos++;
             }
-			// Phone Numbers
+            // Phone Numbers
             Collection ph = user.getTelephoneNumbers(null);
 
-			phonearr = new Phone[ph.size()];
+            phonearr = new Phone[ph.size()];
 
             Iterator it = ph.iterator();
-			int phonearrPos = 0;
-			while (it.hasNext()) {
+            int phonearrPos = 0;
+            while (it.hasNext()) {
                 TelephoneNumber t = (TelephoneNumber) it.next();
-				Phone phone = objectFactory.createPhone();
+                Phone phone = objectFactory.createPhone();
                 String str = t.getNumber();
                 log.debug("Telephone=" + str);
-				
-				// FIXME: If phone number is null, should the phone 
-				// not be set at all, or set to empty string?
-				if (str != null) {
-					phone.setValue(str);
-				} else {
-					phone.setValue("");
-				}
 
-				phonearr[phonearrPos] = phone;
-				phonearrPos++;
+                // FIXME: If phone number is null, should the phone 
+                // not be set at all, or set to empty string?
+                if (str != null) {
+                    phone.setValue(str);
+                } else {
+                    phone.setValue("");
+                }
+
+                phonearr[phonearrPos] = phone;
+                phonearrPos++;
             }
 
-			// Email Addresses
+            // Email Addresses
             Collection ec = user.getEmailAddresses();
 
-			emailarr = new Email[ec.size()];
+            emailarr = new Email[ec.size()];
 
             Iterator iter = ec.iterator();
-			int emailarrPos = 0;
-			while (iter.hasNext()) {
+            int emailarrPos = 0;
+            while (iter.hasNext()) {
                 EmailAddress ea = (EmailAddress) iter.next();
-				Email email = objectFactory.createEmail();
-				
-				if (ea.getAddress() != null) {
-					email.setValue(ea.getAddress());
-				}
-				// email.setText( ea.getAddress() );
-				
-				if (ea.getType() != null) {
-                email.setUseType(ea.getType());
-            }
+                Email email = objectFactory.createEmail();
 
-				emailarr[emailarrPos] = email;
-				emailarrPos++;
-			}
-			ct.getAddress().addAll(Arrays.asList(addarr));
-			ct.getPhone().addAll(Arrays.asList(phonearr));
-			ct.getEmail().addAll(Arrays.asList(emailarr));
-		} catch (Exception ud) {
+                if (ea.getAddress() != null) {
+                    email.setValue(ea.getAddress());
+                }
+                // email.setText( ea.getAddress() );
+
+                if (ea.getType() != null) {
+                    email.setUseType(ea.getType());
+                }
+
+                emailarr[emailarrPos] = email;
+                emailarrPos++;
+            }
+            ct.getAddress().addAll(Arrays.asList(addarr));
+            ct.getPhone().addAll(Arrays.asList(phonearr));
+            ct.getEmail().addAll(Arrays.asList(emailarr));
+        } catch (Exception ud) {
             throw new JAXRException("Apache JAXR Impl:", ud);
         }
         return ct;
     }
 
-	private static String getToken(String tokenstr) {
-		// Token can have the value NULL which need to be converted into null
-		if (tokenstr.equals("NULL"))
-			tokenstr = "";
-      return tokenstr;
-   }
+    private static String getToken(String tokenstr) {
+        // Token can have the value NULL which need to be converted into null
+        if (tokenstr.equals("NULL")) {
+            tokenstr = "";
+        }
+        return tokenstr;
+    }
 
-	private static URLType getURLType(String accessuri) {
-       String acc = accessuri.toLowerCase();
-		URLType uri = URLType.OTHER;
-		if (acc.startsWith("http:"))
-			uri = URLType.HTTP;
-		else if (acc.startsWith("https:"))
-			uri = URLType.HTTPS;
-		else if (acc.startsWith("ftp:"))
-			uri = URLType.FTP;
-		else if (acc.startsWith("phone:"))
-			uri = URLType.PHONE;// TODO:Handle this better
+    private static URLType getURLType(String accessuri) {
+        String acc = accessuri.toLowerCase();
+        URLType uri = URLType.OTHER;
+        if (acc.startsWith("http:")) {
+            uri = URLType.HTTP;
+        } else if (acc.startsWith("https:")) {
+            uri = URLType.HTTPS;
+        } else if (acc.startsWith("ftp:")) {
+            uri = URLType.FTP;
+        } else if (acc.startsWith("phone:")) {
+            uri = URLType.PHONE;// TODO:Handle this better
+        }
+        return uri;
+    }
 
-       return uri;
-   }
-    
-	/**
-     * According to JAXR Javadoc, there are two types of classification, internal and external and they use the Classification, Concept,     
-     * and ClassificationScheme objects.  It seems the only difference between internal and external (as related to UDDI) is that the
-     * name/value pair of the categorization is held in the Concept for internal classifications and the Classification for external (bypassing
-     * the Concept entirely).
-     * 
-     * The translation to UDDI is simple.  Relevant objects have a category bag which contains a bunch of KeyedReferences (name/value pairs).  
-     * These KeyedReferences optionally refer to a tModel that identifies the type of category (translates to the ClassificationScheme key).  If
-     * this is set and the tModel doesn't exist in the UDDI registry, then an invalid key error will occur when trying to save the object.
-     * 
+    /**
+     * According to JAXR Javadoc, there are two types of classification,
+     * internal and external and they use the Classification, Concept, and
+     * ClassificationScheme objects. It seems the only difference between
+     * internal and external (as related to UDDI) is that the name/value pair of
+     * the categorization is held in the Concept for internal classifications
+     * and the Classification for external (bypassing the Concept entirely).
+     *
+     * The translation to UDDI is simple. Relevant objects have a category bag
+     * which contains a bunch of KeyedReferences (name/value pairs). These
+     * KeyedReferences optionally refer to a tModel that identifies the type of
+     * category (translates to the ClassificationScheme key). If this is set and
+     * the tModel doesn't exist in the UDDI registry, then an invalid key error
+     * will occur when trying to save the object.
+     *
      * @param classifications classifications to turn into categories
      * @throws JAXRException
      */
-	public static CategoryBag getCategoryBagFromClassifications(Collection classifications) throws JAXRException {
-    	try {
-			if (classifications == null || classifications.size()==0)
-				return null;
-    		
-    		// Classifications
-			CategoryBag cbag = objectFactory.createCategoryBag();
-			Iterator classiter = classifications.iterator();
-			while (classiter.hasNext()) {
-				Classification classification = (Classification) classiter.next();
-				if (classification != null ) {
-					KeyedReference keyr = objectFactory.createKeyedReference();
-					cbag.getKeyedReference().add(keyr);
-	
-					InternationalStringImpl iname = null;
-					String value = null;
-					ClassificationScheme scheme = classification.getClassificationScheme();
-                    if (scheme==null || (classification.isExternal() && classification.getConcept()==null)) {
+    public static CategoryBag getCategoryBagFromClassifications(Collection classifications) throws JAXRException {
+        try {
+            if (classifications == null || classifications.size() == 0) {
+                return null;
+            }
+
+            // Classifications
+            CategoryBag cbag = objectFactory.createCategoryBag();
+            Iterator classiter = classifications.iterator();
+            while (classiter.hasNext()) {
+                Classification classification = (Classification) classiter.next();
+                if (classification != null) {
+                    KeyedReference keyr = objectFactory.createKeyedReference();
+                    cbag.getKeyedReference().add(keyr);
+
+                    InternationalStringImpl iname = null;
+                    String value = null;
+                    ClassificationScheme scheme = classification.getClassificationScheme();
+                    if (scheme == null || (classification.isExternal() && classification.getConcept() == null)) {
                         /*
                         * JAXR 1.0 Specification: Section D6.4.4
                         * Specification related tModels mapped from Concept may be automatically
                         * categorized by the well-known uddi-org:types taxonomy in UDDI (with
                         * tModelKey uuid:C1ACF26D-9672-4404-9D70-39B756E62AB4) as follows:
                         * The keyed reference is assigned a taxonomy value of specification.
-                        */
+                         */
                         keyr.setTModelKey(UDDI_ORG_TYPES);
-                        keyr.setKeyValue("specification"); 
+                        keyr.setKeyValue("specification");
                     } else {
-    					if (classification.isExternal()) {
+                        if (classification.isExternal()) {
                             iname = (InternationalStringImpl) ((RegistryObject) classification).getName();
                             value = classification.getValue();
-    					} else {
-    						Concept concept = classification.getConcept();
-    						if (concept != null) {
-    							iname = (InternationalStringImpl) ((RegistryObject) concept).getName();
-    							value = concept.getValue();
-    							scheme = concept.getClassificationScheme();
-    						}
-    					}
-    	
-    					String name = iname.getValue();
-    					if (name != null)
-    						keyr.setKeyName(name);
-    	
-    					if (value != null)
-    						keyr.setKeyValue(value);
-    					
-    					if (scheme != null) {
-    						Key key = scheme.getKey();
-    						if (key != null && key.getId() != null)
-    							keyr.setTModelKey(key.getId());
-    					}
-    				}
+                        } else {
+                            Concept concept = classification.getConcept();
+                            if (concept != null) {
+                                iname = (InternationalStringImpl) ((RegistryObject) concept).getName();
+                                value = concept.getValue();
+                                scheme = concept.getClassificationScheme();
+                            }
+                        }
+
+                        String name = iname.getValue();
+                        if (name != null) {
+                            keyr.setKeyName(name);
+                        }
+
+                        if (value != null) {
+                            keyr.setKeyValue(value);
+                        }
+
+                        if (scheme != null) {
+                            Key key = scheme.getKey();
+                            if (key != null && key.getId() != null) {
+                                keyr.setTModelKey(key.getId());
+                            }
+                        }
+                    }
                 }
-			}
-			return cbag;
-    	} catch (Exception ud) {
-			throw new JAXRException("Apache JAXR Impl:", ud);
-		}
+            }
+            return cbag;
+        } catch (Exception ud) {
+            throw new JAXRException("Apache JAXR Impl:", ud);
+        }
     }
 
-	public static TModelBag getTModelBagFromSpecifications(Collection specifications) throws JAXRException {
-    	try {
-			if (specifications == null || specifications.size()==0)
-				return null;
-    		
-    		// Classifications
-			TModelBag tbag = objectFactory.createTModelBag();
-			Iterator speciter = specifications.iterator();
-			while (speciter.hasNext()) {
-				RegistryObject registryobject = (RegistryObject) speciter.next();
-				if (registryobject instanceof Concept) {
+    public static TModelBag getTModelBagFromSpecifications(Collection specifications) throws JAXRException {
+        try {
+            if (specifications == null || specifications.size() == 0) {
+                return null;
+            }
+
+            // Classifications
+            TModelBag tbag = objectFactory.createTModelBag();
+            Iterator speciter = specifications.iterator();
+            while (speciter.hasNext()) {
+                RegistryObject registryobject = (RegistryObject) speciter.next();
+                if (registryobject instanceof Concept) {
                     Concept concept = (Concept) registryobject;
                     if (concept.getKey() != null) {
                         tbag.getTModelKey().add(concept.getKey().toString());
@@ -861,87 +877,90 @@ public class ScoutJaxrUddiHelper
 //							tbag.getTModelKey().add(key.toString());
 //						}
 //					}
-				} else {
-					log.info("ebXML case - the RegistryObject is an ExtrinsicObject, Not implemented");
-				}
-			}
-			return tbag;
-    	} catch (Exception ud) {
-			throw new JAXRException("Apache JAXR Impl:", ud);
-		}
+                } else {
+                    log.info("ebXML case - the RegistryObject is an ExtrinsicObject, Not implemented");
+                }
+            }
+            return tbag;
+        } catch (Exception ud) {
+            throw new JAXRException("Apache JAXR Impl:", ud);
+        }
     }
 
-	
-	/**
+    /**
      * Adds the objects identifiers from JAXR's external identifier collection
-     * 
+     *
      * @param identifiers external identifiers to turn into identifiers
      * @throws JAXRException
      */
-	public static IdentifierBag getIdentifierBagFromExternalIdentifiers(Collection identifiers) throws JAXRException {
-    	try {
-			if (identifiers == null || identifiers.size()==0)
-				return null;
-    		
-    		// Identifiers
-			IdentifierBag ibag = objectFactory.createIdentifierBag();
-			Iterator iditer = identifiers.iterator();
-			while (iditer.hasNext()) {
-				ExternalIdentifier extid = (ExternalIdentifier) iditer.next();
-				if (extid != null ) {
-					KeyedReference keyr = objectFactory.createKeyedReference();
-					ibag.getKeyedReference().add(keyr);
-	
-					InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) extid).getName();
-					String value = extid.getValue();
-					ClassificationScheme scheme = extid.getIdentificationScheme();
-	
-					String name = iname.getValue();
-					if (name != null)
-						keyr.setKeyName(name);
-	
-					if (value != null)
-						keyr.setKeyValue(value);
-					
-					if (scheme != null) {
-						Key key = scheme.getKey();
-						if (key != null && key.getId() != null)
-							keyr.setTModelKey(key.getId());
-					}
-				}
-			}
-			return ibag;
-    	} catch (Exception ud) {
-			throw new JAXRException("Apache JAXR Impl:", ud);
-		}
+    public static IdentifierBag getIdentifierBagFromExternalIdentifiers(Collection identifiers) throws JAXRException {
+        try {
+            if (identifiers == null || identifiers.size() == 0) {
+                return null;
+            }
+
+            // Identifiers
+            IdentifierBag ibag = objectFactory.createIdentifierBag();
+            Iterator iditer = identifiers.iterator();
+            while (iditer.hasNext()) {
+                ExternalIdentifier extid = (ExternalIdentifier) iditer.next();
+                if (extid != null) {
+                    KeyedReference keyr = objectFactory.createKeyedReference();
+                    ibag.getKeyedReference().add(keyr);
+
+                    InternationalStringImpl iname = (InternationalStringImpl) ((RegistryObject) extid).getName();
+                    String value = extid.getValue();
+                    ClassificationScheme scheme = extid.getIdentificationScheme();
+
+                    String name = iname.getValue();
+                    if (name != null) {
+                        keyr.setKeyName(name);
+                    }
+
+                    if (value != null) {
+                        keyr.setKeyValue(value);
+                    }
+
+                    if (scheme != null) {
+                        Key key = scheme.getKey();
+                        if (key != null && key.getId() != null) {
+                            keyr.setTModelKey(key.getId());
+                        }
+                    }
+                }
+            }
+            return ibag;
+        } catch (Exception ud) {
+            throw new JAXRException("Apache JAXR Impl:", ud);
+        }
     }
-    
+
     private static OverviewDoc getOverviewDocFromExternalLink(ExternalLink link)
-       throws JAXRException
-       {
-           OverviewDoc od = objectFactory.createOverviewDoc();
-           String url = link.getExternalURI();
-           if(url != null)
-               od.setOverviewURL(url);
-           InternationalString extDesc = link.getDescription();
-           if(extDesc != null) {
-               Description description = objectFactory.createDescription();
-               od.getDescription().add(description);
-               description.setValue(extDesc.getValue());
-           }
-           return od;
-       }
+            throws JAXRException {
+        OverviewDoc od = objectFactory.createOverviewDoc();
+        String url = link.getExternalURI();
+        if (url != null) {
+            od.setOverviewURL(url);
+        }
+        InternationalString extDesc = link.getDescription();
+        if (extDesc != null) {
+            Description description = objectFactory.createDescription();
+            od.getDescription().add(description);
+            description.setValue(extDesc.getValue());
+        }
+        return od;
+    }
 
     private static BindingTemplates getBindingTemplates(Collection serviceBindings)
-        throws JAXRException {
+            throws JAXRException {
         BindingTemplates bt = null;
-        if(serviceBindings != null && serviceBindings.size() > 0) {
+        if (serviceBindings != null && serviceBindings.size() > 0) {
             bt = objectFactory.createBindingTemplates();
             Iterator iter = serviceBindings.iterator();
             int currLoc = 0;
             BindingTemplate[] bindingTemplateArray = new BindingTemplate[serviceBindings.size()];
-            while(iter.hasNext()) {
-                ServiceBinding sb = (ServiceBinding)iter.next();
+            while (iter.hasNext()) {
+                ServiceBinding sb = (ServiceBinding) iter.next();
                 bindingTemplateArray[currLoc] = getBindingTemplateFromJAXRSB(sb);
                 currLoc++;
             }
@@ -949,6 +968,6 @@ public class ScoutJaxrUddiHelper
                 bt.getBindingTemplate().addAll(Arrays.asList(bindingTemplateArray));
             }
         }
-        return bt; 
+        return bt;
     }
 }

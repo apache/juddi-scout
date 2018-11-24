@@ -28,7 +28,7 @@ import javax.xml.registry.RegistryService;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.juddi.v3.client.config.UDDIClerkManager;
+import org.apache.juddi.v3.client.config.UDDIClient;
 
 /**
  * Apache Scout Implementation of a JAXR Connection.
@@ -52,7 +52,7 @@ public class ConnectionImpl implements Connection, Serializable
     private final String postalScheme;
     private final int maxRows;
     private String uddiVersion;
-    UDDIClerkManager manager = null;
+    UDDIClient manager = null;
 
     public ConnectionImpl(Properties properties) throws InvalidRequestException
     {
@@ -77,7 +77,7 @@ public class ConnectionImpl implements Connection, Serializable
             String managerName = null;
             if (manager==null && uddiConfigFile!=null) {
                 try {
-                    manager = new UDDIClerkManager(uddiConfigFile, properties);
+                    manager = new UDDIClient(uddiConfigFile, properties);
                     manager.start();
                 } catch (ConfigurationException e) {
                     log.error(e.getMessage(),e);
