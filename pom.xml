@@ -13,7 +13,7 @@
 
     <properties>
         <javadoc.extra.settings />
-        <juddi.registry.version>3.3.6</juddi.registry.version>
+        <juddiRegistryVersion>3.3.6</juddiRegistryVersion>
     </properties>
 
 
@@ -129,9 +129,10 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/juddi/scout/trunk</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/juddi/scout/trunk</url>
+            <connection>scm:git:https://git-wip-us.apache.org/repos/asf/juddi-scout.git</connection>
+            <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/juddi-scout.git</developerConnection>
+            <url>https://git-wip-us.apache.org/repos/asf/juddi.git/?p=juddi-scout.git;a=summary</url>
+            <tag>HEAD</tag>
     </scm>
     <dependencies>
         <dependency>
@@ -231,7 +232,7 @@
         <dependency>
             <groupId>org.apache.juddi</groupId>
             <artifactId>juddi-client</artifactId>
-            <version>${juddi.registry.version}</version>
+            <version>${juddiRegistryVersion}</version>
         </dependency>
 
         <dependency>
@@ -269,14 +270,23 @@
             <version>1.5.2</version>
             <scope>test</scope>
         </dependency>
+          
+        <dependency>
+            <groupId>org.apache.juddi</groupId>
+            <artifactId>juddi</artifactId>
+            <version>2.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!--  have to figure out which dependencies of 3.0.2 make the uddiv2 build work -->
+        <dependency>
+            <groupId>org.apache.juddi</groupId>
+            <artifactId>uddi-ws</artifactId>
+            <version>${juddiRegistryVersion}</version>
+        </dependency>
+            
     </dependencies>
     <repositories>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Maven 2 Repository</name>
-            <url>http://download.java.net/maven/2</url>
-            <layout>default</layout>
-        </repository>
+        
         <repository>
             <id>apache.nexus</id>
             <name>Apache NEXUS Maven 2 Repository</name>
@@ -291,22 +301,22 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<configuration>
-						<aggregate>true</aggregate>
-						<additionalparam>${javadoc.extra.settings}</additionalparam>
-					</configuration>
-					<executions>
-						<execution>
-							<id>aggregate</id>
-							<goals>
-								<goal>aggregate</goal>
-							</goals>
-							<phase>site</phase>
-						</execution>
-					</executions>
-				</plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                                <aggregate>true</aggregate>
+                                <additionalparam>${javadoc.extra.settings}</additionalparam>
+                        </configuration>
+                        <executions>
+                                <execution>
+                                        <id>aggregate</id>
+                                        <goals>
+                                                <goal>aggregate</goal>
+                                        </goals>
+                                        <phase>site</phase>
+                                </execution>
+                        </executions>
+                </plugin>
                 <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
@@ -397,12 +407,61 @@
                 <artifactId>ianal-maven-plugin</artifactId>
                 <version>1.0-alpha-1</version>
             </plugin>
+
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
+                <configuration>
+                    <skip>true</skip>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <systemProperties>
+                        <property>
+                            <name>derby.stream.error.file</name>
+                            <value>target/derby.log</value>
+                        </property>
+                        <property>
+                            <name>java.io.tmpdir</name>
+                            <value>${basedir}/temp</value>
+                        </property>
+                    </systemProperties>
+                    <environmentVariables>
+                        <uddi.version>2</uddi.version>
+                    </environmentVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>surefire-it</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <systemProperties>
+                                <property>
+                                    <name>cactus.contextURL</name>
+                                    <value>http://localhost:8880/juddi</value>
+                                </property>
+                                <property>
+                                    <name>java.io.tmpdir</name>
+                                    <value>${basedir}/temp</value>
+                                </property>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
+        
+        
+        
+      
+            
+            
     </build>
     <distributionManagement>
         <site>
@@ -439,7 +498,7 @@
                 <dependency>
                     <groupId>org.apache.juddi</groupId>
                     <artifactId>uddi-ws</artifactId>
-                    <version>${juddi.registry.version}</version>
+                    <version>${juddiRegistryVersion}</version>
                 </dependency>
             </dependencies>
             <build>
@@ -501,14 +560,14 @@
                 <dependency>
                     <groupId>org.apache.juddi</groupId>
                     <artifactId>juddi-tomcat</artifactId>
-                    <version>${juddi.registry.version}</version>
+                    <version>${juddiRegistryVersion}</version>
                     <scope>test</scope>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.juddi</groupId>
                     <artifactId>uddi-ws</artifactId>
-                    <version>${juddi.registry.version}</version>
+                    <version>${juddiRegistryVersion}</version>
                 </dependency>
             </dependencies>
             <build>
@@ -529,7 +588,7 @@
                                         <artifactItem>
                                             <groupId>org.apache.juddi</groupId>
                                             <artifactId>juddi-tomcat</artifactId>
-                                            <version>${juddi.registry.version}</version>
+                                            <version>${juddiRegistryVersion}</version>
                                             <type>zip</type>
                                             <outputDirectory>${basedir}/target</outputDirectory>
                                         </artifactItem>
@@ -548,9 +607,9 @@
                                 <phase>pre-integration-test</phase>
                                 <configuration>
                                     <tasks>
-                                        <unzip dest="target" src="target/juddi-tomcat-${juddi.registry.version}.zip" />
-                                        <copy file="${basedir}/server.xml" todir="target/juddi-tomcat-${juddi.registry.version}/conf" overwrite="true" />
-                                        <copy file="${basedir}/log4j.properties" todir="target/juddi-tomcat-${juddi.registry.version}/webapps/juddiv3/WEB-INF/classes" overwrite="true" />
+                                        <unzip dest="target" src="target/juddi-tomcat-${juddiRegistryVersion}.zip" />
+                                        <copy file="${basedir}/server.xml" todir="target/juddi-tomcat-${juddiRegistryVersion}/conf" overwrite="true" />
+                                        <copy file="${basedir}/log4j.properties" todir="target/juddi-tomcat-${juddiRegistryVersion}/webapps/juddiv3/WEB-INF/classes" overwrite="true" />
                                     </tasks>
                                 </configuration>
                                 <goals>
@@ -575,11 +634,11 @@
                                     <wait>false</wait>
                                     <container>
                                         <containerId>tomcat9x</containerId>
-                                        <home>${basedir}/target/juddi-tomcat-${juddi.registry.version}</home>
+                                        <home>${basedir}/target/juddi-tomcat-${juddiRegistryVersion}</home>
                                     </container>
                                     <configuration>
                                         <type>existing</type>
-                                        <home>${project.build.directory}/juddi-tomcat-${juddi.registry.version}</home>
+                                        <home>${project.build.directory}/juddi-tomcat-${juddiRegistryVersion}</home>
                                         <properties>
                                             <cargo.logging>high</cargo.logging>
                                             <cargo.hostname>localhost</cargo.hostname>
@@ -603,7 +662,7 @@
                                         <properties>
                                             <cargo.servlet.port>8880</cargo.servlet.port>
                                         </properties>
-                                        <home>${project.build.directory}/juddi-tomcat-${juddi.registry.version}</home>
+                                        <home>${project.build.directory}/juddi-tomcat-${juddiRegistryVersion}</home>
                                     </configuration>
                                 </configuration>
                             </execution>
@@ -676,7 +735,7 @@
                 <dependency>
                     <groupId>org.apache.juddi</groupId>
                     <artifactId>uddi-ws</artifactId>
-                    <version>${juddi.registry.version}</version>
+                    <version>${juddiRegistryVersion}</version>
                 </dependency>
             </dependencies>
             <build>
