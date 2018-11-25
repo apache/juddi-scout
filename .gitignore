@@ -20,3 +20,4 @@ uddi-tck/drivers/
 **/obj/**
 *.suo
 juddi-client.net/.vs/juddi-client.net/v15/**
+scout.log
