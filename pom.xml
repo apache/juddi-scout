@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.apache.juddi.scout</groupId>
     <artifactId>scout</artifactId>
-    <version>1.2.8-SNAPSHOT</version>
+    <version>1.2.8</version>
     <packaging>jar</packaging>
 
     <properties>
