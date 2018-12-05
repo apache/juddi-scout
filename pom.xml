@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.apache.juddi.scout</groupId>
     <artifactId>scout</artifactId>
-    <version>1.2.8-SNAPSHOT</version>
+    <version>1.2.8</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -139,7 +139,7 @@
             <connection>scm:git:https://git-wip-us.apache.org/repos/asf/juddi-scout.git</connection>
             <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/juddi-scout.git</developerConnection>
             <url>https://git-wip-us.apache.org/repos/asf/juddi.git/?p=juddi-scout.git;a=summary</url>
-            <tag>HEAD</tag>
+            <tag>juddi-1.2.8</tag>
     </scm>
     <dependencies>
         <dependency>
