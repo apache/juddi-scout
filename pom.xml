@@ -356,7 +356,7 @@
 						<preparationGoals>clean install</preparationGoals>
 						<goals>deploy</goals>
 						<releaseProfiles>apache-release</releaseProfiles>
-						<tagNameFormat>juddi-@{project.version}</tagNameFormat>
+						<tagNameFormat>scout-@{project.version}</tagNameFormat>
 					</configuration>
 				</plugin>
 
