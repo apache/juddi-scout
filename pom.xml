@@ -28,8 +28,8 @@
         <url>http://issues.apache.org/jira/browse/SCOUT</url>
     </issueManagement>
     <ciManagement>
-        <system>Continuum</system>
-        <url>http://vmbuild.apache.org</url>
+        <system>Buildbot</system>
+		<url>http://ci.apache.org/buildbot.html</url>
         <notifiers>
             <notifier>
                 <sendOnError>true</sendOnError>
@@ -37,7 +37,7 @@
                 <sendOnSuccess>true</sendOnSuccess>
                 <sendOnWarning>true</sendOnWarning>
                 <configuration>
-                    <address>juddi-dev@apache.org</address>
+                    <address>dev@juddi.apache.org</address>
                 </configuration>
             </notifier>
         </notifiers>
@@ -88,6 +88,13 @@
             <email>tcunning@apache.org</email>
             <organization />
         </developer>
+		<developer>
+			<id>alexoree</id>
+			<name>Alex O'Ree</name>
+			<email>alexoree AT apache.org</email>
+			<url>http://www.apache.org</url>
+			<organization>ASF</organization>
+		</developer>
     </developers>
     <contributors>
         <contributor>
