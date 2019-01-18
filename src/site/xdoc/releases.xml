@@ -17,7 +17,12 @@
           <td><strong>Description</strong></td>
         </tr>
 		<tr>
-          <td><a href="https://repository.apache.org/content/groups/public/org/apache/juddi/scout/scout/1.2.6/">scout-1.2.6</a></td>
+          <td><a href="https://repository.apache.org/content/groups/public/org/apache/juddi/scout/scout/1.2.8/">scout-1.2.8</a></td>
+          <td>Dev 10, 2018</td>
+          <td>Version 1.2.8 of Scout, stable release</td>
+        </tr>
+		<tr>
+          <td><a href="https://repository.apache.org/content/groups/public/org/apache/juddi/scout/scout/1.2.7/">scout-1.2.7</a></td>
           <td>Nov 30, 2012</td>
           <td>Version 1.2.7 of Scout, stable release</td>
         </tr>
