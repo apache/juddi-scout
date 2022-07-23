@@ -13,7 +13,7 @@
 
     <properties>
         <javadoc.extra.settings />
-        <juddiRegistryVersion>3.3.6</juddiRegistryVersion>
+        <juddiRegistryVersion>3.3.10</juddiRegistryVersion>
     </properties>
 
 
