@@ -18,7 +18,7 @@
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
     <name>Apache Scout</name>
     <homepage rdf:resource="http://juddi.apache.org/scout" />
-    <asfext:pmc rdf:resource="http://juddi.apache.org" />
+    <asfext:pmc rdf:resource="http://attic.apache.org" />
     <shortdesc>Apache Scout is an implementation of the JSR 93 (JAXR).</shortdesc>
     <description>Apache Scout is an implementation of the JSR 93 (JAXR). It provides an implementation to access UDDI registries (particularly Apache jUDDI) in a standard way.</description>
     <bug-database rdf:resource="http://issues.apache.org/jira/" />
@@ -26,6 +26,7 @@
     <download-page rdf:resource="http://juddi.apache.org/scout/downloads.html" />
     <programming-language>Java</programming-language>
     <category rdf:resource="http://projects.apache.org/category/xml" />
+	<category rdf:resource="http://projects.apache.org/category/retired" />
     <release>
       <Version>
         <name>Scout v1.2.4</name>
